@@ -17,7 +17,7 @@ setuptools.setup(
     description="Automatic evaluation of instruction-following models by LLMs.",
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),
-    author='Alpaca Team',
+    author="Alpaca Team",
     install_requires=[
         "datasets",
         "openai",
@@ -29,6 +29,9 @@ setuptools.setup(
         "analysis": [
             "seaborn",
             "matplotlib",
+        ],
+        "anthropic": [
+            "anthropic",
         ],
         "dev": {
             "pre-commit>=3.2.0",
