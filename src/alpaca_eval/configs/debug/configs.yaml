@@ -7,6 +7,7 @@ davinci003_3 : # text-davinci-003_v1_b5-pairwise_temp=1.0
     model_name: "text-davinci-003"
     max_tokens: 200
     temperature: 0.0
+    num_procs: 1
   outputs_to_match:
     1: '\n\(a\)'
     2: '\n\(b\)'
