@@ -1,0 +1,13 @@
+davinci003_3 : # text-davinci-003_v1_b5-pairwise_temp=1.0
+  prompt_templates:
+    with_inputs: "alpaca_farm/text_b5_with_inputs.txt"
+    without_inputs: "alpaca_farm/text_b5_without_inputs.txt"
+  fn_decoder: "openai_completions"
+  decoder_kwargs:
+    model_name: "text-davinci-003"
+    max_tokens: 200
+    temperature: 0.0
+  outputs_to_match:
+    1: '\n\(a\)'
+    2: '\n\(b\)'
+  batch_size: 5
