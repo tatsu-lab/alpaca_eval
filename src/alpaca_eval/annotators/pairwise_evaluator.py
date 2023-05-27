@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from .. import decoders, utils as ann_utils
+from .. import utils as ann_utils
+from ..decoders import get_decoder
 
 CURRENT_DIR = Path(__file__).parent
 CONFIG_DIR = CURRENT_DIR.parent / "configs"
@@ -44,6 +45,7 @@ class PairwiseAnnotator:
             "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
             dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_decoder (str): function in `alpaca_farm.auto_annotations.pairwise_annotators.decoders.py` for completions.
+            Needs to accept as first argument `prompts` which is a list of string.
         - decoder_kwargs (dict): kwargs for fn_decode. E.g. model_name, max_tokens, temperature, tokens_to_avoid
         - outputs_to_match (dict): a dictionary of outputs to match from the completions. The values should be a regex
             pattern that should be matched, the keys should be the corresponding preference value. For example
@@ -554,7 +556,9 @@ class SinglePairwiseAnnotator:
         }
         self.outputs_to_match = {k: re.compile(v) for k, v in outputs_to_match.items()}
         self.is_randomize_output_order = is_randomize_output_order
-        self.fn_decoder = getattr(decoders, fn_decoder, fn_decoder)
+        if isinstance(fn_decoder, str):
+            fn_decoder = get_decoder(fn_decoder)
+        self.fn_decoder = fn_decoder
         self.decoder_kwargs = decoder_kwargs or {}
         self.seed = seed
         self.is_shuffle = is_shuffle

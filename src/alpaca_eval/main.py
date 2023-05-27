@@ -84,7 +84,8 @@ def pairwise_winrates(
     model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
     reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
 
-    fn_metric = getattr(metrics, fn_metric, fn_metric)
+    if isinstance(fn_metric, str):
+        fn_metric = getattr(metrics, fn_metric)
 
     annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
     annotated = annotator.annotate_head2head(outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs)
