@@ -8,11 +8,7 @@ import time
 from typing import Optional, Sequence, Union
 
 import tqdm
-
-try:
-    import anthropic
-except ImportError:
-    pass
+import anthropic
 
 __all__ = ["anthropic_completions"]
 
@@ -49,7 +45,6 @@ def anthropic_completions(
             f"Using `anthropic_completions` on {n_examples} prompts using {model_name}."
         )
 
-    breakpoint()
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
@@ -71,9 +66,6 @@ def anthropic_completions(
                 )
             )
 
-    # flatten the list
-    completions = [completion for completion in completions]
-
     return completions
 
 
@@ -84,7 +76,7 @@ def _anthropic_completion_helper(
     max_tokens_to_sample: Optional[int] = 1000,
     temperature: Optional[float] = 0.7,
     **kwargs,
-) -> Sequence[dict[str, Union[str, float]]]:
+) -> str:
     if anthropic_api_keys is None:
         anthropic_api_keys = [os.environ["ANTHROPIC_API_KEY"]]
 

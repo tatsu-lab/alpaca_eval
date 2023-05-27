@@ -8,5 +8,10 @@ def get_decoder(name: str):
         from .openai import openai_completions
 
         return openai_completions
+    elif name == "huggingface_completions":
+        from .huggingface import huggingface_completions
+
+        return huggingface_completions
+
     else:
         raise ValueError(f"Unknown decoder: {name}")
