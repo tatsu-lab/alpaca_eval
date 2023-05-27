@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Alpaca Eval Leaderboard</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="icon" href="https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/AlpacaFarm_small.png">
+    <link href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css" rel="stylesheet"/>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 50px 20px;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        #branding {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #branding h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #777;
+        }
+
+        table {
+            max-width: 700px;
+            width: 100%;
+            table-layout: fixed;
+            margin: auto;
+            font-size: 1em;
+        }
+
+        table th,
+        table td {
+            padding: 6px;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        table th {
+            border-bottom: 2px solid #000;
+        }
+
+        th:first-child,
+        td:first-child {
+            width: 70%;
+            padding-left: 40px;
+        }
+
+        th:last-child,
+        td:last-child {
+            width: 20%;
+        }
+
+        th {
+            text-align: left;
+            padding-bottom: 15px;
+        }
+
+        td {
+            padding-bottom: 10px;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #E8E8E8;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #F8F8F8;
+        }
+
+        .switch-toggle {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .switch-toggle input + label {
+            padding: 2px;
+            padding-left: 7px;
+            padding-right: 7px;
+            cursor: pointer;
+            background-color: lightgrey;
+            border: 1px solid transparent;
+            font-size: 16px;
+        }
+
+        .switch-toggle input:checked + label {
+            border-color: green;
+            color: green;
+        }
+
+        .switch-toggle input:not(:checked) + label {
+            color: black;
+            box-shadow: none !important;
+            user-select: none;
+        }
+
+
+        .toggle-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 17px;
+        }
+
+        .toggle-line .switch-toggle {
+            margin: 0 10px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div id="branding">
+
+        <h1>AlpacaEval
+            <a href="https://github.com/tatsu-lab/alpaca_eval/tree/main">
+                <img src="https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/AlpacaFarm_small.png"
+                     alt="Logo" style="height: 2em; vertical-align: middle;"></a>
+            Leaderboard
+        </h1>
+        <br>
+        <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
+    </div>
+
+    <div class="toggle-line">
+
+        Evaluator:
+        <div class="switch-toggle switch-evaluator" style="margin-right: 4em">
+            <input id="gpt4" name="evaluator" type="radio" checked="checked"/>
+            <label for="gpt4" onclick="">GPT-4</label>
+            <input id="claude" name="evaluator" type="radio"/>
+            <label for="claude" onclick="">Claude</label>
+        </div>
+
+        Filter:
+        <div class="switch-toggle switch-compactness">
+            <input id="community" name="compactness" type="radio" checked="checked"/>
+            <label for="community" onclick="">Community</label>
+            <input id="verified" name="compactness" type="radio"/>
+            <label for="verified" onclick="">Verified</label>
+            <input id="minimal" name="compactness" type="radio"/>
+            <label for="minimal" onclick="">Minimal</label>
+        </div>
+    </div>
+
+    <table id="leaderboard">
+        <tr>
+            <th>Model Name</th>
+            <th>Win Rate</th>
+        </tr>
+    </table>
+
+
+    <div id="documentation">
+        <div style="text-align: center;">
+            <a href="https://github.com/tatsu-lab/alpaca_eval" style="display: inline-block;">
+                <i class="fab fa-fw fa-github" aria-hidden="true"></i> Github
+            </a>
+        </div>
+        <br>
+        <h2>About AlpacaEval</h2>
+        <p>
+            <a href="https://github.com/tatsu-lab/alpaca_eval" target="_blank">AlpacaEval</a>
+            an LLM-based automatic evaluation that is fast, cheap, and reliable.
+            It is based on the
+            <a href="https://crfm.stanford.edu/2023/05/22/alpaca-farm.html">AlpacaFarm</a>
+            evaluation set,
+            which tests the ability of models to follow general user instructions.
+            These responses are then compared to reference Davinci003 responses by
+            the provided GPT-4 or Claude based auto-annotators,
+            which results in the win rates presented above.
+            AlpacaEval displays a high agreement rate with ground truth human annotations,
+            and leaderboard rankings on AlpacaEval are very correlated with leaderboard rankings
+            based on human annotators.
+            Please see our
+            <a href="https://github.com/tatsu-lab/alpaca_eval#analysis" target="_blank">documentation</a>
+            for more details on our analysis.
+        </p>
+        <h2>Adding new models</h2>
+        <p>
+            We welcome new model contributions to the leaderboard from the community!
+            To do so, please follow the steps in the
+            <a href="https://github.com/tatsu-lab/alpaca_eval#contributing" target="_blank">contributions
+                section</a>.
+            Specifically, you'll need to run the model on the evaluation set,
+            auto-annotate the outputs, and submit a PR with the model config and leaderboard results.
+        </p>
+        <h2>Adding new evaluators or eval sets </h2>
+        <p>
+            We also welcome contributions for new evaluators or new eval sets!
+            For making new evaluators, we release our ground-truth
+            <a href="https://github.com/tatsu-lab/alpaca_eval#data-release" target="_blank">human annotations</a>
+            and <a href="https://github.com/tatsu-lab/alpaca_eval#analyzing-an-evaluator" target="_blank">comparison
+            metrics</a>.
+            We also release a
+            <a href="https://github.com/tatsu-lab/alpaca_eval#analyzing-an-eval-set" target="_blank">rough guide</a>
+            to follow for making new eval sets.
+            We specifically encourage contributions for harder instructions distributions and for safety testing of
+            LLMs.
+        </p>
+        <h2>AlpacaEval limitations</h2>
+        <p>
+            While AlpacaEval provides a useful comparison of model capabilities in following instructions,
+            it is not a comprehensive or gold-standard evaluation of model abilities.
+            For one, as detailed in the
+            <a href="https://arxiv.org/abs/2305.14387" target="_blank">AlpacaFarm paper</a>,
+            the auto annotator winrates are correlated with length.
+            Though human annotations also display this bias,
+            it is unclear if more verbose answers add utility in downstream tasks.
+            Additionally, the AlpacaFarm eval set, though diverse, consists mainly of simple instructions.
+            We encourage the community to contribute new, more complex eval sets, such as for tool use.
+            Finally, AlpacaEval does not evaluate the safety of any of the models.
+        </p>
+    </div>
+
+</div>
+
+<script>
+    const gpt4Radio = document.getElementById('gpt4');
+    const claudeRadio = document.getElementById('claude');
+
+    const communityRadio = document.getElementById('community');
+    const verifiedRadio = document.getElementById('verified');
+    const minimalRadio = document.getElementById('minimal');
+
+    const table = document.getElementById('leaderboard');
+
+    const urls = {
+        'gpt4': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/alpaca_eval_gpt4_leaderboard.csv',
+        'claude': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/claude_leaderboard.csv'
+    }
+
+    let currentUrl = urls['gpt4'];
+
+    function updateTable(url) {
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+
+        Papa.parse(url, {
+            download: true,
+            header: true,
+            complete: function (results) {
+                results.data.forEach(row => {
+                    if (row['name'] || row['win_rate']) {
+                        let filter = row['filter'];
+
+                        if ((communityRadio.checked) ||
+                            (verifiedRadio.checked && (filter === 'verified' || filter === 'minimal')) ||
+                            (minimalRadio.checked && filter === 'minimal')) {
+
+                            const tr = document.createElement('tr');
+                            const nameTd = document.createElement('td');
+                            const winRateTd = document.createElement('td');
+
+                            if (row['link'] && row['link'].trim() !== '') {
+                                const a = document.createElement('a');
+                                a.textContent = row['name'];
+                                a.href = row['link'];
+                                a.target = "_blank";
+                                nameTd.appendChild(a);
+                            } else {
+                                nameTd.textContent = row['name'];
+                            }
+
+                            winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+
+                            tr.appendChild(nameTd);
+                            tr.appendChild(winRateTd);
+
+                            table.appendChild(tr);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    updateTable(urls['gpt4']);
+
+    gpt4Radio.addEventListener('click', function () {
+        currentUrl = urls['gpt4'];
+        updateTable(currentUrl);
+    });
+
+    claudeRadio.addEventListener('click', function () {
+        currentUrl = urls['claude'];
+        updateTable(currentUrl);
+    });
+
+    communityRadio.addEventListener('click', function () {
+        updateTable(currentUrl);
+    });
+
+    verifiedRadio.addEventListener('click', function () {
+        updateTable(currentUrl);
+    });
+
+    minimalRadio.addEventListener('click', function () {
+        updateTable(currentUrl);
+    });
+</script>
+
+
+</body>
+
+</html>
