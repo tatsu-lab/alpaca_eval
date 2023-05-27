@@ -49,7 +49,6 @@ def anthropic_completions(
             f"Using `anthropic_completions` on {n_examples} prompts using {model_name}."
         )
 
-
     breakpoint()
 
     kwargs = dict(model=model_name, **decoding_kwargs)
@@ -73,11 +72,7 @@ def anthropic_completions(
             )
 
     # flatten the list
-    completions = [
-        completion["completion"]
-        for completion_batch in completions
-        for completion in completion_batch
-    ]
+    completions = [completion for completion in completions]
 
     return completions
 

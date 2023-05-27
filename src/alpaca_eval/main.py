@@ -23,6 +23,7 @@ def pairwise_winrates(
     rest_of_leaderboard : Optional[Union[str, AnyPath, AnyData]] = "auto" ,
     fn_metric: Union[str, callable] = "pairwise_to_winrate",
     sort_by: str = "win_rate",
+    max_instances : Optional[int] = None,
     annotation_kwargs : Optional[dict[str, Any]] = None,
     **annotator_kwargs
 ):
@@ -83,6 +84,10 @@ def pairwise_winrates(
 
     model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
     reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
+
+    if max_instances is not None:
+        model_outputs = model_outputs[:max_instances]
+        reference_outputs = reference_outputs[:max_instances]
 
     if isinstance(fn_metric, str):
         fn_metric = getattr(metrics, fn_metric)
