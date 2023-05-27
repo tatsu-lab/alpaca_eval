@@ -11,6 +11,14 @@ with open(os.path.join(here, "src", "alpaca_eval", "__init__.py")) as f:
     else:
         raise RuntimeError("Unable to find `__version__`.")
 
+PACKAGES_DEV = ["pre-commit>=3.2.0", "black>=23.1.0", "isort"]
+PACKAGES_ANALYSIS = [
+    "seaborn",
+    "matplotlib",
+]
+PACKAGES_ALL = ["anthropic", "huggingface_hub"] + PACKAGES_ANALYSIS + PACKAGES_DEV
+
+
 setuptools.setup(
     name="alpaca_eval",
     version="0.1.0",
@@ -26,18 +34,9 @@ setuptools.setup(
         "fire",
     ],
     extras_require={
-        "analysis": [
-            "seaborn",
-            "matplotlib",
-        ],
-        "anthropic": [
-            "anthropic",
-        ],
-        "dev": {
-            "pre-commit>=3.2.0",
-            "black>=23.1.0",
-            "isort",
-        },
+        "analysis": PACKAGES_ANALYSIS,
+        "dev": PACKAGES_DEV,
+        "all": PACKAGES_ALL,
     },
     python_requires=">=3.9",
     classifiers=[
