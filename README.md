@@ -1,1 +1,2 @@
-# alpaca_eval
+# AlpacaEval
+
