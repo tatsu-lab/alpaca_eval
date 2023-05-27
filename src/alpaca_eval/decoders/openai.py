@@ -14,7 +14,7 @@ import tiktoken
 __all__ = ["openai_completions"]
 
 def openai_completions(
-    prompts: list[str],
+    prompts: Sequence[str],
     model_name: str,
     tokens_to_favor: Optional[Sequence[str]] = None,
     tokens_to_avoid: Optional[Sequence[str]] = None,
@@ -23,7 +23,7 @@ def openai_completions(
     num_procs: Optional[int] = None,
     batch_size: Optional[int] = None,
     **decoding_kwargs,
-) -> list[str]:
+) -> Sequence[str]:
     """Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
     tokens to favor.
 
@@ -51,7 +51,7 @@ def openai_completions(
         Whether to strip trailing and leading spaces from the prompts.
 
     decoding_kwargs :
-        Additional kwargs to pass to `openai_utils.openai_completion`.
+        Additional kwargs to pass to `openai.Completion` or `openai.ChatCompletion`.
 
     Example
     -------
@@ -100,8 +100,8 @@ def openai_completions(
         prompts = [p.strip() for p in prompts]
 
     is_chat = requires_chatml(model_name)
-    is_chat_format = isinstance(prompts[0], dict)
     if is_chat:
+        prompts = [prompt_to_chatml(prompt) for prompt in prompts]
         num_procs = num_procs or 5
         batch_size = batch_size or 1
 
@@ -109,8 +109,6 @@ def openai_completions(
             logging.warning("batch_size > 1 is not supported yet for chat models. Setting to 1")
             batch_size = 1
 
-        if not is_chat_format:
-            prompts = [prompt_to_chatml(prompt) for prompt in prompts]
     else:
         num_procs = num_procs or 1
         batch_size = batch_size or 10
@@ -123,21 +121,26 @@ def openai_completions(
         for batch_id in range(n_batches)
     ]
 
-    with multiprocessing.Pool(num_procs) as p:
-        partial_completion_helper = functools.partial(
-            _openai_completion_helper,
-            is_chat=is_chat,
-            n=1,
-            model=model_name,
-            **decoding_kwargs
-        )
-        completions = list(
-            tqdm.tqdm(
-                p.imap(partial_completion_helper, prompt_batches),
-                desc="prompt_batches",
-                total=len(prompt_batches),
+    kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
+    logging.info(f"Kwargs to completion: {kwargs}")
+    if num_procs == 1:
+        completions = [
+            _openai_completion_helper(prompt_batch, **kwargs)
+            for prompt_batch in tqdm.tqdm(prompt_batches, desc="prompt_batches")
+        ]
+    else:
+        with multiprocessing.Pool(num_procs) as p:
+            partial_completion_helper = functools.partial(
+                _openai_completion_helper,
+                **decoding_kwargs
             )
-        )
+            completions = list(
+                tqdm.tqdm(
+                    p.imap(partial_completion_helper, prompt_batches),
+                    desc="prompt_batches",
+                    total=len(prompt_batches),
+                )
+            )
 
     # flatten the list and select only the text
     completions = [completion.text for completion_batch in completions for completion in completion_batch]
@@ -164,12 +167,12 @@ def _openai_completion_helper(
 
     # copy shared_kwargs to avoid modifying it
     kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
-    kwargs = copy.deepcopy(kwargs)
+    curr_kwargs = copy.deepcopy(kwargs)
 
     while True:
         try:
             if is_chat:
-                completion_batch = openai.ChatCompletion.create(messages=prompt_batch[0], **kwargs)
+                completion_batch = openai.ChatCompletion.create(messages=prompt_batch[0], **curr_kwargs)
 
                 choices = completion_batch.choices
                 for choice in choices:
@@ -180,7 +183,7 @@ def _openai_completion_helper(
                         choice["text"] = choice.message.content
 
             else:
-                completion_batch = openai.Completion.create(prompt=prompt_batch, **kwargs)
+                completion_batch = openai.Completion.create(prompt=prompt_batch, **curr_kwargs)
                 choices = completion_batch.choices
 
             for choice in choices:
@@ -195,10 +198,10 @@ def _openai_completion_helper(
                 logging.warning("Hit request rate limit; retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
                     openai.organization = random.choice([o for o in openai_organization_ids if o != openai.organization])
-                    logging.warning(f"Switching to organization: {openai.organization} for OAI API key.")
+                    logging.info(f"Switching to OAI organization.")
                 if openai_api_keys is not None and len(openai_api_keys) > 1:
                     openai.api_key = random.choice([o for o in openai_api_keys if o != openai.api_key])
-                    logging.warning(f"Switching keys: {openai.organization} for OAI API key.")
+                    logging.info(f"Switching OAI API key.")
                 time.sleep(sleep_time)  # Annoying rate limit on requests.
     return choices
 
