@@ -16,7 +16,9 @@ PACKAGES_ANALYSIS = [
     "seaborn",
     "matplotlib",
 ]
-PACKAGES_ALL = ["anthropic", "huggingface_hub"] + PACKAGES_ANALYSIS + PACKAGES_DEV
+PACKAGES_LOCAL = ["accelerate", "transformers"]
+PACKAGES_ALL_API = ["anthropic", "huggingface_hub"]
+PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
 
 
 setuptools.setup(
@@ -36,6 +38,7 @@ setuptools.setup(
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
         "dev": PACKAGES_DEV,
+        "all_api": PACKAGES_ALL_API,
         "all": PACKAGES_ALL,
     },
     python_requires=">=3.9",
