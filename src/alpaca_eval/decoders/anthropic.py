@@ -19,7 +19,7 @@ def anthropic_completions(
         model_name="claude-v1",
         num_procs: int = 8,
         **decoding_kwargs,
-) -> str:
+) -> list[str]:
     """Decode with Anthropic API.
 
     Parameters
@@ -31,10 +31,10 @@ def anthropic_completions(
         Name of the model to use for decoding.
 
     num_procs : int, optional
-        Number of processes to use for decoding.
+        Number of parallel processes to use for decoding.
 
     decoding_kwargs :
-        Additional kwargs to pass to `openai_utils.openai_completion`.
+        Additional kwargs to pass to `anthropic.Client.completion`.
     """
     assert num_procs <= 8, "Anthropic API only allows 8 concurrent requests."
     n_examples = len(prompts)

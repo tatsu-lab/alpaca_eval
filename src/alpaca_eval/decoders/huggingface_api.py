@@ -18,7 +18,29 @@ def huggingface_api_completions(
         do_sample: bool = False,
         num_procs: int = 8,
         **kwargs,
-) -> str:
+) -> list[str]:
+    """Decode with the API from hugging face hub.
+
+    Parameters
+    ----------
+    prompts : list of str
+        Prompts to get completions for.
+
+    model_name : str, optional
+        Name of the model (repo on hugging face hub)  to use for decoding.
+
+    gpu : bool, optional
+        Whether to use GPU for decoding.
+
+    do_sample : bool, optional
+        Whether to use sampling for decoding.
+
+    num_procs : int, optional
+        Number of parallel processes to use for decoding.
+
+    kwargs :
+        Additional kwargs to pass to `InferenceApi.__call__`.
+    """
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")
