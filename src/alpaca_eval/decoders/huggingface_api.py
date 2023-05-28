@@ -4,19 +4,20 @@ import multiprocessing
 import os
 from typing import Sequence
 from huggingface_hub.inference_api import InferenceApi
-
 import tqdm
+
+from .. import utils
 
 __all__ = ["huggingface_api_completions"]
 
 
 def huggingface_api_completions(
-    prompts: Sequence[str],
-    model_name: str,
-    gpu: bool = False,
-    do_sample: bool = False,
-    num_procs: int = 8,
-    **kwargs,
+        prompts: Sequence[str],
+        model_name: str,
+        gpu: bool = False,
+        do_sample: bool = False,
+        num_procs: int = 8,
+        **kwargs,
 ) -> str:
     n_examples = len(prompts)
     if n_examples == 0:
@@ -41,25 +42,28 @@ def huggingface_api_completions(
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
 
-    if num_procs == 1:
-        completions = [
-            inference(inputs=prompt, params=default_kwargs)
-            for prompt in tqdm.tqdm(prompts, desc="prompts")
-        ]
-    else:
-        with multiprocessing.Pool(num_procs) as p:
-            partial_completion_helper = functools.partial(
-                inference, params=default_kwargs
-            )
-            completions = list(
-                tqdm.tqdm(
-                    p.imap(partial_completion_helper, prompts),
-                    desc="prompts",
-                    total=len(prompts),
-                )
-            )
+    with utils.Timer() as t:
 
-    completions = [completion[0]["generated_text"] if "error" not in completion else "error:"+completion["error"]
+        if num_procs == 1:
+            completions = [
+                inference(inputs=prompt, params=default_kwargs)
+                for prompt in tqdm.tqdm(prompts, desc="prompts")
+            ]
+        else:
+            with multiprocessing.Pool(num_procs) as p:
+                partial_completion_helper = functools.partial(
+                    inference, params=default_kwargs
+                )
+                completions = list(
+                    tqdm.tqdm(
+                        p.imap(partial_completion_helper, prompts),
+                        desc="prompts",
+                        total=len(prompts),
+                    )
+                )
+    logging.info(f"Time for {n_examples} completions: {t}")
+
+    completions = [completion[0]["generated_text"] if "error" not in completion else "error:" + completion["error"]
                    for completion in completions]
 
     return completions
