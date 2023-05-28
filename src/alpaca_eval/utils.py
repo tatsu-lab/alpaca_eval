@@ -6,6 +6,7 @@ import os
 import pathlib
 import re
 import sys
+import time
 from collections import Counter
 from pathlib import Path
 from typing import Any, Optional, Sequence, Union
@@ -38,7 +39,7 @@ def random_seeded_choice(seed: Union[int, str, float], choices):
 
 
 def shuffle_pairwise_preferences(
-    df: pd.DataFrame, arr_is_shuffle: Sequence[int]
+        df: pd.DataFrame, arr_is_shuffle: Sequence[int]
 ) -> pd.DataFrame:
     """Shuffle the outputs of a pairwise preference dataframe.
 
@@ -109,7 +110,7 @@ def _find_first_match(text: str, outputs_to_match: dict[str, Any]) -> tuple[Any,
 
 
 def parse_batched_completion(
-    completion: str, outputs_to_match: dict[str, Any]
+        completion: str, outputs_to_match: dict[str, Any]
 ) -> list[Any]:
     """Parse a single batch of completions, by returning a sequence of keys in the order in which outputs_to_match
     was matched.
@@ -124,12 +125,21 @@ def parse_batched_completion(
 
     Examples
     --------
-    >>> completion = '\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best output for example 10:\n(a)\n\n### Best output for example 11:\n(a)'
+    >>> completion = '\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best
+    output for example 10:\n(a)\n\n### Best output for example 11:\n(a)'
     >>> parse_batched_completion(completion, {1: re.compile('\n\(a\)'), 2: re.compile('\n\(b\)')})
     [2, 1, 2, 1, 1]
     >>> parse_batched_completion(' (a)', {1: re.compile(' \(a\)'), 2: re.compile(' \(b\)')})
     [1]
-    >>> completion = '### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 5:\r\n{{\r\n"Concise explanation": "Both outputs are incomplete, but Output (b) seems to start with a more relevant source.",\r\n"Output (a) is better than Output (b)": false\r\n}}\r\n\r\n### Preferred output in JSON format for example 6:\r\n{{\r\n"Concise explanation": "Both outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 7:\r\n{{\r\n"Concise explanation": "Both outputs are incomplete, but Output (b) seems to start with a more relevant source.",\r\n"Output (a) is better than Output (b)": false\r\n}}'
+    >>> completion = '### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both
+    outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output
+    (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 5:\r\n{{\r\n"Concise explanation": "Both
+    outputs are incomplete, but Output (b) seems to start with a more relevant source.",\r\n"Output (a) is better
+    than Output (b)": false\r\n}}\r\n\r\n### Preferred output in JSON format for example 6:\r\n{{\r\n"Concise
+    explanation": "Both outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is
+    better than Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 7:\r\n{{\r\n"Concise
+    explanation": "Both outputs are incomplete, but Output (b) seems to start with a more relevant source.",
+    \r\n"Output (a) is better than Output (b)": false\r\n}}'
     >>> parse_batched_completion(completion, {1: re.compile(' true'), 2: re.compile(' false')})
     [1, 2, 1, 2]
     """
@@ -141,12 +151,12 @@ def parse_batched_completion(
             break
         responses.append(key)
         # avoid matching the same output twice
-        completion = completion[match.end() :]
+        completion = completion[match.end():]
     return responses
 
 
 def make_prompts(
-    df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
+        df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
 ) -> tuple[list[str], pd.DataFrame]:
     """Helper function to make batch prompts for a single template.
 
@@ -217,9 +227,9 @@ def make_prompts(
 
 
 def convert_ordinal_to_binary_preference(
-    preferences: Union[pd.DataFrame, list[dict[str, Any]]],
-    ordinal_preference_key: str = "preference",
-    binary_preference_key: str = "preference",
+        preferences: Union[pd.DataFrame, list[dict[str, Any]]],
+        ordinal_preference_key: str = "preference",
+        binary_preference_key: str = "preference",
 ):
     """Convert ordinal preference annotations to preference annotations. By merging multiple subcategories together,
     eg A/a/b/B into A/B, or AA/A/a/b/B/BB into A/B.
@@ -249,7 +259,8 @@ def convert_ordinal_to_binary_preference(
                         dict(output="test b", preference=3),
                         dict(output="test B", preference=4),
                         dict(output="test None", preference=0)]
-    >>> convert_ordinal_to_binary_preference(preferences, ordinal_preference_key="preference", binary_preference_key="preference")
+    >>> convert_ordinal_to_binary_preference(preferences, ordinal_preference_key="preference",
+    binary_preference_key="preference")
     [{'output': 'test A', 'preference': 1},
      {'output': 'test a', 'preference': 1},
      {'output': 'test b', 'preference': 2},
@@ -263,8 +274,8 @@ def convert_ordinal_to_binary_preference(
         preferences = pd.DataFrame.from_records(preferences)
 
     preferences[binary_preference_key] = (
-        preferences[ordinal_preference_key].round().astype(int) - 1
-    ) // 2 + 1
+                                                 preferences[ordinal_preference_key].round().astype(int) - 1
+                                         ) // 2 + 1
 
     if not is_df:
         preferences = preferences.to_dict(orient="records")
@@ -319,3 +330,20 @@ def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData], **kwargs):
     else:
         df = convert_to_dataframe(df, **kwargs)
     return df
+
+
+class Timer:
+    """Timer context manager"""
+
+    def __enter__(self):
+        """Start a new timer as a context manager"""
+        self.start = time.time()
+        return self
+
+    def __exit__(self, *args):
+        """Stop the context manager timer"""
+        self.end = time.time()
+        self.duration = self.end - self.start
+
+    def __str__(self):
+        return f"{self.duration:.3f} seconds"

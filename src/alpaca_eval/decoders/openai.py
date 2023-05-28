@@ -11,18 +11,21 @@ import tqdm
 import openai
 import tiktoken
 
+from .. import utils
+
 __all__ = ["openai_completions"]
 
+
 def openai_completions(
-    prompts: Sequence[str],
-    model_name: str,
-    tokens_to_favor: Optional[Sequence[str]] = None,
-    tokens_to_avoid: Optional[Sequence[str]] = None,
-    is_skip_multi_tokens_to_avoid: bool = True,
-    is_strip: bool = True,
-    num_procs: Optional[int] = None,
-    batch_size: Optional[int] = None,
-    **decoding_kwargs,
+        prompts: Sequence[str],
+        model_name: str,
+        tokens_to_favor: Optional[Sequence[str]] = None,
+        tokens_to_avoid: Optional[Sequence[str]] = None,
+        is_skip_multi_tokens_to_avoid: bool = True,
+        is_strip: bool = True,
+        num_procs: Optional[int] = None,
+        batch_size: Optional[int] = None,
+        **decoding_kwargs,
 ) -> Sequence[str]:
     """Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
     tokens to favor.
@@ -60,11 +63,13 @@ def openai_completions(
     ['\n\nAnswer: \n\nTwo (or, alternatively, the number "two" or the numeral "two").', '\n\n4']
     >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_favor=["2"])
     ['2\n\n2', '\n\n4']
-    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_avoid=["2 a long sentence that is not a token"])
+    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_avoid=["2 a long sentence that is not a
+    token"])
     ['\n\n2', '\n\n4']
     >>> chat_prompt = ["<|im_start|>user\n1+1=<|im_end|>", "<|im_start|>user\nRespond with one digit: 2+2=<|im_end|>"]
     >>> openai_completions(chat_prompt, "gpt-3.5-turbo", tokens_to_avoid=["2"," 2"])
-    ['As an AI language model, I can confirm that 1+1 equals  02 in octal numeral system, 10 in decimal numeral system, and  02 in hexadecimal numeral system.', '4']
+    ['As an AI language model, I can confirm that 1+1 equals  02 in octal numeral system, 10 in decimal numeral
+    system, and  02 in hexadecimal numeral system.', '4']
     """
     n_examples = len(prompts)
     if n_examples == 0:
@@ -123,40 +128,44 @@ def openai_completions(
 
     kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
-    if num_procs == 1:
-        completions = [
-            _openai_completion_helper(prompt_batch, **kwargs)
-            for prompt_batch in tqdm.tqdm(prompt_batches, desc="prompt_batches")
-        ]
-    else:
-        with multiprocessing.Pool(num_procs) as p:
-            partial_completion_helper = functools.partial(
-                _openai_completion_helper,
-                **decoding_kwargs
-            )
-            completions = list(
-                tqdm.tqdm(
-                    p.imap(partial_completion_helper, prompt_batches),
-                    desc="prompt_batches",
-                    total=len(prompt_batches),
+
+    with utils.Timer() as t:
+        if num_procs == 1:
+            completions = [
+                _openai_completion_helper(prompt_batch, **kwargs)
+                for prompt_batch in tqdm.tqdm(prompt_batches, desc="prompt_batches")
+            ]
+        else:
+            with multiprocessing.Pool(num_procs) as p:
+                partial_completion_helper = functools.partial(
+                    _openai_completion_helper,
+                    **decoding_kwargs
                 )
-            )
+                completions = list(
+                    tqdm.tqdm(
+                        p.imap(partial_completion_helper, prompt_batches),
+                        desc="prompt_batches",
+                        total=len(prompt_batches),
+                    )
+                )
+    logging.info(f"Completed {n_examples} examples in {t}.")
 
     # flatten the list and select only the text
     completions = [completion.text for completion_batch in completions for completion in completion_batch]
 
     return completions
 
+
 def _openai_completion_helper(
-    prompt_batch: Sequence[str],
-    is_chat: bool,
-    sleep_time: int = 2,
-    openai_organization_ids : Optional[Sequence[str]]= None,
-    openai_api_keys: Optional[Sequence[str]] = None,
-    max_tokens: Optional[int] = 1000,
-    top_p: Optional[float] = 1.0,
-    temperature: Optional[float] = 0.7,
-    **kwargs,
+        prompt_batch: Sequence[str],
+        is_chat: bool,
+        sleep_time: int = 2,
+        openai_organization_ids: Optional[Sequence[str]] = None,
+        openai_api_keys: Optional[Sequence[str]] = None,
+        max_tokens: Optional[int] = 1000,
+        top_p: Optional[float] = 1.0,
+        temperature: Optional[float] = 0.7,
+        **kwargs,
 ):
     # randomly select orgs
     if openai_organization_ids is not None:
@@ -197,7 +206,8 @@ def _openai_completion_helper(
             else:
                 logging.warning("Hit request rate limit; retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
-                    openai.organization = random.choice([o for o in openai_organization_ids if o != openai.organization])
+                    openai.organization = random.choice([o for o in openai_organization_ids if
+                                                         o != openai.organization])
                     logging.info(f"Switching to OAI organization.")
                 if openai_api_keys is not None and len(openai_api_keys) > 1:
                     openai.api_key = random.choice([o for o in openai_api_keys if o != openai.api_key])
@@ -205,17 +215,21 @@ def _openai_completion_helper(
                 time.sleep(sleep_time)  # Annoying rate limit on requests.
     return choices
 
+
 def requires_chatml(model: str) -> bool:
     """Whether a model requires the ChatML format."""
     # TODO: this should ideally be an OpenAI function... Maybe it already exists?
     return "turbo" in model or "gpt-4" in model
+
 
 def prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: str = "<|im_end|>"):
     """Convert a text prompt to ChatML formal
 
     Examples
     --------
-    >>> prompt = "<|im_start|>system\nYou are a helpful assistant.\n<|im_end|>\n<|im_start|>system name=example_user\nKnock knock.\n<|im_end|>\n<|im_start|>system name=example_assistant\nWho's there?\n<|im_end|>\n<|im_start|>user\nOrange.\n<|im_end|>"
+    >>> prompt = "<|im_start|>system\nYou are a helpful assistant.\n<|im_end|>\n<|im_start|>system
+    name=example_user\nKnock knock.\n<|im_end|>\n<|im_start|>system name=example_assistant\nWho's
+    there?\n<|im_end|>\n<|im_start|>user\nOrange.\n<|im_end|>"
     >>> print(prompt)
     <|im_start|>system
     You are a helpful assistant.
@@ -259,10 +273,10 @@ def prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: 
 
     return message
 
+
 def string_to_dict(to_convert):
     """Converts a string with equal signs to dictionary. E.g.
     >>> string_to_dict(" name=user university=stanford")
     {'name': 'user', 'university': 'stanford'}
     """
     return {s.split("=", 1)[0]: s.split("=", 1)[1] for s in to_convert.split(" ") if len(s) > 0}
-

@@ -5,19 +5,20 @@ import multiprocessing
 import os
 import random
 import time
-from typing import Optional, Sequence, Union
-
+from typing import Optional, Sequence
 import tqdm
 import anthropic
+
+from .. import utils
 
 __all__ = ["anthropic_completions"]
 
 
 def anthropic_completions(
-    prompts: Sequence[str],
-    model_name="claude-v1",
-    num_procs: int = 8,
-    **decoding_kwargs,
+        prompts: Sequence[str],
+        model_name="claude-v1",
+        num_procs: int = 8,
+        **decoding_kwargs,
 ) -> str:
     """Decode with Anthropic API.
 
@@ -45,37 +46,38 @@ def anthropic_completions(
             f"Using `anthropic_completions` on {n_examples} prompts using {model_name}."
         )
 
-
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
-    if num_procs == 1:
-        completions = [
-            _anthropic_completion_helper(prompt, **kwargs)
-            for prompt in tqdm.tqdm(prompts, desc="prompts")
-        ]
-    else:
-        with multiprocessing.Pool(num_procs) as p:
-            partial_completion_helper = functools.partial(
-                _anthropic_completion_helper, **kwargs
-            )
-            completions = list(
-                tqdm.tqdm(
-                    p.imap(partial_completion_helper, prompts),
-                    desc="prompts",
-                    total=len(prompts),
+    with utils.Timer() as t:
+        if num_procs == 1:
+            completions = [
+                _anthropic_completion_helper(prompt, **kwargs)
+                for prompt in tqdm.tqdm(prompts, desc="prompts")
+            ]
+        else:
+            with multiprocessing.Pool(num_procs) as p:
+                partial_completion_helper = functools.partial(
+                    _anthropic_completion_helper, **kwargs
                 )
-            )
+                completions = list(
+                    tqdm.tqdm(
+                        p.imap(partial_completion_helper, prompts),
+                        desc="prompts",
+                        total=len(prompts),
+                    )
+                )
+    logging.info(f"Completed {n_examples} examples in {t}.")
 
     return completions
 
 
 def _anthropic_completion_helper(
-    prompt: str,
-    sleep_time: int = 2,
-    anthropic_api_keys: Optional[Sequence[str]] = None,
-    max_tokens_to_sample: Optional[int] = 1000,
-    temperature: Optional[float] = 0.7,
-    **kwargs,
+        prompt: str,
+        sleep_time: int = 2,
+        anthropic_api_keys: Optional[Sequence[str]] = None,
+        max_tokens_to_sample: Optional[int] = 1000,
+        temperature: Optional[float] = 0.7,
+        **kwargs,
 ) -> str:
     if anthropic_api_keys is None:
         anthropic_api_keys = [os.environ["ANTHROPIC_API_KEY"]]
