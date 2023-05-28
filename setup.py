@@ -16,10 +16,9 @@ PACKAGES_ANALYSIS = [
     "seaborn",
     "matplotlib",
 ]
-PACKAGES_LOCAL = ["accelerate", "transformers"]
+PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "optimum", "scipy"]
 PACKAGES_ALL_API = ["anthropic", "huggingface_hub"]
 PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
-
 
 setuptools.setup(
     name="alpaca_eval",
