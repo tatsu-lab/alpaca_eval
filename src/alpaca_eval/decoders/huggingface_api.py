@@ -1,18 +1,16 @@
-import copy
 import functools
 import logging
 import multiprocessing
 import os
-import random
 from typing import Sequence
 from huggingface_hub.inference_api import InferenceApi
 
 import tqdm
 
-__all__ = ["huggingface_completions"]
+__all__ = ["huggingface_api_completions"]
 
 
-def huggingface_completions(
+def huggingface_api_completions(
     prompts: Sequence[str],
     model_name: str,
     gpu: bool = False,
@@ -26,7 +24,7 @@ def huggingface_completions(
         return []
     else:
         logging.info(
-            f"Using `huggingface_completions` on {n_examples} prompts using {model_name}."
+            f"Using `huggingface_api_completions` on {n_examples} prompts using {model_name}."
         )
 
     if "HUGGINGFACEHUB_API_TOKEN" in os.environ:
