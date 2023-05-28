@@ -2,7 +2,10 @@
 
 ## Example:
 ### Instruction:
-Give a description of the following job: "ophthalmologist"
+Give a description of the following job
+
+### Input:
+ophthalmologist
 
 ### Output (a):
 An ophthalmologist is a medical doctor who specializes in the diagnosis and treatment of eye diseases and conditions.
@@ -13,11 +16,16 @@ An ophthalmologist is a medical doctor who pokes and prods at your eyes while as
 ### Which is best, Output (a) or Output (b)?
 Output (a)
 
-Here the answer is Output (a) because it provides a comprehensive and accurate description of the job of an ophthalmologist. In contrast, output (b) is more of a joke. Now is the real task.
+Here the answer is Output (a) because it provides a comprehensive and accurate description of the job of an ophthalmologist. In contrast, output (b) is more of a joke.
 
 ## Task:
+Now is the real task, do not explain your answer, just say Output (a) or Output (b).
+
 ### Instruction:
 {instruction}
+
+### Input:
+{input}
 
 ### Output (a):
 {output_1}

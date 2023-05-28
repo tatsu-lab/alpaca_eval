@@ -1,0 +1,15 @@
+# paths are relative to configs
+
+basic_claude_v1: # pairwise_claude_v0_{inputs}
+  prompt_templates:
+    with_inputs: "claude-v1/claude_b1_with_inputs.txt"
+    without_inputs: "claude-v1/claude_b1_without_inputs.txt"
+  fn_decoder: "anthropic_completions"
+  decoder_kwargs:
+    model_name: "claude-v1"
+    max_tokens: 50
+    temperature: 0
+  outputs_to_match:
+    1: '(?:^|\n) ?Output \(a\)'
+    2: '(?:^|\n) ?Output \(b\)'
+  batch_size: 1

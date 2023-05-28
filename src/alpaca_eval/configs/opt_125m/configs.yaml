@@ -2,8 +2,8 @@
 
 opt_125m:
   prompt_templates:
-    with_inputs: "opt_125m/opt_b1_with_inputs.txt"
-    without_inputs: "opt_125m/opt_b1_without_inputs.txt"
+    with_inputs: "opt_125m/zeroshot_b1_with_inputs.txt"
+    without_inputs: "opt_125m/zeroshot_b1_without_inputs.txt"
   fn_decoder: "huggingface_local_completions"
   decoder_kwargs:
     model_name: "facebook/opt-125m"

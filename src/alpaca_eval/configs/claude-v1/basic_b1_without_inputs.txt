@@ -1,33 +1,31 @@
 A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
 ### Human: Select the output (a) or (b) that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should ONLY contain: Output (a) or Output (b). Here's an example:
 
-## Instruction
-Give a description of the following job
+# Example:
+## Instruction:
+Give a description of the following job: "ophthalmologist"
 
-## Input
-ophthalmologist
-
-## Output (a)
+## Output (a):
 An ophthalmologist is a medical doctor who specializes in the diagnosis and treatment of eye diseases and conditions.
 
-## Output (b)
+## Output (b):
 An ophthalmologist is a medical doctor who pokes and prods at your eyes while asking you to read letters from a chart.
 
 ## Which is best, Output (a) or Output (b)?
-### Assistant: Output (a)
+Output (a)
 
-### Human: Great indeed, Output (a) is better because it provides a comprehensive and accurate description of the job of an ophthalmologist. In contrast, output (b) is more of a joke. Remember to only include Output (a) or Output (b) in your answer, not the explanation. Let us do another example
+Here the answer is Output (a) because it provides a comprehensive and accurate description of the job of an ophthalmologist. In contrast, output (b) is more of a joke. Now is the real task, remember to only include Output (a) or Output (b) in your answer, not the explanation.
 
-## Instruction
+# Task:
+Now is the real task, do not explain your answer, just say Output (a) or Output (b).
+
+## Instruction:
 {instruction}
 
-## Input
-{input}
-
-## Output (a)
+## Output (a):
 {output_1}
 
-## Output (b)
+## Output (b):
 {output_2}
 
 ## Which is best, Output (a) or Output (b)?
