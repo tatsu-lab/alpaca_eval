@@ -7,7 +7,7 @@ from transformers import (
     AutoTokenizer,
 )
 import transformers
-from .. import utils
+from .. import utils, constants
 
 __all__ = ["huggingface_local_completions"]
 
@@ -20,9 +20,28 @@ def huggingface_local_completions(
         model_kwargs={  # "load_in_8bit": True, # divides memory by 2 but is slower
             "device_map": "auto",
             "torch_dtype": torch.float16},
-        cache_dir: Optional[str] = None,
+        cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
         **kwargs,
-) -> str:
+) -> list[str]:
+    """Decode locally using huggingface transformers pipeline.
+
+    Parameters
+    ----------
+    prompts : list of str
+        Prompts to get completions for.
+
+    model_name : str, optional
+        Name of the model (repo on hugging face hub)  to use for decoding.
+
+    do_sample : bool, optional
+        Whether to use sampling for decoding.
+
+    batch_size : int, optional
+        Batch size to use for decoding. This currently does not work well with to_bettertransformer.
+
+    kwargs :
+        Additional kwargs to pass to `InferenceApi.__call__`.
+    """
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")
@@ -43,11 +62,13 @@ def huggingface_local_completions(
     model = AutoModelForCausalLM.from_pretrained(model_name,
                                                  cache_dir=cache_dir,
                                                  **model_kwargs)
-    try:
-        model = model.to_bettertransformer()
-    except NotImplementedError:
-        pass
-    
+
+    if batch_size == 1:
+        try:
+            model = model.to_bettertransformer()
+        except NotImplementedError:
+            pass
+
     logging.info(f"Model memory: {model.get_memory_footprint() / 1e9} GB")
 
     if batch_size > 1:
