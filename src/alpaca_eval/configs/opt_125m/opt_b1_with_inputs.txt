@@ -1,0 +1,16 @@
+Select the output (a) or (b) that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should ONLY contain: Output (a) or Output (b).
+
+# Task:
+## Instruction:
+{instruction}
+
+## Input:
+{input}
+
+## Output (a):
+{output_1}
+
+## Output (b):
+{output_2}
+
+## Which is best, Output (a) or Output (b)?
