@@ -346,4 +346,4 @@ class Timer:
         self.duration = self.end - self.start
 
     def __str__(self):
-        return f"{self.duration:.3f} seconds"
+        return f"{self.duration:.1f} seconds"

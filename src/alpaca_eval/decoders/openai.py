@@ -26,7 +26,7 @@ def openai_completions(
         num_procs: Optional[int] = None,
         batch_size: Optional[int] = None,
         **decoding_kwargs,
-) -> Sequence[str]:
+) -> list[str]:
     """Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
     tokens to favor.
 
