@@ -4,10 +4,10 @@ stablelm_alpha_7b:
   prompt_templates:
     with_inputs: "stablelm_alpha_7b/stablelm_b1_with_inputs.txt"
     without_inputs: "stablelm_alpha_7b/stablelm_b1_without_inputs.txt"
-  fn_decoder: "huggingface_completions"
+  fn_decoder: "huggingface_local_completions"
   decoder_kwargs:
-    model_name: "stabilityai/stablelm-tuned-alpha-3b"
-    max_new_tokens: 250
+    model_name: "stabilityai/stablelm-tuned-alpha-3b" #"stabilityai/stablelm-tuned-alpha-7b"
+    max_new_tokens: 50
   outputs_to_match:
     1: '(?:^|\n)Output \(a\)'
     2: '(?:^|\n)Output \(b\)'
