@@ -1,6 +1,4 @@
-# paths are relative to auto_annotations
-
-basic_gpt4: # gpt-4-0314_pairwise_vH_b5_chatml-prompt
+basic_gpt4:
   prompt_templates:
     with_inputs: "chatgpt/basic_b1_with_inputs.txt"
     without_inputs: "chatgpt/basic_b1_without_inputs.txt"
@@ -12,4 +10,4 @@ basic_gpt4: # gpt-4-0314_pairwise_vH_b5_chatml-prompt
   outputs_to_match:
     1: '(?:^|\n) ?Output \(a\)'
     2: '(?:^|\n) ?Output \(b\)'
-  batch_size: 5
+  batch_size: 1

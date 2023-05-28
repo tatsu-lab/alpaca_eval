@@ -139,7 +139,7 @@ def openai_completions(
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(
                     _openai_completion_helper,
-                    **decoding_kwargs
+                    **kwargs
                 )
                 completions = list(
                     tqdm.tqdm(

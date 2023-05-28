@@ -1,10 +1,10 @@
-basic_text_davinci_003:
+basic_gpt3:
   prompt_templates:
-    with_inputs: "text-davinci-003/basic_b1_with_inputs.txt"
-    without_inputs: "text-davinci-003/basic_b1_without_inputs.txt"
+    with_inputs: "gpt3/basic_b1_with_inputs.txt"
+    without_inputs: "gpt3/basic_b1_without_inputs.txt"
   fn_decoder: "openai_completions"
   decoder_kwargs:
-    model_name: "gpt-4-0314"
+    model_name: "text-davinci-003"
     max_tokens: 50
     temperature: 0
   outputs_to_match:

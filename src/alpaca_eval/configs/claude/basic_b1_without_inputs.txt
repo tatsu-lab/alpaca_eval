@@ -1,5 +1,6 @@
-A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
-### Human: Select the output (a) or (b) that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should ONLY contain: Output (a) or Output (b). Here's an example:
+
+
+Human: Select the output (a) or (b) that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should ONLY contain: Output (a) or Output (b). Here's an example:
 
 # Example:
 ## Instruction:
@@ -29,4 +30,5 @@ Now is the real task, do not explain your answer, just say Output (a) or Output 
 {output_2}
 
 ## Which is best, Output (a) or Output (b)?
-### Assistant:
+
+Assistant:

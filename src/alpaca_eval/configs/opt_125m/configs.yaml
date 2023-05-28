@@ -1,5 +1,3 @@
-# paths are relative to configs
-
 opt_125m:
   prompt_templates:
     with_inputs: "opt_125m/zeroshot_b1_with_inputs.txt"

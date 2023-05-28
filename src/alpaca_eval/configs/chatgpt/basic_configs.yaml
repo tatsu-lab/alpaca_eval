@@ -1,15 +1,15 @@
 # paths are relative to auto_annotations
 
-basic_chatgpt: # gpt-4-0314_pairwise_vH_b5_chatml-prompt
+basic_chatgpt:
   prompt_templates:
     with_inputs: "chatgpt/basic_b1_with_inputs.txt"
     without_inputs: "chatgpt/basic_b1_without_inputs.txt"
   fn_decoder: "openai_completions"
   decoder_kwargs:
-    model_name: "gpt-4-0314"
-    max_tokens: 250
+    model_name: "gpt-3.5-turbo-0301"
+    max_tokens: 50
     temperature: 0
   outputs_to_match:
-    1: 'Output \(a'
-    2: 'Output \(b'
-  batch_size: 5
+    1: '(?:^|\n) ?Output \(a\)'
+    2: '(?:^|\n) ?Output \(b\)'
+  batch_size: 1

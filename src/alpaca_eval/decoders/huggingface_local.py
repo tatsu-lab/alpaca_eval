@@ -42,7 +42,12 @@ def huggingface_local_completions(
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir, padding_side="left", **model_kwargs)
     model = AutoModelForCausalLM.from_pretrained(model_name,
                                                  cache_dir=cache_dir,
-                                                 **model_kwargs).to_bettertransformer()
+                                                 **model_kwargs)
+    try:
+        model = model.to_bettertransformer()
+    except NotImplementedError:
+        pass
+    
     logging.info(f"Model memory: {model.get_memory_footprint() / 1e9} GB")
 
     if batch_size > 1:
@@ -66,7 +71,7 @@ def huggingface_local_completions(
 
     ## compute and log the time for completions
     with utils.Timer() as t:
-        completions = pipeline(prompts, return_full_text=False)
+        completions = pipeline(prompts, return_full_text=False, pad_token_id=pipeline.tokenizer.eos_token_id)
     logging.info(f"Time for {n_examples} completions: {t}")
     completions = [completion[0]["generated_text"] for completion in completions]
 
