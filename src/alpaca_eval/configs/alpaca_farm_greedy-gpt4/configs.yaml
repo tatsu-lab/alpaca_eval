@@ -9,7 +9,8 @@ greedy_gpt4: # gpt-4-0314_pairwise_vH_b5_chatml-prompt
     model_name: "gpt-4-0314"
     max_tokens: 250
     temperature: 0
-  outputs_to_match:
-    1: 'Output \(a'
-    2: 'Output \(b'
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: 'Output \(a'
+      2: 'Output \(b'
   batch_size: 5

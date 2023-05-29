@@ -6,7 +6,8 @@ basic_guanaco_33b:
   decoder_kwargs:
     model_name: "timdettmers/guanaco-33b-merged"
     max_new_tokens: 50
-  outputs_to_match:
-    1: '(?:^|\n) ?Output \(a\)'
-    2: '(?:^|\n) ?Output \(b\)'
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 1

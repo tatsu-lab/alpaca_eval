@@ -1,5 +1,6 @@
 import logging
 import re
+from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence, Union
 import os
@@ -8,7 +9,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from .. import utils as ann_utils
+from .. import completion_parsers, utils as ann_utils
 from ..decoders import get_fn_completions
 
 CURRENT_DIR = Path(__file__).parent
@@ -44,13 +45,12 @@ class PairwiseAnnotator:
         - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
             "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
             dictionary, typically {instruction} and {output_1} {output_2}.
-        - fn_completions (str): function in `alpaca_farm.auto_annotations.pairwise_annotators.decoders.py` for
-        completions.
-            Needs to accept as first argument `prompts` which is a list of string.
+        - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
+            `prompts` which is a list of string.
         - decoder_kwargs (dict): kwargs for fn_decode. E.g. model_name, max_tokens, temperature, tokens_to_avoid
-        - outputs_to_match (dict): a dictionary of outputs to match from the completions. The values should be a regex
-            pattern that should be matched, the keys should be the corresponding preference value. For example
-            {1: 'Output \(a\)'} will match the output "Output (a)" and set the preference to 1.
+        - fn_completion_parser (str) : Function in `completion_parsers.py` to use for parsing the completions into
+        preferences.
+        - completion_parser_kwargs (dict) : Kwargs for fn_completion_parser.
         - other kwargs to `SinglePairwiseAnnotator` such as batch_size
 
     seed : int, optional
@@ -540,10 +540,13 @@ class SinglePairwiseAnnotator:
         A dictionary of prompts that will be given to `fn_prompter` or path to those prompts. Path is relative to
         `configs/`
 
-    outputs_to_match : dict
-        A dictionary of outputs to match from the completions. The values should be a regex pattern that should
-        be matched, the keys should be the corresponding preference value. For each completion, the number of patterns
-        that are matched should be equal to the batch_size if not we set all the preferences in that batch to NaN.
+    fn_completion_parser : callable or str
+        Function in `completion_parsers.py` to use for parsing the completions into preferences. For each completion,
+        the number of preferences should be equal to the batch_size if not we set all the preferences in that batch to
+        NaN.
+
+    completion_parser_kwargs : dict
+        Kwargs for fn_completion_parser.
 
     fn_completions : callable or str
         Function in `decoders.py` to use for decoding the output.
@@ -567,7 +570,8 @@ class SinglePairwiseAnnotator:
     def __init__(
             self,
             prompt_templates: dict[str, str],
-            outputs_to_match: dict[Any, str],
+            fn_completion_parser: Union[Callable, str] = "regex_parser",
+            completion_parser_kwargs: Optional[dict[str, Any]] = None,
             fn_completions: Union[Callable, str] = "openai_completions",
             decoder_kwargs: Optional[dict[str, Any]] = None,
             is_randomize_output_order: bool = True,
@@ -579,7 +583,12 @@ class SinglePairwiseAnnotator:
             k: ann_utils.read_or_return(CONFIG_DIR / prompt)
             for k, prompt in prompt_templates.items()
         }
-        self.outputs_to_match = {k: re.compile(v) for k, v in outputs_to_match.items()}
+
+        if isinstance(fn_completion_parser, str):
+            fn_completion_parser = getattr(completion_parsers, fn_completion_parser)
+        completion_parser_kwargs = completion_parser_kwargs or {}
+        self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
+
         self.is_randomize_output_order = is_randomize_output_order
         self.fn_completions = get_fn_completions(fn_completions)
         self.decoder_kwargs = decoder_kwargs or {}
@@ -694,9 +703,7 @@ class SinglePairwiseAnnotator:
         all_preferences = []
         for completion in completions:
             # use a regex to match all outputs on a line. Assumes that there is at most one output to match per line
-            batch_preferences = ann_utils.parse_batched_completion(
-                completion, self.outputs_to_match
-            )
+            batch_preferences = self.fn_prompt_parser(completion)
             if len(batch_preferences) != self.batch_size:
                 logging.warning(
                     f"Found {len(batch_preferences)} preferences in:'''\n{completion}\n''' but expected"

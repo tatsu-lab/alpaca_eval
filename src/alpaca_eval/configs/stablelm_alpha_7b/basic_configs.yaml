@@ -6,7 +6,8 @@ basic_stablelm_alpha_7b:
   decoder_kwargs:
     model_name: "stabilityai/stablelm-tuned-alpha-7b" #"stabilityai/stablelm-tuned-alpha-7b"
     max_new_tokens: 50
-  outputs_to_match:
-    1: '(?:^|\n) ?Output \(a\)'
-    2: '(?:^|\n) ?Output \(b\)'
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 1

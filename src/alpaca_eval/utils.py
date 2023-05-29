@@ -109,52 +109,6 @@ def _find_first_match(text: str, outputs_to_match: dict[str, Any]) -> tuple[Any,
     return first_match, first_key
 
 
-def parse_batched_completion(
-        completion: str, outputs_to_match: dict[str, Any]
-) -> list[Any]:
-    """Parse a single batch of completions, by returning a sequence of keys in the order in which outputs_to_match
-    was matched.
-
-    Parameters
-    ----------
-    completion : str
-        Completion to parse.
-
-    outputs_to_match : dict[str, Any]
-        Dictionary of compiled regex to match. Keys are the keys to return in the order in which they are matched.
-
-    Examples
-    --------
-    >>> completion = '\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best
-    output for example 10:\n(a)\n\n### Best output for example 11:\n(a)'
-    >>> parse_batched_completion(completion, {1: re.compile('\n\(a\)'), 2: re.compile('\n\(b\)')})
-    [2, 1, 2, 1, 1]
-    >>> parse_batched_completion(' (a)', {1: re.compile(' \(a\)'), 2: re.compile(' \(b\)')})
-    [1]
-    >>> completion = '### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both
-    outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output
-    (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 5:\r\n{{\r\n"Concise explanation": "Both
-    outputs are incomplete, but Output (b) seems to start with a more relevant source.",\r\n"Output (a) is better
-    than Output (b)": false\r\n}}\r\n\r\n### Preferred output in JSON format for example 6:\r\n{{\r\n"Concise
-    explanation": "Both outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is
-    better than Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 7:\r\n{{\r\n"Concise
-    explanation": "Both outputs are incomplete, but Output (b) seems to start with a more relevant source.",
-    \r\n"Output (a) is better than Output (b)": false\r\n}}'
-    >>> parse_batched_completion(completion, {1: re.compile(' true'), 2: re.compile(' false')})
-    [1, 2, 1, 2]
-    """
-    completion = copy.deepcopy(completion)
-    responses = []
-    while True:
-        match, key = _find_first_match(completion, outputs_to_match)
-        if not match:
-            break
-        responses.append(key)
-        # avoid matching the same output twice
-        completion = completion[match.end():]
-    return responses
-
-
 def make_prompts(
         df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
 ) -> tuple[list[str], pd.DataFrame]:
@@ -332,7 +286,7 @@ def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs)
             raise ValueError(f"File format {suffix} not supported.")
     else:
         df = convert_to_dataframe(df, **kwargs)
-        
+
     return df
 
 

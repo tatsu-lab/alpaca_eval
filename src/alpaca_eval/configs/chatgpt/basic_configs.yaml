@@ -9,7 +9,8 @@ basic_chatgpt:
     model_name: "gpt-3.5-turbo-0301"
     max_tokens: 50
     temperature: 0
-  outputs_to_match:
-    1: '(?:^|\n) ?Output \(a\)'
-    2: '(?:^|\n) ?Output \(b\)'
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 1

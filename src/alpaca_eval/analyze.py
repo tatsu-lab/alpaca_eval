@@ -3,7 +3,7 @@ Main module for analyzing an evaluation benchmark (annotator and data).
 """
 import logging
 from itertools import combinations
-from typing import Callable, Optional, Sequence, Union
+from typing import Callable, Optional, Union
 
 import datasets
 import pandas as pd
@@ -255,117 +255,6 @@ class Analyzer:
 
         return results
 
-    def auto_and_turk_vs_turk_mode(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            annotator_kwargs=None,  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-            df_auto=None,
-    ):
-        """Computes the accuracy of the auto annotations and turk annotations vs mode of turk annotations"""
-        annotator_kwargs = annotator_kwargs or {}
-
-        accuracies_auto = []
-        sems_auto = []
-        counts_auto = []
-        accuracies_turk = []
-        sems_turk = []
-        counts_turk = []
-        if df_auto is None:
-            df_auto = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, **annotator_kwargs)
-
-        for i in range(self.n_annotators):
-            curr_gold = (
-                self.df_gold.query(f"index != {i}").groupby(self.keys)["preference"].aggregate(_random_mode)
-            )
-
-            out_auto = pd.merge(curr_gold, df_auto, left_index=True, right_index=True, suffixes=("_gold", "_auto"))
-            out_auto["match"] = (out_auto["preference_gold"] == out_auto["preference_auto"]).astype(int)
-            accuracies_auto.append(out_auto["match"].mean())
-            sems_auto.append(out_auto["match"].sem())
-            counts_auto.append(len(out_auto["match"]))
-
-            out_turk = pd.merge(
-                curr_gold,
-                self.df_gold.query(f"index == {i}").set_index(self.keys),
-                left_index=True,
-                right_index=True,
-                suffixes=["_gold", "_turk"],
-            )
-            out_turk["match"] = (out_turk["preference_gold"] == out_turk["preference_turk"]).astype(int)
-            accuracies_turk.append(out_turk["match"].mean())
-            sems_turk.append(out_turk["match"].sem())
-            counts_turk.append(len(out_turk["match"]))
-
-        auto_results = pd.DataFrame(dict(accuracy=accuracies_auto, sem_samples=sems_auto, count=counts_auto))
-        turk_results = pd.DataFrame(dict(accuracy=accuracies_turk, sem_samples=sems_turk, count=counts_turk))
-
-        return pd.DataFrame(
-            dict(
-                auto=dict(**auto_results.mean(), sem_annotators=auto_results["accuracy"].sem()),
-                turk=dict(**turk_results.mean(), sem_annotators=turk_results["accuracy"].sem()),
-            )
-        )
-
-    def turk_vs_turk(self):
-        """Computes the turk vs turk accuracy"""
-
-        accuracies = []
-        sems_samples = []
-
-        for i in range(self.n_annotators):
-            for j in range(i + 1, self.n_annotators):
-                curr_i = self.df_gold.query(f"index == {i}")
-                curr_j = self.df_gold.query(f"index == {j}")
-
-                out = pd.merge(curr_i, curr_j, on=self.keys, suffixes=("_i", "_j"))
-                out["match"] = (out["preference_i"] == out["preference_j"]).astype(int)
-                accuracies.append(out["match"].mean())
-                sems_samples.append(out["match"].sem())
-        all_results = pd.DataFrame(dict(accuracies=accuracies, sems=sems_samples))
-
-        return pd.Series(
-            dict(
-                accuracy=all_results.accuracies.mean(),
-                sem_annotators=all_results.accuracies.sem(),
-                sem_samples=all_results.sems.mean(),
-            )
-        )
-
-    def auto_vs_turk(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            annotator_kwargs=None,  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-    ):
-        """Computes the auto vs turk accuracy"""
-        annotator_kwargs = annotator_kwargs or {}
-
-        accuracies = []
-        sems_samples = []
-        counts = []
-
-        df_auto = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, **annotator_kwargs)
-
-        for i in range(self.n_annotators):
-            curr_turk = self.df_gold.query(f"index == {i}").set_index(self.keys)
-
-            out = pd.merge(curr_turk, df_auto, left_index=True, right_index=True, suffixes=("_turk", "_auto"))
-            out["match"] = (out["preference_turk"] == out["preference_auto"]).astype(int)
-            accuracies.append(out["match"].mean())
-            sems_samples.append(out["match"].sem())
-            counts.append(len(out["match"]))
-
-        all_results = pd.DataFrame(dict(accuracies=accuracies, sems=sems_samples))
-
-        return pd.Series(
-            dict(
-                accuracy=all_results.accuracies.mean(),
-                sem_annotators=all_results.accuracies.sem(),
-                sem_samples=all_results.sems.mean(),
-            )
-        )
-
     def auto_biases(
             self,
             annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
@@ -452,30 +341,6 @@ class Analyzer:
 
         return pd.DataFrame(results).T / self.n_annotators
 
-    def auto_cross_annotation(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            annotator_kwargs=None,  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-    ):
-        """Evaluate cross annotation accuracy of auto annotators. This requires rerunning annotations => expensive"""
-        df_auto_bis = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, delta_seed=1, **annotator_kwargs)
-        df_auto = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, **annotator_kwargs)
-
-        return self.auto_vs_auto(annotator_1=df_auto, annotator_2=df_auto_bis)
-
-    def get_all_df_auto_seed(self, annotator, n_delta_seeds=4, **kwargs):
-        out = {
-            i: self.get_df_auto(
-                annotator=annotator,
-                delta_seed=i,
-                **kwargs,
-            )
-            for i in range(n_delta_seeds)
-        }
-
-        return out
-
     def intra_multi_annotator(
             self,
             annotator="multi",
@@ -545,22 +410,6 @@ def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **
 
 def format_acc_sem(serie, accuracy="accuracy", sem_col="sem_samples"):
     return f"{serie[accuracy]:.2f}±{serie[sem_col]:.2f}"
-
-
-def get_price_per_token(model):
-    """Returns the price per token for a given model"""
-    if model == "claude-v1":
-        return 0
-    elif "gpt-4" in model:
-        return (
-                0.03 / 1000
-        )  # that's not completely true because decoding is 0.06 but close enough given that most is context
-    elif "gpt-3.5-turbo" in model:
-        return 0.002 / 1000
-    elif "text-davinci-003" in model:
-        return 0.02 / 1000
-    else:
-        raise ValueError(f"Unknown model {model}")
 
 
 def _random_mode(s, available_modes=None, favorite_mode=None, seed=123):

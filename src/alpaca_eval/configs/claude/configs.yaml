@@ -9,7 +9,8 @@ claude_v1: # pairwise_claude_v0_{inputs}
     model_name: "claude-v1"
     max_tokens: 250
     temperature: 0
-  outputs_to_match:
-    1: ' Output \(a\)'
-    2: ' Output \(b\)'
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: ' Output \(a\)'
+      2: ' Output \(b\)'
   batch_size: 1
