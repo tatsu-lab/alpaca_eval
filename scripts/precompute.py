@@ -17,8 +17,6 @@ def precompute_api_crossanntoations(annotators_configs=(
     """Precompute crossannotations for important API models."""
     analyzer = analyze.Analyzer()
 
-    # split gpt4's to not overload the api
-
     for annotators_config in annotators_configs:
         # saving is done automatically
         _ = analyze.get_crossannotations(analyzer=analyzer,
@@ -32,8 +30,6 @@ def precompute_local_crossanntoations(annotators_configs=(
 )):
     """Precompute crossannotations for important local models."""
     analyzer = analyze.Analyzer()
-
-    # split gpt4's to not overload the api
 
     for annotators_config in annotators_configs:
         # saving is done automatically
