@@ -1,10 +1,9 @@
-basic_gpt4:
+vicuna:
   prompt_templates:
-    with_inputs: "vicuna/basic_b1_with_inputs.txt"
-    without_inputs: "vicuna/basic_b1_without_inputs.txt"
+    without_inputs: "vicuna/vicuna.txt"
   fn_completions: "openai_completions"
   decoder_kwargs:
-    model_name: "gpt-4-0314"
+    model_name: "gpt-4"
     max_tokens: 1024
     temperature: 0.2
   fn_completion_parser: "vicuna_parser"

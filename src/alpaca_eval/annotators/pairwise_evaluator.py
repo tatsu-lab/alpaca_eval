@@ -624,7 +624,9 @@ class SinglePairwiseAnnotator:
 
         df_to_annotate["preference"] = self.parse_completions(completions=completions["completions"])
         for k, v in completions.items():
-            if k != "text":
+            if k != "completions":
+                if len(df_to_annotate["preference"]) == len(v) * self.batch_size:
+                    v = [el for el in v for _ in range(self.batch_size)]
                 df_to_annotate[k] = v
                 if "per_example" in k:
                     df_to_annotate[k] = df_to_annotate[k] / self.batch_size
@@ -703,7 +705,7 @@ class SinglePairwiseAnnotator:
         all_preferences = []
         for completion in completions:
             # use a regex to match all outputs on a line. Assumes that there is at most one output to match per line
-            batch_preferences = self.fn_prompt_parser(completion)
+            batch_preferences = self.fn_completion_parser(completion)
             if len(batch_preferences) != self.batch_size:
                 logging.warning(
                     f"Found {len(batch_preferences)} preferences in:'''\n{completion}\n''' but expected"
