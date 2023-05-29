@@ -247,8 +247,6 @@ class Analyzer:
         logging.info(f"n_majority_vote_1={n_majority_vote_1}, n_majority_vote_2={n_majority_vote_2}. "
                      f"Compared results of indices: {list(results.keys())}")
 
-        logging.info(f"{pd.DataFrame(results).T['accuracy']}")
-
         sem_annotators = pd.DataFrame(results).T["accuracy"].sem()
         results = sum(results.values()) / len(results.values())
         results["sem_annotators"] = sem_annotators

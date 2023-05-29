@@ -1,4 +1,4 @@
-cohere_command:
+cohere:
   prompt_templates:
     with_inputs: "gpt3/basic_b1_with_inputs.txt"
     without_inputs: "gpt3/basic_b1_without_inputs.txt"
