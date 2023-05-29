@@ -253,6 +253,14 @@ class Analyzer:
 
         return results
 
+    def estimate_biases(self):
+        """Estimates the biases of the annotators"""
+        pass
+
+    def estimate_variance(self):
+        """Estimates the variance of the annotators"""
+        pass
+
     def auto_biases(
             self,
             annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
