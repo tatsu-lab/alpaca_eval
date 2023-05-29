@@ -17,9 +17,7 @@ def huggingface_local_completions(
         model_name: str,
         do_sample: bool = False,
         batch_size: int = 1,
-        model_kwargs={  # "load_in_8bit": True, # divides memory by 2 but is slower
-            "device_map": "auto",
-            "torch_dtype": torch.float16},
+        model_kwargs=None,
         cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
         **kwargs,
 ) -> dict[str, list]:
@@ -39,9 +37,21 @@ def huggingface_local_completions(
     batch_size : int, optional
         Batch size to use for decoding. This currently does not work well with to_bettertransformer.
 
+    model_kwargs : dict, optional
+        Additional kwargs to pass to from_pretrained.
+
+    cache_dir : str, optional
+        Directory to use for caching the model.
+
     kwargs :
         Additional kwargs to pass to `InferenceApi.__call__`.
     """
+    default_model_kwargs = {  # "load_in_8bit": True, # divides memory by 2 but is slower,
+        "device_map": "auto", "torch_dtype": torch.float16}
+    model_kwargs = model_kwargs or {}
+    default_model_kwargs.update(model_kwargs)
+    model_kwargs = default_model_kwargs
+
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")

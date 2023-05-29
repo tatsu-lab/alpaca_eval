@@ -1,0 +1,15 @@
+basic_falcon_40b_instruct:
+  prompt_templates:
+    with_inputs: "falcon-40b-instruct/basic_b1_with_inputs.txt"
+    without_inputs: "falcon-40b-instruct/basic_b1_without_inputs.txt"
+  fn_completions: "huggingface_local_completions"
+  decoder_kwargs:
+    model_name: "tiiuae/falcon-40b-instruct"
+    max_new_tokens: 50
+    model_kwargs:
+      trust_remote_code: True
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
+  batch_size: 1

@@ -1,7 +1,8 @@
 from alpaca_eval import utils, metrics, annotators, constants, analyze
+import fire
 
 
-def precompute_api_crossanntoations(annotators_configs=(
+def precompute_api_crossannotations(annotators_configs=(
         "gpt4/basic_configs.yaml",
         "claude/basic_configs.yaml",
         "gpt4/configs.yaml",
@@ -24,9 +25,10 @@ def precompute_api_crossanntoations(annotators_configs=(
                                          annotators_config=annotators_config)
 
 
-def precompute_local_crossanntoations(annotators_configs=(
-        "oasst-pythia-12b/basic_configs.yaml",
-        "stablelm_alpha_7b/basic_configs.yaml",
+def precompute_local_crossannotations(annotators_configs=(
+        "falcon-40b-instruct/basic_configs.yaml",
+        # "oasst-pythia-12b/basic_configs.yaml",
+        # "stablelm_alpha_7b/basic_configs.yaml",
 )):
     """Precompute crossannotations for important local models."""
     analyzer = analyze.Analyzer()
@@ -36,3 +38,11 @@ def precompute_local_crossanntoations(annotators_configs=(
         _ = analyze.get_crossannotations(analyzer=analyzer,
                                          Annotator=annotators.PairwiseAnnotator,
                                          annotators_config=annotators_config)
+
+
+def main(task, **kwargs):
+    globals()[task](**kwargs)
+
+
+if __name__ == "__main__":
+    fire.Fire(main)
