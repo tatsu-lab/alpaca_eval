@@ -1,40 +1,54 @@
+import datasets
 import pandas as pd
-from typing import Any, Optional, Union
+from typing import Any, Callable, Optional, Union
 from pathlib import Path
 import fire
 
 from .types import AnyPath, AnyData
-from . import utils, metrics, annotators
+from . import utils, metrics, annotators, constants
 
 CUR_DIR = Path(__file__).parent
-DEFAULT_REFERENCE_OUTPUTS = CUR_DIR/"data/alpaca_farm/gpt3_outputs.json"
-DEFAULT_CONFIGS = "alpaca_farm/configs.yaml"
-DEFAULT_LEADERBOARD = CUR_DIR/"data/alpaca_farm/pairwise_leaderboard.csv"
 
-ALL_LEADERBOARDS ={
-    (str(DEFAULT_REFERENCE_OUTPUTS), str(DEFAULT_CONFIGS)) : DEFAULT_LEADERBOARD,
+
+def DEFAULT_REFERENCE_OUTPUTS():
+    return datasets.load_dataset(
+        "tatsu-lab/alpaca_eval",
+        "alpaca_farm_evaluation",
+        cache_dir=constants.DEFAULT_CACHE_DIR,
+        use_auth_token=constants.DATASETS_TOKEN,
+    )["eval"]
+
+
+DEFAULT_CONFIGS = "alpaca_farm/configs.yaml"
+DEFAULT_LEADERBOARD = CUR_DIR / "leaderboards/alpaca_farm/pairwise_leaderboard.csv"
+
+ALL_LEADERBOARDS = {
+    (str(DEFAULT_REFERENCE_OUTPUTS), str(DEFAULT_CONFIGS)): DEFAULT_LEADERBOARD,
 }
+
+
 def pairwise_winrates(
-    model_outputs: Union[AnyPath, AnyData],
-    reference_outputs: Union[AnyPath, AnyData] = DEFAULT_REFERENCE_OUTPUTS,
-    annotators_config: AnyPath = DEFAULT_CONFIGS,
-    name: str = "Current method",
-    is_return_metrics: bool = False,
-    rest_of_leaderboard : Optional[Union[str, AnyPath, AnyData]] = "auto" ,
-    fn_metric: Union[str, callable] = "pairwise_to_winrate",
-    sort_by: str = "win_rate",
-    max_instances : Optional[int] = None,
-    annotation_kwargs : Optional[dict[str, Any]] = None,
-    **annotator_kwargs
+        model_outputs: Union[AnyPath, AnyData, Callable],
+        reference_outputs: Union[AnyPath, AnyData, Callable] = DEFAULT_REFERENCE_OUTPUTS,
+        annotators_config: AnyPath = DEFAULT_CONFIGS,
+        name: str = "Current method",
+        is_return_metrics: bool = False,
+        rest_of_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+        fn_metric: Union[str, callable] = "pairwise_to_winrate",
+        sort_by: str = "win_rate",
+        max_instances: Optional[int] = None,
+        annotation_kwargs: Optional[dict[str, Any]] = None,
+        **annotator_kwargs
 ):
     """
 
     Parameters
     ----------
-    model_outputs : path or data
+    model_outputs : path or data or dict
         The outputs of the model to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
-        datasets.Dataset) or a path to read those (json, csv, tsv). Each dictionary (or row of dataframe) should contain
-        the keys that are formatted in the prompts. E.g. by default `instruction` and `output` with optional `input`.
+        datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
+        (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
+        and `output` with optional `input`.
 
     reference_outputs : path or data, optional
         The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
@@ -62,6 +76,9 @@ def pairwise_winrates(
 
     sort_by : str, optional
         The key by which to sort the leaderboard.
+
+    max_instances : int, optional
+        The maximum number of instances to annotate. Useful for testing.
 
     annotation_kwargs : dict, optional
         Additional arguments to pass to `PairwiseAnnotator.annotate_head2head`.
@@ -102,6 +119,7 @@ def pairwise_winrates(
         return df_leaderboard
     else:
         print(df_leaderboard.to_string(float_format="%.2f"))
+
 
 def main(task="pairwise_winrates"):
     fire.Fire(globals()[task])

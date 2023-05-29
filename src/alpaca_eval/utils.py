@@ -9,7 +9,7 @@ import sys
 import time
 from collections import Counter
 from pathlib import Path
-from typing import Any, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 import datasets
 import numpy as np
@@ -311,8 +311,11 @@ def check_import(module: str, to_use: Optional[str] = None):
             raise ImportError(error)
 
 
-def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData], **kwargs):
+def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs):
     """Load a dataframe from a path or convert the input to a dataframe if it's not a path."""
+    if isinstance(df, Callable):
+        df = df(**kwargs)
+
     if isinstance(df, AnyPath):
         df = Path(df)
         suffix = df.suffix
@@ -329,6 +332,7 @@ def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData], **kwargs):
             raise ValueError(f"File format {suffix} not supported.")
     else:
         df = convert_to_dataframe(df, **kwargs)
+        
     return df
 
 
