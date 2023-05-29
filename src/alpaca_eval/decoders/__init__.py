@@ -1,5 +1,11 @@
-def get_fn_completions(name: str):
+from typing import Callable, Union
+
+
+def get_fn_completions(name: Union[str, Callable]) -> Callable:
     """Get a decoder by name."""
+    if not isinstance(name, str):
+        return name
+
     if name == "anthropic_completions":
         from .anthropic import anthropic_completions
 

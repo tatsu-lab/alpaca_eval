@@ -559,9 +559,7 @@ class SinglePairwiseAnnotator:
         }
         self.outputs_to_match = {k: re.compile(v) for k, v in outputs_to_match.items()}
         self.is_randomize_output_order = is_randomize_output_order
-        if isinstance(fn_completions, str):
-            fn_completions = get_fn_completions(fn_completions)
-        self.fn_completions = fn_completions
+        self.fn_completions = get_fn_completions(fn_completions)
         self.decoder_kwargs = decoder_kwargs or {}
         self.seed = seed
         self.is_shuffle = is_shuffle
