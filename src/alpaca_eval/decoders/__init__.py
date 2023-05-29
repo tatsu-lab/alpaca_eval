@@ -18,5 +18,10 @@ def get_decoder(name: str):
 
         return huggingface_local_completions
 
+    elif name == "cohere_completions":
+        from .cohere import cohere_completions
+
+        return cohere_completions
+
     else:
         raise ValueError(f"Unknown decoder: {name}")

@@ -15,9 +15,10 @@ PACKAGES_DEV = ["pre-commit>=3.2.0", "black>=23.1.0", "isort"]
 PACKAGES_ANALYSIS = [
     "seaborn",
     "matplotlib",
+    "jupyterlab"
 ]
 PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "optimum", "scipy"]
-PACKAGES_ALL_API = ["anthropic", "huggingface_hub"]
+PACKAGES_ALL_API = ["anthropic", "huggingface_hub", "cohere"]
 PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
 
 setuptools.setup(
