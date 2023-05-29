@@ -2,7 +2,7 @@ cohere_command:
   prompt_templates:
     with_inputs: "gpt3/basic_b1_with_inputs.txt"
     without_inputs: "gpt3/basic_b1_without_inputs.txt"
-  fn_decoder: "cohere_completions"
+  fn_completions: "cohere_completions"
   decoder_kwargs:
     model_name: "command"
     max_tokens: 50

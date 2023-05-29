@@ -2,7 +2,7 @@ basic_stablelm_alpha_7b:
   prompt_templates:
     with_inputs: "stablelm_alpha_7b/basic_b1_with_inputs.txt"
     without_inputs: "stablelm_alpha_7b/basic_b1_without_inputs.txt"
-  fn_decoder: "huggingface_local_completions"
+  fn_completions: "huggingface_local_completions"
   decoder_kwargs:
     model_name: "stabilityai/stablelm-tuned-alpha-7b" #"stabilityai/stablelm-tuned-alpha-7b"
     max_new_tokens: 50
