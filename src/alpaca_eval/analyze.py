@@ -2,7 +2,8 @@
 Main module for analyzing an evaluation benchmark (annotator and data).
 """
 import logging
-from typing import Callable, Optional, Union
+from itertools import combinations
+from typing import Callable, Optional, Sequence, Union
 
 import datasets
 import pandas as pd
@@ -79,7 +80,8 @@ class Analyzer:
         df_gold_crossannotations = utils.load_or_convert_to_dataframe(gold_crossannotations)
         # adding a random index to differentiate between the min_n_annotators
         df_gold_crossannotations["index"] = df_gold_crossannotations.groupby(self.keys)["preference"].cumcount()
-        self.df_gold_crossannotations = self._select_at_least_n_annotations(df_gold_crossannotations)
+        self.df_gold_crossannotations = self._select_at_least_n_annotations(df_gold_crossannotations,
+                                                                            min_n_annotators=self.min_n_annotators)
 
         if gold_annotations is None:
             self.df_gold_annotations = self.df_gold_crossannotations.query("annotator_index == 0")
@@ -89,13 +91,120 @@ class Analyzer:
         self.all_df_annotations = dict()
         self.seed = seed
 
-    def _select_at_least_n_annotations(self, df):
+    def _select_at_least_n_annotations(self, df, min_n_annotators=None):
         """Gets examples with at least n annotations"""
+        if "n_annotated" in df.columns:
+            min_n_annotators = min_n_annotators or df["n_annotated"].max()
+            return df.query(f"n_annotated >= {min_n_annotators}")
+
         counts = df.groupby(self.keys)["annotator_index"].count()
-        counts = counts[counts >= self.min_n_annotators].reset_index().rename(columns={
-            "annotator_index": "n_annotated"})
+        counts.name = "n_annotated"
+        min_n_annotators = min_n_annotators or df["counts"].max()
+        counts = counts[counts >= min_n_annotators].reset_index()
         df_selected = df.merge(counts, on=self.keys)
         return df_selected
+
+    def _get_annotations(self, annotations: Union[pd.DataFrame, str]):
+        if isinstance(str):
+            if annotations == "gold_crossannotations":
+                annotations = self.df_gold_crossannotations
+            elif annotations == "gold_annotations":
+                annotations = self.df_gold_annotations
+        return annotations
+
+    def _get_mode(self, annotations, idcs):
+        annotations = annotations[annotations["index"].isin(idcs)]
+        return annotations.groupby(self.keys)["preference"].aggregate(_random_mode)
+
+    def _agreement_of_single_annotations(
+            self,
+            df_annotations_1: pd.DataFrame,
+            df_annotations_2: pd.DataFrame,
+    ):
+        out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
+        out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
+        return pd.Series(dict(accuracy=out["match"].mean(), sem_samples=out["match"].sem(), counts=len(out["match"])))
+
+    def agreement_of_annotations(
+            self,
+            annotations_1: Union[pd.DataFrame, str],
+            annotations_2: Optional[Union[pd.DataFrame, str]],
+            n_majority_vote_1: Optional[int] = 1,
+            n_majority_vote_2: Optional[int] = 1,
+    ):
+        """Compare (cross)annotations from two annotators.
+
+        Notes
+        -----
+        - if you want to compute the agreement of 1 annotation vs the rest (eg to estimate the variance) then use
+        n_majority_vote_1=1 and n_majority_vote_2=None and annotations_2=None.
+        - if you want to measure the agreement of N annotators between two different annotators (eg to estimate the bias
+        use n_majority_vote_1=N and n_majority_vote_2=N.
+
+        Parameters
+        ----------
+        annotations_1 : pd.DataFrame or "gold_crossannotations" or "gold_annotations"
+            First annotations. If "gold_crossannotations" or "gold_annotations" we use the corresponding gold
+            annotations. If there are more than one annotation per example (ie index > 0) then we either use majority
+            vote (if n_majority_vote_1 == n_annotators) or take an expectation over possible annotators.
+
+        annotations_2 : pd.DataFrame or "gold_crossannotations" or "gold_annotations"
+            First annotations. If "gold_crossannotations" or "gold_annotations" we use the corresponding gold
+            annotations. If None we use the same as `annotations_1`. If there are more than one annotation per example
+            (ie index > 0) then we either use majority vote (if n_majority_vote_1 == n_annotators) or take an
+            expectation over possible annotators.
+
+        n_majority_vote_1 : int, optional
+            If more than 1 we will use the majority vote of annotations_1. If None we use the maximum possible.
+            It can only be None if both annotations_1 and annotations_2 are different.
+
+        n_majority_vote_2 : int, optional
+            If more than 1 we will use the majority vote of annotations_2. If None we use the maximum possible, which
+            is all annotations if both annotations are the same, or the complement of annotations_1 if they are
+            different.
+        """
+        annotations_1 = self._get_annotations(annotations_1)
+        annotations_2 = self._get_annotations(annotations_2 or annotations_1)
+        is_same_annotator = annotations_2.equals(annotations_1)
+
+        if is_same_annotator and n_majority_vote_1 is None:
+            raise ValueError("n_majority_vote_1 cannot be None if annotations_1 and annotations_2 are the same")
+
+        annotations_1 = self._select_at_least_n_annotations(annotations_1, min_n_annotators=n_majority_vote_1)
+        max_majority_vote_1 = annotations_1["n_annotated"].max()
+        n_majority_vote_1 = n_majority_vote_1 or max_majority_vote_1
+
+        if is_same_annotator:
+            # the maximum number of votes you should compare is the complement given that it's the same data
+            n_majority_vote_2 = n_majority_vote_2 or (max_majority_vote_1 - n_majority_vote_1)
+
+        annotations_2 = self._select_at_least_n_annotations(annotations_2, min_n_annotators=n_majority_vote_2)
+        max_majority_vote_2 = annotations_2["n_annotated"].max()
+        n_majority_vote_2 = n_majority_vote_2 or max_majority_vote_2
+
+        # if n_majority_vote_1 == max_majority_vote_1 and n_majority_vote_2 == max_majority_vote_2:
+        #     return self._agreement_of_single_annotations(
+        #         annotations_1=self._get_mode(annotations_1, max_majority_vote_1),
+        #         annotations_2=self._get_mode(annotations_2, max_majority_vote_2),
+        #     )
+
+        results = []
+        for idcs_1, _ in _all_paired_partition(range(max_majority_vote_1), n_majority_vote_1):
+            for idcs_2, _ in _all_paired_partition(range(max_majority_vote_2), n_majority_vote_2):
+                is_overlapping_idcs = len(set(idcs_1).intersection(idcs_2)) > 0
+                if is_same_annotator and is_overlapping_idcs:
+                    continue
+                print(idcs_1, idcs_2)
+                import pdb;
+                pdb.set_trace()
+                results.append(
+                    self._agreement_of_single_annotations(
+                        df_annotations_1=self._get_mode(annotations_1, idcs_1),
+                        df_annotations_2=self._get_mode(annotations_2, idcs_2),
+                    )
+                )
+
+        return sum(results) / len(results)
 
     def auto_and_turk_vs_turk_mode(
             self,
@@ -118,7 +227,7 @@ class Analyzer:
 
         for i in range(self.min_n_annotators):
             curr_gold = (
-                self.df_gold.query(f"index != {i}").groupby(self.keys)["preference"].aggregate(ann_helpers.random_mode)
+                self.df_gold.query(f"index != {i}").groupby(self.keys)["preference"].aggregate(_random_mode)
             )
 
             out_auto = pd.merge(curr_gold, df_auto, left_index=True, right_index=True, suffixes=("_gold", "_auto"))
@@ -207,26 +316,6 @@ class Analyzer:
                 sem_samples=all_results.sems.mean(),
             )
         )
-
-    def auto_vs_auto(
-            self,
-            annotator_1="gpt-4-0314_pairwise_vH_b5_chatml-prompt_temp=0.7",
-            annotator_2="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            annotator_kwargs_1=None,  # kwargs for AutoAnnotatorPairwiseDB
-            annotator_kwargs_2=None,  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-    ):
-        """Computes the auto vs auto accuracy"""
-        annotator_kwargs_1 = annotator_kwargs_1 or {}
-        annotator_kwargs_2 = annotator_kwargs_2 or {}
-
-        df_auto_1 = self.get_df_auto(annotator=annotator_1, is_annotate=is_annotate, **annotator_kwargs_1)
-        df_auto_2 = self.get_df_auto(annotator=annotator_2, is_annotate=is_annotate, **annotator_kwargs_2)
-
-        out = pd.merge(df_auto_1, df_auto_2, on=self.keys, suffixes=("_1", "_2"))
-        out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
-
-        return pd.Series(dict(accuracy=out["match"].mean(), sem_samples=out["match"].sem(), counts=len(out["match"])))
 
     def auto_biases(
             self,
@@ -326,43 +415,6 @@ class Analyzer:
 
         return self.auto_vs_auto(annotator_1=df_auto, annotator_2=df_auto_bis)
 
-    def mode_vs_mode(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-            comparisons=(1, 3),  # 1 vs 1
-            **annotator_kwargs,
-    ):
-        """Evaluate cross annotation accuracy of auto annotators. This requires rerunning annotations => expensive"""
-        assert len(comparisons) == 2
-        total_comparisons = comparisons[0] + comparisons[1]
-
-        df_autos = self.get_all_df_auto_seed(
-            annotator=annotator,
-            is_annotate=is_annotate,
-            n_delta_seeds=total_comparisons if annotator != "gold" else 0,
-            is_return_all_columns=True,
-            **annotator_kwargs,
-        )
-
-        results = []
-        for idcs_1, idcs_2 in all_paired_partition(range(total_comparisons), comparisons[0]):
-            results.append(
-                self.auto_vs_auto(
-                    annotator_1=self._get_mode(df_autos, annotator, idcs_1),
-                    annotator_2=self._get_mode(df_autos, annotator, idcs_2),
-                )
-            )
-
-        return sum(results) / len(results)
-
-    def _get_mode(self, df_autos, annotator, idcs):
-        if annotator == "gold":
-            out = self.df_gold[self.df_gold["index"].isin(idcs)]
-        else:
-            out = pd.concat([df_autos[s] for s in idcs])
-        return out.groupby(self.keys)["preference"].aggregate(ann_helpers.random_mode)
-
     def get_all_df_auto_seed(self, annotator, n_delta_seeds=4, **kwargs):
         out = {
             i: self.get_df_auto(
@@ -374,37 +426,6 @@ class Analyzer:
         }
 
         return out
-
-    def mode_vs_mode_cross(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-            n_auto_mode=2,
-            comparisons_gold=(1, 3),
-            **annotator_kwargs,
-    ):
-        """Evaluate cross annotation accuracy of auto annotators. This requires rerunning annotations => expensive"""
-        assert len(comparisons_gold) == 2
-        total_comparisons = comparisons_gold[0] + comparisons_gold[1]
-
-        df_autos = self.get_all_df_auto_seed(
-            annotator=annotator,
-            is_annotate=is_annotate,
-            n_delta_seeds=n_auto_mode,
-            is_return_all_columns=True,
-            **annotator_kwargs,
-        )
-
-        results = []
-        for _, idcs_2 in all_paired_partition(range(total_comparisons), comparisons_gold[0]):
-            results.append(
-                self.auto_vs_auto(
-                    annotator_1=self._get_mode(df_autos, annotator, list(range(n_auto_mode))),
-                    annotator_2=self._get_mode(df_autos, "gold", idcs_2),
-                )
-            )
-
-        return sum(results) / len(results)
 
     def intra_multi_annotator(
             self,
@@ -454,7 +475,9 @@ def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = Non
         df_annotations = utils.load_or_convert_to_dataframe(annotations)
         df_annotations["index"] = seed
         all_annotations.append(df_annotations)
-    return pd.concat(all_annotations, axis=0)
+    df = pd.concat(all_annotations, axis=0)
+    df["n_annotators"] = n_crossannotations
+    return df
 
 
 def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **kwargs):
@@ -491,10 +514,41 @@ def get_price_per_token(model):
         raise ValueError(f"Unknown model {model}")
 
 
-def all_paired_partition(lst, k):
+def _all_paired_partition(sequence: Sequence, k: int):
+    """Return all partitions of sequence in pairs with k elements in one and the complement in the other.
+    >>> all_paired_partition(list(range(4)),1)
+    [((0,), (1, 2, 3)), ((1,), (0, 2, 3)), ((2,), (0, 1, 3)), ((3,), (0, 1, 2))]
+    """
+    sequence = list(sequence)
     partitions = []
-    for comb in combinations(lst, k):
-        rest = tuple([x for x in lst if x not in comb])
+    for comb in combinations(sequence, k):
+        rest = tuple([x for x in sequence if x not in comb])
         if (rest, tuple(comb)) not in partitions:
             partitions.append((tuple(comb), rest))
     return partitions
+
+
+def _random_mode(s, available_modes=None, favorite_mode=None, seed=123):
+    """Take the mode of a series, but if there are multiple modes, randomly sample one
+    (with potential restriction to `available_modes` or favoring a specific mode `favorite_mode`).
+
+    Example
+    -------
+    >>> import pandas as pd
+    >>> random_mode(pd.Series([1.0,2.0,1.0]))
+    1.0
+    >>> random_mode(pd.Series([1.0,2.0])) in [1.0, 2.0]
+    True
+    >>> random_mode(pd.Series([1.0,2.0,-1.0]), favorite_mode=-1.0)
+    -1.0
+    >>> random_mode(pd.Series([1.0,2.0,2.0,-1.0]), favorite_mode=-1.0)
+    2.0
+    """
+    out = pd.Series.mode(s)
+    if len(out) > 1:
+        if favorite_mode is not None and favorite_mode in out.values:
+            return favorite_mode
+        if available_modes is not None:
+            out = out[out.isin(available_modes)]
+        out = out.sample(1, random_state=seed)
+    return out.item()
