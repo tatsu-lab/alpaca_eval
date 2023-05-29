@@ -57,7 +57,7 @@ class Analyzer:
     keys : tuple
         Keys to use to compare the annotations.
 
-    min_n_annotators : int
+    n_annotators : int
         Minimum number of annotators for treating as gold annotation.
 
     annotator_kwargs : dict
@@ -69,19 +69,18 @@ class Analyzer:
             gold_crossannotations: Union[AnyPath, AnyData, Callable] = DEFAULT_GOLD_CROSSANNOTATIONS,
             gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = None,
             keys=("instruction", "input", "output_1", "output_2"),
-            min_n_annotators=4,
-            seed=0,
+            n_annotators: Optional[int] = 4,
+            seed: Optional[int] = 0,
             **annotator_kwargs
     ):
         self.keys = list(keys)
-        self.min_n_annotators = min_n_annotators
+        self.n_annotators = n_annotators
         self.annotator_kwargs = annotator_kwargs
 
         df_gold_crossannotations = utils.load_or_convert_to_dataframe(gold_crossannotations)
-        # adding a random index to differentiate between the min_n_annotators
-        df_gold_crossannotations["index"] = df_gold_crossannotations.groupby(self.keys)["preference"].cumcount()
-        self.df_gold_crossannotations = self._select_at_least_n_annotations(df_gold_crossannotations,
-                                                                            min_n_annotators=self.min_n_annotators)
+        # adding a random index to differentiate between the n_annotators
+        self.df_gold_crossannotations = self._select_n_annotations(df_gold_crossannotations,
+                                                                   n_annotators=self.n_annotators)
 
         if gold_annotations is None:
             self.df_gold_annotations = self.df_gold_crossannotations.query("annotator_index == 0")
@@ -91,25 +90,34 @@ class Analyzer:
         self.all_df_annotations = dict()
         self.seed = seed
 
-    def _select_at_least_n_annotations(self, df, min_n_annotators=None):
-        """Gets examples with at least n annotations"""
+    def _select_n_annotations(self, df, n_annotators=None, is_rm_less_than: bool = True):
+        """Gets examples with at least n annotations. Adds `index` and `n_annotated` columns."""
         if "n_annotated" in df.columns:
-            min_n_annotators = min_n_annotators or df["n_annotated"].max()
-            return df.query(f"n_annotated >= {min_n_annotators}")
+            df = df.drop(columns="n_annotated")
 
-        counts = df.groupby(self.keys)["annotator_index"].count()
+        df["index"] = df.groupby(self.keys)["preference"].cumcount()
+
+        if is_rm_less_than:
+            # remove samples that have more than n_annotators
+            df = df[df["index"] < n_annotators]
+
+        # select examples that have at least n_annotators
+        counts = df.groupby(self.keys)["preference"].count()
         counts.name = "n_annotated"
-        min_n_annotators = min_n_annotators or df["counts"].max()
-        counts = counts[counts >= min_n_annotators].reset_index()
+        n_annotators = n_annotators or df["counts"].min()
+        counts = counts[counts >= n_annotators].reset_index()
         df_selected = df.merge(counts, on=self.keys)
-        return df_selected
+
+        return df_selected.copy()
 
     def _get_annotations(self, annotations: Union[pd.DataFrame, str]):
-        if isinstance(str):
+        if isinstance(annotations, str):
             if annotations == "gold_crossannotations":
                 annotations = self.df_gold_crossannotations
             elif annotations == "gold_annotations":
                 annotations = self.df_gold_annotations
+            else:
+                raise ValueError(f"Unknown annotations: {annotations}")
         return annotations
 
     def _get_mode(self, annotations, idcs):
@@ -131,7 +139,8 @@ class Analyzer:
             annotations_2: Optional[Union[pd.DataFrame, str]],
             n_majority_vote_1: Optional[int] = 1,
             n_majority_vote_2: Optional[int] = 1,
-    ):
+            is_same_annotator: Optional[bool] = None,
+    ) -> pd.Series:
         """Compare (cross)annotations from two annotators.
 
         Notes
@@ -162,49 +171,89 @@ class Analyzer:
             If more than 1 we will use the majority vote of annotations_2. If None we use the maximum possible, which
             is all annotations if both annotations are the same, or the complement of annotations_1 if they are
             different.
+
+        is_same_annotator : bool, optional
+            Whether both annotations_1 and annotations_2 are the same or a subset of each other => you should not
+            compare the same indices as this will bias the agreement. If None we will check if they are the same.
+
+        Examples
+        --------
+        >>> analyzer = Analyzer(n_annotators=4)
+        >>> df_crossannotations = analyzer.df_gold_crossannotations.head(8).copy()
+        >>> df_crossannotations["preference"] = [1] * 4 + [2,2,2,1]
+        >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
+        >>>                                   n_majority_vote_1=1,  n_majority_vote_2=1)
+        accuracy          0.750000
+        sem_samples       0.250000
+        counts            2.000000
+        sem_annotators    0.075378
+        dtype: float64
+        >>> # accuracy above is 3/4 because for the first 3 comparison you get 2 * 100% and 1 * 50%. I.e. you get 50%
+        >>> # when the second index is 3.  And for the last comparison the first index is always 3 so you get 3*50%
+        >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
+        >>>                                   n_majority_vote_1=1,  n_majority_vote_2=3)
+        accuracy          0.875
+        sem_samples       0.125
+        counts            2.000
+        sem_annotators    0.125
+        dtype: float64
+        >>> # above you are doing 4 comparison of 1 vs 3. As you are doing majority vote of 3 you get 100% for 3 out
+        >>> # of 4 comparisons and 50% for the last one. So you get 3*100% + 1*50% = 87.5%
         """
         annotations_1 = self._get_annotations(annotations_1)
-        annotations_2 = self._get_annotations(annotations_2 or annotations_1)
-        is_same_annotator = annotations_2.equals(annotations_1)
+
+        if annotations_2 is None:
+            annotations_2 = annotations_1
+
+        annotations_2 = self._get_annotations(annotations_2)
+        if is_same_annotator is None:
+            is_same_annotator = annotations_2.equals(annotations_1)
 
         if is_same_annotator and n_majority_vote_1 is None:
             raise ValueError("n_majority_vote_1 cannot be None if annotations_1 and annotations_2 are the same")
 
-        annotations_1 = self._select_at_least_n_annotations(annotations_1, min_n_annotators=n_majority_vote_1)
+        annotations_1 = self._select_n_annotations(annotations_1, n_annotators=n_majority_vote_1, is_rm_less_than=False)
         max_majority_vote_1 = annotations_1["n_annotated"].max()
         n_majority_vote_1 = n_majority_vote_1 or max_majority_vote_1
 
         if is_same_annotator:
+            logging.info("You are comparing twice the same annotators.")
             # the maximum number of votes you should compare is the complement given that it's the same data
             n_majority_vote_2 = n_majority_vote_2 or (max_majority_vote_1 - n_majority_vote_1)
+            assert (n_majority_vote_2 <= max_majority_vote_1) and (n_majority_vote_1 <= max_majority_vote_1)
 
-        annotations_2 = self._select_at_least_n_annotations(annotations_2, min_n_annotators=n_majority_vote_2)
+        annotations_2 = self._select_n_annotations(annotations_2, n_annotators=n_majority_vote_2, is_rm_less_than=False)
         max_majority_vote_2 = annotations_2["n_annotated"].max()
         n_majority_vote_2 = n_majority_vote_2 or max_majority_vote_2
 
-        # if n_majority_vote_1 == max_majority_vote_1 and n_majority_vote_2 == max_majority_vote_2:
-        #     return self._agreement_of_single_annotations(
-        #         annotations_1=self._get_mode(annotations_1, max_majority_vote_1),
-        #         annotations_2=self._get_mode(annotations_2, max_majority_vote_2),
-        #     )
+        results = dict()
+        for idcs_1 in combinations(range(max_majority_vote_1), n_majority_vote_1):
+            for idcs_2 in combinations(range(max_majority_vote_2), n_majority_vote_2):
 
-        results = []
-        for idcs_1, _ in _all_paired_partition(range(max_majority_vote_1), n_majority_vote_1):
-            for idcs_2, _ in _all_paired_partition(range(max_majority_vote_2), n_majority_vote_2):
                 is_overlapping_idcs = len(set(idcs_1).intersection(idcs_2)) > 0
-                if is_same_annotator and is_overlapping_idcs:
-                    continue
-                print(idcs_1, idcs_2)
-                import pdb;
-                pdb.set_trace()
-                results.append(
-                    self._agreement_of_single_annotations(
-                        df_annotations_1=self._get_mode(annotations_1, idcs_1),
-                        df_annotations_2=self._get_mode(annotations_2, idcs_2),
-                    )
+                if is_same_annotator:
+                    if is_overlapping_idcs:
+                        continue  # skipping overlapping indices because biased
+                    elif (idcs_2, idcs_1) in results.keys():
+                        # not skipping for unbiased but no need to compute twice
+                        results[(idcs_1, idcs_2)] = results[(idcs_2, idcs_1)]
+                        continue
+
+                results[(idcs_1, idcs_2)] = self._agreement_of_single_annotations(
+                    df_annotations_1=self._get_mode(annotations_1, idcs_1),
+                    df_annotations_2=self._get_mode(annotations_2, idcs_2),
                 )
 
-        return sum(results) / len(results)
+        logging.info(f"n_majority_vote_1={n_majority_vote_1}, n_majority_vote_2={n_majority_vote_2}. "
+                     f"Compared results of indices: {list(results.keys())}")
+
+        logging.info(f"{pd.DataFrame(results).T['accuracy']}")
+
+        sem_annotators = pd.DataFrame(results).T["accuracy"].sem()
+        results = sum(results.values()) / len(results.values())
+        results["sem_annotators"] = sem_annotators
+
+        return results
 
     def auto_and_turk_vs_turk_mode(
             self,
@@ -225,7 +274,7 @@ class Analyzer:
         if df_auto is None:
             df_auto = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, **annotator_kwargs)
 
-        for i in range(self.min_n_annotators):
+        for i in range(self.n_annotators):
             curr_gold = (
                 self.df_gold.query(f"index != {i}").groupby(self.keys)["preference"].aggregate(_random_mode)
             )
@@ -264,8 +313,8 @@ class Analyzer:
         accuracies = []
         sems_samples = []
 
-        for i in range(self.min_n_annotators):
-            for j in range(i + 1, self.min_n_annotators):
+        for i in range(self.n_annotators):
+            for j in range(i + 1, self.n_annotators):
                 curr_i = self.df_gold.query(f"index == {i}")
                 curr_j = self.df_gold.query(f"index == {j}")
 
@@ -298,7 +347,7 @@ class Analyzer:
 
         df_auto = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, **annotator_kwargs)
 
-        for i in range(self.min_n_annotators):
+        for i in range(self.n_annotators):
             curr_turk = self.df_gold.query(f"index == {i}").set_index(self.keys)
 
             out = pd.merge(curr_turk, df_auto, left_index=True, right_index=True, suffixes=("_turk", "_auto"))
@@ -377,7 +426,7 @@ class Analyzer:
         """Computes the auto biases"""
 
         results = dict()
-        for i in range(self.min_n_annotators):
+        for i in range(self.n_annotators):
             curr_turk = self.df_gold.query(f"index == {i}").set_index(self.interpretable_keys)["preference"]
             curr_gold = (
                 self.df_gold.query(f"index != {i}")
@@ -401,7 +450,7 @@ class Analyzer:
                 else:
                     results[name] += tmp_results
 
-        return pd.DataFrame(results).T / self.min_n_annotators
+        return pd.DataFrame(results).T / self.n_annotators
 
     def auto_cross_annotation(
             self,
@@ -464,7 +513,7 @@ class Analyzer:
 
 def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = None, **kwargs):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
-    n_crossannotations = analyzer.min_n_annotators
+    n_crossannotations = analyzer.n_annotators
     all_annotations = []
     for seed in range(n_crossannotations):
         annotator = Annotator(seed=seed, **kwargs)
@@ -476,7 +525,7 @@ def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = Non
         df_annotations["index"] = seed
         all_annotations.append(df_annotations)
     df = pd.concat(all_annotations, axis=0)
-    df["n_annotators"] = n_crossannotations
+    df["n_annotated"] = n_crossannotations
     return df
 
 
@@ -512,20 +561,6 @@ def get_price_per_token(model):
         return 0.02 / 1000
     else:
         raise ValueError(f"Unknown model {model}")
-
-
-def _all_paired_partition(sequence: Sequence, k: int):
-    """Return all partitions of sequence in pairs with k elements in one and the complement in the other.
-    >>> all_paired_partition(list(range(4)),1)
-    [((0,), (1, 2, 3)), ((1,), (0, 2, 3)), ((2,), (0, 1, 3)), ((3,), (0, 1, 2))]
-    """
-    sequence = list(sequence)
-    partitions = []
-    for comb in combinations(sequence, k):
-        rest = tuple([x for x in sequence if x not in comb])
-        if (rest, tuple(comb)) not in partitions:
-            partitions.append((tuple(comb), rest))
-    return partitions
 
 
 def _random_mode(s, available_modes=None, favorite_mode=None, seed=123):
