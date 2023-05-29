@@ -1,4 +1,4 @@
-def get_decoder(name: str):
+def get_fn_completions(name: str):
     """Get a decoder by name."""
     if name == "anthropic_completions":
         from .anthropic import anthropic_completions
