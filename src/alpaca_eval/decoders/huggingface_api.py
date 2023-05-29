@@ -18,7 +18,7 @@ def huggingface_api_completions(
         do_sample: bool = False,
         num_procs: int = 8,
         **kwargs,
-) -> list[str]:
+) -> dict[str, list]:
     """Decode with the API from hugging face hub.
 
     Parameters
@@ -88,4 +88,7 @@ def huggingface_api_completions(
     completions = [completion[0]["generated_text"] if "error" not in completion else "error:" + completion["error"]
                    for completion in completions]
 
-    return completions
+    price = [0] * len(completions)
+    avg_time = [t.duration / n_examples] * len(completions)
+
+    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)

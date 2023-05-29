@@ -22,7 +22,7 @@ def huggingface_local_completions(
             "torch_dtype": torch.float16},
         cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
         **kwargs,
-) -> list[str]:
+) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
 
     Parameters
@@ -101,4 +101,7 @@ def huggingface_local_completions(
         completions, _ = zip(*sorted(list(zip(completions, original_order)), key=lambda x: x[1]))
         completions = list(completions)
 
-    return completions
+    price = [0] * len(completions)
+    avg_time = [t.duration / n_examples] * len(completions)
+
+    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)

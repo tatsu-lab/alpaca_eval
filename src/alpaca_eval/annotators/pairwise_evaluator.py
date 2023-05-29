@@ -90,6 +90,7 @@ class PairwiseAnnotator:
             input_keys: Sequence[str] = ("instruction", "input"),
             output_keys: Sequence[str] = ("output_1", "output_2"),
             p_label_flip: Optional[float] = None,
+            other_keys_to_keep: Sequence[str] = ('price_per_example', 'time_per_example'),
             **decoding_kwargs,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
@@ -113,6 +114,7 @@ class PairwiseAnnotator:
         self.output_keys = list(output_keys)
         self.input_output_keys = self.input_keys + self.output_keys
         self.all_keys = self.input_keys + self.output_keys + ["annotator"]
+        self.other_keys_to_keep = list(other_keys_to_keep)
         self.p_label_flip = p_label_flip
 
         self.annotators = self._initialize_annotators(annotators_config)
@@ -429,7 +431,7 @@ class PairwiseAnnotator:
 
             # actual annotation
             curr_annotated = self.annotators[annotator](
-                df_annotated[curr_idcs], **curr_decoding_kwargs
+                df_annotated.loc[curr_idcs, self.all_keys], **curr_decoding_kwargs
             )
 
             df_annotated = self._merge_annotations(df_annotated, curr_annotated)
@@ -458,12 +460,17 @@ class PairwiseAnnotator:
         else:
             df_annotated_to_store = df_annotated
 
+        other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_annotated_to_store.columns]
+        df_annotated_to_store = df_annotated_to_store[self.all_keys + ["preference"] + other_keys_to_keep]
+
         if self.df_annotations is None:
-            self.df_annotations = df_annotated_to_store
+            df_annotations = df_annotated_to_store
         else:
-            self.df_annotations = pd.concat(
+            df_annotations = pd.concat(
                 [self.df_annotations, df_annotated_to_store], axis=0, ignore_index=True
-            ).drop_duplicates(subset=self.all_keys)
+            )
+
+        self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys)
 
         self.save()
 
@@ -476,7 +483,19 @@ class PairwiseAnnotator:
         path = path or self.saving_path
         if path is not None:
             logging.info(f"Saving all annotations to {path}.")
+            # to make sure that we don't overwrite the annotations we load again from file (ideally would use a DB)
+            self._refresh_annotations_()
             self.df_annotations.to_json(path, orient="records", indent=2)
+
+    def _refresh_annotations_(self):
+        """Refresh the annotations in memory."""
+        curr_df_annotations = self.df_annotations.copy()
+        self.load_()
+        self.df_annotations = pd.concat([self.df_annotations, curr_df_annotations],
+                                        axis=0,
+                                        ignore_index=True).drop_duplicates(
+            subset=self.all_keys
+        )
 
     def load_(self, path: Optional[ann_utils.AnyPath] = None):
         """Load all the annotations from json."""
@@ -495,7 +514,7 @@ class PairwiseAnnotator:
             return df_to_annotate
 
         df_to_annotate = df_to_annotate.merge(
-            df_partially_annotated[self.all_keys + ["preference"]],
+            df_partially_annotated,
             on=self.all_keys,
             how="left",
             suffixes=("_old", "_new"),
@@ -591,7 +610,12 @@ class SinglePairwiseAnnotator:
             prompts=prompts, **self.decoder_kwargs, **decoding_kwargs
         )
 
-        df_to_annotate["preference"] = self.parse_completions(completions=completions)
+        df_to_annotate["preference"] = self.parse_completions(completions=completions["completions"])
+        for k, v in completions.items():
+            if k != "text":
+                df_to_annotate[k] = v
+                if "per_example" in k:
+                    df_to_annotate[k] = df_to_annotate[k] / self.batch_size
 
         df_annotated = self.postprocess(df_to_annotate)
 

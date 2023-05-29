@@ -19,7 +19,7 @@ def anthropic_completions(
         model_name="claude-v1",
         num_procs: int = 8,
         **decoding_kwargs,
-) -> list[str]:
+) -> dict[str, list]:
     """Decode with Anthropic API.
 
     Parameters
@@ -68,7 +68,10 @@ def anthropic_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
-    return completions
+    price = [0] * len(completions)
+    avg_time = [t.duration / n_examples] * len(completions)
+
+    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
 
 
 def _anthropic_completion_helper(

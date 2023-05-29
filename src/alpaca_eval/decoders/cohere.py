@@ -18,7 +18,7 @@ def cohere_completions(
         model_name="command",
         num_procs: int = 5,
         **decoding_kwargs,
-) -> list[str]:
+) -> dict[str, list]:
     """Decode with Cohere API.
 
     Parameters
@@ -66,7 +66,10 @@ def cohere_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
-    return completions
+    price = [0] * len(completions)
+    avg_time = [t.duration / n_examples] * len(completions)
+
+    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
 
 
 def _cohere_completion_helper(

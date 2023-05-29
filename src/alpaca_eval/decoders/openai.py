@@ -26,7 +26,7 @@ def openai_completions(
         num_procs: Optional[int] = None,
         batch_size: Optional[int] = None,
         **decoding_kwargs,
-) -> list[str]:
+) -> dict[str, list]:
     """Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
     tokens to favor.
 
@@ -104,9 +104,9 @@ def openai_completions(
     if is_strip:
         prompts = [p.strip() for p in prompts]
 
-    is_chat = requires_chatml(model_name)
+    is_chat = _requires_chatml(model_name)
     if is_chat:
-        prompts = [prompt_to_chatml(prompt) for prompt in prompts]
+        prompts = [_prompt_to_chatml(prompt) for prompt in prompts]
         num_procs = num_procs or 5
         batch_size = batch_size or 1
 
@@ -151,9 +151,14 @@ def openai_completions(
     logging.info(f"Completed {n_examples} examples in {t}.")
 
     # flatten the list and select only the text
-    completions = [completion.text for completion_batch in completions for completion in completion_batch]
+    completions_text = [completion.text for completion_batch in completions for completion in completion_batch]
 
-    return completions
+    price = [completion["total_tokens"] * _get_price_per_token(model_name)
+             for completion_batch in completions
+             for completion in completion_batch]
+    avg_time = [t.duration / n_examples] * len(completions_text)
+
+    return dict(completions=completions_text, price_per_example=price, time_per_example=avg_time)
 
 
 def _openai_completion_helper(
@@ -216,13 +221,13 @@ def _openai_completion_helper(
     return choices
 
 
-def requires_chatml(model: str) -> bool:
+def _requires_chatml(model: str) -> bool:
     """Whether a model requires the ChatML format."""
     # TODO: this should ideally be an OpenAI function... Maybe it already exists?
     return "turbo" in model or "gpt-4" in model
 
 
-def prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: str = "<|im_end|>"):
+def _prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: str = "<|im_end|>"):
     """Convert a text prompt to ChatML formal
 
     Examples
@@ -264,7 +269,7 @@ def prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: 
             # /How_to_format_inputs_to_ChatGPT_models.ipynb
             # and https://github.com/openai/openai-python/blob/main/chatml.md it seems that system can specify a
             # dictionary of other args
-            other_params = string_to_dict(role.split("system", 1)[-1])
+            other_params = _string_to_dict(role.split("system", 1)[-1])
             role = "system"
         else:
             other_params = dict()
@@ -274,9 +279,23 @@ def prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: 
     return message
 
 
-def string_to_dict(to_convert):
+def _string_to_dict(to_convert):
     """Converts a string with equal signs to dictionary. E.g.
     >>> string_to_dict(" name=user university=stanford")
     {'name': 'user', 'university': 'stanford'}
     """
     return {s.split("=", 1)[0]: s.split("=", 1)[1] for s in to_convert.split(" ") if len(s) > 0}
+
+
+def _get_price_per_token(model):
+    """Returns the price per token for a given model"""
+    if "gpt-4" in model:
+        return (
+                0.03 / 1000
+        )  # that's not completely true because decoding is 0.06 but close enough given that most is context
+    elif "gpt-3.5-turbo" in model:
+        return 0.002 / 1000
+    elif "text-davinci-003" in model:
+        return 0.02 / 1000
+    else:
+        raise ValueError(f"Unknown model {model}")

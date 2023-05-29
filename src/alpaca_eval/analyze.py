@@ -79,14 +79,6 @@ class Analyzer:
         self.all_df_annotations = dict()
         self.seed = seed
 
-    def _select_at_least_n_annotations(self, df):
-        """Gets examples with at least n annotations"""
-        counts = df.groupby(self.keys)["annotator_index"].count()
-        counts = counts[counts >= self.min_n_annotators].reset_index().rename(columns={
-            "annotator_index": "n_annotated"})
-        df_selected = df.merge(counts, on=self.keys)
-        return df_selected
-
     def get_price(
             self,
             annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
@@ -101,6 +93,14 @@ class Analyzer:
             lambda x: x["auto_total_tokens"] * get_price_per_token(x["annotator"].split("_")[0]), axis=1
         ).mean()
         return price
+
+    def _select_at_least_n_annotations(self, df):
+        """Gets examples with at least n annotations"""
+        counts = df.groupby(self.keys)["annotator_index"].count()
+        counts = counts[counts >= self.min_n_annotators].reset_index().rename(columns={
+            "annotator_index": "n_annotated"})
+        df_selected = df.merge(counts, on=self.keys)
+        return df_selected
 
     def auto_and_turk_vs_turk_mode(
             self,
