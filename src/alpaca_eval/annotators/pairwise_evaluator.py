@@ -513,18 +513,20 @@ class PairwiseAnnotator:
         if df_partially_annotated is None or df_partially_annotated.empty:
             return df_to_annotate
 
+        other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_partially_annotated.columns]
         df_to_annotate = df_to_annotate.merge(
-            df_partially_annotated,
+            df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep],
             on=self.all_keys,
             how="left",
             suffixes=("_old", "_new"),
         )
-        df_to_annotate["preference"] = df_to_annotate["preference_old"].fillna(
-            df_to_annotate["preference_new"]
-        )
-        df_to_annotate = df_to_annotate.drop(
-            columns=["preference_old", "preference_new"]
-        )
+
+        # if columns were in both dataframes, try to merge them
+        for c in other_keys_to_keep + ["preference"]:
+            if f"{c}_old" in df_to_annotate.columns and f"{c}_new" in df_to_annotate.columns:
+                df_to_annotate[c] = df_to_annotate[c + "_old"].fillna(df_to_annotate[c + "_new"])
+                df_to_annotate = df_to_annotate.drop(columns=[c + "_old", c + "_new"])
+
         return df_to_annotate
 
 
