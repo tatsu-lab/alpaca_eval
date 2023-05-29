@@ -12,21 +12,31 @@ from .types import AnyPath, AnyData
 
 
 def DEFAULT_GOLD_CROSSANNOTATIONS():
-    return datasets.load_dataset(
+    df = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
         "alpaca_farm_human_crossannotations",
         cache_dir=constants.DEFAULT_CACHE_DIR,
         use_auth_token=constants.DATASETS_TOKEN,
-    )["validation"]
+    )["validation"].to_pandas()
+
+    # turkers took around 9 min for 15 examples in AlpacaFarm
+    df["time_per_example"] = 9.2 * 60 / 15
+    df["price_per_example"] = 0.3  # price we paid for each example
+    return df
 
 
 def DEFAULT_GOLD_ANNOTATIONS():
-    return datasets.load_dataset(
+    df = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
         "alpaca_farm_human_annotations",
         cache_dir=constants.DEFAULT_CACHE_DIR,
         use_auth_token=constants.DATASETS_TOKEN,
-    )["validation"]
+    )["validation"].to_pandas()
+
+    # turkers took around 9 min for 15 examples in AlpacaFarm
+    df["time_per_example"] = 9.2 * 60 / 15
+    df["price_per_example"] = 0.3  # price we paid for each example
+    return df
 
 
 class Analyzer:
@@ -78,21 +88,6 @@ class Analyzer:
 
         self.all_df_annotations = dict()
         self.seed = seed
-
-    def get_price(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            annotator_kwargs=None,  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=False,  # False will be faster but doesn't ensure that annotated
-    ):
-        df_auto = self.get_df_auto(
-            annotator=annotator, is_annotate=is_annotate, is_return_all_columns=True, **annotator_kwargs
-        )
-
-        price = df_auto.apply(
-            lambda x: x["auto_total_tokens"] * get_price_per_token(x["annotator"].split("_")[0]), axis=1
-        ).mean()
-        return price
 
     def _select_at_least_n_annotations(self, df):
         """Gets examples with at least n annotations"""

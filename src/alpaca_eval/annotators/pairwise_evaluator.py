@@ -340,11 +340,12 @@ class PairwiseAnnotator:
 
         df_to_annotate = ann_utils.convert_to_dataframe(to_annotate).copy()
 
-        if "preference" in df_to_annotate.columns:
-            logging.warning(
-                """Preference column is already in the dataframe. We will overwrite it."""
-            )
-        df_to_annotate["preference"] = np.nan
+        for c in self.other_keys_to_keep + ["preference"]:
+            if c in df_to_annotate.columns:
+                logging.warning(
+                    f"""{c} column is already in the dataframe. We will overwrite it."""
+                )
+                df_to_annotate[c] = np.nan
 
         # remove duplicates because you only need to annotate one of them
         df_to_annotate = df_to_annotate.drop_duplicates(subset=self.input_output_keys)
