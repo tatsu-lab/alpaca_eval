@@ -54,7 +54,7 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
             break
         responses.append(key)
         # avoid matching the same output twice
-        completion = completion[match.end():]
+        completion = completion[match.end() :]
     return responses
 
 
