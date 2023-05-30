@@ -1,52 +1,34 @@
-from alpaca_eval import utils, metrics, annotators, constants, analyze
+from alpaca_eval import utils, metrics, annotators, constants, analyze, main as alpaca_main
 import fire
 
 
-def precompute_api_crossannotations(
-        annotators_configs=(
-                # "gpt4/basic_configs.yaml",
-                # "claude/basic_configs.yaml",
-                # "gpt4/b1_configs.yaml",
-                # "gpt3/basic_configs.yaml",
-                # "gpt4/configs.yaml",
-                # "chatgpt/basic_configs.yaml",
-                "lmsys/configs.yaml",
-                "guanaco-33b/basic_configs.yaml",
-                "alpaca_farm/configs.yaml",
-                # "cohere/basic_configs.yaml", # currently doesn't work because only 5 calls per min
-                "alpaca_farm_greedy-gpt4/configs.yaml",
-        ),
-        max_instances=None
-):
-    """Precompute crossannotations for important API models."""
-    analyzer = analyze.Analyzer()
+def precompute_human_leaderboard(annotators_config=f"claude/basic_configs.yaml",
+                                 Annotator=annotators.PairwiseAnnotator,
+                                 all_data=analyze.DEFAULT_GOLD_ANNOTATIONS,
+                                 analyzer_kwargs=None,
+                                 **annotator_kwargs):
+    """Precompute all instructions on the eval leaderbaord that has been annotated by humans."""
+    analyzer_kwargs = analyzer_kwargs or {}
+    analyzer = analyze.Analyzer(gold_annotations=all_data, **analyzer_kwargs)
+    df_annotations = analyze.get_annotations(analyzer,
+                                             Annotator=Annotator,
+                                             annotators_config=annotators_config,
+                                             **annotator_kwargs)
+
+
+def precompute_evaluator_leaderboard(annotators_configs="API_EVALUATORS_TO_ANALYZE",
+                                     max_instances=None, **kwargs):
+    """Precompute evaluator's leaderboard for important API models."""
+    if isinstance(annotators_configs, str):
+        annotators_configs = getattr(constants, annotators_configs)
 
     for annotators_config in annotators_configs:
         # saving is done automatically
-        _ = analyze.get_crossannotations(
-            analyzer=analyzer,
-            Annotator=annotators.PairwiseAnnotator,
-            annotators_config=annotators_config,
-            max_instances=max_instances
-        )
-
-
-def precompute_local_crossannotations(
-        annotators_configs=(
-                # "oasst-pythia-12b/basic_configs.yaml",
-                # "stablelm_alpha_7b/basic_configs.yaml",
-                "alpaca-farm-ppo-human-7b/basic_configs.yaml",
-                #        "falcon-40b-instruct/basic_configs.yaml",
-        )
-):
-    """Precompute crossannotations for important local models."""
-    analyzer = analyze.Analyzer()
-
-    for annotators_config in annotators_configs:
-        # saving is done automatically
-        _ = analyze.get_crossannotations(
-            analyzer=analyzer, Annotator=annotators.PairwiseAnnotator, annotators_config=annotators_config
-        )
+        _ = alpaca_main.analyze_evaluators(annotators_config=annotators_config,
+                                           max_instances=max_instances,
+                                           is_save_leaderboard=max_instances is not None,
+                                           is_return_metrics=True,  # don't print
+                                           **kwargs)
 
 
 def main(task, **kwargs):

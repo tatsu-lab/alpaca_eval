@@ -129,6 +129,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
                        is_save_leaderboard: bool = False,
                        is_return_metrics: bool = False,
                        is_overwrite_leaderboard: bool = False,
+                       max_instances: Optional[int] = None,
                        ):
 
     if rest_of_leaderboard is not None:
@@ -150,6 +151,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
             else:
                 df_crossannotations = analyze.get_crossannotations(analyzer=analyzer,
                                                                    Annotator=Annotator,
+                                                                   max_instances=max_instances,
                                                                    annotators_config=annotators_config)
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
 
