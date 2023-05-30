@@ -2,7 +2,6 @@
 import logging
 import warnings
 from contextlib import contextmanager
-from pathlib import Path
 
 import matplotlib
 import scipy
@@ -16,6 +15,8 @@ from matplotlib import MatplotlibDeprecationWarning
 from matplotlib import pyplot as plt
 from matplotlib import rc_params_from_file
 from scipy import stats
+
+from . import constants
 
 RC_IF_NO_FILE = {
     # "axes.grid": True,
@@ -345,7 +346,7 @@ def plot_all_properties(evaluator_leaderboard: pd.DataFrame,
 
     plt.show()
     return g
- 
+
 
 def plot_winrate_correlations(human_leaderboard, auto_leaderboard,
                               models_to_keep=constants.HUMAN_ANNOTATED_MODELS_TO_KEEP,
