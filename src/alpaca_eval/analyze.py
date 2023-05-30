@@ -41,39 +41,6 @@ def DEFAULT_GOLD_ANNOTATIONS():
     return df
 
 
-def make_evaluator_leaderboard(Annotator=annotators.PairwiseAnnotator,
-                               annotators_configs=("gpt4/basic_configs.yaml",
-                                                   "claude/basic_configs.yaml",
-                                                   "gpt4/b1_configs.yaml",
-                                                   "gpt3/basic_configs.yaml",
-                                                   "gpt4/configs.yaml",
-                                                   "chatgpt/basic_configs.yaml",
-                                                   "oasst-pythia-12b/basic_configs.yaml",
-                                                   "stablelm_alpha_7b/basic_configs.yaml",
-                                                   "guanaco-33b/basic_configs.yaml",
-                                                   "alpaca-farm-ppo-human-7b/basic_configs.yaml",
-                                                   "humans",
-                                                   "longest",
-                                                   ),
-                               analyzer_kwargs=None):
-    analyzer_kwargs = analyzer_kwargs or {}
-    analyzer = Analyzer(**analyzer_kwargs)
-
-    all_metrics = {}
-    for annotators_config in annotators_configs:
-        key = annotators_config.replace("/", "_").replace("_configs.yaml", "")
-        if key not in all_metrics:
-            if key == "humans":
-                df_crossannotations = analyzer.df_gold_crossannotations
-            elif key == "longest":
-                df_crossannotations = _get_longest_predictor(analyzer.df_gold_crossannotations)
-            else:
-                df_crossannotations = get_crossannotations(analyzer=analyzer,
-                                                           Annotator=Annotator,
-                                                           annotators_config=annotators_config)
-            all_metrics[key] = _get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
-
-
 class Analyzer:
     """Helper class to compare and understand annotations from different annotators.
 
