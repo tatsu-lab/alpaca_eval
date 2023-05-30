@@ -26,8 +26,8 @@ gpt4_2: # gpt-4-0314_pairwise_diverse-diana_v0_b5_chatml-prompt_short_temp=1.0
     temperature: 1.0
   completion_parser_kwargs:
     outputs_to_match:
-      1: '(?:^|\n)Output \(a\)'
-      2: '(?:^|\n)Output \(b\)'
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 5
 
 gpt4_3: # gpt-4-0314_pairwise_vH_b5_chatml-prompt_short_temp=1.0
@@ -41,8 +41,8 @@ gpt4_3: # gpt-4-0314_pairwise_vH_b5_chatml-prompt_short_temp=1.0
     temperature: 1.0
   completion_parser_kwargs:
     outputs_to_match:
-      1: '(?:^|\n)Output \(a\)'
-      2: '(?:^|\n)Output \(b\)'
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 5
 
 gpt4_4: # gpt-4-0314_pairwise_v2_b1_chatml-chat_reasoning_temp=1.0
@@ -59,8 +59,8 @@ gpt4_4: # gpt-4-0314_pairwise_v2_b1_chatml-chat_reasoning_temp=1.0
     tokens_to_favor: [ "Output (a)", "Output (b)" ]
   completion_parser_kwargs:
     outputs_to_match:
-      1: 'Output \(a\)'
-      2: 'Output \(b\)'
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 1
 
 gpt4_5: # gpt-4-0314_pairwise_diverse-joeX_v0_b5_chatml-prompt_short_temp=1.0
@@ -91,8 +91,8 @@ chatgpt_1: # gpt-3.5-turbo_pairwise_vH_b1_chatml-prompt_short_temp=1.0
     tokens_to_favor: [ "Output (a)", "Output (b)" ]
   completion_parser_kwargs:
     outputs_to_match:
-    1: 'Output \(a\)'
-    2: 'Output \(b\)'
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 1
 
 chatgpt_2: # gpt-3.5-turbo-0301_pairwise_v1_b1_chatml-chat_CoT_JSON_temp=1.0

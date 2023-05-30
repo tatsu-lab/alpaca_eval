@@ -11,6 +11,6 @@ greedy_gpt4: # gpt-4-0314_pairwise_vH_b5_chatml-prompt
     temperature: 0
   completion_parser_kwargs:
     outputs_to_match:
-      1: 'Output \(a'
-      2: 'Output \(b'
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
   batch_size: 5
