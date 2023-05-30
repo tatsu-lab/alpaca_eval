@@ -704,7 +704,7 @@ class SinglePairwiseAnnotator:
             )
             df_annotated = df_annotated[~arr_is_na]
 
-        assert set(df_annotated["preference"].unique().tolist()) <= {1, 2}
+        assert set(df_annotated["preference"].unique().tolist()) <= {0, 1, 2}
 
         if self.is_randomize_output_order:
             # unshuffles output 1 and output 2. For binary preference, unshuffling is equivalent to reshuffling
