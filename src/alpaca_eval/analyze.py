@@ -6,6 +6,7 @@ from itertools import combinations
 from typing import Callable, Optional, Union
 
 import datasets
+import numpy as np
 import pandas as pd
 
 from . import constants, utils
@@ -71,7 +72,7 @@ class Analyzer:
             keys=("instruction", "input", "output_1", "output_2"),
             n_annotators: Optional[int] = 4,
             seed: Optional[int] = 0,
-            **annotator_kwargs
+            **annotator_kwargs,
     ):
         self.keys = list(keys)
         self.n_annotators = n_annotators
@@ -79,8 +80,9 @@ class Analyzer:
 
         df_gold_crossannotations = utils.load_or_convert_to_dataframe(gold_crossannotations)
         # adding a random index to differentiate between the n_annotators
-        self.df_gold_crossannotations = self._select_n_annotations(df_gold_crossannotations,
-                                                                   n_annotators=self.n_annotators)
+        self.df_gold_crossannotations = self._select_n_annotations(
+            df_gold_crossannotations, n_annotators=self.n_annotators
+        )
 
         if gold_annotations is None:
             self.df_gold_annotations = self.df_gold_crossannotations.query("annotator_index == 0")
@@ -104,7 +106,7 @@ class Analyzer:
         # select examples that have at least n_annotators
         counts = df.groupby(self.keys)["preference"].count()
         counts.name = "n_annotated"
-        n_annotators = n_annotators or df["counts"].min()
+        n_annotators = n_annotators or counts.min()
         counts = counts[counts >= n_annotators].reset_index()
         df_selected = df.merge(counts, on=self.keys)
 
@@ -131,14 +133,20 @@ class Analyzer:
     ):
         out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
         out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
-        return pd.Series(dict(accuracy=out["match"].mean(), sem_samples=out["match"].sem(), counts=len(out["match"])))
+        return pd.Series(
+            dict(
+                accuracy=out["match"].mean(),
+                sem_samples=out["match"].sem(),
+                counts=len(out["match"]),
+            )
+        )
 
     def agreement_of_annotations(
             self,
             annotations_1: Union[pd.DataFrame, str],
-            annotations_2: Optional[Union[pd.DataFrame, str]],
+            annotations_2: Optional[Union[pd.DataFrame, str]] = "gold_crossannotations",
             n_majority_vote_1: Optional[int] = 1,
-            n_majority_vote_2: Optional[int] = 1,
+            n_majority_vote_2: Optional[int] = None,
             is_same_annotator: Optional[bool] = None,
     ) -> pd.Series:
         """Compare (cross)annotations from two annotators.
@@ -215,6 +223,10 @@ class Analyzer:
         annotations_1 = self._select_n_annotations(annotations_1, n_annotators=n_majority_vote_1, is_rm_less_than=False)
         max_majority_vote_1 = annotations_1["n_annotated"].max()
         n_majority_vote_1 = n_majority_vote_1 or max_majority_vote_1
+        if n_majority_vote_1 > max_majority_vote_1:
+            raise ValueError(
+                f"n_majority_vote_1={n_majority_vote_1} is larger than the maximum possible " f"({max_majority_vote_1})"
+            )
 
         if is_same_annotator:
             logging.info("You are comparing twice the same annotators.")
@@ -225,11 +237,14 @@ class Analyzer:
         annotations_2 = self._select_n_annotations(annotations_2, n_annotators=n_majority_vote_2, is_rm_less_than=False)
         max_majority_vote_2 = annotations_2["n_annotated"].max()
         n_majority_vote_2 = n_majority_vote_2 or max_majority_vote_2
+        if n_majority_vote_2 > max_majority_vote_2:
+            raise ValueError(
+                f"n_majority_vote_2={n_majority_vote_2} is larger than the maximum possible " f"({max_majority_vote_2})"
+            )
 
         results = dict()
         for idcs_1 in combinations(range(max_majority_vote_1), n_majority_vote_1):
             for idcs_2 in combinations(range(max_majority_vote_2), n_majority_vote_2):
-
                 is_overlapping_idcs = len(set(idcs_1).intersection(idcs_2)) > 0
                 if is_same_annotator:
                     if is_overlapping_idcs:
@@ -244,8 +259,10 @@ class Analyzer:
                     df_annotations_2=self._get_mode(annotations_2, idcs_2),
                 )
 
-        logging.info(f"n_majority_vote_1={n_majority_vote_1}, n_majority_vote_2={n_majority_vote_2}. "
-                     f"Compared results of indices: {list(results.keys())}")
+        logging.info(
+            f"n_majority_vote_1={n_majority_vote_1}, n_majority_vote_2={n_majority_vote_2}. "
+            f"Compared results of indices: {list(results.keys())}"
+        )
 
         sem_annotators = pd.DataFrame(results).T["accuracy"].sem()
         results = sum(results.values()) / len(results.values())
@@ -253,13 +270,66 @@ class Analyzer:
 
         return results
 
-    def estimate_biases(self):
-        """Estimates the biases of the annotators"""
-        pass
+    def estimate_bias(self, annotations: pd.DataFrame):
+        """(over)Estimates the bias of the annotations by computing the agreement error between the majority vote of
+        the annotations and the gold annotations.
 
-    def estimate_variance(self):
-        """Estimates the variance of the annotators"""
-        pass
+        Parameters
+        ----------
+        annotations: pd.DataFrame
+            Annotations to estimate the bias of. For better results, it should have multiple annotations per example.
+        """
+        # all vs all of gold annotations
+        agreement = self.agreement_of_annotations(
+            annotations,
+            annotations_2="gold_crossannotations",
+            n_majority_vote_1=None,
+            n_majority_vote_2=None,
+        )
+        return 1 - agreement["accuracy"]
+
+    def estimate_variance(self, annotations: Union[pd.DataFrame, str]):
+        """(over)Estimates the variance of the annotations by computing the 1 vs all agreement error.
+
+        Parameters
+        ----------
+        annotations: pd.DataFrame
+            Annotations to estimate the variance of. For better results, it should have multiple annotations per
+            example.
+        """
+        # 1 vs rest
+        agreement = self.agreement_of_annotations(
+            annotations, annotations_2=None, n_majority_vote_1=1, n_majority_vote_2=None
+        )
+        return 1 - agreement["accuracy"]
+
+    def get_length_biases(
+            self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
+    ) -> dict[str, float]:
+        """Estimate the biases for longer sentences."""
+        df = annotations.drop_duplicates(subset=self.keys).copy()
+        df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
+        df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+
+        # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
+        df["best_output_length"] = df["best_output"].apply(len)
+        df["worse_output_length"] = df["worse_output"].apply(len)
+        # Step 2: Create a new column indicating whether one output is (significantly) longer than the other
+        df["one_is_longer"] = (df["best_output_length"] - df["worse_output_length"]).abs() > significant_delta_length
+        df["is_prefer_longer"] = df["best_output_length"] > df["worse_output_length"]
+        # Step 3: Count the number of times you prefer the longer output
+        prefer_longer = df[df["one_is_longer"] & df["is_prefer_longer"]].shape[0]
+        # Step 4: Count the total number of instances when one output is longer than the other
+        total_one_is_longer = df[df["one_is_longer"]].shape[0]
+        # Step 5: Calculate the probability of preferring the longer output
+        probability_prefer_longer = prefer_longer / total_one_is_longer
+
+        percentage_longer = ((df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]).mean()
+
+        return dict(
+            probability_prefer_longer=probability_prefer_longer,
+            percentage_longer=percentage_longer,
+        )
 
     def auto_biases(
             self,
@@ -276,8 +346,6 @@ class Analyzer:
         if isinstance(df_auto, pd.Series):
             df_auto = df_auto.to_frame().reset_index(drop=False)
 
-        df_auto = db_io.add_instruction_input_input_id(df=df_auto, database=self.auto_db)
-        df_auto = db_io.add_output_output_id(df=df_auto, database=self.auto_db)
         df_spurious = ann_helpers_pairwise.analyze_spurious_pairwise_correlations_best_worst(
             df_auto,
             col_preference="preference",
@@ -338,7 +406,13 @@ class Analyzer:
                 )
                 spurious = df_spurious["delta_best_minus_worse"]
 
-                tmp_results = pd.Series(dict(expected=expected, **spurious, **self.get_probability_biases(curr)))
+                tmp_results = pd.Series(
+                    dict(
+                        expected=expected,
+                        **spurious,
+                        **self.get_probability_biases(curr),
+                    )
+                )
 
                 if i == 0:
                     results[name] = tmp_results
@@ -355,10 +429,17 @@ class Analyzer:
     ):
         """Computes the interannotator agreement between the constituents of a multi annotator"""
         df_auto_bis = self.get_df_auto(
-            annotator=annotator, is_annotate=is_annotate, delta_seed=1, is_return_all_columns=True, **annotator_kwargs
+            annotator=annotator,
+            is_annotate=is_annotate,
+            delta_seed=1,
+            is_return_all_columns=True,
+            **annotator_kwargs,
         )
         df_auto = self.get_df_auto(
-            annotator=annotator, is_annotate=is_annotate, is_return_all_columns=True, **annotator_kwargs
+            annotator=annotator,
+            is_annotate=is_annotate,
+            is_return_all_columns=True,
+            **annotator_kwargs,
         )
         df_gold = self.df_gold.groupby(self.keys)["preference"].aggregate(ann_helpers.random_mode)
         df_auto = db_io.add_instruction_input_input_id(df=df_auto, database=self.auto_db)
@@ -418,7 +499,7 @@ def format_acc_sem(serie, accuracy="accuracy", sem_col="sem_samples"):
     return f"{serie[accuracy]:.2f}±{serie[sem_col]:.2f}"
 
 
-def _random_mode(s, available_modes=None, favorite_mode=None, seed=123):
+def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropna=True):
     """Take the mode of a series, but if there are multiple modes, randomly sample one
     (with potential restriction to `available_modes` or favoring a specific mode `favorite_mode`).
 
@@ -435,10 +516,17 @@ def _random_mode(s, available_modes=None, favorite_mode=None, seed=123):
     2.0
     """
     out = pd.Series.mode(s)
+    if is_dropna:
+        out = out.dropna()
+
     if len(out) > 1:
         if favorite_mode is not None and favorite_mode in out.values:
             return favorite_mode
         if available_modes is not None:
             out = out[out.isin(available_modes)]
         out = out.sample(1, random_state=seed)
+
+    if len(out) == 0:
+        return np.nan
+
     return out.item()

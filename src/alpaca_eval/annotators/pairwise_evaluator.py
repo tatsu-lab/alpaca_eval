@@ -75,6 +75,13 @@ class PairwiseAnnotator:
         2*p_label_flip of independent coin flip). If None, will not flip the label. In AlpacaFarm we use 0.25
         for training. You can set this later on using `set_noise`.
 
+    other_keys_to_keep : tuple of str, optional
+        Other columns to store besides the preferences.
+
+    is_store_missing_preferences : bool, optional
+        Whether to store missing preferences. If True it will avoid trying to always reannotate examples that have
+        errors.
+
     decoding_kwargs :
         Additional arguments to pass to `fn_completions`.
     """
@@ -91,6 +98,7 @@ class PairwiseAnnotator:
             output_keys: Sequence[str] = ("output_1", "output_2"),
             p_label_flip: Optional[float] = None,
             other_keys_to_keep: Sequence[str] = ('price_per_example', 'time_per_example'),
+            is_store_missing_preferences: bool = True,
             **decoding_kwargs,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
@@ -99,7 +107,9 @@ class PairwiseAnnotator:
         annotators_config = CONFIG_DIR / annotators_config
         if saving_path == "auto":
             if isinstance(annotators_config, (str, Path, os.PathLike)):
-                saving_path = Path(annotators_config).parent / f"annotations_seed{seed}.json"
+                stem = Path(annotators_config).stem
+                saving_path = Path(annotators_config).parent / f"annotations_seed{seed}_{stem}.json"
+                logging.info(f"Saving annotations to `{saving_path}`.")
             else:
                 logging.warning(
                     "saving_path cannot be 'auto' if annotators_config is not a path. Setting to None."
@@ -116,6 +126,7 @@ class PairwiseAnnotator:
         self.all_keys = self.input_keys + self.output_keys + ["annotator"]
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.p_label_flip = p_label_flip
+        self.is_store_missing_preferences = is_store_missing_preferences
 
         self.annotators = self._initialize_annotators(annotators_config)
         self.saving_path = saving_path
@@ -445,6 +456,11 @@ class PairwiseAnnotator:
         """Convert the dataframe into a list of dictionaries to be returned, and store current anntations."""
 
         # select available annotations
+        if self.is_store_missing_preferences:
+            df_annotated["preference"] = df_annotated["preference"].fillna(-1)
+        else:
+            df_annotated["preference"] = df_annotated["preference"].replace(-1, np.nan)
+
         df_annotated = df_annotated[~df_annotated["preference"].isna()].copy()
 
         # try converting to int now that no nan
@@ -471,9 +487,13 @@ class PairwiseAnnotator:
                 [self.df_annotations, df_annotated_to_store], axis=0, ignore_index=True
             )
 
-        self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys)
+        self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys, keep="last")
 
         self.save()
+
+        if self.is_store_missing_preferences:
+            # put back np.nan
+            df_annotated["preference"] = df_annotated["preference"].replace(-1, np.nan)
 
         annotated = df_annotated.to_dict(orient="records")
 
@@ -486,6 +506,8 @@ class PairwiseAnnotator:
             logging.info(f"Saving all annotations to {path}.")
             # to make sure that we don't overwrite the annotations we load again from file (ideally would use a DB)
             self._refresh_annotations_()
+            if not self.is_store_missing_preferences:
+                self.df_annotations = self.df_annotations[~self.df_annotations["preference"].isna()]
             self.df_annotations.to_json(path, orient="records", indent=2)
 
     def _refresh_annotations_(self):
@@ -495,7 +517,7 @@ class PairwiseAnnotator:
         self.df_annotations = pd.concat([self.df_annotations, curr_df_annotations],
                                         axis=0,
                                         ignore_index=True).drop_duplicates(
-            subset=self.all_keys
+            subset=self.all_keys, keep="last"
         )
 
     def load_(self, path: Optional[ann_utils.AnyPath] = None):

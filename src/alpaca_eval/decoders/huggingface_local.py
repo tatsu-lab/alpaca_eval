@@ -19,6 +19,8 @@ def huggingface_local_completions(
         batch_size: int = 1,
         model_kwargs=None,
         cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+        trust_remote_code: bool = False,
+        is_fast_tokenizer: bool = True,
         **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
@@ -52,6 +54,9 @@ def huggingface_local_completions(
     default_model_kwargs.update(model_kwargs)
     model_kwargs = default_model_kwargs
 
+    if isinstance(model_kwargs["torch_dtype"], str):
+        model_kwargs["torch_dtype"] = getattr(torch, model_kwargs["torch_dtype"])
+
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")
@@ -68,9 +73,11 @@ def huggingface_local_completions(
     #  faster but slightly less accurate matrix multiplications
     torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = True
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir, padding_side="left", **model_kwargs)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir, padding_side="left",
+                                              use_fast=is_fast_tokenizer, **model_kwargs)
     model = AutoModelForCausalLM.from_pretrained(model_name,
                                                  cache_dir=cache_dir,
+                                                 trust_remote_code=trust_remote_code,
                                                  **model_kwargs)
 
     if batch_size == 1:

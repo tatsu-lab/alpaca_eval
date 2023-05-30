@@ -1,3 +1,4 @@
+import contextlib
 import copy
 import itertools
 import logging
@@ -305,3 +306,21 @@ class Timer:
 
     def __str__(self):
         return f"{self.duration:.1f} seconds"
+
+
+@contextlib.contextmanager
+def silent():
+    """Context manager to remove all outputs and warnings."""
+    import IPython
+    with open(os.devnull, "w") as f, contextlib.redirect_stdout(
+            f
+    ), DisableLogger(), IPython.utils.io.capture_output():
+        yield
+
+
+class DisableLogger:
+    def __enter__(self):
+        logging.disable(50)
+
+    def __exit__(self, a, b, c):
+        logging.disable(logging.NOTSET)
