@@ -92,55 +92,6 @@ class Analyzer:
         self.all_df_annotations = dict()
         self.seed = seed
 
-    def _select_n_annotations(self, df, n_annotators=None, is_rm_less_than: bool = True):
-        """Gets examples with at least n annotations. Adds `index` and `n_annotated` columns."""
-        if "n_annotated" in df.columns:
-            df = df.drop(columns="n_annotated")
-
-        df["index"] = df.groupby(self.keys)["preference"].cumcount()
-
-        if is_rm_less_than:
-            # remove samples that have more than n_annotators
-            df = df[df["index"] < n_annotators]
-
-        # select examples that have at least n_annotators
-        counts = df.groupby(self.keys)["preference"].count()
-        counts.name = "n_annotated"
-        n_annotators = n_annotators or counts.min()
-        counts = counts[counts >= n_annotators].reset_index()
-        df_selected = df.merge(counts, on=self.keys)
-
-        return df_selected.copy()
-
-    def _get_annotations(self, annotations: Union[pd.DataFrame, str]):
-        if isinstance(annotations, str):
-            if annotations == "gold_crossannotations":
-                annotations = self.df_gold_crossannotations
-            elif annotations == "gold_annotations":
-                annotations = self.df_gold_annotations
-            else:
-                raise ValueError(f"Unknown annotations: {annotations}")
-        return annotations
-
-    def _get_mode(self, annotations, idcs):
-        annotations = annotations[annotations["index"].isin(idcs)]
-        return annotations.groupby(self.keys)["preference"].aggregate(_random_mode)
-
-    def _agreement_of_single_annotations(
-            self,
-            df_annotations_1: pd.DataFrame,
-            df_annotations_2: pd.DataFrame,
-    ):
-        out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
-        out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
-        return pd.Series(
-            dict(
-                accuracy=out["match"].mean(),
-                sem_samples=out["match"].sem(),
-                counts=len(out["match"]),
-            )
-        )
-
     def agreement_of_annotations(
             self,
             annotations_1: Union[pd.DataFrame, str],
@@ -331,136 +282,80 @@ class Analyzer:
             percentage_longer=percentage_longer,
         )
 
-    def auto_biases(
-            self,
-            annotator="gpt-4-0314_pairwise_vH_b5_chatml-prompt",
-            annotator_kwargs=None,  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
-    ):
-        """Computes the auto biases"""
-        annotator_kwargs = annotator_kwargs or {}
-        df_auto = self.get_df_auto(annotator=annotator, is_annotate=is_annotate, **annotator_kwargs)
+    def get_list_biases(self, annotations: Union[pd.DataFrame, str]) -> dict[str, float]:
+        """Estimate the biases for sentences with lists."""
+        df = annotations.drop_duplicates(subset=self.keys).copy()
+        df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
+        df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
 
-        expected = df_auto.mean() - 1
-
-        if isinstance(df_auto, pd.Series):
-            df_auto = df_auto.to_frame().reset_index(drop=False)
-
-        df_spurious = ann_helpers_pairwise.analyze_spurious_pairwise_correlations_best_worst(
-            df_auto,
-            col_preference="preference",
-        )
-        spurious = df_spurious["delta_best_minus_worse"].to_dict()
-
-        return pd.Series(dict(expected=expected, **self.get_probability_biases(df_auto), **spurious))
-
-    def get_probability_biases(self, df_auto):
-        df_auto = df_auto.query("preference.isin([1,2])").copy()
-        df_auto["best_output"] = np.where(df_auto["preference"] == 1, df_auto.output_1, df_auto.output_2)
-        df_auto["worse_output"] = np.where(df_auto["preference"] == 2, df_auto.output_1, df_auto.output_2)
-        df_auto["is_best_list"] = df_auto["best_output"].apply(lambda x: bool(ann_helpers.is_listy_text(x)))
-        df_auto["is_worse_list"] = df_auto["worse_output"].apply(lambda x: bool(ann_helpers.is_listy_text(x)))
-        # Step 1: Create a new column indicating whether either `best_output` or `worse_output` has a list but not both
-        df_auto["either_list"] = df_auto["is_best_list"] ^ df_auto["is_worse_list"]
-        # Step 2: Count the number of times you prefer `best_output` when either `best_output` or `worse_output` has
+        # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
+        df["is_best_list"] = df["best_output"].apply(utils.contains_list)
+        df["is_worse_list"] = df["worse_output"].apply(utils.contains_list)
+        # Step 2: Create a new column indicating whether either `best_output` or `worse_output` has a list but not both
+        df["either_list"] = df["is_best_list"] ^ df["is_worse_list"]
+        # Step 3: Count the number of times you prefer `best_output` when either `best_output` or `worse_output` has
         # a list but not both
-        prefer_best_either_list = df_auto[(df_auto["either_list"]) & df_auto["is_best_list"]].shape[0]
-        # Step 3: Count the total number of instances when either `best_output` or `worse_output` has a list but not
-        # both
-        total_either_list = df_auto[df_auto["either_list"]].shape[0]
-        # Step 4: Calculate the probability
-        probability_list = prefer_best_either_list / total_either_list
-
-        # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
-        df_auto["best_output_length"] = df_auto["best_output"].apply(len)
-        df_auto["worse_output_length"] = df_auto["worse_output"].apply(len)
-        # Step 2: Create a new column indicating whether one output is longer than the other
-        df_auto["one_is_longer"] = (df_auto["best_output_length"] - df_auto["worse_output_length"]).abs() > 30
-        df_auto["is_prefer_longer"] = df_auto["best_output_length"] > df_auto["worse_output_length"]
-        # Step 3: Count the number of times you prefer the longer output
-        prefer_longer = df_auto[df_auto["one_is_longer"] & df_auto["is_prefer_longer"]].shape[0]
-        # Step 4: Count the total number of instances when one output is longer than the other
-        total_one_is_longer = df_auto[df_auto["one_is_longer"]].shape[0]
+        prefer_best_either_list = df[(df["either_list"]) & df["is_best_list"]].shape[0]
+        # Step 4: Count number of instances when either `best_output` or `worse_output` has a list but not both
+        total_either_list = df[df["either_list"]].shape[0]
         # Step 5: Calculate the probability
-        probability_length = prefer_longer / total_one_is_longer
-        return dict(probability_list=probability_list, probability_length=probability_length)
+        probability_prefer_list = prefer_best_either_list / total_either_list
 
-    def turk_biases(self):
-        """Computes the auto biases"""
+        percentage_longer = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
 
-        results = dict()
-        for i in range(self.n_annotators):
-            curr_turk = self.df_gold.query(f"index == {i}").set_index(self.interpretable_keys)["preference"]
-            curr_gold = (
-                self.df_gold.query(f"index != {i}")
-                .groupby(self.interpretable_keys)["preference"]
-                .aggregate(ann_helpers.random_mode)
-            )
-            for name, curr in dict(turk=curr_turk, turk_mode=curr_gold).items():
-                expected = curr.mean() - 1
+        return dict(
+            probability_prefer_list=probability_prefer_list,
+            percentage_longer=percentage_longer,
+        )
 
-                curr = curr.to_frame().reset_index(drop=False)
-                df_spurious = ann_helpers_pairwise.analyze_spurious_pairwise_correlations_best_worst(
-                    curr,
-                    col_preference="preference",
-                )
-                spurious = df_spurious["delta_best_minus_worse"]
+    def _select_n_annotations(self, df, n_annotators=None, is_rm_less_than: bool = True):
+        """Gets examples with at least n annotations. Adds `index` and `n_annotated` columns."""
+        if "n_annotated" in df.columns:
+            df = df.drop(columns="n_annotated")
 
-                tmp_results = pd.Series(
-                    dict(
-                        expected=expected,
-                        **spurious,
-                        **self.get_probability_biases(curr),
-                    )
-                )
+        df["index"] = df.groupby(self.keys)["preference"].cumcount()
 
-                if i == 0:
-                    results[name] = tmp_results
-                else:
-                    results[name] += tmp_results
+        if is_rm_less_than:
+            # remove samples that have more than n_annotators
+            df = df[df["index"] < n_annotators]
 
-        return pd.DataFrame(results).T / self.n_annotators
+        # select examples that have at least n_annotators
+        counts = df.groupby(self.keys)["preference"].count()
+        counts.name = "n_annotated"
+        n_annotators = n_annotators or counts.min()
+        counts = counts[counts >= n_annotators].reset_index()
+        df_selected = df.merge(counts, on=self.keys)
 
-    def intra_multi_annotator(
+        return df_selected.copy()
+
+    def _get_annotations(self, annotations: Union[pd.DataFrame, str]):
+        if isinstance(annotations, str):
+            if annotations == "gold_crossannotations":
+                annotations = self.df_gold_crossannotations
+            elif annotations == "gold_annotations":
+                annotations = self.df_gold_annotations
+            else:
+                raise ValueError(f"Unknown annotations: {annotations}")
+        return annotations
+
+    def _get_mode(self, annotations, idcs):
+        annotations = annotations[annotations["index"].isin(idcs)]
+        return annotations.groupby(self.keys)["preference"].aggregate(_random_mode)
+
+    def _agreement_of_single_annotations(
             self,
-            annotator="multi",
-            annotator_kwargs={},  # kwargs for AutoAnnotatorPairwiseDB
-            is_annotate=True,  # False will be faster but doesn't ensure that annotated
+            df_annotations_1: pd.DataFrame,
+            df_annotations_2: pd.DataFrame,
     ):
-        """Computes the interannotator agreement between the constituents of a multi annotator"""
-        df_auto_bis = self.get_df_auto(
-            annotator=annotator,
-            is_annotate=is_annotate,
-            delta_seed=1,
-            is_return_all_columns=True,
-            **annotator_kwargs,
+        out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
+        out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
+        return pd.Series(
+            dict(
+                accuracy=out["match"].mean(),
+                sem_samples=out["match"].sem(),
+                counts=len(out["match"]),
+            )
         )
-        df_auto = self.get_df_auto(
-            annotator=annotator,
-            is_annotate=is_annotate,
-            is_return_all_columns=True,
-            **annotator_kwargs,
-        )
-        df_gold = self.df_gold.groupby(self.keys)["preference"].aggregate(ann_helpers.random_mode)
-        df_auto = db_io.add_instruction_input_input_id(df=df_auto, database=self.auto_db)
-        df_auto = db_io.add_output_output_id(df=df_auto, database=self.auto_db)
-
-        results = dict()
-        for a in df_auto.annotator.unique():
-            df_curr = df_auto.query(f"annotator == '{a}'").set_index(self.keys)
-            df_curr_bis = df_auto_bis.set_index(self.keys).loc[df_curr.index]
-            df_gold_bis = df_gold.loc[df_curr.index]
-            inter_results = self.auto_vs_auto(df_curr_bis.reset_index(drop=False), df_curr.reset_index(drop=False))
-            gold_results = self.auto_vs_auto(df_gold_bis.reset_index(drop=False), df_curr.reset_index(drop=False))
-            results[a] = dict(inter=format_acc_sem(inter_results), gold=format_acc_sem(gold_results))
-
-            spurious = ann_helpers_pairwise.analyze_spurious_pairwise_correlations_best_worst(
-                df_auto.query(f"annotator == '{a}'").copy(),
-                col_preference="preference",
-            )["delta_best_minus_worse"].to_dict()
-            results[a].update(spurious)
-
-        return pd.DataFrame(results).T
 
 
 def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = None, **kwargs):

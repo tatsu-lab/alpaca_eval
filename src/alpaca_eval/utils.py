@@ -39,9 +39,7 @@ def random_seeded_choice(seed: Union[int, str, float], choices):
     return random.Random(seed).choice(choices)
 
 
-def shuffle_pairwise_preferences(
-        df: pd.DataFrame, arr_is_shuffle: Sequence[int]
-) -> pd.DataFrame:
+def shuffle_pairwise_preferences(df: pd.DataFrame, arr_is_shuffle: Sequence[int]) -> pd.DataFrame:
     """Shuffle the outputs of a pairwise preference dataframe.
 
     Examples
@@ -59,9 +57,7 @@ def shuffle_pairwise_preferences(
     df["output_2"] = np.where(arr_is_shuffle, col_1, col_2)
 
     if "preference" in df.columns:
-        df["preference"] = np.where(
-            arr_is_shuffle, 3 - df["preference"], df["preference"]
-        )
+        df["preference"] = np.where(arr_is_shuffle, 3 - df["preference"], df["preference"])
 
     return df
 
@@ -90,9 +86,7 @@ def random_derangement(arr, max_loop=10, seed=None):
             return arr[shuffled]
 
     # if no luck then computes all possibilities
-    deranged_order = list(
-        set([s for s in itertools.permutations(idcs) if is_derangement(s, idcs)])
-    )
+    deranged_order = list(set([s for s in itertools.permutations(idcs) if is_derangement(s, idcs)]))
     return arr[list(rng.choice(deranged_order))]
 
 
@@ -155,9 +149,7 @@ def make_prompts(
     n_occurrences = Counter(text_to_format)
 
     if not all([n == batch_size for n in n_occurrences.values()]):
-        raise ValueError(
-            f"All placeholders should be repeated batch_size={batch_size} times but {n_occurrences}."
-        )
+        raise ValueError(f"All placeholders should be repeated batch_size={batch_size} times but {n_occurrences}.")
 
     # padding if you don't have enough examples
     n_to_pad = (batch_size - len(df)) % batch_size
@@ -173,9 +165,7 @@ def make_prompts(
         for j in range(batch_size):
             for to_format in n_occurrences.keys():
                 # replace only first occurrence (that's why we don't use .format)
-                current_prompt = current_prompt.replace(
-                    "{" + to_format + "}", str(df_out.iloc[i + j][to_format]), 1
-                )
+                current_prompt = current_prompt.replace("{" + to_format + "}", str(df_out.iloc[i + j][to_format]), 1)
         prompts.append(current_prompt)
 
     return prompts, df_out
@@ -228,9 +218,7 @@ def convert_ordinal_to_binary_preference(
         is_df = False
         preferences = pd.DataFrame.from_records(preferences)
 
-    preferences[binary_preference_key] = (
-                                                 preferences[ordinal_preference_key].round().astype(int) - 1
-                                         ) // 2 + 1
+    preferences[binary_preference_key] = (preferences[ordinal_preference_key].round().astype(int) - 1) // 2 + 1
 
     if not is_df:
         preferences = preferences.to_dict(orient="records")
@@ -255,14 +243,10 @@ def check_import(module: str, to_use: Optional[str] = None):
     """Check whether the given module is imported."""
     if module not in sys.modules:
         if to_use is None:
-            error = '{} module not imported. Try "pip install {}".'.format(
-                module, module
-            )
+            error = '{} module not imported. Try "pip install {}".'.format(module, module)
             raise ImportError(error)
         else:
-            error = 'You need {} to use {}. Try "pip install {}".'.format(
-                module, to_use, module
-            )
+            error = 'You need {} to use {}. Try "pip install {}".'.format(module, to_use, module)
             raise ImportError(error)
 
 
@@ -312,9 +296,8 @@ class Timer:
 def silent():
     """Context manager to remove all outputs and warnings."""
     import IPython
-    with open(os.devnull, "w") as f, contextlib.redirect_stdout(
-            f
-    ), DisableLogger(), IPython.utils.io.capture_output():
+
+    with open(os.devnull, "w") as f, contextlib.redirect_stdout(f), DisableLogger(), IPython.utils.io.capture_output():
         yield
 
 
@@ -324,3 +307,24 @@ class DisableLogger:
 
     def __exit__(self, a, b, c):
         logging.disable(logging.NOTSET)
+
+
+def contains_list(text):
+    """Check if the text contains a list / bullet points...."""
+
+    # Bullet points or '*' list items
+    bullet_point_pattern = r"(\s*•\s*|\s*\*\s*)(\w+)"
+
+    # Numbered lists with '.' or ')'
+    number_list_pattern = r"(\s*\d+\.|\s*\d+\))\s*(\w+)"
+
+    # Alphabetic lists with '.' or ')'
+    alpha_list_pattern = r"(\s*[a-zA-Z]\.|\s*[a-zA-Z]\))\s*(\w+)"
+
+    patterns = [bullet_point_pattern, number_list_pattern, alpha_list_pattern]
+
+    for pattern in patterns:
+        if re.search(pattern, text):
+            return True
+
+    return False
