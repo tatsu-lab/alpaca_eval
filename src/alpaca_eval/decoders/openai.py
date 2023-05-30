@@ -86,9 +86,7 @@ def openai_completions(
             for t in tokens_to_avoid:
                 curr_tokens = tokenizer.encode(t)
                 if len(curr_tokens) != 1 and is_skip_multi_tokens_to_avoid:
-                    logging.warning(
-                        f"'{t}' has more than one token, skipping because `is_skip_multi_tokens_to_avoid`."
-                    )
+                    logging.warning(f"'{t}' has more than one token, skipping because `is_skip_multi_tokens_to_avoid`.")
                     continue
                 for tok_id in curr_tokens:
                     logit_bias[tok_id] = -100  # avoids certain tokens
@@ -121,10 +119,7 @@ def openai_completions(
     logging.info(f"Kwargs to completion: {decoding_kwargs}")
     n_batches = int(math.ceil(n_examples / batch_size))
 
-    prompt_batches = [
-        prompts[batch_id * batch_size: (batch_id + 1) * batch_size]
-        for batch_id in range(n_batches)
-    ]
+    prompt_batches = [prompts[batch_id * batch_size: (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
 
     kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
@@ -137,10 +132,7 @@ def openai_completions(
             ]
         else:
             with multiprocessing.Pool(num_procs) as p:
-                partial_completion_helper = functools.partial(
-                    _openai_completion_helper,
-                    **kwargs
-                )
+                partial_completion_helper = functools.partial(_openai_completion_helper, **kwargs)
                 completions = list(
                     tqdm.tqdm(
                         p.imap(partial_completion_helper, prompt_batches),
@@ -153,9 +145,11 @@ def openai_completions(
     # flatten the list and select only the text
     completions_text = [completion.text for completion_batch in completions for completion in completion_batch]
 
-    price = [completion["total_tokens"] * _get_price_per_token(model_name)
-             for completion_batch in completions
-             for completion in completion_batch]
+    price = [
+        completion["total_tokens"] * _get_price_per_token(model_name)
+        for completion_batch in completions
+        for completion in completion_batch
+    ]
     avg_time = [t.duration / n_examples] * len(completions_text)
 
     return dict(completions=completions_text, price_per_example=price, time_per_example=avg_time)
@@ -211,8 +205,9 @@ def _openai_completion_helper(
             else:
                 logging.warning("Hit request rate limit; retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
-                    openai.organization = random.choice([o for o in openai_organization_ids if
-                                                         o != openai.organization])
+                    openai.organization = random.choice(
+                        [o for o in openai_organization_ids if o != openai.organization]
+                    )
                     logging.info(f"Switching to OAI organization.")
                 if openai_api_keys is not None and len(openai_api_keys) > 1:
                     openai.api_key = random.choice([o for o in openai_api_keys if o != openai.api_key])

@@ -49,7 +49,9 @@ def huggingface_local_completions(
         Additional kwargs to pass to `InferenceApi.__call__`.
     """
     default_model_kwargs = {  # "load_in_8bit": True, # divides memory by 2 but is slower,
-        "device_map": "auto", "torch_dtype": torch.float16}
+        "device_map": "auto",
+        "torch_dtype": torch.float16,
+    }
     model_kwargs = model_kwargs or {}
     default_model_kwargs.update(model_kwargs)
     model_kwargs = default_model_kwargs
@@ -62,9 +64,7 @@ def huggingface_local_completions(
         logging.info("No samples to annotate.")
         return []
     else:
-        logging.info(
-            f"Using `huggingface_local_completions` on {n_examples} prompts using {model_name}."
-        )
+        logging.info(f"Using `huggingface_local_completions` on {n_examples} prompts using {model_name}.")
 
     if not torch.cuda.is_available():
         model_kwargs["load_in_8bit"] = False
@@ -73,12 +73,12 @@ def huggingface_local_completions(
     #  faster but slightly less accurate matrix multiplications
     torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = True
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir, padding_side="left",
-                                              use_fast=is_fast_tokenizer, **model_kwargs)
-    model = AutoModelForCausalLM.from_pretrained(model_name,
-                                                 cache_dir=cache_dir,
-                                                 trust_remote_code=trust_remote_code,
-                                                 **model_kwargs)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name, cache_dir=cache_dir, padding_side="left", use_fast=is_fast_tokenizer, **model_kwargs
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, cache_dir=cache_dir, trust_remote_code=trust_remote_code, **model_kwargs
+    )
 
     if batch_size == 1:
         try:
@@ -102,10 +102,7 @@ def huggingface_local_completions(
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
     tokenizer.pad_token_id = model.config.eos_token_id
-    pipeline = transformers.pipeline(task="text-generation",
-                                     model=model,
-                                     tokenizer=tokenizer,
-                                     **default_kwargs)
+    pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs)
 
     ## compute and log the time for completions
     with utils.Timer() as t:

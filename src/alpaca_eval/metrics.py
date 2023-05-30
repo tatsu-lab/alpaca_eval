@@ -35,5 +35,3 @@ def pairwise_to_winrate(preferences: Union[pd.Series, Sequence]) -> dict[str, in
         n_draws=n_draws,
         n_total=n_total,
     )
-
-

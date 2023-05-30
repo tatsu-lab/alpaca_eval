@@ -40,23 +40,16 @@ def cohere_completions(
         logging.info("No samples to annotate.")
         return []
     else:
-        logging.info(
-            f"Using `cohere_completions` on {n_examples} prompts using {model_name}."
-        )
+        logging.info(f"Using `cohere_completions` on {n_examples} prompts using {model_name}.")
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
     with utils.Timer() as t:
         if num_procs == 1:
-            completions = [
-                _cohere_completion_helper(prompt, **kwargs)
-                for prompt in tqdm.tqdm(prompts, desc="prompts")
-            ]
+            completions = [_cohere_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")]
         else:
             with multiprocessing.Pool(num_procs) as p:
-                partial_completion_helper = functools.partial(
-                    _cohere_completion_helper, **kwargs
-                )
+                partial_completion_helper = functools.partial(_cohere_completion_helper, **kwargs)
                 completions = list(
                     tqdm.tqdm(
                         p.imap(partial_completion_helper, prompts),
@@ -85,9 +78,7 @@ def _cohere_completion_helper(
     anthropic_api_key = random.choice(cohere_api_keys)
     client = cohere.Client(anthropic_api_key)
 
-    kwargs.update(
-        dict(max_tokens=max_tokens, temperature=temperature)
-    )
+    kwargs.update(dict(max_tokens=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
 
     # TODO deal with errors as with anthropic and openai

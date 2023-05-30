@@ -42,23 +42,18 @@ def anthropic_completions(
         logging.info("No samples to annotate.")
         return []
     else:
-        logging.info(
-            f"Using `anthropic_completions` on {n_examples} prompts using {model_name}."
-        )
+        logging.info(f"Using `anthropic_completions` on {n_examples} prompts using {model_name}.")
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
     with utils.Timer() as t:
         if num_procs == 1:
             completions = [
-                _anthropic_completion_helper(prompt, **kwargs)
-                for prompt in tqdm.tqdm(prompts, desc="prompts")
+                _anthropic_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")
             ]
         else:
             with multiprocessing.Pool(num_procs) as p:
-                partial_completion_helper = functools.partial(
-                    _anthropic_completion_helper, **kwargs
-                )
+                partial_completion_helper = functools.partial(_anthropic_completion_helper, **kwargs)
                 completions = list(
                     tqdm.tqdm(
                         p.imap(partial_completion_helper, prompts),
@@ -88,9 +83,7 @@ def _anthropic_completion_helper(
     anthropic_api_key = random.choice(anthropic_api_keys)
     client = anthropic.Client(anthropic_api_key)
 
-    kwargs.update(
-        dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature)
-    )
+    kwargs.update(dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
     while True:
         try:
@@ -110,12 +103,8 @@ def _anthropic_completion_helper(
                 logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
                 time.sleep(sleep_time)
             if "exceeds max" in str(e):
-                curr_kwargs["max_tokens_to_sample"] = int(
-                    curr_kwargs["max_tokens_to_sample"] * 0.8
-                )
-                logging.warning(
-                    f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying..."
-                )
+                curr_kwargs["max_tokens_to_sample"] = int(curr_kwargs["max_tokens_to_sample"] * 0.8)
+                logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
             else:
                 raise ValueError(f"Unknown ApiException {e}.")
 

@@ -28,17 +28,17 @@ ALL_LEADERBOARDS = {
 
 
 def pairwise_winrates(
-        model_outputs: Union[AnyPath, AnyData, Callable],
-        reference_outputs: Union[AnyPath, AnyData, Callable] = DEFAULT_REFERENCE_OUTPUTS,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        name: str = "Current method",
-        is_return_metrics: bool = False,
-        rest_of_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
-        fn_metric: Union[str, callable] = "pairwise_to_winrate",
-        sort_by: str = "win_rate",
-        max_instances: Optional[int] = None,
-        annotation_kwargs: Optional[dict[str, Any]] = None,
-        **annotator_kwargs
+    model_outputs: Union[AnyPath, AnyData, Callable],
+    reference_outputs: Union[AnyPath, AnyData, Callable] = DEFAULT_REFERENCE_OUTPUTS,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    name: str = "Current method",
+    is_return_metrics: bool = False,
+    rest_of_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+    fn_metric: Union[str, callable] = "pairwise_to_winrate",
+    sort_by: str = "win_rate",
+    max_instances: Optional[int] = None,
+    annotation_kwargs: Optional[dict[str, Any]] = None,
+    **annotator_kwargs
 ):
     """
 
