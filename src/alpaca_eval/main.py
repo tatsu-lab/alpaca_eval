@@ -5,7 +5,7 @@ from pathlib import Path
 import fire
 
 from .types import AnyPath, AnyData
-from . import utils, metrics, annotators, constants
+from . import utils, metrics, annotators, constants, analyze
 
 CUR_DIR = Path(__file__).parent
 
@@ -20,7 +20,8 @@ def DEFAULT_REFERENCE_OUTPUTS():
 
 
 DEFAULT_CONFIGS = "alpaca_farm/configs.yaml"
-DEFAULT_LEADERBOARD = CUR_DIR / "leaderboards/alpaca_farm/pairwise_leaderboard.csv"
+DEFAULT_LEADERBOARD = CUR_DIR / "leaderboards/pairwise/alpaca_farm_leaderboard.csv"
+DEFAULT_EVALUATOR_LEADERBOARD = CUR_DIR / "leaderboards/pairwise/evaluators_leaderboard.csv"
 
 ALL_LEADERBOARDS = {
     (str(DEFAULT_REFERENCE_OUTPUTS), str(DEFAULT_CONFIGS)): DEFAULT_LEADERBOARD,
@@ -28,17 +29,17 @@ ALL_LEADERBOARDS = {
 
 
 def pairwise_winrates(
-    model_outputs: Union[AnyPath, AnyData, Callable],
-    reference_outputs: Union[AnyPath, AnyData, Callable] = DEFAULT_REFERENCE_OUTPUTS,
-    annotators_config: AnyPath = DEFAULT_CONFIGS,
-    name: str = "Current method",
-    is_return_metrics: bool = False,
-    rest_of_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
-    fn_metric: Union[str, callable] = "pairwise_to_winrate",
-    sort_by: str = "win_rate",
-    max_instances: Optional[int] = None,
-    annotation_kwargs: Optional[dict[str, Any]] = None,
-    **annotator_kwargs
+        model_outputs: Union[AnyPath, AnyData, Callable],
+        reference_outputs: Union[AnyPath, AnyData, Callable] = DEFAULT_REFERENCE_OUTPUTS,
+        annotators_config: AnyPath = DEFAULT_CONFIGS,
+        name: str = "Current method",
+        is_return_metrics: bool = False,
+        rest_of_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+        fn_metric: Union[str, callable] = "pairwise_to_winrate",
+        sort_by: str = "win_rate",
+        max_instances: Optional[int] = None,
+        annotation_kwargs: Optional[dict[str, Any]] = None,
+        **annotator_kwargs
 ):
     """
 
@@ -95,7 +96,7 @@ def pairwise_winrates(
             rest_of_leaderboard = None
 
     if rest_of_leaderboard is not None:
-        leaderboard = utils.load_or_convert_to_dataframe(rest_of_leaderboard)
+        leaderboard = utils.load_or_convert_to_dataframe(rest_of_leaderboard).to_dict(orient="index")
     else:
         leaderboard = dict()
 
@@ -121,9 +122,55 @@ def pairwise_winrates(
         print(df_leaderboard.to_string(float_format="%.2f"))
 
 
-def main(task="pairwise_winrates"):
-    fire.Fire(globals()[task])
+def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
+                       Annotator=annotators.PairwiseAnnotator,
+                       analyzer_kwargs=None,
+                       rest_of_leaderboard: Optional[Union[AnyPath, AnyData]] = DEFAULT_EVALUATOR_LEADERBOARD,
+                       is_save_leaderboard: bool = False,
+                       is_return_metrics: bool = False,
+                       is_overwrite_leaderboard: bool = False,
+                       ):
+
+    if rest_of_leaderboard is not None:
+        leaderboard = utils.load_or_convert_to_dataframe(rest_of_leaderboard).to_dict(orient="index")
+    else:
+        leaderboard = dict()
+
+    analyzer_kwargs = analyzer_kwargs or {}
+
+    if annotators_config is not None:
+        key = annotators_config.replace("/", "_").replace("_configs.yaml", "")
+        if key not in leaderboard or is_overwrite_leaderboard:
+            analyzer = analyze.Analyzer(**analyzer_kwargs)
+
+            if key == "humans":
+                df_crossannotations = analyzer.df_gold_crossannotations
+            elif key == "longest":
+                df_crossannotations = analyze._get_longest_predictor(analyzer.df_gold_crossannotations)
+            else:
+                df_crossannotations = analyze.get_crossannotations(analyzer=analyzer,
+                                                                   Annotator=Annotator,
+                                                                   annotators_config=annotators_config)
+            leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
+
+    df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by="Human Agreement", ascending=False)
+
+    if is_save_leaderboard:
+        df_leaderboard.to_csv(rest_of_leaderboard)
+
+    if is_return_metrics:
+        return df_leaderboard
+    else:
+        print(df_leaderboard.to_string(float_format="%.2f"))
+
+
+def main_helper(task="pairwise_winrates", **kwargs):
+    globals()[task](**kwargs)
+
+
+def main():
+    fire.Fire(main_helper)
 
 
 if __name__ == "__main__":
-    main()
+    fire.Fire(main_helper)
