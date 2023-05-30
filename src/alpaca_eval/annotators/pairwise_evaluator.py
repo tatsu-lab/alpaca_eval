@@ -1,5 +1,4 @@
 import logging
-import re
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence, Union
@@ -319,7 +318,7 @@ class PairwiseAnnotator:
 
         df_to_annotate = self._preprocess(to_annotate)
         df_annotated = self._annotate(df_to_annotate, **decoding_kwargs)
-        annotated = self._postprocess_and_store_(df_annotated)
+        annotated = self._postprocess_and_store_(df_annotated, to_annotate)
         return annotated
 
     def set_noise(self, p_label_flip: float):
@@ -425,8 +424,12 @@ class PairwiseAnnotator:
 
         return df_annotated
 
-    def _postprocess_and_store_(self, df_annotated: pd.DataFrame) -> list[dict[str, Any]]:
+    def _postprocess_and_store_(self,
+                                df_annotated: pd.DataFrame,
+                                to_annotate: Union[Sequence[dict[str, Any]], pd.DataFrame]) -> list[dict[str, Any]]:
         """Convert the dataframe into a list of dictionaries to be returned, and store current anntations."""
+
+        df_to_annotate = ann_utils.convert_to_dataframe(to_annotate)
 
         # select available annotations
         if self.is_store_missing_preferences:
@@ -447,7 +450,8 @@ class PairwiseAnnotator:
             df_annotated_to_store = df_annotated
 
         other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_annotated_to_store.columns]
-        df_annotated_to_store = df_annotated_to_store[self.all_keys + ["preference"] + other_keys_to_keep]
+        all_keys_to_keep = self.all_keys + ["preference"] + other_keys_to_keep
+        df_annotated_to_store = df_annotated_to_store[all_keys_to_keep]
 
         if self.df_annotations is None:
             df_annotations = df_annotated_to_store
@@ -461,6 +465,14 @@ class PairwiseAnnotator:
         if self.is_store_missing_preferences:
             # put back np.nan
             df_annotated["preference"] = df_annotated["preference"].replace(-1, np.nan)
+
+        # need to merge with df_to_annotate in case you dropped duplicates
+        on = list(self.input_keys + self.output_keys)
+        df_annotated = df_annotated[all_keys_to_keep + ["preference"]]
+        df_to_annotate = df_to_annotate[
+            [c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
+        # need to remove all other columns before merging if not you will
+        df_annotated = df_to_annotate.merge(df_annotated, on=on, how="outer")
 
         annotated = df_annotated.to_dict(orient="records")
 

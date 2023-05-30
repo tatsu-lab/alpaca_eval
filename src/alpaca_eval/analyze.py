@@ -9,7 +9,7 @@ import datasets
 import numpy as np
 import pandas as pd
 
-from . import constants, utils, annotators
+from . import constants, utils
 from .types import AnyPath, AnyData
 
 
@@ -19,6 +19,7 @@ def DEFAULT_GOLD_CROSSANNOTATIONS():
         "alpaca_farm_human_crossannotations",
         cache_dir=constants.DEFAULT_CACHE_DIR,
         use_auth_token=constants.DATASETS_TOKEN,
+        # download_mode='force_redownload'
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -33,6 +34,7 @@ def DEFAULT_GOLD_ANNOTATIONS():
         "alpaca_farm_human_annotations",
         cache_dir=constants.DEFAULT_CACHE_DIR,
         use_auth_token=constants.DATASETS_TOKEN,
+        # download_mode='force_redownload'
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
