@@ -55,7 +55,7 @@ setuptools.setup(
     ],
     entry_points={
         "console_scripts": [
-            "alpaca_eval=alpaca_eval:main",
+            "alpaca_eval=alpaca_eval.main:main",
         ],
     },
 )
