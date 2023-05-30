@@ -4,14 +4,14 @@ import logging
 import math
 import multiprocessing
 import time
-from random import random
+import random
 from typing import Optional, Sequence
 import tqdm
 
 import openai
 import tiktoken
 
-from .. import utils
+from .. import utils, constants
 
 __all__ = ["openai_completions"]
 
@@ -159,7 +159,7 @@ def _openai_completion_helper(
         prompt_batch: Sequence[str],
         is_chat: bool,
         sleep_time: int = 2,
-        openai_organization_ids: Optional[Sequence[str]] = None,
+        openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
         openai_api_keys: Optional[Sequence[str]] = None,
         max_tokens: Optional[int] = 1000,
         top_p: Optional[float] = 1.0,
