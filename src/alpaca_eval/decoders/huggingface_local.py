@@ -13,15 +13,15 @@ __all__ = ["huggingface_local_completions"]
 
 
 def huggingface_local_completions(
-        prompts: Sequence[str],
-        model_name: str,
-        do_sample: bool = False,
-        batch_size: int = 1,
-        model_kwargs=None,
-        cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
-        trust_remote_code: bool = False,
-        is_fast_tokenizer: bool = True,
-        **kwargs,
+    prompts: Sequence[str],
+    model_name: str,
+    do_sample: bool = False,
+    batch_size: int = 1,
+    model_kwargs=None,
+    cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+    trust_remote_code: bool = False,
+    is_fast_tokenizer: bool = True,
+    **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
 

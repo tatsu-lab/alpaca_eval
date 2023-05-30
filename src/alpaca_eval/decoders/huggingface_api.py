@@ -12,12 +12,12 @@ __all__ = ["huggingface_api_completions"]
 
 
 def huggingface_api_completions(
-        prompts: Sequence[str],
-        model_name: str,
-        gpu: bool = False,
-        do_sample: bool = False,
-        num_procs: int = 8,
-        **kwargs,
+    prompts: Sequence[str],
+    model_name: str,
+    gpu: bool = False,
+    do_sample: bool = False,
+    num_procs: int = 8,
+    **kwargs,
 ) -> dict[str, list]:
     """Decode with the API from hugging face hub.
 

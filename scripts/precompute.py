@@ -31,7 +31,7 @@ def precompute_local_crossannotations(
         annotators_configs=(
                 # "oasst-pythia-12b/basic_configs.yaml",
                 # "stablelm_alpha_7b/basic_configs.yaml",
-                "guanaco-33b/basic_configs.yaml",
+                "alpaca-farm-ppo-human-7b/basic_configs.yaml",
                 #        "falcon-40b-instruct/basic_configs.yaml",
         )
 ):
