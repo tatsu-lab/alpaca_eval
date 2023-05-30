@@ -60,24 +60,22 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
 
 # modified from: https://github.com/lm-sys/FastChat/blob/main/fastchat/eval/eval_gpt_review.py#L47
 # does not work with batched completions
-def vicuna_parser(completion):
+def lmsys_parser(completion):
     try:
         score_pair = completion.split("\n")[0]
         score_pair = score_pair.replace(",", " ")
         sp = score_pair.split(" ")
         if len(sp) == 2:
-            vicuna_score_1 = float(sp[0])
-            vicuna_score_2 = float(sp[1])
-            if vicuna_score_1 > vicuna_score_2:
+            lmsys_score_1 = float(sp[0])
+            lmsys_score_2 = float(sp[1])
+            if lmsys_score_1 > lmsys_score_2:
                 return [1]
-            elif vicuna_score_1 < vicuna_score_2:
+            elif lmsys_score_1 < lmsys_score_2:
                 return [2]
             else:
                 return [0]
         else:
             raise Exception("Invalid score pair.")
     except Exception as e:
-        logging.error(
-            f"{e}\nContent: {completion}\n" "You must manually fix the score pair."
-        )
+        logging.error(f"{e}\nContent: {completion}\n" "You must manually fix the score pair.")
         return [np.nan]
