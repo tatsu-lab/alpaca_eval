@@ -26,7 +26,7 @@ def precompute_evaluator_leaderboard(annotators_configs="API_EVALUATORS_TO_ANALY
         # saving is done automatically
         _ = alpaca_main.analyze_evaluators(annotators_config=annotators_config,
                                            max_instances=max_instances,
-                                           is_save_leaderboard=max_instances is not None,
+                                           is_save_leaderboard=max_instances is None,
                                            is_return_metrics=True,  # don't print
                                            **kwargs)
 

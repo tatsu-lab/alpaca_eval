@@ -28,6 +28,10 @@ def read_or_return(to_read: Union[AnyPath, str], **kwargs):
         with open(Path(to_read), **kwargs) as f:
             out = f.read()
     except FileNotFoundError as e:
+        if to_read.endswith(".txt"):
+            # most likely it is a path but you couldn't fine it
+            raise e
+
         logging.warning(f"Returning input because file not found. Error: {e}")
         out = to_read
 
