@@ -9,7 +9,7 @@ import datasets
 import numpy as np
 import pandas as pd
 
-from . import constants, utils
+from . import constants, utils, annotators
 from .types import AnyPath, AnyData
 
 
@@ -41,6 +41,39 @@ def DEFAULT_GOLD_ANNOTATIONS():
     return df
 
 
+def make_evaluator_leaderboard(Annotator=annotators.PairwiseAnnotator,
+                               annotators_configs=("gpt4/basic_configs.yaml",
+                                                   "claude/basic_configs.yaml",
+                                                   "gpt4/b1_configs.yaml",
+                                                   "gpt3/basic_configs.yaml",
+                                                   "gpt4/configs.yaml",
+                                                   "chatgpt/basic_configs.yaml",
+                                                   "oasst-pythia-12b/basic_configs.yaml",
+                                                   "stablelm_alpha_7b/basic_configs.yaml",
+                                                   "guanaco-33b/basic_configs.yaml",
+                                                   "alpaca-farm-ppo-human-7b/basic_configs.yaml",
+                                                   "humans",
+                                                   "longest",
+                                                   ),
+                               analyzer_kwargs=None):
+    analyzer_kwargs = analyzer_kwargs or {}
+    analyzer = Analyzer(**analyzer_kwargs)
+
+    all_metrics = {}
+    for annotators_config in annotators_configs:
+        key = annotators_config.replace("/", "_").replace("_configs.yaml", "")
+        if key not in all_metrics:
+            if key == "humans":
+                df_crossannotations = analyzer.df_gold_crossannotations
+            elif key == "longest":
+                df_crossannotations = _get_longest_predictor(analyzer.df_gold_crossannotations)
+            else:
+                df_crossannotations = get_crossannotations(analyzer=analyzer,
+                                                           Annotator=Annotator,
+                                                           annotators_config=annotators_config)
+            all_metrics[key] = _get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
+
+
 class Analyzer:
     """Helper class to compare and understand annotations from different annotators.
 
@@ -68,7 +101,7 @@ class Analyzer:
     def __init__(
             self,
             gold_crossannotations: Union[AnyPath, AnyData, Callable] = DEFAULT_GOLD_CROSSANNOTATIONS,
-            gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = None,
+            gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = DEFAULT_GOLD_ANNOTATIONS,
             keys=("instruction", "input", "output_1", "output_2"),
             n_annotators: Optional[int] = 4,
             seed: Optional[int] = 0,
@@ -379,19 +412,33 @@ def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = Non
 def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **kwargs):
     """Get annotations by `Annotator` corresponding to `analyzer.df_gold_annotations`."""
     annotator = Annotator(**kwargs)
-    df_gold_crossannotations = analyzer.df_gold_annotations.query(f"index == 0")
+    df_gold_annotations = analyzer.df_gold_annotations
     if max_instances is not None:
-        df_gold_crossannotations = df_gold_crossannotations.head(max_instances)
-    annotations = annotator.annotate_pairs(df_gold_crossannotations)
+        df_gold_annotations = df_gold_annotations.head(max_instances)
+    annotations = annotator.annotate_pairs(df_gold_annotations)
     df_annotations = utils.load_or_convert_to_dataframe(annotations)
     return df_annotations
 
 
+def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
+    """Gets the metrics for an annotator given its crossannotations."""
+    all_metrics = dict()
+    all_metrics["Human Agreement"] = \
+        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"]
+    all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations)
+    all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
+    all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
+    if evaluator_name == "humans":
+        all_metrics["Bias"] = 0
+    else:
+        all_metrics["Bias"] = analyzer.estimate_bias(df_crossannotations)
+    all_metrics["Length preference"] = analyzer.get_length_biases(df_crossannotations)["probability_prefer_longer"]
+    all_metrics["List preference"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
+    all_metrics["# parsed"] = len(df_crossannotations.preference.dropna())
+    return all_metrics
+
+
 ###############################
-
-
-def format_acc_sem(serie, accuracy="accuracy", sem_col="sem_samples"):
-    return f"{serie[accuracy]:.2f}±{serie[sem_col]:.2f}"
 
 
 def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropna=True):
@@ -425,3 +472,13 @@ def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropn
         return np.nan
 
     return out.item()
+
+
+def _get_longest_predictor(df_annotations):
+    """TUrn the current predictions as the predictions from an annotator that always picks the longest output."""
+    curr = df_annotations.copy()
+    curr["annotator"] = "longest"
+    curr["preference"] = np.where(curr.output_1.str.len() > curr.output_2.str.len(), 1, 2)
+    curr["time_per_example"] = 0
+    curr["price_per_example"] = 0
+    return curr
