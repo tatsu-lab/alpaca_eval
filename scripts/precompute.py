@@ -16,7 +16,7 @@ def precompute_human_leaderboard(annotators_config=f"claude",
                                              **annotator_kwargs)
 
 
-def precompute_evaluator_leaderboard(annotators_configs="API_EVALUATORS_TO_ANALYZE",
+def precompute_evaluator_leaderboard(annotators_configs="EVALUATORS_TO_ANALYZE",
                                      max_instances=None, **kwargs):
     """Precompute evaluator's leaderboard for important API models."""
     if isinstance(annotators_configs, str):
