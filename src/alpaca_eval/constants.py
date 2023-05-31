@@ -16,7 +16,7 @@ MODELS_TO_BENCHMARK = (
     "ChatGPT",
     "AlpacaFarm PPO sim (gpt4 greedy 20k, step 350)",
     "AlpacaFarm PPO human (10k, step 40)",
-    "Alpaca",
+    "Alpaca 7B",
     "Davinci003",
     "Davinci001",
 )
@@ -25,13 +25,13 @@ API_EVALUATORS_TO_ANALYZE = (
     "gpt4",
     "claude",
     "text_davinci_003",
-    "gpt4",
+    "gpt4_b5",
     "chatgpt",
     "guanaco_33b",
     "lmsys",
     "cohere",
     "alpaca_farm",
-    "alpaca_farm_greedy_gpt4",
+    "alpaca_farm_greedy",
 )
 LOCAL_EVALUATORS_TO_ANALYZE = (
     "oasst_pythia_12b",
@@ -41,7 +41,7 @@ LOCAL_EVALUATORS_TO_ANALYZE = (
 EVALUATORS_TO_ANALYZE = tuple(
     list(LOCAL_EVALUATORS_TO_ANALYZE)
     + list(API_EVALUATORS_TO_ANALYZE)
-    + ["humans", "length"]
+    + ["humans", "longest"]
 )
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
@@ -71,7 +71,7 @@ def ALPACAFARM_REFERENCE_OUTPUTS():
         "alpaca_farm_evaluation",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        download_mode="force_redownload",
+        # download_mode="force_redownload",
     )["eval"]
 
 
@@ -81,7 +81,7 @@ def ALPACAFARM_ALL_OUTPUTS():
         "alpaca_farm_evaluation_all_outputs",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        download_mode="force_redownload",
+        # download_mode="force_redownload",
     )["eval"]
 
 
@@ -91,7 +91,7 @@ def ALPACAFARM_GOLD_CROSSANNOTATIONS():
         "alpaca_farm_human_crossannotations",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        download_mode="force_redownload",
+        # download_mode="force_redownload",
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -106,7 +106,7 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
         "alpaca_farm_human_annotations",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        download_mode="force_redownload",
+        # download_mode="force_redownload",
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -117,9 +117,9 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
 
 PRECOMPUTED_LEADERBOARDS = {
     (str(ALPACAFARM_REFERENCE_OUTPUTS), "alpaca_farm"): CUR_DIR
-    / "leaderboards/AlpacaFarm/alpaca_farm_leaderboard.csv",
+                                                        / "leaderboards/AlpacaFarm/alpaca_farm_leaderboard.csv",
     (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): CUR_DIR
-    / "leaderboards/AlpacaFarm/claude_leaderboard.csv",
+                                                   / "leaderboards/AlpacaFarm/claude_leaderboard.csv",
 }
 
 CURRENT_USER = getpass.getuser()
