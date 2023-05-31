@@ -60,9 +60,9 @@ class PairwiseAnnotator:
         Whether to avoid re-annotating examples that have already been annotated by the annotator. This will decrease
         cost but can be slightly slower if there are no annotations that can be reused.
 
-    saving_path : Path, optional
-        Path to save the annotations to. If None, will not save the annotations. If the path already exists it will load
-        annotations from there.
+    caching_path : Path, optional
+        Path to cache the annotations to. If None, will not save the annotations. If the path already exists it will
+        load annotations from there.
 
     input_keys : tuple of str, optional
         Keys use to distinguish inputs.
@@ -91,7 +91,7 @@ class PairwiseAnnotator:
             annotators_config: Union[ann_utils.AnyPath, list[dict[str, Any]]] = "claude",
             seed: Optional[int] = 0,
             is_avoid_reannotations: bool = True,
-            saving_path: Optional[ann_utils.AnyPath] = "auto",
+            caching_path: Optional[ann_utils.AnyPath] = "auto",
             input_keys: Sequence[str] = ("instruction", "input"),
             output_keys: Sequence[str] = ("output_1", "output_2"),
             p_label_flip: Optional[float] = None,
@@ -107,15 +107,15 @@ class PairwiseAnnotator:
         if annotators_config.is_dir():
             annotators_config = annotators_config / "configs.yaml"
 
-        if saving_path == "auto":
+        if caching_path == "auto":
             if isinstance(annotators_config, (str, Path, os.PathLike)):
                 stem = Path(annotators_config).stem
-                saving_path = Path(annotators_config).parent / f"annotations_seed{seed}_{stem}.json"
-                logging.info(f"Saving annotations to `{saving_path}`.")
+                caching_path = Path(annotators_config).parent / f"annotations_seed{seed}_{stem}.json"
+                logging.info(f"Saving annotations to `{caching_path}`.")
             else:
-                logging.warning("saving_path cannot be 'auto' if annotators_config is not a path. Setting to None.")
-                saving_path = None
-        elif saving_path is not None:
+                logging.warning("caching_path cannot be 'auto' if annotators_config is not a path. Setting to None.")
+                caching_path = None
+        elif caching_path is not None:
             logging.warning("Saving_path is given but not 'auto', make sure that it's different for different seeds.")
 
         self.seed = seed
@@ -130,7 +130,7 @@ class PairwiseAnnotator:
         self.annotators_config = annotators_config
 
         self.annotators = self._initialize_annotators(annotators_config)
-        self.saving_path = saving_path
+        self.caching_path = caching_path
         self.df_annotations = None
         self.load_()
         self.decoding_kwargs = decoding_kwargs
@@ -486,7 +486,7 @@ class PairwiseAnnotator:
 
     def save(self, path: Optional[ann_utils.AnyPath] = None):
         """Save the annotations to json."""
-        path = path or self.saving_path
+        path = path or self.caching_path
         if path is not None:
             logging.info(f"Saving all annotations to {path}.")
             # to make sure that we don't overwrite the annotations we load again from file (ideally would use a DB)
@@ -505,7 +505,7 @@ class PairwiseAnnotator:
 
     def load_(self, path: Optional[ann_utils.AnyPath] = None):
         """Load all the annotations from json."""
-        path = path or self.saving_path
+        path = path or self.caching_path
         if path is not None:
             path = Path(path)
             if path.exists():
