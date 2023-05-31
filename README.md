@@ -1,6 +1,9 @@
 # AlpacaEval
 
-to get instructions
+1. install `pip install -e . `
+2. set `ANTHROPIC_API_KEY`
+
+to get instructions:
 
 ```python
 import datasets
@@ -11,8 +14,14 @@ eval = datasets.load_dataset(
 )["eval"]
 ```
 
-to run the eval
+to test the eval :
 
 ```
 alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'claude'  --max_instances 3 --saving_path None 
+```
+
+to run the eval :
+
+```
+alpaca_eval --model_outputs 'outputs/claude/<model_name>.json' --annotators_config 'claude'
 ```
