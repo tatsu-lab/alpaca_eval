@@ -362,17 +362,17 @@ def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **
 def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     """Gets the metrics for an annotator given its crossannotations."""
     all_metrics = dict()
-    all_metrics["Human Agreement"] = \
-        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"]
-    all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations)
+    all_metrics["Human agreement [%]"] = \
+        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
+    all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
     all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
     all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
     if evaluator_name == "humans":
         all_metrics["Bias"] = 0
     else:
-        all_metrics["Bias"] = analyzer.estimate_bias(df_crossannotations)
-    all_metrics["Length preference"] = analyzer.get_length_biases(df_crossannotations)["probability_prefer_longer"]
-    all_metrics["List preference"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
+        all_metrics["Bias"] = analyzer.estimate_bias(df_crossannotations) * 100
+    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)["probability_prefer_longer"]
+    all_metrics["Proba. prefer lists"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
     all_metrics["# parsed"] = len(df_crossannotations.preference.dropna())
     return all_metrics
 
