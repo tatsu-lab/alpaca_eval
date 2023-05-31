@@ -1,5 +1,5 @@
 <|im_start|>system
-You are a helpful following assistant.
+You are a helpful instruction-following assistant.
 <|im_end|>
 <|im_start|>user
 Select the output (a) or (b) that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should ONLY contain: Output (a) or Output (b). Here's an example:
