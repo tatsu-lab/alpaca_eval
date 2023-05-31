@@ -11,7 +11,7 @@ OPENAI_ORGANIZATION_IDS = os.environ.get("OPENAI_ORGANIZATION_IDS", None)
 if isinstance(OPENAI_ORGANIZATION_IDS, str):
     OPENAI_ORGANIZATION_IDS = OPENAI_ORGANIZATION_IDS.split(",")
 
-MODELS_TO_BENCHMARK = (
+MODEL_LEADERBOARD = (
     "GPT-4",
     "ChatGPT",
     "AlpacaFarm PPO sim (gpt4 greedy 20k, step 350)",
@@ -20,8 +20,21 @@ MODELS_TO_BENCHMARK = (
     "Davinci003",
     "Davinci001",
 )
+EVALUATORS_TO_BENCHMARK = (
+    "gpt4",
+    "claude",
+    "text_davinci_003",
+    "chatgpt",
+    "guanaco_33b",
+    "lmsys",
+    "cohere",
+    "alpaca_farm",
+    "alpaca_farm_greedy",
+    "oasst_pythia_12b"
+)
 
 API_EVALUATORS_TO_ANALYZE = (
+    "gpt4_b1",
     "gpt4",
     "claude",
     "text_davinci_003",
@@ -120,6 +133,8 @@ PRECOMPUTED_LEADERBOARDS = {
                                                         / "leaderboards/AlpacaFarm/alpaca_farm_leaderboard.csv",
     (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): CUR_DIR
                                                    / "leaderboards/AlpacaFarm/claude_leaderboard.csv",
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), "gpt4"): CUR_DIR
+                                                 / "leaderboards/AlpacaFarm/gpt4_leaderboard.csv",
 }
 
 CURRENT_USER = getpass.getuser()

@@ -4,7 +4,7 @@ import fire
 
 def precompute_on_all_human_leaderboard(annotators_config=f"claude",
                                         Annotator=annotators.PairwiseAnnotator,
-                                        all_data=analyze.DEFAULT_GOLD_ANNOTATIONS,
+                                        all_data=constants.ALPACAFARM_GOLD_ANNOTATIONS,
                                         analyzer_kwargs=None,
                                         **annotator_kwargs):
     """Precompute all instructions on the eval leaderboard that has been annotated by humans."""

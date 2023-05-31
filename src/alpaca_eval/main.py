@@ -17,7 +17,7 @@ def pairwise_winrates(
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = "claude",
         name: str = "Current method",
-        output_path: Optional[AnyPath] = ".",
+        output_path: Optional[Union[AnyPath, str]] = "auto",
         precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
         is_return_instead_of_print: bool = False,
         fn_metric: Union[str, callable] = "pairwise_to_winrate",
@@ -48,6 +48,7 @@ def pairwise_winrates(
 
     output_path : bool, optional
         Path to the directory where the new leaderboard and the annotations should be stored. If None we don't save.
+        If `auto` we use `model_outputs` if it is a path, and otherwise use the directory from which we call the script.
 
     precomputed_leaderboard : path or data, optional
         The precomputed leaderboard or a path to it (json, csv, or tsv). The leaderboard should contain at least the
@@ -75,6 +76,12 @@ def pairwise_winrates(
         Additional arguments to pass to `PairwiseAnnotator`.
     """
     annotation_kwargs = annotation_kwargs or dict()
+    if output_path == "auto":
+        try:
+            output_path = Path(model_outputs).parent
+        except:
+            output_path = "."
+
     if output_path is not None:
         output_path = Path(output_path)
         output_path.mkdir(exist_ok=True, parents=True)
@@ -227,10 +234,13 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
         The maximum number of instances to analyze.
     """
 
+    leaderboard = dict()
     if precomputed_leaderboard is not None:
-        leaderboard = utils.load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
-    else:
-        leaderboard = dict()
+        try:
+            leaderboard = utils.load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
+        except FileNotFoundError:
+            logging.warning(f"Could not find precomputed leaderboard at {precomputed_leaderboard}. Starting from "
+                            f"scratch.")
 
     analyzer_kwargs = analyzer_kwargs or {}
 
@@ -252,7 +262,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
             all_crossannotations[key] = df_crossannotations
 
-    df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by="Human Agreement", ascending=False)
+    df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by="Human agreement [%]", ascending=False)
 
     if is_save_leaderboard:
         df_leaderboard.to_csv(precomputed_leaderboard)
