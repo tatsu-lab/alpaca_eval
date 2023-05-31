@@ -17,13 +17,13 @@ def pairwise_winrates(
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = "claude",
         name: str = "Current method",
-        is_return_leaderboard: bool = False,
+        output_path: Optional[AnyPath] = ".",
         precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+        is_return_instead_of_print: bool = False,
         fn_metric: Union[str, callable] = "pairwise_to_winrate",
         sort_by: str = "win_rate",
         max_instances: Optional[int] = None,
         annotation_kwargs: Optional[dict[str, Any]] = None,
-        is_save_leaderboard: bool = False,
         **annotator_kwargs
 ):
     """
@@ -46,13 +46,16 @@ def pairwise_winrates(
     name : str, optional
         The name of the model to add to the leaderboard.
 
-    is_return_leaderboard : bool, optional
-        Whether to return the metrics instead of printing the results.
+    output_path : bool, optional
+        Path to the directory where the new leaderboard and the annotations should be stored. If None we don't save.
 
     precomputed_leaderboard : path or data, optional
         The precomputed leaderboard or a path to it (json, csv, or tsv). The leaderboard should contain at least the
         column `win_rate`. If `auto` we will try to use the corresponding leaderboard for the reference outputs (only if
         in CORRESPONDING_OUTPUTS_LEADERBOARDS). If `None` we won't add other models from the leaderboard.
+
+    is_return_instead_of_print : bool, optional
+        Whether to return the metrics instead of printing the results.
 
     fn_metric : str or callable, optional
         The function or function name in `metrics.py` that will be used to convert preference to metrics. The function
@@ -65,9 +68,6 @@ def pairwise_winrates(
     max_instances : int, optional
         The maximum number of instances to annotate. Useful for testing.
 
-    is_save_leaderboard : bool, optional
-        Whether to save the leaderboard to `precomputed_leaderboard`.
-
     annotation_kwargs : dict, optional
         Additional arguments to pass to `PairwiseAnnotator.annotate_head2head`.
 
@@ -75,6 +75,9 @@ def pairwise_winrates(
         Additional arguments to pass to `PairwiseAnnotator`.
     """
     annotation_kwargs = annotation_kwargs or dict()
+    if output_path is not None:
+        output_path = Path(output_path)
+        output_path.mkdir(exist_ok=True, parents=True)
 
     if precomputed_leaderboard == "auto":
         try:
@@ -105,16 +108,19 @@ def pairwise_winrates(
         fn_metric = getattr(metrics, fn_metric)
 
     annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
-    annotated = annotator.annotate_head2head(outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs)
+    annotations = annotator.annotate_head2head(outputs_1=reference_outputs,
+                                               outputs_2=model_outputs,
+                                               **annotation_kwargs)
 
-    leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotated])
+    leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
     df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by=sort_by, ascending=False)
 
-    if is_save_leaderboard:
-        df_leaderboard.to_csv(precomputed_leaderboard)
+    if output_path is not None:
+        df_leaderboard.to_csv(output_path / "leaderboard.csv")
+        utils.convert_to_dataframe(annotations).to_json(output_path / "annotations.json", orient="records", indent=2)
 
-    if is_return_leaderboard:
-        return df_leaderboard
+    if is_return_instead_of_print:
+        return df_leaderboard, annotations
     else:
         print(df_leaderboard.to_string(float_format="%.2f"))
 
@@ -123,7 +129,7 @@ def make_model_leaderboard(leaderboard_path: AnyPath,
                            annotators_config: AnyPath = DEFAULT_CONFIGS,
                            fn_add_to_leaderboard: Callable = "pairwise_winrates",
                            all_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
-                           is_return_leaderboard: bool = False,
+                           is_return_instead_of_print: bool = False,
                            **kwargs):
     """Precompute and save an entire leaderboard.
 
@@ -136,7 +142,7 @@ def make_model_leaderboard(leaderboard_path: AnyPath,
     fn_add_to_leaderboard : callable or str, optional
         The function to use to add a model to the leaderboard. If a string, it should be the name of a function in
         `main.py`. The function should take the arguments: `model_outputs`, `annotators_config`, `name`,
-        `precomputed_leaderboard`, `is_return_leaderboard`, `is_save_leaderboard`.
+        `precomputed_leaderboard`, `is_return_instead_of_print`.
 
     all_outputs : path or data or callable, optional
         The outputs of all models to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
@@ -148,7 +154,7 @@ def make_model_leaderboard(leaderboard_path: AnyPath,
     annotators_config : path or list of dict, optional
         The path the (or list of dict of) the annotator's config file.
 
-    is_return_leaderboard : bool, optional
+    is_return_instead_of_print : bool, optional
         Whether to return the metrics instead of printing the results.
 
     kwargs :
@@ -161,21 +167,23 @@ def make_model_leaderboard(leaderboard_path: AnyPath,
     if "generator" not in all_outputs.columns:
         raise ValueError(f"all_outputs should have a column 'generator' with the name of the model.")
 
+    all_annotations = []
     for model in all_outputs["generator"].unique():
         model_outputs = all_outputs[all_outputs["generator"] == model]
-        _ = fn_add_to_leaderboard(model_outputs=model_outputs,
-                                  annotators_config=annotators_config,
-                                  name=model,
-                                  precomputed_leaderboard=leaderboard_path,
-                                  is_return_leaderboard=True,  # returning avoids printing
-                                  is_save_leaderboard=True,
-                                  **kwargs)
+        df_leaderboard, annotations = fn_add_to_leaderboard(model_outputs=model_outputs,
+                                                            annotators_config=annotators_config,
+                                                            name=model,
+                                                            precomputed_leaderboard=leaderboard_path,
+                                                            is_return_instead_of_print=True,
+                                                            **kwargs)
+        all_annotations += annotations
+        df_leaderboard.to_csv(leaderboard_path)
 
     leaderboard = utils.load_or_convert_to_dataframe(leaderboard_path)
     df_leaderboard = pd.DataFrame(leaderboard)
 
-    if is_return_leaderboard:
-        return df_leaderboard
+    if is_return_instead_of_print:
+        return df_leaderboard, all_annotations
     else:
         print(df_leaderboard.to_string(float_format="%.2f"))
 
@@ -186,7 +194,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
                        precomputed_leaderboard: Optional[
                            Union[AnyPath, AnyData]] = CUR_DIR / "leaderboards/evaluators/evaluators_leaderboard.csv",
                        is_save_leaderboard: bool = False,
-                       is_return_leaderboard: bool = False,
+                       is_return_instead_of_print: bool = False,
                        is_overwrite_leaderboard: bool = False,
                        max_instances: Optional[int] = None,
                        ):
@@ -209,7 +217,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
     is_save_leaderboard : bool, optional
         Whether to save the leaderboard (ie analyzed results).
         
-    is_return_leaderboard : bool, optional 
+    is_return_instead_of_print : bool, optional 
         Whether to return the leaderboard (ie analyzed results). If True, it will not print the results.
         
     is_overwrite_leaderboard : bool, optional
@@ -226,6 +234,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
 
     analyzer_kwargs = analyzer_kwargs or {}
 
+    all_crossannotations = dict()
     if annotators_config is not None:
         key = annotators_config.replace("/", "_").replace("_configs.yaml", "")
         if key not in leaderboard or is_overwrite_leaderboard:
@@ -241,14 +250,15 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
                                                                    max_instances=max_instances,
                                                                    annotators_config=annotators_config)
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
+            all_crossannotations[key] = df_crossannotations
 
     df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by="Human Agreement", ascending=False)
 
     if is_save_leaderboard:
         df_leaderboard.to_csv(precomputed_leaderboard)
 
-    if is_return_leaderboard:
-        return df_leaderboard
+    if is_return_instead_of_print:
+        return df_leaderboard, all_crossannotations
     else:
         print(df_leaderboard.to_string(float_format="%.2f"))
 
