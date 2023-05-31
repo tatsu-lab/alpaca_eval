@@ -6,6 +6,8 @@ import os
 import random
 import time
 from typing import Optional, Sequence
+
+import numpy as np
 import tqdm
 import anthropic
 
@@ -63,7 +65,12 @@ def anthropic_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
-    price = [0] * len(completions)
+    # anthropic doesn't return total tokens but 1 token approx 4 chars
+    price = [
+        len(prompt) / 4 * _get_price_per_token(model_name)
+        for prompt in prompts
+    ]
+
     avg_time = [t.duration / n_examples] * len(completions)
 
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
@@ -109,3 +116,15 @@ def _anthropic_completion_helper(
                 raise ValueError(f"Unknown ApiException {e}.")
 
     return response["completion"]
+
+
+def _get_price_per_token(model):
+    """Returns the price per token for a given model"""
+    # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
+    if "claude-v1" in model:
+        return (
+                11.02 / 1e6
+        )  # that's not completely true because decoding is 32.68 but close enough given that most is context
+    else:
+        logging.warning(f"Unknown model {model} for computing price per token.")
+        return np.nan
