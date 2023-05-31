@@ -24,7 +24,28 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/src/alpaca_eval/leaderboards/AlpacaFarm/claude_leaderboard.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/alpaca_eval/leaderboards/AlpacaFarm/gpt4_leaderboard.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/src/alpaca_eval/leaderboards/alpaca_farm/pairwise_leaderboard.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/alpaca_eval/leaderboards/evaluators/evaluators_leaderboard.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
