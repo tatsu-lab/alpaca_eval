@@ -323,7 +323,7 @@ def plot_all_properties(evaluator_leaderboard: pd.DataFrame,
     df_melted = df_all.melt(var_name="Variable", value_name="value", id_vars=["Annotator", "jitter"])
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_melted,
+        g = sns.relplot(data=df_melted.query("Annotator!='humans'"),
                         x="value", y="jitter", kind="scatter", row="Variable", hue='Annotator',
                         facet_kws={'sharex': False, 'sharey': True}, s=300, color='grey', alpha=0.9, legend="full",
                         aspect=2.5, height=2.5)
@@ -407,7 +407,7 @@ def save_fig(fig, filename, dpi, is_tight=True):
 ##########
 def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
                                       min_agreement: float = 0.55,
-                                      annotators_to_rm: Sequence[str] = ('longest',),
+                                      annotators_to_rm: Sequence[str] = ('longest', 'gpt4_b1'),
                                       evaluator_renamer: Optional[Callable] = evaluator_renamer,
                                       is_human_at_top: bool = True,
                                       ) -> pd.DataFrame:
@@ -419,11 +419,11 @@ def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
 
     df_all["Annotator"] = df_all.index
 
+    annotators_to_rm = [evaluator_renamer(a) for a in annotators_to_rm]
+    df_all = df_all.query("not Annotator.isin(@annotators_to_rm)")
+
     # select only useful
     df_all = df_all[df_all["Human Agreement"] > min_agreement]
-
-    annotators_to_rm = list(annotators_to_rm)
-    df_all = df_all.query("not Annotator.isin(@annotators_to_rm)")
 
     if is_human_at_top:
         # puts humans at the top (easier for colors)
