@@ -1,6 +1,7 @@
 import copy
 import functools
 import logging
+import math
 import multiprocessing
 import os
 import random
@@ -59,7 +60,8 @@ def cohere_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
-    price = [0] * len(completions)
+    # cohere charges $2.5 for every 1000 call to API that is less than 1000 characters. Only counting prompts here
+    price = [2.5 / 1000 * math.ceil(len(prompt) / 1000) for prompt in prompts]
     avg_time = [t.duration / n_examples] * len(completions)
 
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)

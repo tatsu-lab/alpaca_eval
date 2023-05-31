@@ -6,6 +6,8 @@ import multiprocessing
 import time
 import random
 from typing import Optional, Sequence
+
+import numpy as np
 import tqdm
 
 import openai
@@ -293,4 +295,5 @@ def _get_price_per_token(model):
     elif "text-davinci-003" in model:
         return 0.02 / 1000
     else:
-        raise ValueError(f"Unknown model {model}")
+        logging.warning(f"Unknown model {model} for computing price per token.")
+        return np.nan

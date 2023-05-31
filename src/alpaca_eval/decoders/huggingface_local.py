@@ -1,6 +1,7 @@
 import logging
 from typing import Optional, Sequence
 
+import numpy as np
 import torch
 from transformers import (
     AutoModelForCausalLM,
@@ -13,15 +14,15 @@ __all__ = ["huggingface_local_completions"]
 
 
 def huggingface_local_completions(
-    prompts: Sequence[str],
-    model_name: str,
-    do_sample: bool = False,
-    batch_size: int = 1,
-    model_kwargs=None,
-    cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
-    trust_remote_code: bool = False,
-    is_fast_tokenizer: bool = True,
-    **kwargs,
+        prompts: Sequence[str],
+        model_name: str,
+        do_sample: bool = False,
+        batch_size: int = 1,
+        model_kwargs=None,
+        cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+        trust_remote_code: bool = False,
+        is_fast_tokenizer: bool = True,
+        **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
 
@@ -115,7 +116,8 @@ def huggingface_local_completions(
         completions, _ = zip(*sorted(list(zip(completions, original_order)), key=lambda x: x[1]))
         completions = list(completions)
 
-    price = [0] * len(completions)
+    # local => price is really your compute
+    price = [np.nan] * len(completions)
     avg_time = [t.duration / n_examples] * len(completions)
 
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)

@@ -3,6 +3,8 @@ import logging
 import multiprocessing
 import os
 from typing import Sequence
+
+import numpy as np
 from huggingface_hub.inference_api import InferenceApi
 import tqdm
 
@@ -12,12 +14,12 @@ __all__ = ["huggingface_api_completions"]
 
 
 def huggingface_api_completions(
-    prompts: Sequence[str],
-    model_name: str,
-    gpu: bool = False,
-    do_sample: bool = False,
-    num_procs: int = 8,
-    **kwargs,
+        prompts: Sequence[str],
+        model_name: str,
+        gpu: bool = False,
+        do_sample: bool = False,
+        num_procs: int = 8,
+        **kwargs,
 ) -> dict[str, list]:
     """Decode with the API from hugging face hub.
 
@@ -80,7 +82,8 @@ def huggingface_api_completions(
         for completion in completions
     ]
 
-    price = [0] * len(completions)
+    # unclear pricing
+    price = [np.nan] * len(completions)
     avg_time = [t.duration / n_examples] * len(completions)
 
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
