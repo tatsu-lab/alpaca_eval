@@ -2,6 +2,8 @@
 
 1. install `pip install -e . `
 2. set `ANTHROPIC_API_KEY`
+3. testing
+   all: `alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'claude' --max_instances 3 --saving_path None `
 
 to get instructions:
 
@@ -12,12 +14,6 @@ eval = datasets.load_dataset(
     "tatsu-lab/alpaca_farm",
     "alpaca_farm_evaluation",
 )["eval"]
-```
-
-to test the eval :
-
-```
-alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'claude'  --max_instances 3 --saving_path None 
 ```
 
 to run the eval :
