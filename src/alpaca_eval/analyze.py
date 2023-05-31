@@ -13,36 +13,6 @@ from . import constants, utils
 from .types import AnyPath, AnyData
 
 
-def DEFAULT_GOLD_CROSSANNOTATIONS():
-    df = datasets.load_dataset(
-        "tatsu-lab/alpaca_eval",
-        "alpaca_farm_human_crossannotations",
-        cache_dir=constants.DEFAULT_CACHE_DIR,
-        use_auth_token=constants.DATASETS_TOKEN,
-        # download_mode='force_redownload'
-    )["validation"].to_pandas()
-
-    # turkers took around 9 min for 15 examples in AlpacaFarm
-    df["time_per_example"] = 9.2 * 60 / 15
-    df["price_per_example"] = 0.3  # price we paid for each example
-    return df
-
-
-def DEFAULT_GOLD_ANNOTATIONS():
-    df = datasets.load_dataset(
-        "tatsu-lab/alpaca_eval",
-        "alpaca_farm_human_annotations",
-        cache_dir=constants.DEFAULT_CACHE_DIR,
-        use_auth_token=constants.DATASETS_TOKEN,
-        # download_mode='force_redownload'
-    )["validation"].to_pandas()
-
-    # turkers took around 9 min for 15 examples in AlpacaFarm
-    df["time_per_example"] = 9.2 * 60 / 15
-    df["price_per_example"] = 0.3  # price we paid for each example
-    return df
-
-
 class Analyzer:
     """Helper class to compare and understand annotations from different annotators.
 
@@ -69,8 +39,8 @@ class Analyzer:
 
     def __init__(
             self,
-            gold_crossannotations: Union[AnyPath, AnyData, Callable] = DEFAULT_GOLD_CROSSANNOTATIONS,
-            gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = DEFAULT_GOLD_ANNOTATIONS,
+            gold_crossannotations: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_GOLD_CROSSANNOTATIONS,
+            gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = constants.ALPACAFARM_GOLD_ANNOTATIONS,
             keys=("instruction", "input", "output_1", "output_2"),
             n_annotators: Optional[int] = 4,
             seed: Optional[int] = 0,

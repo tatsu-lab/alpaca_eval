@@ -1,10 +1,22 @@
 import getpass
+import os
+from pathlib import Path
+
+import datasets
 
 DEFAULT_CACHE_DIR = None
-DATASETS_TOKEN = None
-OPENAI_ORGANIZATION_IDS = None
+DATASETS_TOKEN = os.environ.get("DATASETS_TOKEN", None)
+OPENAI_ORGANIZATION_IDS = os.environ.get("OPENAI_ORGANIZATION_IDS", None).split(",")
 
-# MODELS_TO_BENCHMARK
+MODELS_TO_BENCHMARK = (
+    "GPT-4",
+    "ChatGPT",
+    "AlpacaFarm PPO sim (gpt4 greedy 20k, step 350)",
+    "AlpacaFarm PPO sim (step 40)",
+    "Alpaca"
+    "Davinci003",
+    "Davinci001",
+)
 
 API_EVALUATORS_TO_ANALYZE = (
     "gpt4",
@@ -43,6 +55,64 @@ HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "Davinci001",
     "LLaMA 7B",
 )
+
+CUR_DIR = Path(__file__).parent
+
+
+def ALPACAFARM_REFERENCE_OUTPUTS():
+    return datasets.load_dataset(
+        "tatsu-lab/alpaca_eval",
+        "alpaca_farm_evaluation",
+        cache_dir=DEFAULT_CACHE_DIR,
+        use_auth_token=DATASETS_TOKEN,
+        # download_mode='force_redownload'
+    )["eval"]
+
+
+def ALPACAFARM_ALL_OUTPUTS():
+    return datasets.load_dataset(
+        "tatsu-lab/alpaca_eval",
+        "alpaca_farm_evaluation_all_outputs",
+        cache_dir=DEFAULT_CACHE_DIR,
+        use_auth_token=DATASETS_TOKEN,
+        # download_mode='force_redownload'
+    )["eval"]
+
+
+def ALPACAFARM_GOLD_CROSSANNOTATIONS():
+    df = datasets.load_dataset(
+        "tatsu-lab/alpaca_eval",
+        "alpaca_farm_human_crossannotations",
+        cache_dir=DEFAULT_CACHE_DIR,
+        use_auth_token=DATASETS_TOKEN,
+        # download_mode='force_redownload'
+    )["validation"].to_pandas()
+
+    # turkers took around 9 min for 15 examples in AlpacaFarm
+    df["time_per_example"] = 9.2 * 60 / 15
+    df["price_per_example"] = 0.3  # price we paid for each example
+    return df
+
+
+def ALPACAFARM_GOLD_ANNOTATIONS():
+    df = datasets.load_dataset(
+        "tatsu-lab/alpaca_eval",
+        "alpaca_farm_human_annotations",
+        cache_dir=DEFAULT_CACHE_DIR,
+        use_auth_token=DATASETS_TOKEN,
+        # download_mode='force_redownload'
+    )["validation"].to_pandas()
+
+    # turkers took around 9 min for 15 examples in AlpacaFarm
+    df["time_per_example"] = 9.2 * 60 / 15
+    df["price_per_example"] = 0.3  # price we paid for each example
+    return df
+
+
+PRECOMPUTED_LEADERBOARDS = {
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), 'alpaca_farm'): CUR_DIR / "leaderboards/AlpacaFarm/alpaca_farm_leaderboard.csv",
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), 'claude'): CUR_DIR / "leaderboards/AlpacaFarm/claude_leaderboard.csv",
+}
 
 CURRENT_USER = getpass.getuser()
 if CURRENT_USER in ["yanndubs"]:
