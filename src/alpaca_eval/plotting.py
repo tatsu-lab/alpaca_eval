@@ -352,12 +352,14 @@ def plot_winrate_correlations(human_leaderboard, auto_leaderboard,
                               models_to_keep=constants.HUMAN_ANNOTATED_MODELS_TO_KEEP,
                               config_kwargs=dict(rc={'lines.linewidth': 2}),
                               ):
+    models_to_keep = list(models_to_keep)
     df = pd.merge(human_leaderboard["win_rate"],
                   auto_leaderboard["win_rate"],
                   suffixes=["_human", "_auto"],
                   left_index=True,
                   right_index=True
-                  ).loc[models_to_keep]
+                  )
+    df = df.loc[models_to_keep]
 
     df = df.rename(columns=dict(win_rate_human="Human Win Rate", win_rate_auto="Auto Win Rate"))
     with plot_config(**config_kwargs):

@@ -2,7 +2,7 @@ from alpaca_eval import utils, metrics, annotators, constants, analyze, main as 
 import fire
 
 
-def precompute_human_leaderboard(annotators_config=f"claude/basic_configs.yaml",
+def precompute_human_leaderboard(annotators_config=f"claude",
                                  Annotator=annotators.PairwiseAnnotator,
                                  all_data=analyze.DEFAULT_GOLD_ANNOTATIONS,
                                  analyzer_kwargs=None,

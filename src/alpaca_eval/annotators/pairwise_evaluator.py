@@ -38,9 +38,10 @@ class PairwiseAnnotator:
     Parameters
     ----------
     annotators_config : Path or list of dict, optional
-        A dictionary or path to a yaml file containing the configuration for the pool of annotators. The keys in the
-        first dictionary should be the annotator's name, and the value should be a dictionary of the annotator's
-        configuration which should have the following keys: The path is to `configs/` directory.
+        A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
+        we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
+        the value should be a dictionary of the annotator's configuration which should have the following keys:
+        The path is to `configs/` directory.
         - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
             "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
             dictionary, typically {instruction} and {output_1} {output_2}.
@@ -87,7 +88,7 @@ class PairwiseAnnotator:
 
     def __init__(
             self,
-            annotators_config: Union[ann_utils.AnyPath, list[dict[str, Any]]] = "alpaca_farm/configs.yaml",
+            annotators_config: Union[ann_utils.AnyPath, list[dict[str, Any]]] = "claude",
             seed: Optional[int] = 0,
             is_avoid_reannotations: bool = True,
             saving_path: Optional[ann_utils.AnyPath] = "auto",
@@ -102,6 +103,10 @@ class PairwiseAnnotator:
 
         # setting it relative to the config directory
         annotators_config = CONFIG_DIR / annotators_config
+
+        if annotators_config.is_dir():
+            annotators_config = annotators_config / "configs.yaml"
+
         if saving_path == "auto":
             if isinstance(annotators_config, (str, Path, os.PathLike)):
                 stem = Path(annotators_config).stem
@@ -468,7 +473,7 @@ class PairwiseAnnotator:
 
         # need to merge with df_to_annotate in case you dropped duplicates
         on = list(self.input_keys + self.output_keys)
-        df_annotated = df_annotated[all_keys_to_keep + ["preference"]]
+        df_annotated = df_annotated[all_keys_to_keep]
         df_to_annotate = df_to_annotate[
             [c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
         # need to remove all other columns before merging if not you will

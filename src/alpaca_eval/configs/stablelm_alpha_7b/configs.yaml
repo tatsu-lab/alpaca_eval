@@ -1,10 +1,10 @@
-basic_oasst_pythia_12b:
+stablelm_alpha_7b:
   prompt_templates:
-    with_inputs: "oasst-pythia-12b/basic_b1_with_inputs.txt"
-    without_inputs: "oasst-pythia-12b/basic_b1_without_inputs.txt"
+    with_inputs: "stablelm_alpha_7b/basic_b1_with_inputs.txt"
+    without_inputs: "stablelm_alpha_7b/basic_b1_without_inputs.txt"
   fn_completions: "huggingface_local_completions"
   decoder_kwargs:
-    model_name: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5"
+    model_name: "stabilityai/stablelm-tuned-alpha-7b" #"stabilityai/stablelm-tuned-alpha-7b"
     max_new_tokens: 50
   completion_parser_kwargs:
     outputs_to_match:

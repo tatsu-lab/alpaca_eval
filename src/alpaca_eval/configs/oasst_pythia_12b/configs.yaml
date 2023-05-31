@@ -1,0 +1,13 @@
+oasst_pythia_12b:
+  prompt_templates:
+    with_inputs: "oasst_pythia_12b/basic_b1_with_inputs.txt"
+    without_inputs: "oasst_pythia_12b/basic_b1_without_inputs.txt"
+  fn_completions: "huggingface_local_completions"
+  decoder_kwargs:
+    model_name: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5"
+    max_new_tokens: 50
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
+  batch_size: 1

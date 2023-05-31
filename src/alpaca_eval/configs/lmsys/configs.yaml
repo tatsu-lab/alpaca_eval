@@ -1,4 +1,4 @@
-vicuna:
+lmsys:
   prompt_templates:
     with_inputs: "lmsys/lmsys_with_inputs.txt"
     without_inputs: "lmsys/lmsys_without_inputs.txt"
