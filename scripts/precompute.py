@@ -2,12 +2,12 @@ from alpaca_eval import utils, metrics, annotators, constants, analyze, main as 
 import fire
 
 
-def precompute_human_leaderboard(annotators_config=f"claude",
-                                 Annotator=annotators.PairwiseAnnotator,
-                                 all_data=analyze.DEFAULT_GOLD_ANNOTATIONS,
-                                 analyzer_kwargs=None,
-                                 **annotator_kwargs):
-    """Precompute all instructions on the eval leaderbaord that has been annotated by humans."""
+def precompute_on_all_human_leaderboard(annotators_config=f"claude",
+                                        Annotator=annotators.PairwiseAnnotator,
+                                        all_data=analyze.DEFAULT_GOLD_ANNOTATIONS,
+                                        analyzer_kwargs=None,
+                                        **annotator_kwargs):
+    """Precompute all instructions on the eval leaderboard that has been annotated by humans."""
     analyzer_kwargs = analyzer_kwargs or {}
     analyzer = analyze.Analyzer(gold_annotations=all_data, **analyzer_kwargs)
     df_annotations = analyze.get_annotations(analyzer,
@@ -17,7 +17,8 @@ def precompute_human_leaderboard(annotators_config=f"claude",
 
 
 def precompute_evaluator_leaderboard(annotators_configs="EVALUATORS_TO_ANALYZE",
-                                     max_instances=None, **kwargs):
+                                     max_instances=None,
+                                     **kwargs):
     """Precompute evaluator's leaderboard for important API models."""
     if isinstance(annotators_configs, str):
         annotators_configs = getattr(constants, annotators_configs)
@@ -27,7 +28,7 @@ def precompute_evaluator_leaderboard(annotators_configs="EVALUATORS_TO_ANALYZE",
         _ = alpaca_main.analyze_evaluators(annotators_config=annotators_config,
                                            max_instances=max_instances,
                                            is_save_leaderboard=max_instances is None,
-                                           is_return_metrics=True,  # don't print
+                                           is_return_leaderboard=True,  # don't print
                                            **kwargs)
 
 
