@@ -127,6 +127,7 @@ class PairwiseAnnotator:
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.p_label_flip = p_label_flip
         self.is_store_missing_preferences = is_store_missing_preferences
+        self.annotators_config = annotators_config
 
         self.annotators = self._initialize_annotators(annotators_config)
         self.saving_path = saving_path
