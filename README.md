@@ -1,4 +1,8 @@
-# AlpacaEval : An Automatic Evaluator of Instruction-following Models [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/LICENSE) [![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE) [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
+# AlpacaEval : An Automatic Evaluator of Instruction-following Models
+
+[![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/LICENSE)
+[![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
 Evaluation of instruction-following models (GPT4, ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
@@ -8,7 +12,8 @@ AlpacaEval provides the following:
 - **Automatic evaluator**: an automatic evaluator that has high agreement with humans. We evaluate a model M by
   measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the desired model M over a reference.
 - **Leaderboard**: a leaderboard of common models on the AlpacaFarm evaluation set.
-- **Toolkit for building automatic evaluators**: a toolkit for building and analyzing automatic evaluators (quality,
+- [**Toolkit for building automatic evaluators**](https://github.com/tatsu-lab/alpaca_eval#analysis): a toolkit for
+  building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
 - **Human evaluation**: a human evaluation of the automatic evaluator.
 
@@ -36,7 +41,9 @@ Important parameters are the following:
   AlpacaFarm evaluation set.
 - **output_path**: Path for saving annotations and leaderboard.
 
-For more details to evaluate a model see [here](#evaluating-a-model).
+For more details to evaluate a model see [here](#evaluating-a-model). Note that by default annotations are cached on
+disk. Annotations are thus never recomputed, which greatly decreases cost and time for repeated evaluations (many models
+have the same outputs)
 
 # Leaderboard
 
@@ -97,6 +104,18 @@ we collected. For details about the evaluation metrics see [here]().
 | oasst_pythia_12b          |                    51.2 |                             |                            230.2 |
 
 # Use-cases
+
+<details>
+  <summary><b>Installation from source (optional)</b></b></summary>
+
+1. clone the repository
+2. install as dev the package: `pip install -e .`
+3. (optional) export
+   all [API_KEYs](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7)
+4. test your installation (assuming you have OpenAI
+   key) `alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'text-davinci-003' --max_instances 3 --caching_path None `
+
+</details>
 
 ## Evaluating a model
 
@@ -182,6 +201,11 @@ alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
              --max_instances <specify for testing>
 ```
 
+Note that by default annotations are cached on
+disk. Annotations are thus never recomputed, which greatly decreases cost and time for repeated evaluations (many models
+have
+the same outputs)
+
 ## Making a new evaluator
 
 There are 4 main ways of making new evaluators: changing the prompt, changing decoding parameters (eg temperature),
@@ -203,7 +227,9 @@ In particular, you should follow the following simple steps:
   have
   to change the `fn_completions` in the configuration file which maps to the corresponding function
   in [this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py). We
-  provide `fn_completions` functions to use any model on OpenAI API, Anthropic API, Cohere API, or HuggingFace hub.
+  provide `fn_completions` functions to use any model on OpenAI API, Anthropic API, Cohere API, or HuggingFace hub. If
+  you change provider you will need to install there API and set the appropriate API_KEY. To install all
+  use `pip install alpaca_eval[all]`.
 - **Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an
   example
   see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/configs/alpaca_farm/configs.yaml).
@@ -279,16 +305,6 @@ where:
   needing `generator`. By
   default, the reference outputs are the 003 outputs on AlpacaFarm evaluation set.
 - `annotators_config`: The path to the annotator's config file. Defaults to `gpt4`.
-
-## Developing
-
-Install from source:
-
-1. clone the repository
-2. install as dev the package: `pip install -e .`
-3. (optional) export all API_KEYs
-4. test your installation (assuming you have OpenAI
-   key) `alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'text-davinci-003' --max_instances 3 --caching_path None `
 
 # Analysis
 

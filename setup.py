@@ -38,7 +38,8 @@ setuptools.setup(
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
         "dev": PACKAGES_DEV,
-        "all_api": PACKAGES_ALL_API,
+        "local": PACKAGES_LOCAL,
+        "api": PACKAGES_ALL_API,
         "all": PACKAGES_ALL,
     },
     python_requires=">=3.9",
