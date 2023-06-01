@@ -88,27 +88,90 @@ We evaluate different automatic annotators on the AlpacaFarm evaluation set by c
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
 we collected. For details about the evaluation metrics see [here]().
 
-|                    | Human agreement<br/>[%] | Price<br/>[$/1000 examples] | Time<br/>[seconds/1000 examples] |
-|:-------------------|------------------------:|----------------------------:|---------------------------------:|
-| gpt4               |                    66.6 |                        12.5 |                           1217.5 |
-| alpaca_farm_greedy |                    66.5 |                        15.4 |                            983.8 |
-| humans             |                    65.7 |                       300.0 |                          36800.0 |
-| claude             |                    65.3 |   14.4 (free for academics) |                            177.1 |
-| text_davinci_003   |                    64.6 |                         8.8 |                             78.4 |
-| lmsys              |                    63.8 |                        13.9 |                           6320.7 |
-| alpaca_farm        |                    60.6 |                        11.9 |                            888.7 |
-| guanaco_33b        |                    59.7 |                             |                            939.0 |
-| chatgpt            |                    58.5 |                         0.8 |                            311.8 |
-| cohere             |                    53.0 |                         2.5 |                            290.7 |
-| oasst_pythia_12b   |                    51.2 |                             |                            230.2 |
+|                           | Human agreement<br/>[%] | Price<br/>[$/1000 examples] | Time<br/>[seconds/1000 examples] |
+|:--------------------------|------------------------:|----------------------------:|---------------------------------:|
+| gpt4                      |                    66.6 |                        12.5 |                           1217.5 |
+| alpaca_farm_greedy (gpt4) |                    66.5 |                        15.4 |                            983.8 |
+| humans                    |                    65.7 |                       300.0 |                          36800.0 |
+| claude                    |                    65.3 |   14.4 (free for academics) |                            177.1 |
+| text_davinci_003          |                    64.6 |                         8.8 |                             78.4 |
+| lmsys (gpt4)              |                    63.8 |                        13.9 |                           6320.7 |
+| alpaca_farm               |                    60.6 |                        11.9 |                            888.7 |
+| guanaco_33b               |                    59.7 |                             |                            939.0 |
+| chatgpt                   |                    58.5 |                         0.8 |                            311.8 |
+| cohere                    |                    53.0 |                         2.5 |                            290.7 |
+| oasst_pythia_12b          |                    51.2 |                             |                            230.2 |
 
-# Usecases
+# Use-cases
 
 ## Evaluating a model
 
 To evaluate a model you need to:
 
-1) decide on an evaluator. E.g.
+1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use the AlpacaFarm
+   evaluation set. To compute outputs on
+   AlpacaFarm use:
+
+```python
+import datasets
+
+eval_set = datasets.load_dataset("tatsu-lab/alpaca_farm", "alpaca_farm_evaluation")["eval"]
+for example in eval_set:
+    # generate here is a placeholder for your models generations
+    example["output"] = generate(example["instruction"])
+```
+
+2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of text-davinci-003 on AlpacaFarm.
+   If you
+   want to use a different model or a different dataset use the same as (1).
+3. Choose an evaluator specified via `annotators_config`. We recommend using `gpt4` or `claude` (if you are an
+   academic). For options and comparisons see [this table](#evaluators).
+
+<details>
+  <summary><b>Other parameters</b></b></summary>
+The easiest is to check the docstrings of [`pairwise_winrates`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/main.py#L15). Here are some important ones:
+
+```
+Parameters
+----------
+model_outputs : path or data or dict
+    The outputs of the model to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
+    datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
+    (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
+    and `output` with optional `input`.
+
+reference_outputs : path or data, optional
+    The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
+    003 outputs on AlpacaFarm evaluation set.
+
+annotators_config : path or list of dict, optional
+    The path the (or list of dict of) the annotator's config file. For details see the docstring of
+    `PairwiseAnnotator`.
+
+name : str, optional
+    The name of the model to add to the leaderboard.
+
+output_path : bool, optional
+    Path to the directory where the new leaderboard and the annotations should be stored. If None we don't save.
+    If `auto` we use `model_outputs` if it is a path, and otherwise use the directory from which we call the script.
+
+precomputed_leaderboard : path or data, optional
+    The precomputed leaderboard or a path to it (json, csv, or tsv). The leaderboard should contain at least the
+    column `win_rate`. If `auto` we will try to use the corresponding leaderboard for the reference outputs (only if
+    in CORRESPONDING_OUTPUTS_LEADERBOARDS). If `None` we won't add other models from the leaderboard.
+
+max_instances : int, optional
+    The maximum number of instances to annotate. Useful for testing.
+
+annotation_kwargs : dict, optional
+    Additional arguments to pass to `PairwiseAnnotator.annotate_head2head`.
+
+annotator_kwargs :
+    Additional arguments to pass to `PairwiseAnnotator`.
+```
+
+</details>
+
 
 compute the outputs of the model
 
