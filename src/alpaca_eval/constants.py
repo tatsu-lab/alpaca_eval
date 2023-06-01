@@ -11,7 +11,7 @@ if isinstance(OPENAI_ORGANIZATION_IDS, str):
     OPENAI_ORGANIZATION_IDS = OPENAI_ORGANIZATION_IDS.split(",")
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", None)
-ANTHROPIC_MAX_CONCURRENCY = os.environ.get("ANTHROPIC_MAX_CONCURRENCY", 1)
+ANTHROPIC_MAX_CONCURRENCY = int(os.environ.get("ANTHROPIC_MAX_CONCURRENCY", 1))
 
 COHERE_API_KEY = os.environ.get("COHERE_API_KEY", None)
 
@@ -35,19 +35,19 @@ EVALUATORS_TO_BENCHMARK = (
     "text_davinci_003",
     "chatgpt",
     "guanaco_33b",
+    "gpt4_b5",
     "lmsys",
     "cohere",
-    "alpaca_farm",
-    "alpaca_farm_greedy",
-    "oasst_pythia_12b"
+    "oasst_pythia_12b",
+    "humans"
 )
 
 API_EVALUATORS_TO_ANALYZE = (
-    "gpt4_b1",
     "gpt4",
     "claude",
     "text_davinci_003",
     "gpt4_b5",
+    "aviary",
     "chatgpt",
     "guanaco_33b",
     "lmsys",
