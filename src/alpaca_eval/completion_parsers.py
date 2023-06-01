@@ -1,3 +1,4 @@
+import ast
 import copy
 import logging
 from typing import Any
@@ -54,7 +55,7 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
             break
         responses.append(key)
         # avoid matching the same output twice
-        completion = completion[match.end() :]
+        completion = completion[match.end():]
     return responses
 
 
@@ -76,6 +77,19 @@ def lmsys_parser(completion):
                 return [0]
         else:
             raise Exception("Invalid score pair.")
+    except Exception as e:
+        logging.error(f"{e}\nContent: {completion}\n" "You must manually fix the score pair.")
+        return [np.nan]
+
+
+def aviary_parser(completion):
+    try:
+        ordered_completions = ast.literal_eval(completion)
+
+        rank = [c for c in ordered_completions if c["model"] == "model_1"][0]["rank"]
+        assert rank in [1, 2]
+
+        return [rank]
     except Exception as e:
         logging.error(f"{e}\nContent: {completion}\n" "You must manually fix the score pair.")
         return [np.nan]
