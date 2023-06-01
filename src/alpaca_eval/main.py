@@ -211,6 +211,7 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
                        is_return_instead_of_print: bool = False,
                        is_overwrite_leaderboard: bool = False,
                        max_instances: Optional[int] = None,
+                       is_single_annotator: bool = False,
                        ):
     """Analyze the annotators.
 
@@ -239,6 +240,9 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
         
     max_instances : int, optional
         The maximum number of instances to analyze.
+
+    is_single_annotator : bool, optional
+        Whether to analyze a single annotator. If True, will not be able to estimate the annotator's bias.
     """
 
     leaderboard = dict()
@@ -265,7 +269,10 @@ def analyze_evaluators(annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
                 df_crossannotations = analyze.get_crossannotations(analyzer=analyzer,
                                                                    Annotator=Annotator,
                                                                    max_instances=max_instances,
-                                                                   annotators_config=annotators_config)
+                                                                   annotators_config=annotators_config,
+                                                                   is_single_annotator=is_single_annotator
+                                                                   )
+
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
             all_crossannotations[key] = df_crossannotations
 
