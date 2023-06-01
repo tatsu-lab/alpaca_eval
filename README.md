@@ -23,8 +23,7 @@ Fist, install the package: `pip install alpaca-eval`.
 Then you can use it as follows:
 
 ```bash
-export ANTHROPIC_API_KEY=<your_api_key> # if using claude 
-export OPENAI_API_KEY=<your_api_key> # if using 'gpt4' or OpenAI models
+export OPENAI_API_KEY=<your_api_key> # if using OpenAI models
 alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
              --name '**Current method**'\
              --annotators_config 'gpt4'
@@ -35,12 +34,15 @@ Important parameters are the following:
 - **model_outputs** : The outputs of the model to add to the leaderboard. Accepts data (list of dictionary or
   datasets.Dataset) or a json path to read those. Each dictionary should contain `instruction` and `output` with
   optional `input`.
-- **annotators_config**: `gpt4`, `text-davinci-003`, `claude`... Annotator to use. `gpt4` works best. If you have
-  access, we recommend `claude` which is faster, free for academics and nearly as good. For a comparison of annotators
+- **annotators_config**: `gpt4`, `text-davinci-003`, `claude`... Annotator to use. `gpt4` works best. If you are
+  academics, we recommend `claude` which is faster, free for academics and nearly as good. For a comparison of
+  annotators
   see [here]().
 - **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default 003 outputs on
   AlpacaFarm evaluation set.
 - **output_path**: Path for saving annotations and leaderboard.
+
+For more details to evaluate a model see [here](#Evaluating-a-model).
 
 # Leaderboard
 
@@ -52,18 +54,6 @@ as good). Details:
 
 - [Adding your model to the leaderboard]()
 - [Making a leaderboard for a new evaluator / dataset]()
-
-**Claude Leaderboard**:
-
-|                                                | Win Rate | Std Err. |
-|:-----------------------------------------------|---------:|---------:|
-| GPT-4                                          |     78.6 |      1.4 |
-| ChatGPT                                        |     62.4 |      1.7 |
-| AlpacaFarm PPO sim (gpt4 greedy 20k, step 350) |     58.3 |      1.7 |
-| AlpacaFarm PPO human (10k, step 40)            |     56.3 |      1.7 |
-| Davinci003                                     |     50.0 |      0.0 |
-| Alpaca 7B                                      |     45.8 |      1.7 |
-| Davinci001                                     |     24.5 |      1.5 |
 
 **GPT-4 Leaderboard**:
 
@@ -77,25 +67,40 @@ as good). Details:
 | Alpaca 7B                                      |     36.9 |      1.7 |
 | Davinci001                                     |     19.8 |      1.4 |
 
+<details>
+  <summary><b>Claude Leaderboard</b></summary>
+
+|                                                | Win Rate | Std Err. |
+|:-----------------------------------------------|---------:|---------:|
+| GPT-4                                          |     78.6 |      1.4 |
+| ChatGPT                                        |     62.4 |      1.7 |
+| AlpacaFarm PPO sim (gpt4 greedy 20k, step 350) |     58.3 |      1.7 |
+| AlpacaFarm PPO human (10k, step 40)            |     56.3 |      1.7 |
+| Davinci003                                     |     50.0 |      0.0 |
+| Alpaca 7B                                      |     45.8 |      1.7 |
+| Davinci001                                     |     24.5 |      1.5 |
+
+</details>
+
 ## Evaluators
 
 We evaluate different automatic annotators on the AlpacaFarm evaluation set by comparing to
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
 we collected. For details about the evaluation metrics see [here]().
 
-|                    | Human agreement [%] |   Price [$/1000 examples] | Time [seconds/1000 examples] |
-|:-------------------|--------------------:|--------------------------:|-----------------------------:|
-| gpt4               |                66.6 |                      12.5 |                       1217.5 |
-| alpaca_farm_greedy |                66.5 |                      15.4 |                        983.8 |
-| humans             |                65.7 |                     300.0 |                      36800.0 |
-| claude             |                65.3 | 14.4 (free for academics) |                        177.1 |
-| text_davinci_003   |                64.6 |                       8.8 |                         78.4 |
-| lmsys              |                63.8 |                      13.9 |                       6320.7 |
-| alpaca_farm        |                60.6 |                      11.9 |                        888.7 |
-| guanaco_33b        |                59.7 |                           |                        939.0 |
-| chatgpt            |                58.5 |                       0.8 |                        311.8 |
-| cohere             |                53.0 |                       2.5 |                        290.7 |
-| oasst_pythia_12b   |                51.2 |                           |                        230.2 |
+|                    | Human agreement<br/>[%] | Price<br/>[$/1000 examples] | Time<br/>[seconds/1000 examples] |
+|:-------------------|------------------------:|----------------------------:|---------------------------------:|
+| gpt4               |                    66.6 |                        12.5 |                           1217.5 |
+| alpaca_farm_greedy |                    66.5 |                        15.4 |                            983.8 |
+| humans             |                    65.7 |                       300.0 |                          36800.0 |
+| claude             |                    65.3 |   14.4 (free for academics) |                            177.1 |
+| text_davinci_003   |                    64.6 |                         8.8 |                             78.4 |
+| lmsys              |                    63.8 |                        13.9 |                           6320.7 |
+| alpaca_farm        |                    60.6 |                        11.9 |                            888.7 |
+| guanaco_33b        |                    59.7 |                             |                            939.0 |
+| chatgpt            |                    58.5 |                         0.8 |                            311.8 |
+| cohere             |                    53.0 |                         2.5 |                            290.7 |
+| oasst_pythia_12b   |                    51.2 |                             |                            230.2 |
 
 # Usecases
 

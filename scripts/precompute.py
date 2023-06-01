@@ -2,7 +2,7 @@ from alpaca_eval import utils, metrics, annotators, constants, analyze, main as 
 import fire
 
 
-def precompute_on_all_human_leaderboard(annotators_config=f"claude",
+def precompute_on_all_human_leaderboard(annotators_config="gpt4",
                                         Annotator=annotators.PairwiseAnnotator,
                                         all_data=constants.ALPACAFARM_GOLD_ANNOTATIONS,
                                         analyzer_kwargs=None,

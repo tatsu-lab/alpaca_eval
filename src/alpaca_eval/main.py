@@ -9,13 +9,13 @@ from .types import AnyPath, AnyData
 from . import utils, metrics, annotators, constants, analyze
 
 CUR_DIR = Path(__file__).parent
-DEFAULT_CONFIGS = "claude"
+DEFAULT_CONFIGS = "gpt4"
 
 
 def pairwise_winrates(
         model_outputs: Union[AnyPath, AnyData, Callable],
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
-        annotators_config: AnyPath = "claude",
+        annotators_config: AnyPath = DEFAULT_CONFIGS,
         name: str = "Current method",
         output_path: Optional[Union[AnyPath, str]] = "auto",
         precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
