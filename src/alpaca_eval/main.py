@@ -132,12 +132,13 @@ def pairwise_winrates(
         print(df_leaderboard.to_string(float_format="%.2f"))
 
 
-def make_model_leaderboard(leaderboard_path: AnyPath,
-                           annotators_config: AnyPath = DEFAULT_CONFIGS,
-                           fn_add_to_leaderboard: Callable = "pairwise_winrates",
-                           all_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
-                           is_return_instead_of_print: bool = False,
-                           **kwargs):
+def make_leaderboard(leaderboard_path: AnyPath,
+                     annotators_config: AnyPath = DEFAULT_CONFIGS,
+                     all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
+                     reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
+                     fn_add_to_leaderboard: Callable = "pairwise_winrates",
+                     is_return_instead_of_print: bool = False,
+                     **kwargs):
     """Precompute and save an entire leaderboard.
 
     Parameters
@@ -146,20 +147,25 @@ def make_model_leaderboard(leaderboard_path: AnyPath,
         The path to save the leaderboard to. The leaderboard will be saved as a csv file, if it already exists it will
         append
 
-    fn_add_to_leaderboard : callable or str, optional
-        The function to use to add a model to the leaderboard. If a string, it should be the name of a function in
-        `main.py`. The function should take the arguments: `model_outputs`, `annotators_config`, `name`,
-        `precomputed_leaderboard`, `is_return_instead_of_print`.
+    annotators_config : path or list of dict, optional
+        The path the (or list of dict of) the annotator's config file.
 
-    all_outputs : path or data or callable, optional
+    all_model_outputs : path or data or callable, optional
         The outputs of all models to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
         datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
         (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
         and `output` with optional `input`. It should also contain a column `generator` with the name of the current
         model.
 
-    annotators_config : path or list of dict, optional
-        The path the (or list of dict of) the annotator's config file.
+    reference_outputs : path or data, optional
+        The outputs of the reference model. Same format as `all_model_outputs` but without needing `generator`. By
+        default,
+        the reference outputs are the 003 outputs on AlpacaFarm evaluation set.
+
+    fn_add_to_leaderboard : callable or str, optional
+        The function to use to add a model to the leaderboard. If a string, it should be the name of a function in
+        `main.py`. The function should take the arguments: `model_outputs`, `annotators_config`, `name`,
+        `precomputed_leaderboard`, `is_return_instead_of_print`, `reference_outputs`.
 
     is_return_instead_of_print : bool, optional
         Whether to return the metrics instead of printing the results.
@@ -170,14 +176,15 @@ def make_model_leaderboard(leaderboard_path: AnyPath,
     if isinstance(fn_add_to_leaderboard, str):
         fn_add_to_leaderboard = globals()[fn_add_to_leaderboard]
 
-    all_outputs = utils.load_or_convert_to_dataframe(all_outputs)
-    if "generator" not in all_outputs.columns:
-        raise ValueError(f"all_outputs should have a column 'generator' with the name of the model.")
+    all_model_outputs = utils.load_or_convert_to_dataframe(all_model_outputs)
+    if "generator" not in all_model_outputs.columns:
+        raise ValueError(f"all_model_outputs should have a column 'generator' with the name of the model.")
 
     all_annotations = []
-    for model in all_outputs["generator"].unique():
-        model_outputs = all_outputs[all_outputs["generator"] == model]
+    for model in all_model_outputs["generator"].unique():
+        model_outputs = all_model_outputs[all_model_outputs["generator"] == model]
         df_leaderboard, annotations = fn_add_to_leaderboard(model_outputs=model_outputs,
+                                                            reference_outputs=reference_outputs,
                                                             annotators_config=annotators_config,
                                                             name=model,
                                                             precomputed_leaderboard=leaderboard_path,

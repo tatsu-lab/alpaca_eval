@@ -249,11 +249,11 @@ batch_size : int
 
 </details>
 
-Once you made the evaluator you can also analyze it and add it to the _evaluator's_ leaderboard using the following
-command:
+Once you made the evaluator you can also analyze it and add it to the _evaluator's_ [leaderboard](#evaluators) using the
+following command:
 
 ```bash
-alpaca_eval analyze_evaluators --annotators_config 'aviary'    
+alpaca_eval analyze_evaluators --annotators_config '<path_to_config.yaml>'    
 ```
 
 Note that this will evaluate 4 times (different seeds) every example in the AlpacaFarm evaluation set, i.e., ~3K
@@ -261,6 +261,28 @@ evaluation.
 Be mindful of the cost of this operation depending on your model.
 
 ## Making a new leaderboard
+
+If you want to make a new leaderboard in one go (rather than multiple `alpaca_eval` calls), for your desired evaluation
+set and evaluators, you can use the following:
+
+```bash
+alpaca_eval make_leaderboard --leaderboard_path <path_to_save_leaderboard>\
+                             --all_model_outputs <model_outputs_path>\
+                             --reference_outputs <reference_outputs_path>\
+                              --annotators_config <path_to_config.yaml>
+```
+
+where:
+
+- `leaderboard_path`: path to save the leaderboard to. The leaderboard will be saved as a csv file, if it already exists
+  it will append.
+- `all_model_outputs` : The json path to outputs of all models to add to the leaderboard. Each dictionary should contain
+  the keys that are formatted in the prompts. E.g. by default `instruction` and `output` with optional `input`. It
+  should also contain a column `generator` with the name of the current model.
+- `reference_outputs` the path to the outputs of the reference model. Same format as `all_model_outputs` but without
+  needing `generator`. By
+  default, the reference outputs are the 003 outputs on AlpacaFarm evaluation set.
+- `annotators_config`: The path to the annotator's config file. Defaults to `gpt4`.
 
 ## Developing
 
