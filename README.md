@@ -35,9 +35,8 @@ Important parameters are the following:
   datasets.Dataset) or a json path to read those. Each dictionary should contain `instruction` and `output` with
   optional `input`.
 - **annotators_config**: `gpt4`, `text-davinci-003`, `claude`... Annotator to use. `gpt4` works best. If you are
-  academics, we recommend `claude` which is faster, free for academics and nearly as good. For a comparison of
-  annotators
-  see [here]().
+  academics, we recommend `claude` which is free for academics and nearly as good. For a comparison of
+  annotators see [here]().
 - **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default 003 outputs on
   AlpacaFarm evaluation set.
 - **output_path**: Path for saving annotations and leaderboard.
@@ -93,7 +92,7 @@ we collected. For details about the evaluation metrics see [here]().
 | gpt4                      |                    66.6 |                        12.5 |                           1217.5 |
 | alpaca_farm_greedy (gpt4) |                    66.5 |                        15.4 |                            983.8 |
 | humans                    |                    65.7 |                       300.0 |                          36800.0 |
-| claude                    |                    65.3 |   14.4 (free for academics) |                            177.1 |
+| claude                    |                    65.3 |   14.4 (free for academics) |                           1416.0 |
 | text_davinci_003          |                    64.6 |                         8.8 |                             78.4 |
 | lmsys (gpt4)              |                    63.8 |                        13.9 |                           6320.7 |
 | alpaca_farm               |                    60.6 |                        11.9 |                            888.7 |
@@ -125,7 +124,8 @@ for example in eval_set:
    If you
    want to use a different model or a different dataset use the same as (1).
 3. Choose an evaluator specified via `annotators_config`. We recommend using `gpt4` or `claude` (if you are an
-   academic). For options and comparisons see [this table](#evaluators).
+   academic). For options and comparisons see [this table](#evaluators). Depending on the evaluator you might need to
+   set an API_KEY in your environment. For all documentation concerning specific annotators see [].
 
 <details>
   <summary><b>Other parameters</b></b></summary>
@@ -172,12 +172,16 @@ annotator_kwargs :
 
 </details>
 
-
-compute the outputs of the model
+```bash
+export OPENAI_API_KEY=<your_api_key> # if using OpenAI models
+alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
+             --name '**Current method**'\
+             --annotators_config 'gpt4'
+```
 
 ## Making a new evaluator
 
-If you
+If you w
 
 ## Making a new leaderboard
 
