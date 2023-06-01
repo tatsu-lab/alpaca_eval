@@ -130,7 +130,10 @@ for example in eval_set:
 
 <details>
   <summary><b>Other parameters</b></b></summary>
-The easiest is to check the docstrings of [`pairwise_winrates`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/main.py#L15). Here are some important ones:
+
+The easiest is to check the docstrings
+of [`pairwise_winrates`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/main.py#L15). Here are some
+important ones:
 
 ```
 Parameters
@@ -204,7 +207,10 @@ see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/ma
 
 <details>
   <summary><b>Other parameters in the configuration file</b></b></summary>
-The easiest is to check the docstrings of [`SinglePairwiseAnnotator`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/annotators/pairwise_evaluator.py#L537). Here are some important ones:
+
+The easiest is to check the docstrings
+of [`SinglePairwiseAnnotator`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/annotators/pairwise_evaluator.py#L537).
+Here are some important ones:
 
 ```
 Parameters
