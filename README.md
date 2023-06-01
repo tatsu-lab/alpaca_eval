@@ -31,12 +31,11 @@ alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
 
 Important parameters are the following:
 
-- **model_outputs** : The outputs of the model to add to the leaderboard. Accepts data (list of dictionary or
-  datasets.Dataset) or a json path to read those. Each dictionary should contain `instruction` and `output` with
-  optional `input`.
+- **model_outputs** : A json path to the outputs of the model to add to the leaderboard. Each dictionary should
+  contain `instruction` and `output` with optional `input`.
 - **annotators_config**: `gpt4`, `text-davinci-003`, `claude`... Annotator to use. `gpt4` works best. If you are
   academics, we recommend `claude` which is free for academics and nearly as good. For a comparison of
-  annotators see [here]().
+  annotators see [here](#evaluators).
 - **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default 003 outputs on
   AlpacaFarm evaluation set.
 - **output_path**: Path for saving annotations and leaderboard.
@@ -51,8 +50,8 @@ Our leaderboards are computed are on the [AlpacaFarm](https://github.com/tatsu-l
 We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (faster, free, nearly
 as good). Details:
 
-- [Adding your model to the leaderboard]()
-- [Making a leaderboard for a new evaluator / dataset]()
+- [Adding your model to the leaderboard](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model)
+- [Making a leaderboard for a new evaluator / dataset](https://github.com/tatsu-lab/alpaca_eval#making-a-new-leaderboard)
 
 **GPT-4 Leaderboard**:
 
@@ -108,7 +107,7 @@ we collected. For details about the evaluation metrics see [here]().
 To evaluate a model you need to:
 
 1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use the AlpacaFarm
-   evaluation set. To compute outputs on
+   evaluation set, which contain 805 examples. To compute outputs on
    AlpacaFarm use:
 
 ```python
@@ -184,26 +183,34 @@ alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
              --name '**Current method**'\
              --annotators_config 'gpt4'\
              --output_path <example>\
+             --max_instances <specify for testing>
 ```
 
 ## Making a new evaluator
 
 There are 4 main ways of making new evaluators: changing the prompt, changing decoding parameters (eg temperature),
 changing the model, or using multiple annotators.
-In each of these cases what you need is a new `configs.yaml` configuration file. In particular, you should follow the
-following simple steps:
+In each of these cases what you need is a new `configs.yaml` configuration file, which you will then pass
+as `--annotators_config <path_to_config.yaml>` to `alpaca_eval`.
+In particular, you should follow the following simple steps:
 
-**Changing the prompt**: Write a new prompt in a text file and specific it to `prompt_templates` in the configuration
-file. Paths are relative to the configuration file.
-**Changing decoding parameters**: Specify the desired parameters in `decoder_kwargs` in the configuration file. To see
-all available parameters refer to the docstring corresponding function [in this file]() specified by `fn_completions` in
-the configuration file.
-**Changing the model**: Specify the desired model in `model_name` in the configuration file. You will likely have to
-change the prompt in `prompt_templates` to match that model. If the model comes from another provider you will also have
-to change the `fn_completions` in the configuration file which maps to the corresponding function in [this file]().
-**Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an
-example
-see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/configs/alpaca_farm/configs.yaml).
+- **Changing the prompt**: Write a new prompt in a text file and specific it to `prompt_templates` in the configuration
+  file. Paths are relative to the configuration file.
+- **Changing decoding parameters**: Specify the desired parameters in `decoder_kwargs` in the configuration file. To see
+  all available parameters refer to the docstring corresponding
+  function [in this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py)
+  specified by `fn_completions`
+  in
+  the configuration file.
+- **Changing the model**: Specify the desired model in `model_name` in the configuration file. You will likely have to
+  change the prompt in `prompt_templates` to match that model. If the model comes from another provider you will also
+  have
+  to change the `fn_completions` in the configuration file which maps to the corresponding function
+  in [this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py). We
+  provide `fn_completions` functions to use any model on OpenAI API, Anthropic API, Cohere API, or HuggingFace hub.
+- **Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an
+  example
+  see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/configs/alpaca_farm/configs.yaml).
 
 <details>
   <summary><b>Other parameters in the configuration file</b></b></summary>
@@ -241,6 +248,17 @@ batch_size : int
 ```
 
 </details>
+
+Once you made the evaluator you can also analyze it and add it to the _evaluator's_ leaderboard using the following
+command:
+
+```bash
+alpaca_eval analyze_evaluators --annotators_config 'aviary'    
+```
+
+Note that this will evaluate 4 times (different seeds) every example in the AlpacaFarm evaluation set, i.e., ~3K
+evaluation.
+Be mindful of the cost of this operation depending on your model.
 
 ## Making a new leaderboard
 
