@@ -332,3 +332,12 @@ def contains_list(text):
             return True
 
     return False
+
+
+def prioritize_elements(lst: list, elements: Sequence) -> list:
+    """Prioritize elements in a list. If elements are not in the list, they will be appended to the end of the list."""
+    elements = list(elements)
+    for el in elements:
+        if el in lst:
+            lst.remove(el)
+    return elements + lst

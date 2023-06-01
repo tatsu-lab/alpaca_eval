@@ -128,6 +128,9 @@ def pairwise_winrates(
 
     leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
     df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by=sort_by, ascending=False)
+    df_leaderboard = df_leaderboard[
+        utils.prioritize_elements(list(df_leaderboard.columns), ["win_rate", "standard_error"])
+    ]
 
     if output_path is not None:
         logging.info(f"Saving all results to {output_path}")
