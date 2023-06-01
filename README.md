@@ -313,4 +313,13 @@ notebooks for all analysis.
 
 ## Analyzing an evaluator
 
+**Notebook:
+** [![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
+
+The most important factors when selecting a an evaluator are likely the quality, price, and speed. The following plot
+measures
+
 ## Analyzing an evaluation set
+
+**Notebook:
+** [![analyzing an evaluation set](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
