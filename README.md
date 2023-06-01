@@ -308,25 +308,9 @@ where:
 
 # Analysis
 
-## Evaluator leaderboard
+AlpacaEval provides a few analysis tools to help you automatic evaluation. We briefly explain them here and provide
+notebooks for all analysis.
 
 ## Analyzing an evaluator
 
 ## Analyzing an evaluation set
-
-to get instructions:
-
-```python
-import datasets
-
-eval = datasets.load_dataset(
-    "tatsu-lab/alpaca_farm",
-    "alpaca_farm_evaluation",
-)["eval"]
-```
-
-to run the eval :
-
-```
-alpaca_eval --model_outputs 'outputs/claude/<model_name>.json' --annotators_config 'claude'
-```
