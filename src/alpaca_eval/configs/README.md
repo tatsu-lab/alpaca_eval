@@ -19,3 +19,4 @@ Evaluator's leaderboard:
 | cohere                    |                    53.0 |                         2.5 |                           290.7 |
 | oasst_pythia_12b          |                    51.2 |                             |                           230.2 |
 | stablelm_alpha_7b         |                    51.0 |                             |                           156.5 |
+

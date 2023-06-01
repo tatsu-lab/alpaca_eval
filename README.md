@@ -26,7 +26,7 @@ Then you can use it as follows:
 export OPENAI_API_KEY=<your_api_key> # if using OpenAI models
 alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
              --name '**Current method**'\
-             --annotators_config 'gpt4'
+             --annotators_config 'gpt4'\
 ```
 
 Important parameters are the following:
@@ -41,7 +41,7 @@ Important parameters are the following:
   AlpacaFarm evaluation set.
 - **output_path**: Path for saving annotations and leaderboard.
 
-For more details to evaluate a model see [here](#Evaluating-a-model).
+For more details to evaluate a model see [here](#evaluating-a-model).
 
 # Leaderboard
 
@@ -125,7 +125,8 @@ for example in eval_set:
    want to use a different model or a different dataset use the same as (1).
 3. Choose an evaluator specified via `annotators_config`. We recommend using `gpt4` or `claude` (if you are an
    academic). For options and comparisons see [this table](#evaluators). Depending on the evaluator you might need to
-   set an API_KEY in your environment. For all documentation concerning specific annotators see [].
+   set the appropriate API_KEY in your environment
+   or [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7).
 
 <details>
   <summary><b>Other parameters</b></b></summary>
@@ -172,16 +173,68 @@ annotator_kwargs :
 
 </details>
 
+Running all together:
+
 ```bash
-export OPENAI_API_KEY=<your_api_key> # if using OpenAI models
 alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
+              --reference_outputs <path> \
              --name '**Current method**'\
-             --annotators_config 'gpt4'
+             --annotators_config 'gpt4'\
+             --output_path <example>\
 ```
 
 ## Making a new evaluator
 
-If you w
+There are 4 main ways of making new evaluators: changing the prompt, changing decoding parameters (eg temperature),
+changing the model, or using multiple annotators.
+In each of these cases what you need is a new `configs.yaml` configuration file. In particular, you should follow the
+following simple steps:
+
+**Changing the prompt**: Write a new prompt in a text file and specific it to `prompt_templates` in the configuration
+file. Paths are relative to the configuration file.
+**Changing decoding parameters**: Specify the desired parameters in `decoder_kwargs` in the configuration file. To see
+all available parameters refer to the docstring corresponding function [in this file]() specified by `fn_completions` in
+the configuration file.
+**Changing the model**: Specify the desired model in `model_name` in the configuration file. You will likely have to
+change the prompt in `prompt_templates` to match that model. If the model comes from another provider you will also have
+to change the `fn_completions` in the configuration file which maps to the corresponding function in [this file]().
+**Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an
+example
+see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/configs/alpaca_farm/configs.yaml).
+
+<details>
+  <summary><b>Other parameters in the configuration file</b></b></summary>
+The easiest is to check the docstrings of [`SinglePairwiseAnnotator`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/annotators/pairwise_evaluator.py#L537). Here are some important ones:
+
+```
+Parameters
+----------
+prompt_templates : path
+    A dictionary of prompts that will be given to `fn_prompter` or path to those prompts. Path is relative to
+    `configs/`
+
+fn_completion_parser : callable or str
+    Function in `completion_parsers.py` to use for parsing the completions into preferences. For each completion,
+    the number of preferences should be equal to the batch_size if not we set all the preferences in that batch to
+    NaN.
+
+completion_parser_kwargs : dict
+    Kwargs for fn_completion_parser.
+
+fn_completions : callable or str
+    Function in `decoders.py` to use for decoding the output.
+
+decoder_kwargs : dict
+    kwargs for fn_completions. E.g. model_name, max_tokens, temperature, top_p, top_k, stop_seq.
+
+is_randomize_output_order : bool
+    Whether to randomize output_1, output_2 when formatting.
+
+batch_size : int
+    Number of examples that will be added in a single prompt.
+```
+
+</details>
 
 ## Making a new leaderboard
 
