@@ -202,6 +202,8 @@ class Analyzer:
         annotations: pd.DataFrame
             Annotations to estimate the bias of. For better results, it should have multiple annotations per example.
         """
+        assert annotations["index"].nunique() > 1
+
         # all vs all of gold annotations
         agreement = self.agreement_of_annotations(
             annotations,
@@ -330,9 +332,10 @@ class Analyzer:
         )
 
 
-def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = None, **kwargs):
+def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = None,
+                         is_single_annotator: bool = False, **kwargs):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
-    n_crossannotations = analyzer.n_annotators
+    n_crossannotations = 1 if is_single_annotator else analyzer.n_annotators
     all_annotations = []
     for seed in range(n_crossannotations):
         annotator = Annotator(seed=seed, **kwargs)
@@ -364,14 +367,23 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     all_metrics = dict()
     all_metrics["Human agreement [%]"] = \
         analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
-    all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
     all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
     all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
+
     if evaluator_name == "humans":
         all_metrics["Bias"] = 0
     else:
-        all_metrics["Bias"] = analyzer.estimate_bias(df_crossannotations) * 100
-    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)["probability_prefer_longer"]
+        try:
+            all_metrics["Bias"] = analyzer.estimate_bias(df_crossannotations) * 100
+        except:
+            all_metrics["Bias"] = np.nan
+        try:
+            all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
+        except:
+            all_metrics["Variance"] = np.nan
+
+    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)[
+        "probability_prefer_longer"]
     all_metrics["Proba. prefer lists"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
     all_metrics["# parsed"] = len(df_crossannotations.preference.dropna())
     return all_metrics
