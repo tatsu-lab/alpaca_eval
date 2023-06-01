@@ -4,13 +4,22 @@ from pathlib import Path
 
 import datasets
 
-DEFAULT_CACHE_DIR = None
-DATASETS_TOKEN = os.environ.get("DATASETS_TOKEN", None)
-
+### API specific ###
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", None)
 OPENAI_ORGANIZATION_IDS = os.environ.get("OPENAI_ORGANIZATION_IDS", None)
 if isinstance(OPENAI_ORGANIZATION_IDS, str):
     OPENAI_ORGANIZATION_IDS = OPENAI_ORGANIZATION_IDS.split(",")
 
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", None)
+ANTHROPIC_MAX_CONCURRENCY = os.environ.get("ANTHROPIC_MAX_CONCURRENCY", 1)
+
+COHERE_API_KEY = os.environ.get("COHERE_API_KEY", None)
+
+DATASETS_TOKEN = os.environ.get("DATASETS_TOKEN", None)
+HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
+########################
+
+DEFAULT_CACHE_DIR = None
 MODEL_LEADERBOARD = (
     "GPT-4",
     "ChatGPT",

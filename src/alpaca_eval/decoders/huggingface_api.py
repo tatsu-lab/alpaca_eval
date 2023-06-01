@@ -8,7 +8,7 @@ import numpy as np
 from huggingface_hub.inference_api import InferenceApi
 import tqdm
 
-from .. import utils
+from .. import constants, utils
 
 __all__ = ["huggingface_api_completions"]
 
@@ -50,11 +50,7 @@ def huggingface_api_completions(
     else:
         logging.info(f"Using `huggingface_api_completions` on {n_examples} prompts using {model_name}.")
 
-    if "HUGGINGFACEHUB_API_TOKEN" in os.environ:
-        API_TOKEN = os.environ["HUGGINGFACEHUB_API_TOKEN"]
-    else:
-        API_TOKEN = None
-    inference = InferenceApi(model_name, task="text-generation", token=API_TOKEN, gpu=gpu)
+    inference = InferenceApi(model_name, task="text-generation", token=constants.HUGGINGFACEHUB_API_TOKEN, gpu=gpu)
 
     default_kwargs = dict(do_sample=do_sample, options=dict(wait_for_model=True), return_full_text=False)
     default_kwargs.update(kwargs)
