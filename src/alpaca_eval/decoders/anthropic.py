@@ -11,7 +11,7 @@ import numpy as np
 import tqdm
 import anthropic
 
-from .. import utils
+from .. import constants, utils
 
 __all__ = ["anthropic_completions"]
 
@@ -19,7 +19,7 @@ __all__ = ["anthropic_completions"]
 def anthropic_completions(
         prompts: Sequence[str],
         model_name="claude-v1",
-        num_procs: int = 8,
+        num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
         **decoding_kwargs,
 ) -> dict[str, list]:
     """Decode with Anthropic API.
@@ -38,7 +38,6 @@ def anthropic_completions(
     decoding_kwargs :
         Additional kwargs to pass to `anthropic.Client.completion`.
     """
-    assert num_procs <= 8, "Anthropic API only allows 8 concurrent requests."
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")
@@ -79,14 +78,11 @@ def anthropic_completions(
 def _anthropic_completion_helper(
         prompt: str,
         sleep_time: int = 2,
-        anthropic_api_keys: Optional[Sequence[str]] = None,
+        anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
         max_tokens_to_sample: Optional[int] = 1000,
         temperature: Optional[float] = 0.7,
         **kwargs,
 ) -> str:
-    if anthropic_api_keys is None:
-        anthropic_api_keys = [os.environ["ANTHROPIC_API_KEY"]]
-
     anthropic_api_key = random.choice(anthropic_api_keys)
     client = anthropic.Client(anthropic_api_key)
 

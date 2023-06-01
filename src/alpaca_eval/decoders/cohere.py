@@ -9,7 +9,7 @@ from typing import Optional, Sequence
 import tqdm
 import cohere
 
-from .. import utils
+from .. import constants, utils
 
 __all__ = ["cohere_completions"]
 
@@ -69,14 +69,11 @@ def cohere_completions(
 
 def _cohere_completion_helper(
         prompt: str,
-        cohere_api_keys: Optional[Sequence[str]] = None,
+        cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
         max_tokens: Optional[int] = 1000,
         temperature: Optional[float] = 0.7,
         **kwargs,
 ) -> str:
-    if cohere_api_keys is None:
-        cohere_api_keys = [os.environ["COHERE_API_KEY"]]
-
     anthropic_api_key = random.choice(cohere_api_keys)
     client = cohere.Client(anthropic_api_key)
 
