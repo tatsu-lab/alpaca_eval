@@ -107,7 +107,7 @@ def openai_completions(
     is_chat = _requires_chatml(model_name)
     if is_chat:
         prompts = [_prompt_to_chatml(prompt) for prompt in prompts]
-        num_procs = num_procs or 5
+        num_procs = num_procs or 4
         batch_size = batch_size or 1
 
         if batch_size > 1:

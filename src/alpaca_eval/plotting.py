@@ -19,7 +19,7 @@ from scipy import stats
 from . import constants
 
 RC_IF_NO_FILE = {
-    # "axes.grid": True,
+    "axes.grid": True,
     "grid.linestyle": "-",
     "grid.linewidth": 0.4,
     "grid.color": "cbcbcb",
@@ -149,12 +149,12 @@ def plot_quality_vs_price_and_time(evaluator_leaderboard: pd.DataFrame,
                                                min_agreement=min_agreement,
                                                **preprocess_kwargs)
 
-    df_melted = df_all.melt(var_name="Variable", value_name="value", id_vars=["Annotator", "Human Agreement"],
+    df_melted = df_all.melt(var_name="Variable", value_name="value", id_vars=["Annotator", "Human agreement [%]"],
                             value_vars=["Price [$/1000 examples]", "Time [seconds/1000 examples]"])
 
     config_kwargs = config_kwargs or dict()
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_melted, x="value", col="Variable", y="Human Agreement", kind="scatter",
+        g = sns.relplot(data=df_melted, x="value", col="Variable", y="Human agreement [%]", kind="scatter",
                         hue="Annotator", facet_kws={'sharex': False, 'sharey': True},
                         s=300, alpha=0.9, legend='full')
 
@@ -190,8 +190,15 @@ def plot_quality_vs_price(evaluator_leaderboard: pd.DataFrame,
                                                **preprocess_kwargs)
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_all, x="Price [$/1000 examples]", y="Human Agreement", kind="scatter", hue="Annotator",
-                        s=300, alpha=0.9, legend='full', aspect=1.3)
+        g = sns.relplot(data=df_all,
+                        x="Price [$/1000 examples]",
+                        y="Human agreement [%]",
+                        kind="scatter",
+                        hue="Annotator",
+                        s=300,
+                        alpha=0.9,
+                        legend='full',
+                        aspect=1.3)
 
         axes = g.axes.flatten()
 
@@ -220,8 +227,15 @@ def plot_quality_vs_price(evaluator_leaderboard: pd.DataFrame,
                                                **preprocess_kwargs)
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_all, x="Price [$/1000 examples]", y="Human Agreement", kind="scatter", hue="Annotator",
-                        s=300, alpha=0.9, legend='full', aspect=1.3)
+        g = sns.relplot(data=df_all,
+                        x="Price [$/1000 examples]",
+                        y="Human agreement [%]",
+                        kind="scatter",
+                        hue="Annotator",
+                        s=300,
+                        alpha=0.9,
+                        legend='full',
+                        aspect=1.3)
 
         axes = g.axes.flatten()
 
@@ -252,7 +266,7 @@ def plot_quality_vs_time(evaluator_leaderboard: pd.DataFrame,
     with plot_config(**config_kwargs):
         g = sns.relplot(data=df_all,
                         x="Time [seconds/1000 examples]",
-                        y="Human Agreement",
+                        y="Human agreement [%]",
                         kind="scatter",
                         hue="Annotator",
                         s=300,
@@ -407,23 +421,25 @@ def save_fig(fig, filename, dpi, is_tight=True):
 ##########
 def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
                                       min_agreement: float = 0.55,
-                                      annotators_to_rm: Sequence[str] = ('longest', 'gpt4_b1'),
+                                      annotators_to_keep: Sequence[str] = constants.EVALUATORS_TO_BENCHMARK,
                                       evaluator_renamer: Optional[Callable] = evaluator_renamer,
                                       is_human_at_top: bool = True,
                                       ) -> pd.DataFrame:
 
     df_all = evaluator_leaderboard.copy()
+    annotators_to_keep = [evaluator_renamer(a) for a in annotators_to_keep]
 
     if evaluator_renamer is not None:
         df_all.index = [evaluator_renamer(i) for i in df_all.index]
 
     df_all["Annotator"] = df_all.index
+    df_all = df_all.query("Annotator.isin(@annotators_to_keep)")
 
-    annotators_to_rm = [evaluator_renamer(a) for a in annotators_to_rm]
-    df_all = df_all.query("not Annotator.isin(@annotators_to_rm)")
+    # annotators_to_rm = [evaluator_renamer(a) for a in annotators_to_rm]
+    # df_all = df_all.query("not Annotator.isin(@annotators_to_rm)")
 
     # select only useful
-    df_all = df_all[df_all["Human Agreement"] > min_agreement]
+    df_all = df_all[df_all["Human agreement [%]"] > min_agreement]
 
     if is_human_at_top:
         # puts humans at the top (easier for colors)
