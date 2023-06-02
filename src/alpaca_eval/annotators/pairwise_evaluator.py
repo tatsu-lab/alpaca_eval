@@ -91,7 +91,7 @@ class PairwiseAnnotator:
             seed: Optional[int] = 0,
             is_avoid_reannotations: bool = True,
             caching_path: Optional[utils.AnyPath] = "auto",
-            input_keys: Sequence[str] = ("instruction", "input"),
+            input_keys: Sequence[str] = ("instruction",),
             output_keys: Sequence[str] = ("output_1", "output_2"),
             p_label_flip: Optional[float] = None,
             other_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example"),
@@ -227,7 +227,7 @@ class PairwiseAnnotator:
             self,
             outputs_1: Union[Sequence[dict[str, Any]], pd.DataFrame],
             outputs_2: Union[Sequence[dict[str, Any]], pd.DataFrame],
-            keys_to_merge: Sequence[str] = ("instruction", "input"),
+            keys_to_merge: Sequence[str] = ("instruction",),
             is_ordered: bool = False,
             **decoding_kwargs,
     ) -> list[dict[str, Any]]:
@@ -343,6 +343,13 @@ class PairwiseAnnotator:
 
         df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
 
+        ######################## DEV
+        if "input" in df_to_annotate.columns:
+            df_to_annotate["instruction"] = [q + "\n\n" + i if len(i) > 0 else q
+                                             for q, i in zip(df_to_annotate["instruction"], df_to_annotate["input"])]
+            df_to_annotate = df_to_annotate.drop(columns=["input"])
+        ######################## DEV
+
         for c in self.other_keys_to_keep + ["preference"]:
             if c in df_to_annotate.columns:
                 logging.warning(f"""{c} column is already in the dataframe. We will overwrite it.""")
@@ -355,7 +362,7 @@ class PairwiseAnnotator:
         df_to_annotate["annotator"] = df_to_annotate.apply(
             lambda x: utils.random_seeded_choice(
                 # we add "annotator" at the beginning to not use the same seed for all tasks
-                seed="annotator" + x["instruction"] + x["input"] + str(self.seed),
+                seed="annotator" + x["instruction"] + str(self.seed),
                 choices=list(self.annotators.keys()),
             ),
             axis=1,
@@ -373,7 +380,7 @@ class PairwiseAnnotator:
             noisy_preference = df_to_annotate.apply(
                 # we add "noisy_label" at the beginning to use ~independent seeds between tasks
                 lambda x: utils.random_seeded_choice(  # seed on inputs for reproducibility
-                    seed="noisy_preference" + x["instruction"] + x["input"] + str(self.seed),
+                    seed="noisy_preference" + x["instruction"] + str(self.seed),
                     choices=[np.nan, 1, 2],
                     p=[1 - p_noise, self.p_label_flip, self.p_label_flip],
                 ),
@@ -635,7 +642,7 @@ class SinglePairwiseAnnotator:
             df_to_annotate["is_switched_outputs"] = df_to_annotate.apply(
                 # we add "is_switched_outputs" at the beginning to not use the same seed for all tasks
                 lambda x: utils.random_seeded_choice(
-                    seed="is_switched_outputs" + x["instruction"] + x["input"] + str(self.seed),
+                    seed="is_switched_outputs" + x["instruction"] + str(self.seed),
                     choices=[False, True],
                 ),
                 axis=1,

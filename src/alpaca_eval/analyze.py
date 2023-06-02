@@ -41,7 +41,7 @@ class Analyzer:
             self,
             gold_crossannotations: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_GOLD_CROSSANNOTATIONS,
             gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = constants.ALPACAFARM_GOLD_ANNOTATIONS,
-            keys=("instruction", "input", "output_1", "output_2"),
+            keys=("instruction", "output_1", "output_2"),
             n_annotators: Optional[int] = 4,
             seed: Optional[int] = 0,
             **annotator_kwargs,

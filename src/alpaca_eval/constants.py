@@ -92,13 +92,20 @@ CUR_DIR = Path(__file__).parent
 
 
 def ALPACAFARM_REFERENCE_OUTPUTS():
-    return datasets.load_dataset(
+    dataset = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
         "alpaca_farm_evaluation",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
         # download_mode="force_redownload",
     )["eval"]
+    ######################## DEV
+    df = dataset.to_pandas()
+    df["instruction"] = [q + "\n\n" + i if len(i) > 0 else q
+                         for q, i in zip(df["instruction"], df["input"])]
+    df.drop(columns=["input"], inplace=True)
+    ######################## DEV
+    return df
 
 
 def ALPACAFARM_ALL_OUTPUTS():

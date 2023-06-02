@@ -1,5 +1,5 @@
 claude:
-  prompt_template: "claude/basic_b1_without_inputs.txt"
+  prompt_template: "claude/basic_prompt.txt"
   fn_completions: "anthropic_completions"
   completions_kwargs:
     model_name: "claude-v1"

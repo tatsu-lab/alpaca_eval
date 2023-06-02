@@ -1,5 +1,5 @@
 gpt4_ranking:
-  prompt_template: "gpt4_ranking/ranking_b1_without_inputs.txt"
+  prompt_template: "gpt4_ranking/ranking_prompt.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
     model_name: "gpt-4"

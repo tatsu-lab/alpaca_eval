@@ -1,5 +1,5 @@
 oasst_pythia_12b:
-  prompt_template: "oasst_pythia_12b/basic_b1_without_inputs.txt"
+  prompt_template: "oasst_pythia_12b/basic_prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
     model_name: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5"
