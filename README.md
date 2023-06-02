@@ -9,15 +9,18 @@ time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based aut
 and replicable.
 AlpacaEval provides the following:
 
-- **Automatic evaluator**: an automatic evaluator that has high agreement with humans. We evaluate a model M by
+- [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans. We evaluate a
+  model M by
   measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the desired model M over a reference.
-- **Leaderboard**: a leaderboard of common models on the AlpacaFarm evaluation set.
-- [**Toolkit for building automatic evaluators**](https://github.com/tatsu-lab/alpaca_eval#analysis): a toolkit for
+- [**Leaderboard**](#models): a leaderboard of common models on the AlpacaFarm evaluation set.
+- [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
-- **Human evaluation data**: 20K human annotations of preferences between a given and reference model on the AlpacaFarm
+- [**Human evaluation data**](#data-release): 20K human annotations of preferences between a given and reference model
+  on the AlpacaFarm
   evaluation set. 2500 of which are cross-annotations (4 humans annotating the same 650 examples).
-- **AlpacaEval dataset** a simplification of the AlpacaFarm evaluation set, where "instructions" and "inputs" are merged
+- [**AlpacaEval dataset**](#data-release): a simplification of the AlpacaFarm evaluation set, where "instructions" and "
+  inputs" are merged
   into a single field.
 
 # Quick Start
@@ -52,8 +55,8 @@ recomputed, which greatly decreases cost and time for repeated evaluations (many
 ## Models
 
 Our leaderboards are computed are on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) evaluation set.
-We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (faster, free, nearly
-as good). Details:
+We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (free for academics,
+and high quality). Details:
 
 - [Adding your model to the leaderboard](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model)
 - [Making a leaderboard for a new evaluator / dataset](https://github.com/tatsu-lab/alpaca_eval#making-a-new-leaderboard)
@@ -124,14 +127,14 @@ we collected. For details about the evaluation metrics see [here]().
 To evaluate a model you need to:
 
 1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use the
-   a [slight variation] of the AlpacaFarm evaluation set, which contain 805 examples and we refer to AlpacaEval. To
+   a [slight variation]() of the AlpacaFarm evaluation set, which contain 805 examples and we refer to AlpacaEval. To
    compute outputs on
    AlpacaEval use:
 
 ```python
 import datasets
 
-eval_set = datasets.load_dataset("tatsu-lab/alpaca_farm", "alpaca_farm_evaluation")["eval"]
+eval_set = datasets.load_dataset("tatsu-lab/alpaca_eval", "alpaca_eval")["eval"]
 for example in eval_set:
     # generate here is a placeholder for your models generations
     example["output"] = generate(example["instruction"])
@@ -325,3 +328,20 @@ measures
 
 **Notebook:**
 [![analyzing an evaluation set](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
+
+# Data release
+
+## Citation
+
+Please consider citing the repo if you use the data or code in this repo.
+
+```
+@misc{alpaca_eval,
+  author = {Xuechen Li, Tianyi Zhang, Yann Dubois, Rohan Taori and Ishaan Gulrajani and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto },
+  title = {AlpacaEval: An Automatic Evaluator of Instruction-following Models},
+  year = {2023},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/tatsu-lab/stanford_eval}},
+}
+```
