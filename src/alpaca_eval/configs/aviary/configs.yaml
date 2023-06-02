@@ -7,5 +7,5 @@ aviary:
     model_name: "gpt-4"
     max_tokens: 2048
     temperature: 0.9
-  fn_completion_parser: "aviary_parser"
+  fn_completion_parser: "ranking_parser"
   batch_size: 1

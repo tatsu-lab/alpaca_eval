@@ -7,5 +7,5 @@ claude_ranking:
     model_name: "claude-v1"
     max_tokens: 100
     temperature: 0
-  fn_completion_parser: "aviary_parser"
+  fn_completion_parser: "ranking_parser"
   batch_size: 1
