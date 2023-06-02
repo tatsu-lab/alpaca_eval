@@ -1,0 +1,6 @@
+oasst_pythia_12b:
+  prompt_template: "oasst_pythia_12b/prompt.txt"
+  fn_completions: "huggingface_local_completions"
+  completions_kwargs:
+    model_name: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5"
+    max_new_tokens: 2048

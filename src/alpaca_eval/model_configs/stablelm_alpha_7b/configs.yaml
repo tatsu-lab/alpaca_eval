@@ -1,0 +1,6 @@
+stablelm_alpha_7b:
+  prompt_template: "stablelm_alpha_7b/prompt.txt"
+  fn_completions: "huggingface_local_completions"
+  completions_kwargs:
+    model_name: "stabilityai/stablelm-tuned-alpha-7b" #"stabilityai/stablelm-tuned-alpha-7b"
+    max_new_tokens: 2048

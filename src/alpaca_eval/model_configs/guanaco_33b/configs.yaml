@@ -1,0 +1,7 @@
+guanaco_33b:
+  prompt_template: "guanaco_33b/prompt.txt"
+  fn_completions: "huggingface_api_completions" # use "huggingface_local_completions" if you want local serving
+  completions_kwargs:
+    model_name: "timdettmers/guanaco-33b-merged"
+    max_new_tokens: 2048
+    #is_fast_tokenizer: False # needed for local

@@ -1,0 +1,6 @@
+cohere:
+  prompt_template: "text_davinci_003/basic_b1_without_inputs.txt"
+  fn_completions: "cohere_completions"
+  completions_kwargs:
+    model_name: "command"
+    max_tokens: 2048

@@ -41,7 +41,7 @@ class PairwiseAnnotator:
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
         The path is to `evaluators_configs/` directory.
-        - prompt_templates (str): a prompt template or path to it. The template should contain placeholders for keys in
+        - prompt_template (str): a prompt template or path to it. The template should contain placeholders for keys in
             the example dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
             `prompts` which is a list of string.

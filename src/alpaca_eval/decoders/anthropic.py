@@ -105,7 +105,7 @@ def _anthropic_completion_helper(
                     logging.info(f"Switching anthropic API key.")
                 logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
                 time.sleep(sleep_time)
-            if "exceeds max" in str(e):
+            elif "exceeds max" in str(e):
                 curr_kwargs["max_tokens_to_sample"] = int(curr_kwargs["max_tokens_to_sample"] * 0.8)
                 logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
             else:

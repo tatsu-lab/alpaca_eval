@@ -1,0 +1,6 @@
+opt_125m:
+  prompt_template: "text_davinci_003/prompt.txt"
+  fn_completions: "huggingface_local_completions"
+  completions_kwargs:
+    model_name: "facebook/opt-125m"
+    max_new_tokens: 2048
