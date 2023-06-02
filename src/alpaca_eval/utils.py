@@ -109,7 +109,7 @@ def _find_first_match(text: str, outputs_to_match: dict[str, Any]) -> tuple[Any,
 
 
 def make_prompts(
-    df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
+        df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
 ) -> tuple[list[str], pd.DataFrame]:
     """Helper function to make batch prompts for a single template.
 
@@ -176,9 +176,9 @@ def make_prompts(
 
 
 def convert_ordinal_to_binary_preference(
-    preferences: Union[pd.DataFrame, list[dict[str, Any]]],
-    ordinal_preference_key: str = "preference",
-    binary_preference_key: str = "preference",
+        preferences: Union[pd.DataFrame, list[dict[str, Any]]],
+        ordinal_preference_key: str = "preference",
+        binary_preference_key: str = "preference",
 ):
     """Convert ordinal preference annotations to preference annotations. By merging multiple subcategories together,
     eg A/a/b/B into A/B, or AA/A/a/b/B/BB into A/B.
@@ -339,3 +339,17 @@ def prioritize_elements(lst: list, elements: Sequence) -> list:
         if el in lst:
             lst.remove(el)
     return elements + lst
+
+
+def load_configs(configs: Union[AnyPath, dict], relative_to: Optional[AnyPath] = None):
+    """Load the config yaml files, or return if it's already a dict."""
+    if not isinstance(configs, dict):
+        if relative_to is not None:
+            configs = Path(relative_to) / configs
+        with open(configs, "r") as stream:
+            try:
+                annotators_config = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                logging.exception(exc)
+
+    return configs

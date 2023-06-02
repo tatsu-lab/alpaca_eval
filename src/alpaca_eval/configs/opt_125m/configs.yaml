@@ -3,7 +3,7 @@ opt_125m:
     with_inputs: "opt_125m/zeroshot_b1_with_inputs.txt"
     without_inputs: "opt_125m/zeroshot_b1_without_inputs.txt"
   fn_completions: "huggingface_local_completions"
-  decoder_kwargs:
+  completions_kwargs:
     model_name: "facebook/opt-125m"
     max_new_tokens: 50
   completion_parser_kwargs:

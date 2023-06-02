@@ -47,7 +47,8 @@ class PairwiseAnnotator:
             dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
             `prompts` which is a list of string.
-        - decoder_kwargs (dict): kwargs for fn_decode. E.g. model_name, max_tokens, temperature, tokens_to_avoid
+        - completions_kwargs (dict): kwargs for fn_completions. E.g. model_name, max_tokens, temperature,
+        tokens_to_avoid
         - fn_completion_parser (str) : Function in `completion_parsers.py` to use for parsing the completions into
         preferences.
         - completion_parser_kwargs (dict) : Kwargs for fn_completion_parser.
@@ -397,13 +398,7 @@ class PairwiseAnnotator:
             self, annotators_config: Union[utils.AnyPath, dict[str, dict[str, Any]]]
     ) -> dict[str, Callable]:
         """Load all the configs and prompts if necessary."""
-        if not isinstance(annotators_config, dict):
-            with open(CURRENT_DIR / annotators_config, "r") as stream:
-                try:
-                    annotators_config = yaml.safe_load(stream)
-                except yaml.YAMLError as exc:
-                    logging.exception(exc)
-
+        annotators_config = utils.load_configs(annotators_config, relative_to=CURRENT_DIR)
         return {
             name: SinglePairwiseAnnotator(seed=self.seed, **annotator_config)
             for name, annotator_config in annotators_config.items()
@@ -553,7 +548,7 @@ class SinglePairwiseAnnotator:
     fn_completions : callable or str
         Function in `decoders.py` to use for decoding the output.
 
-    decoder_kwargs : dict
+    completions_kwargs : dict
         kwargs for fn_completions. E.g. model_name, max_tokens, temperature, top_p, top_k, stop_seq.
 
     is_randomize_output_order : bool
@@ -575,7 +570,7 @@ class SinglePairwiseAnnotator:
             fn_completion_parser: Union[Callable, str] = "regex_parser",
             completion_parser_kwargs: Optional[dict[str, Any]] = None,
             fn_completions: Union[Callable, str] = "openai_completions",
-            decoder_kwargs: Optional[dict[str, Any]] = None,
+            completions_kwargs: Optional[dict[str, Any]] = None,
             is_randomize_output_order: bool = True,
             is_shuffle: bool = True,
             seed: Optional[int] = 123,
@@ -590,7 +585,7 @@ class SinglePairwiseAnnotator:
 
         self.is_randomize_output_order = is_randomize_output_order
         self.fn_completions = get_fn_completions(fn_completions)
-        self.decoder_kwargs = decoder_kwargs or {}
+        self.completions_kwargs = completions_kwargs or {}
         self.seed = seed
         self.is_shuffle = is_shuffle
         self.batch_size = batch_size
@@ -617,7 +612,7 @@ class SinglePairwiseAnnotator:
         # prompts and completions here will not be the same length as the dataframe due to batching
         prompts, df_to_annotate = self.make_prompts(df_to_annotate=df_to_annotate)
 
-        completions = self.fn_completions(prompts=prompts, **self.decoder_kwargs, **decoding_kwargs)
+        completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
         df_to_annotate["preference"] = self.parse_completions(completions=completions["completions"])
         for k, v in completions.items():

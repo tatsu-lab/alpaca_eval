@@ -3,7 +3,7 @@ gpt4:
     with_inputs: "chatgpt/basic_b1_with_inputs.txt"
     without_inputs: "chatgpt/basic_b1_without_inputs.txt"
   fn_completions: "openai_completions"
-  decoder_kwargs:
+  completions_kwargs:
     model_name: "gpt-4-0314"
     max_tokens: 50
     temperature: 0

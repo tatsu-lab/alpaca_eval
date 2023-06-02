@@ -216,7 +216,8 @@ In particular, you should follow the following simple steps:
 
 - **Changing the prompt**: Write a new prompt in a text file and specific it to `prompt_templates` in the configuration
   file. Paths are relative to the configuration file.
-- **Changing decoding parameters**: Specify the desired parameters in `decoder_kwargs` in the configuration file. To see
+- **Changing decoding parameters**: Specify the desired parameters in `completions_kwargs` in the configuration file. To
+  see
   all available parameters refer to the docstring corresponding
   function [in this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py)
   specified by `fn_completions`
@@ -259,7 +260,7 @@ completion_parser_kwargs : dict
 fn_completions : callable or str
     Function in `decoders.py` to use for decoding the output.
 
-decoder_kwargs : dict
+completions_kwargs : dict
     kwargs for fn_completions. E.g. model_name, max_tokens, temperature, top_p, top_k, stop_seq.
 
 is_randomize_output_order : bool
