@@ -176,6 +176,27 @@ def make_prompts(
     return prompts, df_out
 
 
+def make_prompts_from_templates(df, prompt_templates, batch_size=1):
+    arr_is_inputs = (df["input"] != "") & (df["input"].notnull())
+    df_with_inputs = df[arr_is_inputs]
+    df_without_inputs = df[~arr_is_inputs]
+
+    prompts, df = make_prompts(
+        df_without_inputs,
+        prompt_templates["without_inputs"],
+        batch_size=batch_size,
+    )
+    if arr_is_inputs.any():
+        prompts_i, df_i = make_prompts(
+            df_with_inputs,
+            prompt_templates["with_inputs"],
+            batch_size=batch_size,
+        )
+        prompts += prompts_i
+        df = pd.concat([df, df_i], axis=0, ignore_index=True)
+    return prompts, df
+
+
 def convert_ordinal_to_binary_preference(
         preferences: Union[pd.DataFrame, list[dict[str, Any]]],
         ordinal_preference_key: str = "preference",

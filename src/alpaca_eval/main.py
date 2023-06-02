@@ -71,6 +71,8 @@ def evaluate(
 
     is_cache_leaderboard : bool, optional
         Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances.
+        A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously
+        saved leaderboard at `<output_path>/leaderboard.csv`
 
     max_instances : int, optional
         The maximum number of instances to annotate. Useful for testing.
@@ -181,7 +183,7 @@ def evaluate_from_model(
         A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
-        The path is to `configs/` directory.
+        The path is to `evaluators_configs/` directory.
         - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
             "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
             dictionary, typically {instruction} and {output_1} {output_2}.
@@ -213,9 +215,10 @@ def evaluate_from_model(
 
     def get_completions(configs):
         curr_outputs = evaluation_dataset.copy()
-        prompts, _ = utils.make_prompts(
+        prompts, _ = utils.make_prompts_from_templates(
             df=evaluation_dataset,
-            template=utils.read_or_return(configs["prompt_template"]),
+            prompt_templates={k: utils.read_or_return(constants.MODELS_CONFIG_DIR / prompt)
+                              for k, prompt in configs["prompt_templates"].items()},
         )
         fn_completions = decoders.get_fn_completions(configs["fn_completions"])
         completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])

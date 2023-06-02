@@ -20,6 +20,10 @@ HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
 ########################
 
 DEFAULT_CACHE_DIR = None
+CURRENT_DIR = Path(__file__).parent
+EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
+MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
+
 MODEL_LEADERBOARD = (
     "GPT-4",
     "ChatGPT",

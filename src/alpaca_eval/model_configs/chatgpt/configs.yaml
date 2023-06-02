@@ -1,0 +1,10 @@
+chatgpt:
+  prompt_templates:
+    with_inputs: "gpt4/chatml_with_inputs.txt"
+    without_inputs: "gpt4/chatml_without_inputs.txt"
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "gpt-3.5-turbo-0301"
+    max_tokens: 2000
+    temperature: 0.7
+    top_p: 1.0

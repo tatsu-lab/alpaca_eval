@@ -233,7 +233,7 @@ In particular, you should follow the following simple steps:
   use `pip install alpaca_eval[all]`.
 - **Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an
   example
-  see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/configs/alpaca_farm/configs.yaml).
+  see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/alpaca_farm/configs.yaml).
 
 <details>
   <summary><b>Other parameters in the configuration file</b></b></summary>
@@ -247,7 +247,7 @@ Parameters
 ----------
 prompt_templates : path
     A dictionary of prompts that will be given to `fn_prompter` or path to those prompts. Path is relative to
-    `configs/`
+    `evaluators_configs/`
 
 fn_completion_parser : callable or str
     Function in `completion_parsers.py` to use for parsing the completions into preferences. For each completion,

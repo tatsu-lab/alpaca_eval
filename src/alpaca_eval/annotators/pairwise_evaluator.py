@@ -12,7 +12,6 @@ from .. import completion_parsers, utils
 from ..decoders import get_fn_completions
 
 CURRENT_DIR = Path(__file__).parent
-CONFIG_DIR = CURRENT_DIR.parent / "configs"
 logging.getLogger().setLevel(logging.INFO)
 
 __all__ = ["PairwiseAnnotator"]
@@ -41,7 +40,7 @@ class PairwiseAnnotator:
         A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
-        The path is to `configs/` directory.
+        The path is to `evaluators_configs/` directory.
         - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
             "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
             dictionary, typically {instruction} and {output_1} {output_2}.
@@ -103,7 +102,7 @@ class PairwiseAnnotator:
         logging.info(f"Creating the annotator from `{annotators_config}`.")
 
         # setting it relative to the config directory
-        annotators_config = CONFIG_DIR / annotators_config
+        annotators_config = constants.EVALUATORS_CONFIG_DIR / annotators_config
 
         if annotators_config.is_dir():
             annotators_config = annotators_config / "configs.yaml"
@@ -535,7 +534,7 @@ class SinglePairwiseAnnotator:
     ----------
     prompt_templates : dict
         A dictionary of prompts that will be given to `fn_prompter` or path to those prompts. Path is relative to
-        `configs/`
+        `evaluators_configs/`
 
     fn_completion_parser : callable or str
         Function in `completion_parsers.py` to use for parsing the completions into preferences. For each completion,
@@ -576,7 +575,8 @@ class SinglePairwiseAnnotator:
             seed: Optional[int] = 123,
             batch_size: int = 1,
     ):
-        self.prompt_templates = {k: utils.read_or_return(CONFIG_DIR / prompt) for k, prompt in prompt_templates.items()}
+        self.prompt_templates = {k: utils.read_or_return(constants.EVALUATORS_CONFIG_DIR / prompt) for k, prompt in
+                                 prompt_templates.items()}
 
         if isinstance(fn_completion_parser, str):
             fn_completion_parser = getattr(completion_parsers, fn_completion_parser)
@@ -610,7 +610,9 @@ class SinglePairwiseAnnotator:
         df_to_annotate = self.preprocess(df_to_annotate)
 
         # prompts and completions here will not be the same length as the dataframe due to batching
-        prompts, df_to_annotate = self.make_prompts(df_to_annotate=df_to_annotate)
+        prompts, df_to_annotate = utils.make_prompts_from_templates(df=df_to_annotate,
+                                                                    prompt_templates=self.prompt_templates,
+                                                                    batch_size=self.batch_size)
 
         completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
@@ -646,42 +648,6 @@ class SinglePairwiseAnnotator:
             df_to_annotate = df_to_annotate.sample(frac=1, random_state=self.seed)
 
         return df_to_annotate
-
-    def make_prompts(self, df_to_annotate: pd.DataFrame) -> tuple[list[str], pd.DataFrame]:
-        """Make all the prompts for the given examples.
-
-        Parameters
-        ----------
-        df_to_annotate : pd.DataFrame
-            Examples to annotate
-
-        Returns
-        -------
-        prompts : list[str]
-            Formatted prompts for the given examples.
-
-        df_to_annotate : pd.DataFrame
-            Examples to annotate in the same order as prompts.
-        """
-        arr_is_inputs = (df_to_annotate["input"] != "") & (df_to_annotate["input"].notnull())
-        df_with_inputs = df_to_annotate[arr_is_inputs]
-        df_without_inputs = df_to_annotate[~arr_is_inputs]
-
-        prompts, df = utils.make_prompts(
-            df_without_inputs,
-            self.prompt_templates["without_inputs"],
-            batch_size=self.batch_size,
-        )
-        if arr_is_inputs.any():
-            prompts_i, df_i = utils.make_prompts(
-                df_with_inputs,
-                self.prompt_templates["with_inputs"],
-                batch_size=self.batch_size,
-            )
-            prompts += prompts_i
-            df = pd.concat([df, df_i], axis=0, ignore_index=True)
-
-        return prompts, df
 
     def parse_completions(self, completions: list[str]) -> list[int]:
         """Converts the completions into annotations."""
