@@ -1,7 +1,5 @@
 claude_ranking:
-  prompt_templates:
-    with_inputs: "claude_ranking/ranking_b1_with_inputs.txt"
-    without_inputs: "claude_ranking/ranking_b1_without_inputs.txt"
+  prompt_template: "claude_ranking/ranking_b1_without_inputs.txt"
   fn_completions: "anthropic_completions"
   completions_kwargs:
     model_name: "claude-v1"

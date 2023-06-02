@@ -1,7 +1,5 @@
 falcon_40b_instruct:
-  prompt_templates:
-    with_inputs: "falcon_40b_instruct/basic_b1_with_inputs.txt"
-    without_inputs: "falcon_40b_instruct/basic_b1_without_inputs.txt"
+  prompt_template: "falcon_40b_instruct/basic_b1_without_inputs.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
     model_name: "tiiuae/falcon-40b-instruct"

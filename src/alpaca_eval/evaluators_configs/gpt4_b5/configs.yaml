@@ -1,7 +1,5 @@
 gpt4_b5:
-  prompt_templates:
-    with_inputs: "alpaca_farm/chatml_b5_with_inputs.txt"
-    without_inputs: "alpaca_farm/chatml_b5_without_inputs.txt"
+  prompt_template: "alpaca_farm/chatml_b5_without_inputs.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
     model_name: "gpt-4"

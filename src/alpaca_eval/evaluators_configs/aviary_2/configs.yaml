@@ -1,7 +1,5 @@
 aviary:
-  prompt_templates:
-    with_inputs: "aviary/aviary_b1_with_inputs.txt"
-    without_inputs: "aviary/aviary_b1_without_inputs.txt"
+  prompt_template: "aviary/aviary_b1_without_inputs.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
     model_name: "gpt-4"

@@ -214,17 +214,15 @@ In each of these cases what you need is a new `configs.yaml` configuration file,
 as `--annotators_config <path_to_config.yaml>` to `alpaca_eval`.
 In particular, you should follow the following simple steps:
 
-- **Changing the prompt**: Write a new prompt in a text file and specific it to `prompt_templates` in the configuration
-  file. Paths are relative to the configuration file.
+- **Changing the prompt**: Write a new prompt in a text file and specify the path in `prompt_template` of the
+  configuration file. Paths are relative to the configuration file.
 - **Changing decoding parameters**: Specify the desired parameters in `completions_kwargs` in the configuration file. To
-  see
-  all available parameters refer to the docstring corresponding
+  see all available parameters refer to the docstring corresponding
   function [in this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py)
   specified by `fn_completions`
-  in
-  the configuration file.
+  in the configuration file.
 - **Changing the model**: Specify the desired model in `model_name` in the configuration file. You will likely have to
-  change the prompt in `prompt_templates` to match that model. If the model comes from another provider you will also
+  change the prompt as `prompt_template` to match that model. If the model comes from another provider you will also
   have
   to change the `fn_completions` in the configuration file which maps to the corresponding function
   in [this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py). We
@@ -245,8 +243,8 @@ Here are some important ones:
 ```
 Parameters
 ----------
-prompt_templates : path
-    A dictionary of prompts that will be given to `fn_prompter` or path to those prompts. Path is relative to
+prompt_template : path
+    A prompt that will be given to `fn_prompter` or path to the prompts. Path is relative to
     `evaluators_configs/`
 
 fn_completion_parser : callable or str

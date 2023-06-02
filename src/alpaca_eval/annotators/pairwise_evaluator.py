@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from .. import completion_parsers, utils
+from .. import completion_parsers, utils, constants
 from ..decoders import get_fn_completions
 
 CURRENT_DIR = Path(__file__).parent
@@ -41,9 +41,8 @@ class PairwiseAnnotator:
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
         The path is to `evaluators_configs/` directory.
-        - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
-            "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
-            dictionary, typically {instruction} and {output_1} {output_2}.
+        - prompt_templates (str): a prompt template or path to it. The template should contain placeholders for keys in
+            the example dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
             `prompts` which is a list of string.
         - completions_kwargs (dict): kwargs for fn_completions. E.g. model_name, max_tokens, temperature,
@@ -532,8 +531,8 @@ class SinglePairwiseAnnotator:
 
     Parameters
     ----------
-    prompt_templates : dict
-        A dictionary of prompts that will be given to `fn_prompter` or path to those prompts. Path is relative to
+    prompt_template : str or path
+        A prompt template that will be given to `fn_prompter` or path to those prompts. Path is relative to
         `evaluators_configs/`
 
     fn_completion_parser : callable or str
@@ -565,7 +564,7 @@ class SinglePairwiseAnnotator:
 
     def __init__(
             self,
-            prompt_templates: dict[str, str],
+            prompt_template: dict[str, str],
             fn_completion_parser: Union[Callable, str] = "regex_parser",
             completion_parser_kwargs: Optional[dict[str, Any]] = None,
             fn_completions: Union[Callable, str] = "openai_completions",
@@ -575,8 +574,7 @@ class SinglePairwiseAnnotator:
             seed: Optional[int] = 123,
             batch_size: int = 1,
     ):
-        self.prompt_templates = {k: utils.read_or_return(constants.EVALUATORS_CONFIG_DIR / prompt) for k, prompt in
-                                 prompt_templates.items()}
+        self.prompt_template = utils.read_or_return(constants.EVALUATORS_CONFIG_DIR / prompt_template)
 
         if isinstance(fn_completion_parser, str):
             fn_completion_parser = getattr(completion_parsers, fn_completion_parser)
@@ -610,9 +608,9 @@ class SinglePairwiseAnnotator:
         df_to_annotate = self.preprocess(df_to_annotate)
 
         # prompts and completions here will not be the same length as the dataframe due to batching
-        prompts, df_to_annotate = utils.make_prompts_from_templates(df=df_to_annotate,
-                                                                    prompt_templates=self.prompt_templates,
-                                                                    batch_size=self.batch_size)
+        prompts, df_to_annotate = utils.make_prompts(df=df_to_annotate,
+                                                     template=self.prompt_template,
+                                                     batch_size=self.batch_size)
 
         completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 

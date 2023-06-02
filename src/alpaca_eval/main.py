@@ -184,9 +184,8 @@ def evaluate_from_model(
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
         The path is to `evaluators_configs/` directory.
-        - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
-            "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
-            dictionary, typically {instruction} and {output_1} {output_2}.
+        - prompt_template (dict): a prompt template or path to one. Each template should contain placeholders for
+        keys in the example dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
             `prompts` which is a list of string.
         - completions_kwargs (dict): kwargs for fn_completions. E.g. model_name, max_tokens, temperature,
@@ -215,10 +214,9 @@ def evaluate_from_model(
 
     def get_completions(configs):
         curr_outputs = evaluation_dataset.copy()
-        prompts, _ = utils.make_prompts_from_templates(
-            df=evaluation_dataset,
-            prompt_templates={k: utils.read_or_return(constants.MODELS_CONFIG_DIR / prompt)
-                              for k, prompt in configs["prompt_templates"].items()},
+        prompts, _ = utils.make_prompts(
+            curr_outputs,
+            template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
         )
         fn_completions = decoders.get_fn_completions(configs["fn_completions"])
         completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])
