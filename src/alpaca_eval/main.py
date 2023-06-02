@@ -12,7 +12,7 @@ CUR_DIR = Path(__file__).parent
 DEFAULT_CONFIGS = "gpt4"
 
 
-def pairwise_winrates(
+def evaluate(
         model_outputs: Union[AnyPath, AnyData, Callable],
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
@@ -27,7 +27,8 @@ def pairwise_winrates(
         annotation_kwargs: Optional[dict[str, Any]] = None,
         **annotator_kwargs,
 ):
-    """
+    """Evaluate the outputs from a model and add it on the leaderboard.
+
     Parameters
     ----------
     model_outputs : path or data or dict
@@ -148,12 +149,78 @@ def pairwise_winrates(
         print(df_leaderboard.to_string(float_format="%.2f"))
 
 
+# def evaluate_from_model(
+#     model_configs: Union[AnyPath, dict],
+#     reference_model_configs: Union[AnyPath, dict] = None,
+#     evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_EVALUATION_DATASET,
+#     annotators_config: AnyPath = DEFAULT_CONFIGS,
+#     **kwargs,
+# ):
+#     """Evaluate a model from huggingface on a desired evaluation set. This is a wrapper around `evaluate` where
+#     parameters are models rather than (path to) outputs
+#
+#     Parameters
+#     ----------
+#     model_configs : path or dict
+#         A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
+#         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
+#         the value should be a dictionary of the annotator's configuration which should have the following keys:
+#         The path is to `configs/` directory.
+#         - prompt_templates (dict): a dictionary of prompt templates or path to the prompts. The keys should be
+#             "without_inputs" and "with_inputs". Each template should contain placeholders for keys in the example
+#             dictionary, typically {instruction} and {output_1} {output_2}.
+#         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
+#             `prompts` which is a list of string.
+#         - decoder_kwargs (dict): kwargs for fn_decode. E.g. model_name, max_tokens, temperature, tokens_to_avoid
+#         - fn_completion_parser (str) : Function in `completion_parsers.py` to use for parsing the completions into
+#         preferences.
+#         - completion_parser_kwargs (dict) : Kwargs for fn_completion_parser.
+#         - other kwargs to `SinglePairwiseAnnotator` such as batch_size
+#
+#     reference_model_configs : path or dict, optional
+#         Same as in `model_configs` but for the reference model. If None, we use the same model as the one we are
+#
+#     evaluation_dataset : path or callable, optional
+#         Path to the evaluation dataset or a function that returns a dataframe. If None, we use the default evaluation
+#
+#     annotators_config : path or dict, optional
+#         Path to the annotators configuration or a dictionary. If None, we use the default annotators configuration.
+#
+#     kwargs:
+#         Other kwargs to `evaluate`
+#     """
+#     pass
+#     # model_configs = utils.load_or_convert_to_dict(model_configs)
+#
+#     # prompts, df = utils.make_prompts(
+#     #     df_without_inputs,
+#     #     self.prompt_templates["without_inputs"],
+#     #     batch_size=self.batch_size,
+#     # )
+#
+#     # evaluate(
+#     #     model_outputs: Union[AnyPath, AnyData, Callable],
+#     # reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
+#     # annotators_config: AnyPath = DEFAULT_CONFIGS,
+#     # name: str = "Current method",
+#     # output_path: Optional[Union[AnyPath, str]] = "auto",
+#     # precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+#     # is_return_instead_of_print: bool = False,
+#     # fn_metric: Union[str, callable] = "pairwise_to_winrate",
+#     # sort_by: str = "win_rate",
+#     # is_save_to_leaderboard: Optional[bool] = None,
+#     # max_instances: Optional[int] = None,
+#     # annotation_kwargs: Optional[dict[str, Any]] = None,
+#     # ** annotator_kwargs,
+#     # )
+
+
 def make_leaderboard(
         leaderboard_path: AnyPath,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
-        fn_add_to_leaderboard: Callable = "pairwise_winrates",
+        fn_add_to_leaderboard: Callable = "evaluate",
         is_return_instead_of_print: bool = False,
         **kwargs,
 ):
@@ -311,7 +378,7 @@ def analyze_evaluators(
         print(df_leaderboard.to_string(float_format="%.2f"))
 
 
-def main_helper(task="pairwise_winrates", **kwargs):
+def main_helper(task="evaluate", **kwargs):
     globals()[task](**kwargs)
 
 

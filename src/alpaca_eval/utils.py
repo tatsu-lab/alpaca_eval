@@ -243,14 +243,12 @@ def convert_to_dataframe(data: AnyData) -> pd.DataFrame:
         return pd.DataFrame(data)
 
 
-def check_import(module: str, to_use: Optional[str] = None):
+def check_imports(modules: Sequence[str], to_use: str = "this fnction"):
     """Check whether the given module is imported."""
-    if module not in sys.modules:
-        if to_use is None:
-            error = '{} module not imported. Try "pip install {}".'.format(module, module)
-            raise ImportError(error)
-        else:
-            error = 'You need {} to use {}. Try "pip install {}".'.format(module, to_use, module)
+    modules = list(modules)
+    for module in modules:
+        if module not in sys.modules:
+            error = f"You need {modules} to use {to_use}. Try `pip install {' '.join(modules)}`."
             raise ImportError(error)
 
 

@@ -146,7 +146,7 @@ for example in eval_set:
   <summary><b>Other parameters</b></b></summary>
 
 The easiest is to check the docstrings
-of [`pairwise_winrates`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/main.py#L15). Here are some
+of [`evaluate`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/main.py#L15). Here are some
 important ones:
 
 ```
