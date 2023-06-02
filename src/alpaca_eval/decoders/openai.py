@@ -210,7 +210,7 @@ def _openai_completion_helper(
                     openai.organization = random.choice(
                         [o for o in openai_organization_ids if o != openai.organization]
                     )
-                    logging.info(f"Switching to OAI organization.")
+                    logging.info(f"Switching OAI organization.")
                 if openai_api_keys is not None and len(openai_api_keys) > 1:
                     openai.api_key = random.choice([o for o in openai_api_keys if o != openai.api_key])
                     logging.info(f"Switching OAI API key.")

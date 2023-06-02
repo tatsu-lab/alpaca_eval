@@ -39,25 +39,29 @@ EVALUATORS_TO_BENCHMARK = (
     "text_davinci_003",
     "chatgpt",
     "guanaco_33b",
-    "gpt4_b5",
-    "lmsys",
+    "lmsys_gpt4",
     "cohere",
     "oasst_pythia_12b",
-    "humans"
+    "humans",
+    "alpaca_farm_greedy_gpt4",
+    "aviary_gpt4",
+    "claude_ranking",
+    "alpaca_eval"
 )
 
 API_EVALUATORS_TO_ANALYZE = (
     "gpt4",
-    "claude",
+    # "claude",
     "text_davinci_003",
-    "gpt4_b5",
-    "aviary",
+    "aviary_gpt4",
     "chatgpt",
     "guanaco_33b",
-    "lmsys",
+    "lmsys_gpt4",
     "cohere",
     "alpaca_farm",
-    "alpaca_farm_greedy",
+    "alpaca_farm_greedy_gpt4",
+    "alpaca_eval",
+    # "claude_ranking"
 )
 LOCAL_EVALUATORS_TO_ANALYZE = (
     "oasst_pythia_12b",
@@ -65,8 +69,8 @@ LOCAL_EVALUATORS_TO_ANALYZE = (
 )
 
 EVALUATORS_TO_ANALYZE = tuple(
-    list(LOCAL_EVALUATORS_TO_ANALYZE)
-    + list(API_EVALUATORS_TO_ANALYZE)
+    list(API_EVALUATORS_TO_ANALYZE)
+    # +list(LOCAL_EVALUATORS_TO_ANALYZE)
     + ["humans", "longest"]
 )
 

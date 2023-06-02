@@ -347,6 +347,9 @@ def load_configs(configs: Union[AnyPath, dict], relative_to: Optional[AnyPath] =
     if not isinstance(configs, dict):
         if relative_to is not None:
             configs = Path(relative_to) / configs
+        configs = Path(configs)
+        if configs.is_dir():
+            configs = configs / "configs.yaml"
         with open(configs, "r") as stream:
             try:
                 configs = yaml.safe_load(stream)

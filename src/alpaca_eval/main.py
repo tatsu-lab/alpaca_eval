@@ -100,10 +100,11 @@ def evaluate(
                 (str(reference_outputs), str(annotators_config))
             ]
         except KeyError:
-            logging.warning(
-                f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard for"
-                f" {reference_outputs} and {annotators_config}"
-            )
+            if Path(reference_outputs).is_absolute():
+                logging.warning(
+                    f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard for"
+                    f" {reference_outputs} and {annotators_config}"
+                )
             precomputed_leaderboard = None
 
     if precomputed_leaderboard is not None:
@@ -172,6 +173,8 @@ def evaluate_from_model(
         reference_model_configs: Optional[Union[AnyPath, dict]] = None,
         evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
+        output_path: AnyPath = "auto",
+        max_instances: int = None,
         **kwargs,
 ):
     """Evaluate a model from huggingface on a desired evaluation set. This is a wrapper around `evaluate` where
@@ -204,37 +207,65 @@ def evaluate_from_model(
     annotators_config : path or dict, optional
         Path to the annotators configuration or a dictionary. If None, we use the default annotators configuration.
 
+    output_path : path, optional
+        Path to save the generations, annotations and leaderboard. If auto saves at `results/<model_name>`
+
+    max_instances : int, optional
+        Maximum number of instances to generate and evaluate. If None, we evaluate all instances.
+
     kwargs:
         Other kwargs to `evaluate`
     """
     evaluation_dataset = utils.load_or_convert_to_dataframe(evaluation_dataset)
 
-    model_configs = utils.load_configs(model_configs)
-    reference_model_configs = reference_model_configs or utils.load_configs(reference_model_configs)
+    model_configs = utils.load_configs(model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+    if reference_model_configs is not None:
+        reference_model_configs = utils.load_configs(reference_model_configs, relative_to=constants.MODELS_CONFIG_DIR)
 
     def get_completions(configs):
-        curr_outputs = evaluation_dataset.copy()
+        columns_to_keep = ["dataset", "instruction", "output"]
+        columns_to_keep = [c for c in columns_to_keep if c in evaluation_dataset.columns]
+        curr_outputs = evaluation_dataset.copy()[columns_to_keep]
+        if max_instances is not None:
+            curr_outputs = curr_outputs.iloc[:max_instances]
+        assert len(configs) == 1
+        generator = list(configs.keys())[0]
+        configs = list(configs.values())[0]
         prompts, _ = utils.make_prompts(
             curr_outputs,
             template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
         )
         fn_completions = decoders.get_fn_completions(configs["fn_completions"])
-        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])
-        curr_outputs["outputs"] = completions
+        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])['completions']
+        curr_outputs["output"] = completions
+        curr_outputs["generator"] = generator
         return curr_outputs
 
     model_outputs = get_completions(model_configs)
     if reference_model_configs is None:
-        if "outputs" not in evaluation_dataset.columns:
-            raise ValueError("evaluation_dataset should have a column 'outputs' containing references outputs")
+        if "output" not in evaluation_dataset.columns:
+            raise ValueError("evaluation_dataset should have a column 'output' containing references outputs")
         reference_outputs = evaluation_dataset.copy()
     else:
         reference_outputs = get_completions(reference_model_configs)
+
+    if output_path == "auto":
+        output_path = Path("results") / (model_outputs["generator"].iloc[0])
+
+    if output_path is not None:
+        output_path = Path(output_path)
+        output_path.mkdir(exist_ok=True, parents=True)
+        model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
+        reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
+
+    breakpoint()
 
     return evaluate(
         model_outputs=model_outputs,
         reference_outputs=reference_outputs,
         annotators_config=annotators_config,
+        output_path=output_path,
+        max_instances=max_instances,
         **kwargs,
     )
 

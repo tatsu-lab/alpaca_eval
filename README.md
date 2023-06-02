@@ -15,7 +15,10 @@ AlpacaEval provides the following:
 - [**Toolkit for building automatic evaluators**](https://github.com/tatsu-lab/alpaca_eval#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
-- **Human evaluation**: a human evaluation of the automatic evaluator.
+- **Human evaluation data**: 20K human annotations of preferences between a given and reference model on the AlpacaFarm
+  evaluation set. 2500 of which are cross-annotations (4 humans annotating the same 650 examples).
+- **AlpacaEval dataset** a simplification of the AlpacaFarm evaluation set, where "instructions" and "inputs" are merged
+  into a single field.
 
 # Quick Start
 
@@ -24,10 +27,8 @@ Fist, install the package: `pip install alpaca-eval`.
 Then you can use it as follows:
 
 ```bash
-export OPENAI_API_KEY=<your_api_key> # if using OpenAI models
-alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
-             --name '**Current method**'\
-             --annotators_config 'gpt4'\
+export OPENAI_API_KEY=<your_api_key> 
+alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'
 ```
 
 Important parameters are the following:
@@ -41,9 +42,10 @@ Important parameters are the following:
   AlpacaFarm evaluation set.
 - **output_path**: Path for saving annotations and leaderboard.
 
-For more details to evaluate a model see [here](#evaluating-a-model). Note that by default annotations are cached on
-disk. Annotations are thus never recomputed, which greatly decreases cost and time for repeated evaluations (many models
-have the same outputs)
+If you don't have the model outputs, you can use `evaluate_from_model` and pass a local path or a name of a HuggingFace
+model, or a model from a standard API (OpenAI, anthropic, cohere). For more details to evaluate a model
+see [here](#evaluating-a-model). Note that by default annotations are cached on disk. Annotations are thus never
+recomputed, which greatly decreases cost and time for repeated evaluations (many models have the same outputs)
 
 # Leaderboard
 
@@ -121,9 +123,10 @@ we collected. For details about the evaluation metrics see [here]().
 
 To evaluate a model you need to:
 
-1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use the AlpacaFarm
-   evaluation set, which contain 805 examples. To compute outputs on
-   AlpacaFarm use:
+1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use the
+   a [slight variation] of the AlpacaFarm evaluation set, which contain 805 examples and we refer to AlpacaEval. To
+   compute outputs on
+   AlpacaEval use:
 
 ```python
 import datasets
@@ -312,13 +315,13 @@ notebooks for all analysis.
 
 ## Analyzing an evaluator
 
-**Notebook:
-** [![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
+**Notebook:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
 
 The most important factors when selecting a an evaluator are likely the quality, price, and speed. The following plot
 measures
 
 ## Analyzing an evaluation set
 
-**Notebook:
-** [![analyzing an evaluation set](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
+**Notebook:**
+[![analyzing an evaluation set](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)

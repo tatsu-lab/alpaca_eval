@@ -80,9 +80,6 @@ class PairwiseAnnotator:
     is_store_missing_preferences : bool, optional
         Whether to store missing preferences. If True it will avoid trying to always reannotate examples that have
         errors.
-
-    decoding_kwargs :
-        Additional arguments to pass to `fn_completions`.
     """
 
     def __init__(
@@ -96,7 +93,6 @@ class PairwiseAnnotator:
             p_label_flip: Optional[float] = None,
             other_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example"),
             is_store_missing_preferences: bool = True,
-            **decoding_kwargs,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
 
@@ -132,7 +128,6 @@ class PairwiseAnnotator:
         self.caching_path = caching_path
         self.df_annotations = None
         self.load_()
-        self.decoding_kwargs = decoding_kwargs
 
     def annotate_samples(
             self,
@@ -411,8 +406,6 @@ class PairwiseAnnotator:
 
     def _annotate(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
         """Annotate the examples."""
-        curr_decoding_kwargs = self.decoding_kwargs
-        curr_decoding_kwargs.update(decoding_kwargs)
 
         df_annotated = df_to_annotate
         for annotator in self.annotators.keys():
@@ -423,7 +416,7 @@ class PairwiseAnnotator:
 
             # actual annotation
             curr_annotated = self.annotators[annotator](
-                df_annotated.loc[curr_idcs, self.all_keys], **curr_decoding_kwargs
+                df_annotated.loc[curr_idcs, self.all_keys], **decoding_kwargs
             )
 
             df_annotated = self._merge_annotations(df_annotated, curr_annotated)

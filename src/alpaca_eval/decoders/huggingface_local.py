@@ -3,6 +3,8 @@ from typing import Optional, Sequence
 
 import numpy as np
 import torch
+from datasets import Dataset
+from tqdm import tqdm, trange
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -107,9 +109,14 @@ def huggingface_local_completions(
 
     ## compute and log the time for completions
     with utils.Timer() as t:
-        completions = pipeline(prompts, return_full_text=False, pad_token_id=pipeline.tokenizer.eos_token_id)
+        logging.info(f"Starting {n_examples} completions. Hugging face pipeline doesn't allow generators => no"
+                     f"progress bar. Sorry for that.")
+        completions = [completion[0]["generated_text"]
+                       for completion in pipeline(prompts,
+                                                  return_full_text=False,
+                                                  pad_token_id=pipeline.tokenizer.eos_token_id)]
+
     logging.info(f"Time for {n_examples} completions: {t}")
-    completions = [completion[0]["generated_text"] for completion in completions]
 
     if batch_size > 1:
         # reorder the completions to match the original order
