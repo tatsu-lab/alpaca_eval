@@ -1,5 +1,5 @@
+import logging
 from typing import Callable, Union
-from .. import utils
 
 
 def get_fn_completions(name: Union[str, Callable]) -> Callable:
@@ -8,38 +8,47 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
         return name
 
     if name == "anthropic_completions":
-        utils.check_imports(["anthropic"], "anthropic_completions")
-        from .anthropic import anthropic_completions
+        try:
+            from .anthropic import anthropic_completions
+        except ImportError:
+            packages = ["anthropic"]
+            logging.exception(f"You need {packages} to use anthropic_completions. Error:")
 
         return anthropic_completions
 
     elif name == "openai_completions":
-        utils.check_imports(["openai"], "openai_completions")
-        from .openai import openai_completions
+        try:
+            from .openai import openai_completions
+        except ImportError:
+            packages = ["openai"]
+            logging.exception(f"You need {packages} to use openai_completions. Error:")
 
         return openai_completions
 
     elif name == "huggingface_api_completions":
-        utils.check_imports(["huggingface_hub"], "huggingface_api_completions")
-        from .huggingface_api import huggingface_api_completions
+        try:
+            from .huggingface_api import huggingface_api_completions
+        except ImportError:
+            packages = ["huggingface_hub"]
+            logging.exception(f"You need {packages} to use huggingface_api_completions. Error:")
 
         return huggingface_api_completions
 
     elif name == "huggingface_local_completions":
-        utils.check_imports(
-            ["accelerate", "transformers", "bitsandbytes", "xformers", "optimum", "scipy"],
-            "huggingface_api_completions",
-        )
-        from .huggingface_local import huggingface_local_completions
+        try:
+            from .huggingface_local import huggingface_local_completions
+        except ImportError:
+            packages = ["accelerate", "transformers", "bitsandbytes", "xformers", "optimum", "scipy"]
+            logging.exception(f"You need {packages} to use huggingface_local_completions. Error:")
 
         return huggingface_local_completions
 
     elif name == "cohere_completions":
-        utils.check_imports(
-            ["cohere"],
-            "cohere_completions",
-        )
-        from .cohere import cohere_completions
+        try:
+            from .cohere import cohere_completions
+        except ImportError:
+            packages = ["cohere"]
+            logging.exception(f"You need {packages} to use cohere_completions. Error:")
 
         return cohere_completions
 

@@ -16,13 +16,13 @@ def evaluate(
         model_outputs: Union[AnyPath, AnyData, Callable],
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
-        name: str = "Current method",
+        name: Optional[str] = None,
         output_path: Optional[Union[AnyPath, str]] = "auto",
         precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
         is_return_instead_of_print: bool = False,
         fn_metric: Union[str, callable] = "pairwise_to_winrate",
         sort_by: str = "win_rate",
-        is_save_to_leaderboard: Optional[bool] = None,
+        is_cache_leaderboard: Optional[bool] = None,
         max_instances: Optional[int] = None,
         annotation_kwargs: Optional[dict[str, Any]] = None,
         **annotator_kwargs,
@@ -46,7 +46,8 @@ def evaluate(
         `PairwiseAnnotator`.
 
     name : str, optional
-        The name of the model to add to the leaderboard.
+        The name of the model to add to the leaderboard. If None we check if `generator is in model_outputs` if not
+        we use "Current model".
 
     output_path : bool, optional
         Path to the directory where the new leaderboard and the annotations should be stored. If None we don't save.
@@ -68,7 +69,7 @@ def evaluate(
     sort_by : str, optional
         The key by which to sort the leaderboard.
 
-    is_save_to_leaderboard : bool, optional
+    is_cache_leaderboard : bool, optional
         Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances.
 
     max_instances : int, optional
@@ -115,6 +116,13 @@ def evaluate(
     model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
     reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
 
+    if name is None:
+        try:
+            assert len(model_outputs["generator"].unique()) == 1
+            name = model_outputs["generator"].iloc[0]
+        except:
+            name = "Current model"
+
     if max_instances is not None:
         model_outputs = model_outputs[:max_instances]
         reference_outputs = reference_outputs[:max_instances]
@@ -138,8 +146,8 @@ def evaluate(
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
         utils.convert_to_dataframe(annotations).to_json(output_path / "annotations.json", orient="records", indent=2)
 
-    is_save_to_leaderboard = is_save_to_leaderboard or (max_instances is not None)
-    if is_save_to_leaderboard:
+    is_cache_leaderboard = is_cache_leaderboard or (max_instances is None)
+    if is_cache_leaderboard:
         logging.info(f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}")
         df_leaderboard.to_csv(precomputed_leaderboard)
 
