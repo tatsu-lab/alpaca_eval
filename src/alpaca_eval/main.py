@@ -180,6 +180,7 @@ def evaluate_from_model(
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         output_path: AnyPath = "auto",
         max_instances: int = None,
+        is_strip_output: bool = True,
         **kwargs,
 ):
     """Evaluate a model from huggingface on a desired evaluation set. This is a wrapper around `evaluate` where
@@ -218,6 +219,9 @@ def evaluate_from_model(
     max_instances : int, optional
         Maximum number of instances to generate and evaluate. If None, we evaluate all instances.
 
+    is_strip_output : bool, optional
+        Whether to strip trailing and leading whitespaces from the outputs.
+
     kwargs:
         Other kwargs to `evaluate`
     """
@@ -242,6 +246,8 @@ def evaluate_from_model(
         )
         fn_completions = decoders.get_fn_completions(configs["fn_completions"])
         completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])['completions']
+        if is_strip_output:
+            completions = [c.strip() for c in completions]
         curr_outputs["output"] = completions
         curr_outputs["generator"] = generator
         return curr_outputs
