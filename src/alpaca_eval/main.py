@@ -13,7 +13,7 @@ DEFAULT_CONFIGS = "gpt4"
 
 
 def evaluate(
-        model_outputs: Union[AnyPath, AnyData, Callable],
+        model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         name: Optional[str] = None,
@@ -35,7 +35,7 @@ def evaluate(
         The outputs of the model to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
         datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
         (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
-        and `output` with optional `input`.
+        and `output` with optional `input`. If None, we just print the leaderboard.
 
     reference_outputs : path or data, optional
         The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
@@ -113,29 +113,34 @@ def evaluate(
     else:
         leaderboard = dict()
 
-    model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
-    reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
+    if model_outputs is not None:
+        model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
+        reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
 
-    if name is None:
-        try:
-            assert len(model_outputs["generator"].unique()) == 1
-            name = model_outputs["generator"].iloc[0]
-        except:
-            name = "Current model"
+        if name is None:
+            try:
+                assert len(model_outputs["generator"].unique()) == 1
+                name = model_outputs["generator"].iloc[0]
+            except:
+                name = "Current model"
 
-    if max_instances is not None:
-        model_outputs = model_outputs[:max_instances]
-        reference_outputs = reference_outputs[:max_instances]
+        if max_instances is not None:
+            model_outputs = model_outputs[:max_instances]
+            reference_outputs = reference_outputs[:max_instances]
 
-    if isinstance(fn_metric, str):
-        fn_metric = getattr(metrics, fn_metric)
+        annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
+        annotations = annotator.annotate_head2head(
+            outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
+        )
 
-    annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
-    annotations = annotator.annotate_head2head(
-        outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
-    )
+        if isinstance(fn_metric, str):
+            fn_metric = getattr(metrics, fn_metric)
 
-    leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
+        leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
+
+    else:
+        annotations = None
+
     df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by=sort_by, ascending=False)
     df_leaderboard = df_leaderboard[
         utils.prioritize_elements(list(df_leaderboard.columns), ["win_rate", "standard_error"])
@@ -144,7 +149,10 @@ def evaluate(
     if output_path is not None:
         logging.info(f"Saving all results to {output_path}")
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
-        utils.convert_to_dataframe(annotations).to_json(output_path / "annotations.json", orient="records", indent=2)
+        if annotations is not None:
+            utils.convert_to_dataframe(annotations).to_json(output_path / "annotations.json",
+                                                            orient="records",
+                                                            indent=2)
 
     is_cache_leaderboard = is_cache_leaderboard or (max_instances is None)
     if is_cache_leaderboard:
