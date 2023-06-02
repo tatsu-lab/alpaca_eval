@@ -220,9 +220,10 @@ alpaca_eval evaluate_from_model --model_configs 'guanaco_33b'\
 ```
 
 Note that by default annotations are cached on
-disk. Annotations are thus never recomputed, which greatly decreases cost and time for repeated evaluations (many models
+disk at `caching_path`. Annotations are thus never recomputed, which greatly decreases cost and time for repeated
+evaluations (many models
 have
-the same outputs)
+the same outputs).
 
 ## Making a new evaluator
 

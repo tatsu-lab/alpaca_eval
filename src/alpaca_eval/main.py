@@ -189,20 +189,15 @@ def evaluate_from_model(
     Parameters
     ----------
     model_configs : path or dict
-        A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
-        we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
-        the value should be a dictionary of the annotator's configuration which should have the following keys:
-        The path is to `evaluators_configs/` directory.
-        - prompt_template (dict): a prompt template or path to one. Each template should contain placeholders for
-        keys in the example dictionary, typically {instruction} and {output_1} {output_2}.
+        A dictionary or path (relative to `models_configs`) to a yaml file containing the configuration of the model to
+        decode from. If a directory,we search for 'configs.yaml' in it. The keys in the first dictionary should be the
+        generator's name, and the value should be a dictionary of the generator's configuration which should have the
+        following keys:
+        - prompt_template (str): a prompt template or path to one. Each template should contain placeholders for
+        keys in the data dictionary, typically {instruction} and {output}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
             `prompts` which is a list of string.
-        - completions_kwargs (dict): kwargs for fn_completions. E.g. model_name, max_tokens, temperature,
-        tokens_to_avoid
-        - fn_completion_parser (str) : Function in `completion_parsers.py` to use for parsing the completions into
-        preferences.
-        - completion_parser_kwargs (dict) : Kwargs for fn_completion_parser.
-        - other kwargs to `SinglePairwiseAnnotator` such as batch_size
+        - completions_kwargs (dict): kwargs for fn_completions. E.g. model_name, max_tokens, temperature...
 
     reference_model_configs : path or dict, optional
         Same as in `model_configs` but for the reference model. If None, we use the same model as the one we are
