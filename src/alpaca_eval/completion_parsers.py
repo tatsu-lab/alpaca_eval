@@ -82,7 +82,7 @@ def lmsys_parser(completion):
         return [np.nan]
 
 
-def aviary_parser(completion):
+def ranking_parser(completion):
     try:
         ordered_completions = ast.literal_eval(completion)
 
