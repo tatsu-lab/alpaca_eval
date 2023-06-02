@@ -50,18 +50,19 @@ EVALUATORS_TO_BENCHMARK = (
 )
 
 API_EVALUATORS_TO_ANALYZE = (
+    "alpaca_eval",
     "gpt4",
-    # "claude",
+    "claude",
+    "claude_ranking",
     "text_davinci_003",
     "aviary_gpt4",
     "chatgpt",
     "guanaco_33b",
-    "lmsys_gpt4",
-    "cohere",
-    "alpaca_farm",
-    "alpaca_farm_greedy_gpt4",
-    "alpaca_eval",
-    # "claude_ranking"
+    # "lmsys_gpt4",
+    # "cohere",
+    # "alpaca_farm",
+    # "alpaca_farm_greedy_gpt4",
+    #
 )
 LOCAL_EVALUATORS_TO_ANALYZE = (
     "oasst_pythia_12b",
@@ -98,24 +99,18 @@ CUR_DIR = Path(__file__).parent
 def ALPACAFARM_REFERENCE_OUTPUTS():
     dataset = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
-        "alpaca_farm_evaluation",
+        "alpaca_eval",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
         # download_mode="force_redownload",
     )["eval"]
-    ######################## DEV
-    df = dataset.to_pandas()
-    df["instruction"] = [q + "\n\n" + i if len(i) > 0 else q
-                         for q, i in zip(df["instruction"], df["input"])]
-    df.drop(columns=["input"], inplace=True)
-    ######################## DEV
-    return df
+    return dataset
 
 
 def ALPACAFARM_ALL_OUTPUTS():
     return datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
-        "alpaca_farm_evaluation_all_outputs",
+        "alpaca_eval_all_outputs",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
         # download_mode="force_redownload",

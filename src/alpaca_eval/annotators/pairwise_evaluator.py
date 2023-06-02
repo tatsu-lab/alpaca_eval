@@ -338,13 +338,6 @@ class PairwiseAnnotator:
 
         df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
 
-        ######################## DEV
-        if "input" in df_to_annotate.columns:
-            df_to_annotate["instruction"] = [q + "\n\n" + i if len(i) > 0 else q
-                                             for q, i in zip(df_to_annotate["instruction"], df_to_annotate["input"])]
-            df_to_annotate = df_to_annotate.drop(columns=["input"])
-        ######################## DEV
-
         for c in self.other_keys_to_keep + ["preference"]:
             if c in df_to_annotate.columns:
                 logging.warning(f"""{c} column is already in the dataframe. We will overwrite it.""")

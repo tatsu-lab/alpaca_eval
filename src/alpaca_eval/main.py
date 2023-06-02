@@ -9,7 +9,7 @@ from .types import AnyPath, AnyData
 from . import decoders, utils, metrics, annotators, constants, analyze
 
 CUR_DIR = Path(__file__).parent
-DEFAULT_CONFIGS = "gpt4"
+DEFAULT_CONFIGS = "alpaca_eval"
 
 
 def evaluate(
@@ -100,10 +100,15 @@ def evaluate(
                 (str(reference_outputs), str(annotators_config))
             ]
         except KeyError:
-            if Path(reference_outputs).is_absolute():
+            try:
+                if Path(reference_outputs).is_absolute():
+                    logging.warning(
+                        f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard for"
+                        f" {reference_outputs} and {annotators_config}"
+                    )
+            except:
                 logging.warning(
-                    f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard for"
-                    f" {reference_outputs} and {annotators_config}"
+                    f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard"
                 )
             precomputed_leaderboard = None
 
@@ -257,8 +262,6 @@ def evaluate_from_model(
         output_path.mkdir(exist_ok=True, parents=True)
         model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
         reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
-
-    breakpoint()
 
     return evaluate(
         model_outputs=model_outputs,

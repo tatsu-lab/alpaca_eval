@@ -94,19 +94,18 @@ We evaluate different automatic annotators on the AlpacaFarm evaluation set by c
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
 we collected. For details about the evaluation metrics see [here]().
 
-|                           | Human agreement<br/>[%] | Price<br/>[$/1000 examples] | Time<br/>[seconds/1000 examples] |
-|:--------------------------|------------------------:|----------------------------:|---------------------------------:|
-| gpt4                      |                    66.6 |                        12.5 |                           1217.5 |
-| alpaca_farm_greedy (gpt4) |                    66.5 |                        15.4 |                            983.8 |
-| humans                    |                    65.7 |                       300.0 |                          36800.0 |
-| claude                    |                    65.3 |   14.4 (free for academics) |                           1416.0 |
-| text_davinci_003          |                    64.6 |                         8.8 |                             78.4 |
-| lmsys (gpt4)              |                    63.8 |                        13.9 |                           6320.7 |
-| alpaca_farm               |                    60.6 |                        11.9 |                            888.7 |
-| guanaco_33b               |                    59.7 |                             |                            939.0 |
-| chatgpt                   |                    58.5 |                         0.8 |                            311.8 |
-| cohere                    |                    53.0 |                         2.5 |                            290.7 |
-| oasst_pythia_12b          |                    51.2 |                             |                            230.2 |
+|                  | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer | Proba. prefer lists | # parsed |
+|:-----------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|--------------------:|---------:|
+| aviary_gpt4      |                69.8 |                    12.8 |                       1852.0 | 26.9 |     15.4 |                  0.7 |                 0.7 |   2592.0 |
+| alpaca_eval      |                69.2 |                    13.6 |                       1455.4 | 28.4 |     14.6 |                  0.7 |                 0.7 |   2592.0 |
+| claude_ranking   |                67.0 |                     5.0 |                        217.1 | 31.0 |     16.6 |                  0.7 |                 0.6 |   2592.0 |
+| gpt4             |                66.9 |                    12.5 |                       1036.8 | 31.5 |     14.6 |                  0.6 |                 0.6 |   2592.0 |
+| humans           |                65.7 |                   300.0 |                      36800.0 |  0.0 |          |                  0.6 |                 0.6 |   2592.0 |
+| claude           |                65.5 |                    11.1 |                        173.0 | 31.9 |     18.0 |                  0.6 |                 0.6 |   2592.0 |
+| text_davinci_003 |                64.1 |                     8.7 |                        120.9 | 33.8 |     22.7 |                  0.7 |                 0.6 |   2592.0 |
+| longest          |                62.2 |                     0.0 |                          0.0 | 37.8 |      0.0 |                  1.0 |                 0.8 |   2592.0 |
+| guanaco_33b      |                59.1 |                         |                        929.7 | 54.5 |     27.1 |                  0.7 |                 0.7 |   1761.0 |
+| chatgpt          |                57.2 |                     0.8 |                        285.0 | 39.4 |     34.1 |                  0.6 |                 0.6 |   2589.0 |
 
 # Use-cases
 
@@ -126,10 +125,9 @@ we collected. For details about the evaluation metrics see [here]().
 
 To evaluate a model you need to:
 
-1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use the
-   a [slight variation]() of the AlpacaFarm evaluation set, which contain 805 examples and we refer to AlpacaEval. To
-   compute outputs on
-   AlpacaEval use:
+1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use
+   a [slight variation](#data-release) of the AlpacaFarm evaluation set, which contain 805 examples and we refer to
+   AlpacaEval. To compute outputs on AlpacaEval use:
 
 ```python
 import datasets
@@ -139,6 +137,10 @@ for example in eval_set:
     # generate here is a placeholder for your models generations
     example["output"] = generate(example["instruction"])
 ```
+
+if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can also
+directly use `alpaca_eval evaluate_from_model` to take care of generating outputs on the desired data as
+discussed below.
 
 2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of text-davinci-003 on AlpacaFarm.
    If you
@@ -201,10 +203,20 @@ Running all together:
 ```bash
 alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
               --reference_outputs <path> \
-             --name '**Current method**'\
-             --annotators_config 'gpt4'\
-             --output_path <example>\
+             --annotators_config 'alpaca_eval'\
              --max_instances <specify for testing>
+```
+
+If you don't have decoded outputs, you can use `evaluate_from_model` which takes care of decoding (model and reference)
+for you. Here's an
+example:
+
+```bash
+export ANTHROPIC_API_KEY=<your_api_key> # let's use claude as reference
+alpaca_eval evaluate_from_model --model_configs 'guanaco_33b'\
+              --reference_model_configs 'claude'\
+             --annotators_config 'chatgpt'\
+             --max_instances 3
 ```
 
 Note that by default annotations are cached on
