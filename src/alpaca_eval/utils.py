@@ -15,6 +15,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 import datasets
 import numpy as np
 import pandas as pd
+import yaml
 
 # don't load from utils to avoid unnecessary dependencies
 AnyPath = Union[str, os.PathLike, pathlib.Path]
@@ -348,7 +349,7 @@ def load_configs(configs: Union[AnyPath, dict], relative_to: Optional[AnyPath] =
             configs = Path(relative_to) / configs
         with open(configs, "r") as stream:
             try:
-                annotators_config = yaml.safe_load(stream)
+                configs = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 logging.exception(exc)
 

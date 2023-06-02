@@ -6,7 +6,7 @@ from pathlib import Path
 import fire
 
 from .types import AnyPath, AnyData
-from . import utils, metrics, annotators, constants, analyze
+from . import decoders, utils, metrics, annotators, constants, analyze
 
 CUR_DIR = Path(__file__).parent
 DEFAULT_CONFIGS = "gpt4"
@@ -160,7 +160,7 @@ def evaluate(
 def evaluate_from_model(
         model_configs: Union[AnyPath, dict],
         reference_model_configs: Optional[Union[AnyPath, dict]] = None,
-        evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_EVALUATION_DATASET,
+        evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         **kwargs,
 ):
@@ -204,26 +204,30 @@ def evaluate_from_model(
     reference_model_configs = reference_model_configs or utils.load_configs(reference_model_configs)
 
     def get_completions(configs):
+        curr_outputs = evaluation_dataset.copy()
         prompts, _ = utils.make_prompts(
             df=evaluation_dataset,
             template=utils.read_or_return(configs["prompt_template"]),
         )
+        fn_completions = decoders.get_fn_completions(configs["fn_completions"])
+        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])
+        curr_outputs["outputs"] = completions
+        return curr_outputs
 
-    # evaluate(
-    #     model_outputs: Union[AnyPath, AnyData, Callable],
-    # reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
-    # annotators_config: AnyPath = DEFAULT_CONFIGS,
-    # name: str = "Current method",
-    # output_path: Optional[Union[AnyPath, str]] = "auto",
-    # precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
-    # is_return_instead_of_print: bool = False,
-    # fn_metric: Union[str, callable] = "pairwise_to_winrate",
-    # sort_by: str = "win_rate",
-    # is_save_to_leaderboard: Optional[bool] = None,
-    # max_instances: Optional[int] = None,
-    # annotation_kwargs: Optional[dict[str, Any]] = None,
-    # ** annotator_kwargs,
-    # )
+    model_outputs = get_completions(model_configs)
+    if reference_model_configs is None:
+        if "outputs" not in evaluation_dataset.columns:
+            raise ValueError("evaluation_dataset should have a column 'outputs' containing references outputs")
+        reference_outputs = evaluation_dataset.copy()
+    else:
+        reference_outputs = get_completions(reference_model_configs)
+
+    return evaluate(
+        model_outputs=model_outputs,
+        reference_outputs=reference_outputs,
+        annotators_config=annotators_config,
+        **kwargs,
+    )
 
 
 def make_leaderboard(
