@@ -269,12 +269,20 @@ class PairwiseAnnotator:
             outputs_2["tmp_idx"] = range(len(outputs_1))
             keys_to_merge += ["tmp_idx"]  # add a temporary index to merge on
 
+        # find all the columns that are in both
+        other_same_cols = [k for k in outputs_1.columns if k in outputs_2 and k not in (keys_to_merge + ["output"])]
+
         df_to_annotate = pd.merge(
-            outputs_1[keys_to_merge + ["output"]],
-            outputs_2[keys_to_merge + ["output"]],
+            outputs_1,
+            outputs_2,
             on=keys_to_merge,
             suffixes=("_1", "_2"),
         )
+
+        for c in other_same_cols:
+            # if the columns are the same, we can drop the _2
+            if df_to_annotate[c + "_1"].equals(df_to_annotate[c + "_2"]):
+                df_to_annotate = df_to_annotate.drop(columns=c + "_2").rename(columns={c + "_1": c})
 
         if is_ordered:
             df_to_annotate = df_to_annotate.drop(columns="tmp_idx")
@@ -290,7 +298,9 @@ class PairwiseAnnotator:
                     """
                 )
 
-        return self.annotate_pairs(df_to_annotate, **decoding_kwargs)
+        out = self.annotate_pairs(df_to_annotate, **decoding_kwargs)
+
+        return out
 
     def annotate_pairs(
             self,
@@ -317,6 +327,7 @@ class PairwiseAnnotator:
             return []
 
         df_to_annotate = self._preprocess(to_annotate)
+
         df_annotated = self._annotate(df_to_annotate, **decoding_kwargs)
         annotated = self._postprocess_and_store_(df_annotated, to_annotate)
         return annotated
@@ -408,9 +419,7 @@ class PairwiseAnnotator:
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
             # actual annotation
-            curr_annotated = self.annotators[annotator](
-                df_annotated.loc[curr_idcs, self.all_keys], **decoding_kwargs
-            )
+            curr_annotated = self.annotators[annotator](df_annotated.loc[curr_idcs, self.all_keys], **decoding_kwargs)
 
             df_annotated = self._merge_annotations(df_annotated, curr_annotated)
 
@@ -601,9 +610,9 @@ class SinglePairwiseAnnotator:
         df_to_annotate = self.preprocess(df_to_annotate)
 
         # prompts and completions here will not be the same length as the dataframe due to batching
-        prompts, df_to_annotate = utils.make_prompts(df=df_to_annotate,
-                                                     template=self.prompt_template,
-                                                     batch_size=self.batch_size)
+        prompts, df_to_annotate = utils.make_prompts(
+            df=df_to_annotate, template=self.prompt_template, batch_size=self.batch_size
+        )
 
         completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
