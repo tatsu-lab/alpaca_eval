@@ -388,7 +388,7 @@ Please consider citing the repo if you use the automatic annotators, code, or re
 
 ```
 @misc{alpaca_eval,
-  author = {Xuechen Li, Tianyi Zhang, Yann Dubois, Rohan Taori and Ishaan Gulrajani and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto },
+  author = {Xuechen Li and Tianyi Zhang and Yann Dubois and Rohan Taori and Ishaan Gulrajani and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto },
   title = {AlpacaEval: An Automatic Evaluator of Instruction-following Models},
   year = {2023},
   publisher = {GitHub},
