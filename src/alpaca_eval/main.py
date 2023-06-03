@@ -84,15 +84,6 @@ def evaluate(
         Additional arguments to pass to `PairwiseAnnotator`.
     """
     annotation_kwargs = annotation_kwargs or dict()
-    if output_path == "auto":
-        try:
-            output_path = Path(model_outputs).parent
-        except:
-            output_path = "."
-
-    if output_path is not None:
-        output_path = Path(output_path)
-        output_path.mkdir(exist_ok=True, parents=True)
 
     if precomputed_leaderboard == "auto":
         try:
@@ -132,6 +123,8 @@ def evaluate(
             except:
                 name = "Current model"
 
+        logging.info(f"Evaluating the {name} outputs.")
+
         if max_instances is not None:
             model_outputs = model_outputs[:max_instances]
             reference_outputs = reference_outputs[:max_instances]
@@ -148,6 +141,18 @@ def evaluate(
 
     else:
         annotations = None
+
+    if output_path == "auto":
+        try:
+            output_path = Path(model_outputs).parent
+        except:
+            if name is not None:
+                output_path = Path("results") / name
+            else:
+                output_path = "."
+    if output_path is not None:
+        output_path = Path(output_path)
+        output_path.mkdir(exist_ok=True, parents=True)
 
     df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by=sort_by, ascending=False)
     df_leaderboard = df_leaderboard[
@@ -264,6 +269,7 @@ def evaluate_from_model(
         model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
         reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
 
+    return
     return evaluate(
         model_outputs=model_outputs,
         reference_outputs=reference_outputs,
@@ -296,10 +302,11 @@ def make_leaderboard(
 
     all_model_outputs : path or data or callable, optional
         The outputs of all models to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
-        datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
-        (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
-        and `output` with optional `input`. It should also contain a column `generator` with the name of the current
-        model.
+        datasets.Dataset) or a path to read those (json, csv, tsv potentially with globbing) or a function to generate
+        those. If the path contains a globbing pattern, we will read all files matching the pattern and concatenate
+        them. Each dictionary (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by
+        default `instruction` and `output` with optional `input`. It should also contain a column `generator` with the
+        name of the current model.
 
     reference_outputs : path or data, optional
         The outputs of the reference model. Same format as `all_model_outputs` but without needing `generator`. By
