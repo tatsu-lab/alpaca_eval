@@ -17,6 +17,7 @@ COHERE_API_KEY = os.environ.get("COHERE_API_KEY", None)
 
 DATASETS_TOKEN = os.environ.get("DATASETS_TOKEN", None)
 HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
+DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 ########################
 
 DEFAULT_CACHE_DIR = None
@@ -25,55 +26,47 @@ EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
 MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
 
 MODEL_LEADERBOARD = (
-    "GPT-4",
-    "ChatGPT",
-    "AlpacaFarm PPO sim (gpt4 greedy 20k, step 350)",
-    "AlpacaFarm PPO human (10k, step 40)",
-    "Alpaca 7B",
-    "Davinci003",
-    "Davinci001",
+    "gpt4",
+    "claude",
+    "chatgpt",
+    "vicuna-13b",
+    "guanaco-65b",
+    "oasst-rlhf-llama-33b",
+    "text_davinci_003",
+    "alpaca-farm-ppo-human",
+    "falcon-40b-instruct",
+    "alpaca-7b",
+    "text_davinci_001",
 )
-EVALUATORS_TO_BENCHMARK = (
+EVALUATORS_LEADERBOARD = (
+    "alpaca_eval_gpt4",
     "gpt4",
     "claude",
     "text_davinci_003",
     "chatgpt",
     "guanaco_33b",
     "lmsys_gpt4",
-    "cohere",
     "oasst_pythia_12b",
     "humans",
     "alpaca_farm_greedy_gpt4",
-    "aviary_gpt4",
-    "claude_ranking",
     "alpaca_eval"
 )
 
-API_EVALUATORS_TO_ANALYZE = (
-    "alpaca_eval",
-    "gpt4",
-    "claude",
+MODEL_TO_BENCHMARK = tuple(list(MODEL_LEADERBOARD) + [
+
+])
+EVALUATORS_TO_BENCHMARK = tuple(list(EVALUATORS_LEADERBOARD) + [
     "claude_ranking",
-    "text_davinci_003",
-    "aviary_gpt4",
-    "chatgpt",
-    "guanaco_33b",
-    # "lmsys_gpt4",
-    # "cohere",
-    # "alpaca_farm",
-    # "alpaca_farm_greedy_gpt4",
-    #
-)
-LOCAL_EVALUATORS_TO_ANALYZE = (
+    "improved_aviary_gpt4",
+    "improved_lmsys_gpt4",
+    "lmsys_gpt4",
+    "cohere",
+    "alpaca_farm",
+    "alpaca_farm_greedy_gpt4",
     "oasst_pythia_12b",
     "stablelm_alpha_7b",
-)
-
-EVALUATORS_TO_ANALYZE = tuple(
-    list(API_EVALUATORS_TO_ANALYZE)
-    # +list(LOCAL_EVALUATORS_TO_ANALYZE)
-    + ["humans", "longest"]
-)
+    "longest"
+])
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "GPT-4 300 characters",
@@ -93,8 +86,6 @@ HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "LLaMA 7B",
 )
 
-CUR_DIR = Path(__file__).parent
-
 
 def ALPACAFARM_REFERENCE_OUTPUTS():
     dataset = datasets.load_dataset(
@@ -102,7 +93,7 @@ def ALPACAFARM_REFERENCE_OUTPUTS():
         "alpaca_eval",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        # download_mode="force_redownload",
+        download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["eval"]
     return dataset
 
@@ -113,7 +104,7 @@ def ALPACAFARM_ALL_OUTPUTS():
         "alpaca_eval_all_outputs",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        # download_mode="force_redownload",
+        download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["eval"]
 
 
@@ -123,7 +114,7 @@ def ALPACAFARM_GOLD_CROSSANNOTATIONS():
         "alpaca_farm_human_crossannotations",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        # download_mode="force_redownload",
+        download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -138,7 +129,7 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
         "alpaca_farm_human_annotations",
         cache_dir=DEFAULT_CACHE_DIR,
         use_auth_token=DATASETS_TOKEN,
-        # download_mode="force_redownload",
+        download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -148,11 +139,11 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
 
 
 PRECOMPUTED_LEADERBOARDS = {
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "alpaca_farm"): CUR_DIR
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), "alpaca_farm"): CURRENT_DIR
                                                         / "leaderboards/AlpacaFarm/alpaca_farm_leaderboard.csv",
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): CUR_DIR
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): CURRENT_DIR
                                                    / "leaderboards/AlpacaFarm/claude_leaderboard.csv",
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "gpt4"): CUR_DIR
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), "gpt4"): CURRENT_DIR
                                                  / "leaderboards/AlpacaFarm/gpt4_leaderboard.csv",
 }
 
