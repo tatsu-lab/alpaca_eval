@@ -385,6 +385,7 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)[
         "probability_prefer_longer"]
     all_metrics["Proba. prefer lists"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
+    all_metrics["Proba. prefer 1"] = 2 - df_crossannotations["preference"].mean()
     all_metrics["# parsed"] = len(df_crossannotations.preference.dropna())
     return all_metrics
 
