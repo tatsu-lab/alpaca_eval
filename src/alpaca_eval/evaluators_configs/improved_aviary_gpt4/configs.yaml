@@ -1,7 +1,7 @@
 # differences:
 # temperature=0
 # randomization of order of example
-aviary_gpt4:
+improved_aviary_gpt4:
   prompt_template: "aviary_gpt4/aviary_prompt.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
