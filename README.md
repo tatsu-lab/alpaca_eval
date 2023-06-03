@@ -17,9 +17,10 @@ AlpacaEval provides the following:
   building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
 - [**Human evaluation data**](#data-release): 20K human annotations of preferences between a given and reference model
-  on the AlpacaFarm
+  on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
   evaluation set. 2500 of which are cross-annotations (4 humans annotating the same 650 examples).
-- [**AlpacaEval dataset**](#data-release): a simplification of the AlpacaFarm evaluation set, where "instructions" and "
+- [**AlpacaEval dataset**](#data-release): a simplification of
+  the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
   inputs" are merged
   into a single field.
 
@@ -96,9 +97,7 @@ we collected. For details about the evaluation metrics see [here]().
 
 |                  | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer | Proba. prefer lists | # parsed |
 |:-----------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|--------------------:|---------:|
-| aviary_gpt4      |                69.8 |                    12.8 |                       1852.0 | 26.9 |     15.4 |                  0.7 |                 0.7 |   2592.0 |
 | alpaca_eval      |                69.2 |                    13.6 |                       1455.4 | 28.4 |     14.6 |                  0.7 |                 0.7 |   2592.0 |
-| claude_ranking   |                67.0 |                     5.0 |                        217.1 | 31.0 |     16.6 |                  0.7 |                 0.6 |   2592.0 |
 | gpt4             |                66.9 |                    12.5 |                       1036.8 | 31.5 |     14.6 |                  0.6 |                 0.6 |   2592.0 |
 | humans           |                65.7 |                   300.0 |                      36800.0 |  0.0 |          |                  0.6 |                 0.6 |   2592.0 |
 | claude           |                65.5 |                    11.1 |                        173.0 | 31.9 |     18.0 |                  0.6 |                 0.6 |   2592.0 |
@@ -106,6 +105,25 @@ we collected. For details about the evaluation metrics see [here]().
 | longest          |                62.2 |                     0.0 |                          0.0 | 37.8 |      0.0 |                  1.0 |                 0.8 |   2592.0 |
 | guanaco_33b      |                59.1 |                         |                        929.7 | 54.5 |     27.1 |                  0.7 |                 0.7 |   1761.0 |
 | chatgpt          |                57.2 |                     0.8 |                        285.0 | 39.4 |     34.1 |                  0.6 |                 0.6 |   2589.0 |
+
+Note that when choosing an annotator we recommend you to (obviously) consider the quality / price / time, but we also
+suggest considering the following:
+
+- "Proba. prefer longer " approx. < 0.7. Indeed, we found see that the majority of preference of human annotators (which
+  we use
+  as gold
+  standard) have strong bias for longer answers (as shown by the high quality of the "longest" evaluator that always
+  prefers the longest output). This suggests that it might more of a bias with the human annotators. In order to avoid
+  having leaderboards with strong biases for length, we suggest using automatic annotators with less than 0.7 "Proba.
+  prefer longer".
+- "Variance" approx. < 0.2. We believe that a good evaluator should have as little variance as possible so that
+  different people get similar results. Note that variance can be desirable in the case where we are simulating humans
+  as shown in [AlpacaFarm](https://arxiv.org/abs/2305.14387).
+
+We filtered the rest of the annotators in the table above (besides humans / ChatGPT / 003 for reference purposes), for
+all
+results see [here](). In general, we found `alpaca_eval` to be a good trade-off between quality / price / time /
+variance / length bias.
 
 # Use-cases
 
@@ -212,12 +230,18 @@ for you. Here's an
 example:
 
 ```bash
+# need a GPU for pythia
 export ANTHROPIC_API_KEY=<your_api_key> # let's use claude as reference
-alpaca_eval evaluate_from_model --model_configs 'guanaco_33b'\
+alpaca_eval evaluate_from_model --model_configs 'oasst_pythia_12b'\
               --reference_model_configs 'claude'\
              --annotators_config 'chatgpt'\
              --max_instances 3
 ```
+
+Here the `model_configs` and `reference_model_configs` (optional) are paths to a directory that specifies the prompt,
+the model
+provider (here HuggingFace and Anthropic) and decoding parameters.
+See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/models_configs) for examples.
 
 Note that by default annotations are cached on
 disk at `caching_path`. Annotations are thus never recomputed, which greatly decreases cost and time for repeated
@@ -344,9 +368,21 @@ measures
 
 # Data release
 
-## Citation
+As part of AlpacaEval, we release the following data:
 
-Please consider citing the repo if you use the data or code in this repo.
+- **Human annotations (17K)** in order to develop and understand automatic evaluators, we release all the human pairwise
+  evaluation that we collected for AlpacaFarm. This contains comparisons between 18 models with the `text-davinci-003`
+  reference on the AlpacaFarm evaluation set. Annotations are from a pool of 16 crowdworkers on Amazon Mechanical Turk.
+- **Human cross-annotations (3K)** in order to further analyze automatic evaluators we selected (via stratified sampling
+  across models and datasets) 650 examples from the AlpacaFarm evaluation set and collected 4 human annotations per
+  example. This allows us to estimate the bias and variance of automatic evaluators.
+- **AlpacaEval set (800)** we made a slight simplification of the AlpacaFarm evaluation set, which consists of merging
+  the instruction and input fields into a single instruction field. This affects 1/4 of the examples in the AlpacaFarm
+  evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560).
+
+# Citation
+
+Please consider citing the repo if you use the automatic annotators, code, or results in this repo.
 
 ```
 @misc{alpaca_eval,
@@ -356,5 +392,19 @@ Please consider citing the repo if you use the data or code in this repo.
   publisher = {GitHub},
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/tatsu-lab/stanford_eval}},
+}
+```
+
+If you use the human annotations, please also cite the [AlpacaFarm](https://arxiv.org/abs/2305.14387)
+paper:
+
+```
+@misc{dubois2023alpacafarm,
+      title={AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback}, 
+      author={Yann Dubois and Xuechen Li and Rohan Taori and Tianyi Zhang and Ishaan Gulrajani and Jimmy Ba and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto},
+      year={2023},
+      eprint={2305.14387},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
 }
 ```
