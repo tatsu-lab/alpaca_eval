@@ -9,7 +9,7 @@ from .types import AnyPath, AnyData
 from . import decoders, utils, metrics, annotators, constants, analyze
 
 CUR_DIR = Path(__file__).parent
-DEFAULT_CONFIGS = "alpaca_eval"
+DEFAULT_CONFIGS = "alpaca_eval_gpt4"
 
 
 def evaluate(
@@ -98,9 +98,7 @@ def evaluate(
                         f" {reference_outputs} and {annotators_config}"
                     )
             except:
-                logging.warning(
-                    f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard"
-                )
+                logging.warning(f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard")
             precomputed_leaderboard = None
 
     if precomputed_leaderboard is not None:
@@ -163,9 +161,9 @@ def evaluate(
         logging.info(f"Saving all results to {output_path}")
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
         if annotations is not None:
-            utils.convert_to_dataframe(annotations).to_json(output_path / "annotations.json",
-                                                            orient="records",
-                                                            indent=2)
+            utils.convert_to_dataframe(annotations).to_json(
+                output_path / "annotations.json", orient="records", indent=2
+            )
 
     is_cache_leaderboard = is_cache_leaderboard or (max_instances is None)
     if is_cache_leaderboard:
@@ -245,7 +243,7 @@ def evaluate_from_model(
             template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
         )
         fn_completions = decoders.get_fn_completions(configs["fn_completions"])
-        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])['completions']
+        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])["completions"]
         if is_strip_output:
             completions = [c.strip() for c in completions]
         curr_outputs["output"] = completions
@@ -351,7 +349,7 @@ def make_leaderboard(
     if is_return_instead_of_print:
         return df_leaderboard, all_annotations
     else:
-        print(df_leaderboard.to_string(float_format="%.2f"))
+        print(df_leaderboard[["win_rate", "standard_error", "n_total"]].to_string(float_format="%.2f"))
 
 
 def analyze_evaluators(
@@ -433,6 +431,12 @@ def analyze_evaluators(
             all_crossannotations[key] = df_crossannotations
 
     df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by="Human agreement [%]", ascending=False)
+    df_leaderboard = df_leaderboard[
+        utils.prioritize_elements(list(df_leaderboard.columns),
+                                  ["Human agreement [%]", "Price [$/1000 examples]", "Time [seconds/1000 examples]",
+                                   "Bias", "Variance", "Proba. prefer longer", "Proba. prefer lists",
+                                   "Proba. prefer 1"])
+    ]
 
     if is_save_leaderboard:
         df_leaderboard.to_csv(precomputed_leaderboard)
