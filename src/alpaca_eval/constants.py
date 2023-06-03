@@ -40,33 +40,34 @@ MODEL_LEADERBOARD = (
 )
 EVALUATORS_LEADERBOARD = (
     "alpaca_eval_gpt4",
+    "aviary_gpt4",
     "gpt4",
     "claude",
     "text_davinci_003",
     "chatgpt",
     "guanaco_33b",
     "lmsys_gpt4",
-    "oasst_pythia_12b",
     "humans",
     "alpaca_farm_greedy_gpt4",
-    "alpaca_eval"
 )
 
-MODEL_TO_BENCHMARK = tuple(list(MODEL_LEADERBOARD) + [
-
-])
-EVALUATORS_TO_BENCHMARK = tuple(list(EVALUATORS_LEADERBOARD) + [
-    "claude_ranking",
-    "improved_aviary_gpt4",
-    "improved_lmsys_gpt4",
-    "lmsys_gpt4",
-    "cohere",
-    "alpaca_farm",
-    "alpaca_farm_greedy_gpt4",
-    "oasst_pythia_12b",
-    "stablelm_alpha_7b",
-    "longest"
-])
+MODEL_TO_BENCHMARK = tuple(list(MODEL_LEADERBOARD) + [])
+EVALUATORS_TO_BENCHMARK = tuple(
+    list(EVALUATORS_LEADERBOARD)
+    + [
+        "claude_ranking",
+        "improved_aviary_gpt4",
+        "improved_lmsys_gpt4",
+        "lmsys_gpt4",
+        "cohere",
+        "alpaca_farm",
+        "alpaca_farm_greedy_gpt4",
+        # "oasst_pythia_12b",
+        # "stablelm_alpha_7b",
+        "longest",
+    ]
+)
+# EVALUATORS_TO_BENCHMARK = ["oasst_pythia_12b", "stablelm_alpha_7b"]
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "GPT-4 300 characters",
@@ -140,8 +141,7 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
 
 ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / "leaderboards/data_AlpacaEval"
 PRECOMPUTED_LEADERBOARDS = {
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS
-                                                   / "claude_leaderboard.csv",
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS / "claude_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
                                                              / "alpaca_eval_gpt4_leaderboard.csv",
 }
