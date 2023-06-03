@@ -81,6 +81,7 @@ def _anthropic_completion_helper(
         anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
         max_tokens_to_sample: Optional[int] = 1000,
         temperature: Optional[float] = 0.7,
+        n_retries: Optional[int] = 3,
         **kwargs,
 ) -> str:
     anthropic_api_key = random.choice(anthropic_api_keys)
@@ -110,6 +111,12 @@ def _anthropic_completion_helper(
                 logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
             else:
                 raise ValueError(f"Unknown ApiException {e}.")
+        except Exception as e:
+            if n_retries > 0:
+                logging.warning(f"{e}. \nRetrying...")
+                n_retries = n_retries - 1
+            else:
+                raise e
 
     return response["completion"]
 
