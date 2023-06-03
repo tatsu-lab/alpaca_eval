@@ -1,5 +1,6 @@
 import contextlib
 import copy
+import glob
 import itertools
 import logging
 import random
@@ -260,18 +261,25 @@ def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs)
 
     if isinstance(df, AnyPath):
         df = Path(df)
-        suffix = df.suffix
-        if suffix == ".json":
-            df = pd.read_json(df, **kwargs)
-        elif suffix == ".csv":
-            df = pd.read_csv(df, **kwargs)
-            if df.columns[0] == "Unnamed: 0":
-                df.set_index(df.columns[0], inplace=True)
-                df.index.name = None
-        elif suffix == ".tsv":
-            df = pd.read_table(df, sep="\t", **kwargs)
+
+        # check if it's a globbing pattern
+        if "*" in str(df):
+            df = pd.concat(
+                [load_or_convert_to_dataframe(f, **kwargs) for f in glob.glob(str(df))],
+            )
         else:
-            raise ValueError(f"File format {suffix} not supported.")
+            suffix = df.suffix
+            if suffix == ".json":
+                df = pd.read_json(df, **kwargs)
+            elif suffix == ".csv":
+                df = pd.read_csv(df, **kwargs)
+                if df.columns[0] == "Unnamed: 0":
+                    df.set_index(df.columns[0], inplace=True)
+                    df.index.name = None
+            elif suffix == ".tsv":
+                df = pd.read_table(df, sep="\t", **kwargs)
+            else:
+                raise ValueError(f"File format {suffix} not supported.")
     else:
         df = convert_to_dataframe(df, **kwargs)
 
