@@ -59,5 +59,6 @@ setuptools.setup(
             "alpaca_eval=alpaca_eval.main:main",
         ],
     },
-    package_data={'alpaca_eval': ['evaluators_configs/*/*.*', 'models_configs/*/*.*', 'leaderboards/*/*.csv']},
+    # package_data={'alpaca_eval': ['evaluators_configs/*/*.*', 'models_configs/*/*.*', 'leaderboards/*/*.csv']},
+    include_package_data=True
 )
