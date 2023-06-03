@@ -138,13 +138,12 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
     return df
 
 
+ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / "leaderboards/data_AlpacaEval"
 PRECOMPUTED_LEADERBOARDS = {
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "alpaca_farm"): CURRENT_DIR
-                                                        / "leaderboards/AlpacaFarm/alpaca_farm_leaderboard.csv",
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): CURRENT_DIR
-                                                   / "leaderboards/AlpacaFarm/claude_leaderboard.csv",
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "gpt4"): CURRENT_DIR
-                                                 / "leaderboards/AlpacaFarm/gpt4_leaderboard.csv",
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS
+                                                   / "claude_leaderboard.csv",
+    (str(ALPACAFARM_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
+                                                             / "alpaca_eval_gpt4_leaderboard.csv",
 }
 
 CURRENT_USER = getpass.getuser()
