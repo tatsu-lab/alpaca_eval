@@ -41,9 +41,6 @@ Let's do one more. Remember to answer with one-word either "Output (a)" or "Outp
 ### Instruction:
 {instruction}
 
-### Input:
-{input}
-
 ### Output (a):
 {output_1}
 
