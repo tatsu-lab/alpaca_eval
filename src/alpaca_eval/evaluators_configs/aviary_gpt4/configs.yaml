@@ -1,4 +1,4 @@
-aviary_gpt4:
+improved_aviary_gpt4:
   prompt_template: "aviary_gpt4/aviary_prompt.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
@@ -7,3 +7,4 @@ aviary_gpt4:
     temperature: 0.9
   fn_completion_parser: "ranking_parser"
   batch_size: 1
+  is_randomize_output_order: false  # lmsys doesn't seem to randomize order
