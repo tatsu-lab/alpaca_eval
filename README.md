@@ -376,9 +376,11 @@ As part of AlpacaEval, we release the following data:
 - **Human cross-annotations (3K)** in order to further analyze automatic evaluators we selected (via stratified sampling
   across models and datasets) 650 examples from the AlpacaFarm evaluation set and collected 4 human annotations per
   example. This allows us to estimate the bias and variance of automatic evaluators.
-- **AlpacaEval set (800)** we made a slight simplification of the AlpacaFarm evaluation set, which consists of merging
+- **AlpacaEval set (800)** we made slight modifications/simplification of the AlpacaFarm evaluation set. In particular,
+  we first merged
   the instruction and input fields into a single instruction field. This affects 1/4 of the examples in the AlpacaFarm
-  evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560).
+  evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560). Second we
+  regenerated the text-davinci-003 reference outputs without limiting the length of its outputs.
 
 # Citation
 

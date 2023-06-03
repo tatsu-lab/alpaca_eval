@@ -87,7 +87,7 @@ HUMAN_ANNOTATED_MODELS_TO_KEEP = (
 )
 
 
-def ALPACAFARM_REFERENCE_OUTPUTS():
+def ALPACAEVAL_REFERENCE_OUTPUTS():
     dataset = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
         "alpaca_eval",
@@ -140,9 +140,9 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
 
 ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / "leaderboards/data_AlpacaEval"
 PRECOMPUTED_LEADERBOARDS = {
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS
                                                    / "claude_leaderboard.csv",
-    (str(ALPACAFARM_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
                                                              / "alpaca_eval_gpt4_leaderboard.csv",
 }
 

@@ -14,7 +14,7 @@ DEFAULT_CONFIGS = "alpaca_eval"
 
 def evaluate(
         model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
-        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
+        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         name: Optional[str] = None,
         output_path: Optional[Union[AnyPath, str]] = "auto",
@@ -181,7 +181,7 @@ def evaluate(
 def evaluate_from_model(
         model_configs: Union[AnyPath, dict],
         reference_model_configs: Optional[Union[AnyPath, dict]] = None,
-        evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
+        evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         output_path: AnyPath = "auto",
         max_instances: int = None,
@@ -269,7 +269,6 @@ def evaluate_from_model(
         model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
         reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
 
-    return
     return evaluate(
         model_outputs=model_outputs,
         reference_outputs=reference_outputs,
@@ -284,7 +283,7 @@ def make_leaderboard(
         leaderboard_path: AnyPath,
         annotators_config: AnyPath = DEFAULT_CONFIGS,
         all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
-        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_REFERENCE_OUTPUTS,
+        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
         fn_add_to_leaderboard: Callable = "evaluate",
         is_return_instead_of_print: bool = False,
         **kwargs,
