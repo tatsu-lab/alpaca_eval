@@ -12,7 +12,9 @@ AlpacaEval provides the following:
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans. We evaluate a
   model M by
   measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model M over a
-  reference.
+  reference. Our automatic evaluators enable caching and randomization by default, and allow for advance features such
+  as batching
+  or having a pool of annotators.
 - [**Leaderboard**](#models): a leaderboard of common models on the AlpacaEval evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
@@ -67,9 +69,31 @@ Important parameters are the following:
 - **output_path**: Path for saving annotations and leaderboard.
 
 If you don't have the model outputs, you can use `evaluate_from_model` and pass a local path or a name of a HuggingFace
-model, or a model from a standard API (OpenAI, anthropic, cohere). For more details to evaluate a model
-see [here](#evaluating-a-model). Note that by default annotations are cached on disk. Annotations are thus never
-recomputed, which greatly decreases cost and time for repeated evaluations (many models have the same outputs)
+model, or a model from a standard API (OpenAI, anthropic, cohere). Other commands:
+
+```bash
+>>> alpaca_eval -- --help
+
+SYNOPSIS
+    alpaca_eval COMMAND
+
+COMMANDS
+    COMMAND is one of the following:
+
+     evaluate
+       Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
+
+     evaluate_from_model
+       Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes generating from a desired model.
+
+     make_leaderboard
+       Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
+
+     analyze_evaluators
+       Analyze an evaluator (agreement with human, speed, price,...).
+```
+
+For more information about each function use `alpaca_eval <command> -- --help`.
 
 ## Leaderboard
 
@@ -282,11 +306,28 @@ the model
 provider (here HuggingFace and Anthropic) and decoding parameters.
 See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/models_configs) for examples.
 
-Note that by default annotations are cached on
-disk at `caching_path`. Annotations are thus never recomputed, which greatly decreases cost and time for repeated
-evaluations (many models
-have
-the same outputs).
+
+<details>
+  <summary><b>Information about annotators</b></b></summary>
+
+- **Caching**: by default all annotations are cached on
+  disk at `caching_path`. Annotations are thus never recomputed, which makes annotations faster, cheaper and allow for
+  reproducibility. This helps even when evalauting different models as many models
+  have
+  the same outputs.
+- **Output randomization** by default, we randomize over the examples of outputs, as we found that annotators tend to
+  prefer the first examples
+  they see.
+- **Batching** we provide code and examples to batch annotations, which decreases cost and time for annotations if the
+  prompt is long. See for
+  example [alpaca_farm_greedy_gpt4](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_farm_greedy_gpt4).
+- **Pool of annotators** we provide code and examples to evaluate using a pool of automatic annotators, which is helpful
+  for replicating the variance of [human annotations](https://arxiv.org/abs/2305.14387). See for
+  example [alpaca_farm](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_farm).
+- **Seeding based on instructions** For reproducibility and more fair comparison between models, we seed all
+  randomness (output order, order in batches,
+  examples for each annotator in a pool) based on the instruction.
+- </details>
 
 ### Making a new evaluator
 
