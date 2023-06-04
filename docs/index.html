@@ -1,1 +1,147 @@
-Hello this is the site for alpaca eval
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Alpaca Eval Leaderboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="icon" href="https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/AlpacaFarm_small.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 50px 20px;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        .container {
+            max-width: 1000px;
+            /* Increased max-width */
+            margin: auto;
+        }
+
+        #branding {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #branding h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+
+        #branding h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #777;
+        }
+
+        table {
+            max-width: 600px;
+            width: 100%;
+            table-layout: fixed;
+            /* border: 1px solid #000000; Removed border */
+            margin: auto;
+            font-size: 1.2em;
+            /* Increased font-size */
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            /* Increased padding */
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        table th {
+            border-bottom: 2px solid #000;
+            /* Add horizontal line beneath the header */
+        }
+
+        th:first-child,
+        td:first-child {
+            width: 70%;
+            padding-left: 30px;
+            /* Add more padding to the left */
+        }
+
+        th:last-child,
+        td:last-child {
+            width: 20%;
+        }
+
+        th {
+            text-align: left;
+            padding-bottom: 15px;
+            /* border-bottom: 1px solid #000000; Removed border */
+        }
+
+        td {
+            padding-bottom: 10px;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #E8E8E8;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #F8F8F8;
+            /* Eggshell white */
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="branding">
+            <h1>Alpaca Eval
+                <img src="https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/AlpacaFarm_small.png"
+                    alt="Logo" style="height: 2em; vertical-align: middle;">
+                Leaderboard
+            </h1>
+            <br>
+            <h2>A Validated, Automatic Evaluation for Open-Domain Instruction-Following Models</h2>
+        </div>
+
+        <br>
+        <table id="leaderboard">
+            <tr>
+                <th>Model Name</th>
+                <th>Win Rate</th>
+            </tr>
+            <!-- Data will be populated here -->
+        </table>
+    </div>
+
+    <script>
+        const csvUrl = 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/claude_leaderboard.csv';
+
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            complete: function (results) {
+                const table = document.getElementById('leaderboard');
+                results.data.forEach(row => {
+                    // Don't display the last line of the CSV if it's empty
+                    if (row[''] || row['win_rate']) {
+                        const tr = document.createElement('tr');
+                        const nameTd = document.createElement('td');
+                        const winRateTd = document.createElement('td');
+
+                        nameTd.textContent = row[''];
+                        winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+
+                        tr.appendChild(nameTd);
+                        tr.appendChild(winRateTd);
+
+                        table.appendChild(tr);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
