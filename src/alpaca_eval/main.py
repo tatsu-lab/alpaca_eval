@@ -39,7 +39,7 @@ def evaluate(
 
     reference_outputs : path or data, optional
         The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
-        003 outputs on AlpacaFarm evaluation set.
+        003 outputs on the AlpacaEval set.
 
     annotators_config : path or list of dict, optional
         The path the (or list of dict of) the annotator's config file. For details see the docstring of
@@ -308,7 +308,7 @@ def make_leaderboard(
     reference_outputs : path or data, optional
         The outputs of the reference model. Same format as `all_model_outputs` but without needing `generator`. By
         default,
-        the reference outputs are the 003 outputs on AlpacaFarm evaluation set.
+        the reference outputs are the 003 outputs on AlpacaEval set.
 
     fn_add_to_leaderboard : callable or str, optional
         The function to use to add a model to the leaderboard. If a string, it should be the name of a function in
@@ -448,6 +448,7 @@ def analyze_evaluators(
 
 
 def main_helper(task="evaluate", **kwargs):
+    """fadfasdfa"""
     globals()[task](**kwargs)
 
 

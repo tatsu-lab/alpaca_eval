@@ -233,7 +233,7 @@ def convert_ordinal_to_binary_preference(
 
 
 def convert_to_dataframe(data: AnyData) -> pd.DataFrame:
-    """Convert input that AlpacaFarm accepts into a dataframe."""
+    """Convert input that AlpacaEval accepts into a dataframe."""
     if isinstance(data, pd.DataFrame):
         return data
     elif isinstance(data, datasets.Dataset):

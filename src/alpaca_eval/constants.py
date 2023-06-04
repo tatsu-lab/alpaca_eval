@@ -45,7 +45,6 @@ EVALUATORS_LEADERBOARD = (
     "claude",
     "text_davinci_003",
     "chatgpt",
-    "guanaco_33b",
     "lmsys_gpt4",
     "humans",
     "alpaca_farm_greedy_gpt4",
@@ -62,29 +61,9 @@ EVALUATORS_TO_BENCHMARK = tuple(
         "cohere",
         "alpaca_farm",
         "alpaca_farm_greedy_gpt4",
-        # "oasst_pythia_12b",
-        # "stablelm_alpha_7b",
+        "guanaco_33b",
         "longest",
     ]
-)
-# EVALUATORS_TO_BENCHMARK = ["oasst_pythia_12b", "stablelm_alpha_7b"]
-
-HUMAN_ANNOTATED_MODELS_TO_KEEP = (
-    "GPT-4 300 characters",
-    "GPT-4",
-    "AlpacaFarm PPO sim (step 40)",
-    "ChatGPT",
-    "ChatGPT 300 characters",
-    "AlpacaFarm best-of-16 human",
-    "AlpacaFarm PPO sim (gpt4 greedy, step 30)",
-    "Davinci003",
-    "AlpacaFarm ExpIter human (n=128)",
-    "AlpacaFarm SFT 10K",
-    "AlpacaFarm PPO human (10k, step 40)",
-    "Alpaca 7B",
-    "AlpacaFarm FeedMe human",
-    "Davinci001",
-    "LLaMA 7B",
 )
 
 
@@ -145,6 +124,24 @@ PRECOMPUTED_LEADERBOARDS = {
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
                                                              / "alpaca_eval_gpt4_leaderboard.csv",
 }
+
+HUMAN_ANNOTATED_MODELS_TO_KEEP = (
+    "GPT-4 300 characters",
+    "GPT-4",
+    "AlpacaFarm PPO sim (step 40)",
+    "ChatGPT",
+    "ChatGPT 300 characters",
+    "AlpacaFarm best-of-16 human",
+    "AlpacaFarm PPO sim (gpt4 greedy, step 30)",
+    "Davinci003",
+    "AlpacaFarm ExpIter human (n=128)",
+    "AlpacaFarm SFT 10K",
+    "AlpacaFarm PPO human (10k, step 40)",
+    "Alpaca 7B",
+    "AlpacaFarm FeedMe human",
+    "Davinci001",
+    "LLaMA 7B",
+)
 
 CURRENT_USER = getpass.getuser()
 if CURRENT_USER in ["yanndubs"]:

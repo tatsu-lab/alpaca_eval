@@ -13,7 +13,7 @@ AlpacaEval provides the following:
   model M by
   measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model M over a
   reference.
-- [**Leaderboard**](#models): a leaderboard of common models on the AlpacaFarm evaluation set.
+- [**Leaderboard**](#models): a leaderboard of common models on the AlpacaEval evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
@@ -62,8 +62,8 @@ Important parameters are the following:
 - **annotators_config**: `gpt4`, `text-davinci-003`, `claude`... Annotator to use. `gpt4` works best. If you are
   academics, we recommend `claude` which is free for academics and nearly as good. For a comparison of
   annotators see [here](#evaluators).
-- **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default 003 outputs on
-  AlpacaFarm evaluation set.
+- **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, 003 outputs on
+  AlpacaEval dataset.
 - **output_path**: Path for saving annotations and leaderboard.
 
 If you don't have the model outputs, you can use `evaluate_from_model` and pass a local path or a name of a HuggingFace
@@ -75,7 +75,7 @@ recomputed, which greatly decreases cost and time for repeated evaluations (many
 
 ### Models
 
-Our leaderboards are computed are on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) evaluation set.
+Our leaderboards are computed are on the [AlpacaEval dataset](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
 We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (free for academics,
 and high quality). See below for [adding your model](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model) to the
 leaderboard or making
@@ -122,7 +122,7 @@ a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpa
 
 ### Evaluators
 
-We evaluate different automatic annotators on the AlpacaFarm evaluation set by comparing to
+We evaluate different automatic annotators on the AlpacaEval set by comparing to
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
 we collected. For details about the evaluation metrics see [here](#analyzing-an-evaluator).
 
@@ -182,8 +182,7 @@ variance / length bias.
 To evaluate a model you need to:
 
 1. Choose an evaluation set and compute outputs specified as `model_outputs`. By default, we use
-   a [slight variation](#data-release) of the AlpacaFarm evaluation set, which contain 805 examples and we refer to
-   AlpacaEval. To compute outputs on AlpacaEval use:
+   the 805 examples from [AlpacaEval](#data-release). To compute outputs on AlpacaEval use:
 
 ```python
 import datasets
@@ -194,14 +193,16 @@ for example in eval_set:
     example["output"] = generate(example["instruction"])
 ```
 
-if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can also
-directly use `alpaca_eval evaluate_from_model` to take care of generating outputs on the desired data as
+if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can
+directly use `alpaca_eval evaluate_from_model` to also take care of generating outputs on the desired data as
 discussed below.
 
-2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of text-davinci-003 on AlpacaFarm.
+2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of `text-davinci-003` on
+   AlpacaEval.
    If you
-   want to use a different model or a different dataset use the same as (1).
-3. Choose an evaluator specified via `annotators_config`. We recommend using `gpt4` or `claude` (if you are an
+   want to use a different model or a different dataset use the same as (1.).
+3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4` or `claude` (if you are
+   an
    academic). For options and comparisons see [this table](#evaluators). Depending on the evaluator you might need to
    set the appropriate API_KEY in your environment
    or [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7).
@@ -220,11 +221,11 @@ model_outputs : path or data or dict
     The outputs of the model to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
     datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
     (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
-    and `output` with optional `input`.
+    and `output` with optional `input`. If None, we just print the leaderboard.
 
 reference_outputs : path or data, optional
     The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
-    003 outputs on AlpacaFarm evaluation set.
+    003 outputs on AlpacaEval evaluation set.
 
 annotators_config : path or list of dict, optional
     The path the (or list of dict of) the annotator's config file. For details see the docstring of
@@ -383,7 +384,7 @@ where:
   should also contain a column `generator` with the name of the current model.
 - `reference_outputs` the path to the outputs of the reference model. Same format as `all_model_outputs` but without
   needing `generator`. By
-  default, the reference outputs are the 003 outputs on AlpacaFarm evaluation set.
+  default, the reference outputs are the 003 outputs on AlpacaEval set.
 - `annotators_config`: The path to the annotator's config file. Defaults to `gpt4`.
 
 # Analysis
