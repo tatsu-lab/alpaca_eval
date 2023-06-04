@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import pandas as pd
 from typing import Any, Callable, Optional, Union
@@ -27,7 +28,7 @@ def evaluate(
         annotation_kwargs: Optional[dict[str, Any]] = None,
         **annotator_kwargs,
 ):
-    """Evaluate the outputs from a model and add it on the leaderboard.
+    """Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
 
     Parameters
     ----------
@@ -141,13 +142,16 @@ def evaluate(
         annotations = None
 
     if output_path == "auto":
-        try:
-            output_path = Path(model_outputs).parent
-        except:
-            if name is not None:
-                output_path = Path("results") / name
-            else:
-                output_path = "."
+        if model_outputs is None:
+            output_path = None
+        else:
+            try:
+                output_path = Path(model_outputs).parent
+            except:
+                if name is not None:
+                    output_path = Path("results") / name
+                else:
+                    output_path = "."
     if output_path is not None:
         output_path = Path(output_path)
         output_path.mkdir(exist_ok=True, parents=True)
@@ -165,7 +169,8 @@ def evaluate(
                 output_path / "annotations.json", orient="records", indent=2
             )
 
-    is_cache_leaderboard = is_cache_leaderboard or (max_instances is None)
+    if is_cache_leaderboard is None:
+        is_cache_leaderboard = max_instances is None
     if is_cache_leaderboard:
         logging.info(f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}")
         df_leaderboard.to_csv(precomputed_leaderboard)
@@ -186,8 +191,9 @@ def evaluate_from_model(
         is_strip_output: bool = True,
         **kwargs,
 ):
-    """Evaluate a model from huggingface on a desired evaluation set. This is a wrapper around `evaluate` where
-    parameters are models rather than (path to) outputs
+    """Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes
+    generating from
+    a desired model.
 
     Parameters
     ----------
@@ -286,7 +292,7 @@ def make_leaderboard(
         is_return_instead_of_print: bool = False,
         **kwargs,
 ):
-    """Precompute and save an entire leaderboard.
+    """Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
 
     Parameters
     ----------
@@ -365,7 +371,7 @@ def analyze_evaluators(
         max_instances: Optional[int] = None,
         is_single_annotator: bool = False,
 ):
-    """Analyze the annotators.
+    """Analyze an evaluator (agreement with human, speed, price,...).
 
     Parameters
     ----------
@@ -447,14 +453,24 @@ def analyze_evaluators(
         print(df_leaderboard.to_string(float_format="%.2f"))
 
 
-def main_helper(task="evaluate", **kwargs):
-    """fadfasdfa"""
-    globals()[task](**kwargs)
+ALL_FUNCTIONS = {
+    'evaluate': evaluate,
+    'evaluate_from_model': evaluate_from_model,
+    'make_leaderboard': make_leaderboard,
+    'analyze_evaluators': analyze_evaluators,
+}
 
 
 def main():
-    fire.Fire(main_helper)
+    is_fn_name = (len(sys.argv) > 1 and "--" not in sys.argv[1])
+    is_help = any(a == "--help" for a in sys.argv)
+
+    if is_fn_name or is_help:
+        fire.Fire(ALL_FUNCTIONS)
+    else:
+        # default behavior if no function is specified
+        fire.Fire(evaluate)
 
 
 if __name__ == "__main__":
-    fire.Fire(main_helper)
+    fire.Fire(ALL_FUNCTIONS)
