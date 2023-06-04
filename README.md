@@ -19,7 +19,7 @@ AlpacaEval provides the following:
   price, speed, statistical power, etc).
 - [**Human evaluation data**](#data-release): 20K human annotations of preferences between a given and reference model
   on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
-  evaluation set. 2500 of which are cross-annotations (4 humans annotating the same 650 examples).
+  evaluation set. 2.5K of which are cross-annotations (4 humans annotating the same 650 examples).
 - [**AlpacaEval dataset**](#data-release): a simplification of
   the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
   inputs" are merged
@@ -83,28 +83,40 @@ a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpa
 
 **GPT-4 Leaderboard**:
 
-|                                                | Win Rate | Std Err. |
-|:-----------------------------------------------|---------:|---------:|
-| GPT-4                                          |     92.2 |      0.9 |
-| ChatGPT                                        |     65.9 |      1.7 |
-| Davinci003                                     |     50.0 |      0.0 |
-| AlpacaFarm PPO sim (gpt4 greedy 20k, step 350) |     49.5 |      1.7 |
-| AlpacaFarm PPO human (10k, step 40)            |     46.6 |      1.8 |
-| Alpaca 7B                                      |     36.9 |      1.7 |
-| Davinci001                                     |     19.8 |      1.4 |
+|                       | Win Rate | Std Err. |
+|:----------------------|---------:|---------:|
+| gpt4                  |     95.3 |      0.7 |
+| claude                |     88.4 |      1.1 |
+| chatgpt               |     86.1 |      1.2 |
+| wizardlm-13b          |     75.3 |      1.5 |
+| guanaco-65b           |     71.8 |      1.6 |
+| vicuna-13b            |     70.4 |      1.6 |
+| oasst-rlhf-llama-33b  |     66.5 |      1.7 |
+| text_davinci_003      |     50.0 |      0.0 |
+| falcon-40b-instruct   |     45.7 |      1.8 |
+| alpaca-farm-ppo-human |     41.2 |      1.7 |
+| alpaca-7b             |     26.5 |      1.5 |
+| cohere                |     17.5 |      1.3 |
+| text_davinci_001      |     15.2 |      1.2 |
 
 <details>
   <summary><b>Claude Leaderboard</b></summary>
 
-|                                                | Win Rate | Std Err. |
-|:-----------------------------------------------|---------:|---------:|
-| GPT-4                                          |     78.6 |      1.4 |
-| ChatGPT                                        |     62.4 |      1.7 |
-| AlpacaFarm PPO sim (gpt4 greedy 20k, step 350) |     58.3 |      1.7 |
-| AlpacaFarm PPO human (10k, step 40)            |     56.3 |      1.7 |
-| Davinci003                                     |     50.0 |      0.0 |
-| Alpaca 7B                                      |     45.8 |      1.7 |
-| Davinci001                                     |     24.5 |      1.5 |
+|                       | Win Rate | Std Err. |
+|:----------------------|---------:|---------:|
+| gpt4                  |     77.0 |      1.5 |
+| claude                |     75.8 |      1.5 |
+| chatgpt               |     67.7 |      1.6 |
+| wizardlm-13b          |     66.1 |      1.7 |
+| vicuna-13b            |     63.2 |      1.7 |
+| guanaco-65b           |     62.6 |      1.7 |
+| oasst-rlhf-llama-33b  |     57.3 |      1.7 |
+| text_davinci_003      |     50.0 |      0.0 |
+| falcon-40b-instruct   |     46.7 |      1.8 |
+| alpaca-farm-ppo-human |     46.5 |      1.8 |
+| alpaca-7b             |     32.3 |      1.6 |
+| cohere                |     27.5 |      1.6 |
+| text_davinci_001      |     21.5 |      1.4 |
 
 </details>
 
@@ -112,23 +124,25 @@ a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpa
 
 We evaluate different automatic annotators on the AlpacaFarm evaluation set by comparing to
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
-we collected. For details about the evaluation metrics see [here]().
+we collected. For details about the evaluation metrics see [here](#analyzing-an-evaluator).
 
-|                  | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer | Proba. prefer lists | # parsed |
-|:-----------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|--------------------:|---------:|
-| alpaca_eval      |                69.2 |                    13.6 |                       1455.4 | 28.4 |     14.6 |                  0.7 |                 0.7 |   2592.0 |
-| gpt4             |                66.9 |                    12.5 |                       1036.8 | 31.5 |     14.6 |                  0.6 |                 0.6 |   2592.0 |
-| humans           |                65.7 |                   300.0 |                      36800.0 |  0.0 |          |                  0.6 |                 0.6 |   2592.0 |
-| claude           |                65.5 |                    11.1 |                        173.0 | 31.9 |     18.0 |                  0.6 |                 0.6 |   2592.0 |
-| text_davinci_003 |                64.1 |                     8.7 |                        120.9 | 33.8 |     22.7 |                  0.7 |                 0.6 |   2592.0 |
-| longest          |                62.2 |                     0.0 |                          0.0 | 37.8 |      0.0 |                  1.0 |                 0.8 |   2592.0 |
-| guanaco_33b      |                59.1 |                         |                        929.7 | 54.5 |     27.1 |                  0.7 |                 0.7 |   1761.0 |
-| chatgpt          |                57.2 |                     0.8 |                        285.0 | 39.4 |     34.1 |                  0.6 |                 0.6 |   2589.0 |
+|                         | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer |
+|:------------------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|
+| alpaca_eval_gpt4        |                69.2 |                    13.6 |                         1455 | 28.4 |     14.6 |                 0.68 |
+| aviary_gpt4             |                69.1 |                    12.8 |                         1869 | 29.5 |     13.1 |                 0.70 |
+| gpt4                    |                66.9 |                    12.5 |                         1037 | 31.5 |     14.6 |                 0.65 |
+| alpaca_farm_greedy_gpt4 |                66.4 |                    15.3 |                          878 | 30.2 |     19.3 |                 0.60 |
+| humans                  |                65.7 |                   300.0 |                        36800 |  0.0 |          |                 0.64 |
+| claude                  |                65.5 |                    11.1 |                          173 | 31.9 |     18.0 |                 0.62 |
+| text_davinci_003        |                64.1 |                     8.7 |                          121 | 33.8 |     22.7 |                 0.70 |
+| lmsys_gpt4              |                63.2 |                    13.9 |                        17982 | 34.7 |     16.1 |                 0.74 |
+| guanaco_33b             |                59.1 |                         |                          930 | 54.5 |     27.1 |                 0.70 |
+| chatgpt                 |                57.2 |                     0.8 |                          285 | 39.4 |     34.1 |                 0.59 |
 
 <details>
   <summary><b>Tips for choosing evaluators</b></summary>
 
-Note that when choosing an annotator we recommend you to (obviously) consider the quality / price / time, but we also
+When choosing an annotator we recommend you to (obviously) consider the **quality** / **price** / **time**, but we also
 suggest considering the following:
 
 - "Proba. prefer longer " approx. < 0.7. Indeed, we found see that the majority of preference of human annotators (which

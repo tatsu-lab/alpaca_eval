@@ -1,21 +1,36 @@
 # Annotators configs
 
-Evaluator's leaderboard:
+## Evaluator's leaderboard:
 
-|                    | Human agreement [%] | Variance | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Proba. prefer longer | Proba. prefer lists | # parsed |
-|:-------------------|--------------------:|---------:|------------------------:|-----------------------------:|-----:|---------------------:|--------------------:|---------:|
-| gpt4_b1            |                67.0 |     14.9 |                    43.7 |                       2717.3 | 30.7 |                  0.6 |                 0.6 |   2592.0 |
-| gpt4               |                66.6 |     13.1 |                    12.5 |                       1217.5 | 32.1 |                  0.7 |                 0.6 |   2592.0 |
-| alpaca_farm_greedy |                66.5 |     18.4 |                    15.4 |                        983.8 | 31.0 |                  0.6 |                 0.6 |   2592.0 |
-| gpt4_b5            |                65.7 |     17.9 |                    14.4 |                        843.3 | 31.2 |                  0.6 |                 0.5 |   2592.0 |
-| humans             |                65.7 |     34.3 |                   300.0 |                      36800.0 |  0.0 |                  0.6 |                 0.6 |   2592.0 |
-| claude             |                65.3 |     16.5 |                    14.4 |                        177.1 | 33.3 |                  0.6 |                 0.6 |   2592.0 |
-| text_davinci_003   |                64.6 |     23.6 |                     8.8 |                         78.4 | 32.3 |                  0.7 |                 0.7 |   2592.0 |
-| lmsys              |                63.8 |     15.3 |                    13.9 |                       6320.7 | 34.7 |                  0.8 |                 0.7 |   2592.0 |
-| longest            |                62.2 |      0.0 |                     0.0 |                          0.0 | 37.8 |                  1.0 |                 0.8 |   2592.0 |
-| alpaca_farm        |                60.6 |     32.4 |                    11.9 |                        888.7 | 33.2 |                  0.6 |                 0.6 |   2583.0 |
-| guanaco_33b        |                59.7 |     31.1 |                         |                        939.0 | 36.4 |                  0.7 |                 0.7 |   2579.0 |
-| chatgpt            |                58.5 |     32.3 |                     0.8 |                        311.8 | 38.3 |                  0.6 |                 0.6 |   2589.0 |
-| cohere             |                53.0 |     46.9 |                     2.5 |                        290.7 | 42.4 |                  0.5 |                 0.5 |   2590.0 |
-| oasst_pythia_12b   |                51.2 |     49.2 |                         |                        230.2 | 44.8 |                  0.5 |                 0.4 |   2592.0 |
-| stablelm_alpha_7b  |                51.0 |     49.0 |                         |                        156.5 | 44.9 |                  0.5 |                 0.4 |   2545.0 |
+|                         | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer | Proba. prefer lists | Proba. prefer 1 | # parsed |
+|:------------------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|--------------------:|----------------:|---------:|
+| improved_aviary_gpt4    |                69.8 |                    12.8 |                         1831 |      |          |                 0.73 |                0.68 |            0.49 |      648 |
+| alpaca_eval_gpt4        |                69.2 |                    13.6 |                         1455 | 28.4 |     14.6 |                 0.68 |                0.69 |            0.50 |     2592 |
+| aviary_gpt4             |                69.1 |                    12.8 |                         1869 | 29.5 |     13.1 |                 0.70 |                0.65 |            0.53 |     2592 |
+| claude_ranking          |                67.6 |                     5.0 |                          218 |      |          |                 0.73 |                0.63 |            0.46 |      648 |
+| gpt4                    |                66.9 |                    12.5 |                         1037 | 31.5 |     14.6 |                 0.65 |                0.61 |            0.54 |     2592 |
+| alpaca_farm_greedy_gpt4 |                66.4 |                    15.3 |                          878 | 30.2 |     19.3 |                 0.60 |                0.59 |            0.54 |     2592 |
+| humans                  |                65.7 |                   300.0 |                        36800 |  0.0 |          |                 0.64 |                0.61 |            0.52 |     2592 |
+| claude                  |                65.5 |                    11.1 |                          173 | 31.9 |     18.0 |                 0.62 |                0.58 |            0.49 |     2592 |
+| text_davinci_003        |                64.1 |                     8.7 |                          121 | 33.8 |     22.7 |                 0.70 |                0.64 |            0.47 |     2592 |
+| lmsys_gpt4              |                63.2 |                    13.9 |                        17982 | 34.7 |     16.1 |                 0.74 |                0.64 |            0.56 |     2592 |
+| improved_lmsys_gpt4     |                62.3 |                    13.9 |                         5398 |      |          |                 0.75 |                0.67 |            0.51 |      648 |
+| longest                 |                62.2 |                     0.0 |                            0 | 37.8 |      0.0 |                 1.00 |                0.85 |            0.42 |     2592 |
+| alpaca_farm             |                60.0 |                    11.5 |                          820 |      |          |                 0.60 |                0.63 |            0.52 |      648 |
+| guanaco_33b             |                59.1 |                         |                          930 | 54.5 |     27.1 |                 0.70 |                0.72 |            0.44 |     1761 |
+| chatgpt                 |                57.2 |                     0.8 |                          285 | 39.4 |     34.1 |                 0.59 |                0.56 |            0.49 |     2589 |
+| cohere                  |                53.4 |                     3.5 |                          217 |      |          |                 0.50 |                0.51 |            0.47 |      648 |
+
+Note that `improved_*` are evaluators of other groups that we improved. In particular, we added randomization of the
+examples in the prompts and decreased temperature.
+
+## Directory structure
+
+Each evaluator has its own directory. Inside the directory we have:
+
+- add a `configs.yaml` file that configures the evaluator (API provider, model, parameters, parsing function,
+  prompts...)
+- typically the prompts used for evaluation (besides if we reuse prompts from other models)
+
+When using the evaluator we will by default cache all the annotations in `annotations_seed{seed}_configs.json` which
+ensures that we do not rerun annotations (faster, cheaper, more reproducible).  
