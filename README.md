@@ -36,8 +36,8 @@ AlpacaEval provides the following:
     - [Evaluators](#evaluators)
 3. [Use-cases](#use-cases)
     - [Evaluating a model](#evaluating-a-model)
-    - [Making a new evaluator](#making-a-new-evaluator)
     - [Making a new leaderboard](#making-a-new-leaderboard)
+    - [Making a new evaluator](#making-a-new-evaluator)
 4. [Analysis](#analysis)
     - [Analyzing an evaluator](#analyzing-an-evaluator)
     - [Analyzing an eval set](#analyzing-an-eval-set)
@@ -71,9 +71,10 @@ Important parameters are the following:
 If you don't have the model outputs, you can use `evaluate_from_model` and pass a local path or a name of a HuggingFace
 model, or a model from a standard API (OpenAI, anthropic, cohere). Other commands:
 
-```bash
->>> alpaca_eval -- --help
+<details open>
+  <summary><code>>>> alpaca_eval -- --help</code></summary>
 
+```bash
 SYNOPSIS
     alpaca_eval COMMAND
 
@@ -92,6 +93,8 @@ COMMANDS
      analyze_evaluators
        Analyze an evaluator (agreement with human, speed, price,...).
 ```
+
+</details>
 
 For more information about each function use `alpaca_eval <command> -- --help`.
 
@@ -202,6 +205,139 @@ variance / length bias.
 </details>
 
 ### Evaluating a model
+
+<details>
+  <summary><code>>>> alpaca_eval evaluate -- --help</code></summary>
+
+```bash
+NAME
+    alpaca_eval evaluate - Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
+
+SYNOPSIS
+    alpaca_eval evaluate <flags>
+
+DESCRIPTION
+    Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
+
+FLAGS
+    --model_outputs=MODEL_OUTPUTS
+        Type: Optional[Union]
+        Default: None
+        The outputs of the model to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe, datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction` and `output` with optional `input`. If None, we just print the leaderboard.
+    -r, --reference_outputs=REFERENCE_OUTPUTS
+        Type: Union
+        Defaul...
+        The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
+ 003 outputs on the AlpacaEval set.
+    --annotators_config=ANNOTATORS_CONFIG
+        Type: Union
+        Default: 'alpaca_eval_gpt4'
+        The path the (or list of dict of) the annotator's config file. For details see the docstring of `PairwiseA
+nnotator`.
+    -n, --name=NAME
+        Type: Optional[Optional]
+        Default: None
+        The name of the model to add to the leaderboard. If None we check if `generator is in model_outputs` if no
+t we use "Current model".
+    -o, --output_path=OUTPUT_PATH
+        Type: Union
+        Default: 'auto'
+        Path to the directory where the new leaderboard and the annotations should be stored. If None we don't sav
+e. If `auto` we use `model_outputs` if it is a path, and otherwise use the directory from which we call the script
+.
+    -p, --precomputed_leaderboard=PRECOMPUTED_LEADERBOARD
+        Type: Union
+        Default: 'auto'
+        The precomputed leaderboard or a path to it (json, csv, or tsv). The leaderboard should contain at least t
+he column `win_rate`. If `auto` we will try to use the corresponding leaderboard for the reference outputs (only i
+f in CORRESPONDING_OUTPUTS_LEADERBOARDS). If `None` we won't add other models from the leaderboard.
+    --is_return_instead_of_print=IS_RETURN_INSTEAD_OF_PRINT
+        Type: bool
+        Default: False
+        Whether to return the metrics instead of printing the results.
+    -f, --fn_metric=FN_METRIC
+        Type: Union
+        Default: 'pairwise_to_winrate'
+        The function or function name in `metrics.py` that will be used to convert preference to metrics. The func
+tion should take a sequence of preferences (0 for draw, 1 for base win, 2 when the model to compare wins) and retu
+rn a dictionary of metrics and the key by which to sort the leaderboard.
+    -s, --sort_by=SORT_BY
+        Type: str
+        Default: 'win_rate'
+        The key by which to sort the leaderboard.
+    --is_cache_leaderboard=IS_CACHE_LEADERBOARD
+        Type: Optional
+        Default: False
+        Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances
+. A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously saved
+leaderboard at `<output_path>/leaderboard.csv`
+    --max_instances=MAX_INSTANCES
+        Type: Optional[Optional]
+        Default: None
+        The maximum number of instances to annotate. Useful for testing.
+    --annotation_kwargs=ANNOTATION_KWARGS
+        Type: Optional[Optional]
+        Default: None
+        Additional arguments to pass to `PairwiseAnnotator.annotate_head2head`.
+    Additional flags are accepted.
+        Additional arguments to pass to `PairwiseAnnotator`.
+```
+
+</details>
+
+<details>
+  <summary><code>>>> alpaca_eval evaluate_from_model -- --help</code></summary>
+
+```bash
+NAME
+    alpaca_eval evaluate_from_model - Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes generating from a desired model.
+
+SYNOPSIS
+    alpaca_eval evaluate_from_model MODEL_CONFIGS <flags>
+
+DESCRIPTION
+    Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes generating from a desired model.
+
+POSITIONAL ARGUMENTS
+    MODEL_CONFIGS
+        Type: Union
+        A dictionary or path (relative to `models_configs`) to a yaml file containing the configuration of the model to decode from. If a directory,we search for 'configs.yaml' in it. The keys in the first dictionary should be the generator's name, and the value should be a dictionary of the generator's configuration which should have the
+
+FLAGS
+    -r, --reference_model_configs=REFERENCE_MODEL_CONFIGS
+        Type: Optional[Union]
+        Default: None
+        Same as in `model_configs` but for the reference model. If None, we use the same model as the one we are
+    -e, --evaluation_dataset=EVALUATION_DATASET
+        Type: Union
+        Defaul...
+        Path to the evaluation dataset or a function that returns a dataframe. If None, we use the default evaluat
+ion
+    -a, --annotators_config=ANNOTATORS_CONFIG
+        Type: Union
+        Default: 'alpaca_eval_gpt4'
+        Path to the annotators configuration or a dictionary. If None, we use the default annotators configuration
+.
+    -o, --output_path=OUTPUT_PATH
+        Type: Union
+        Default: 'auto'
+        Path to save the generations, annotations and leaderboard. If auto saves at `results/<model_name>`
+    -m, --max_instances=MAX_INSTANCES
+        Type: Optional[int]
+        Default: None
+        Maximum number of instances to generate and evaluate. If None, we evaluate all instances.
+    -i, --is_strip_output=IS_STRIP_OUTPUT
+        Type: bool
+        Default: True
+        Whether to strip trailing and leading whitespaces from the outputs.
+    Additional flags are accepted.
+        Other kwargs to `evaluate`
+
+NOTES
+    You can also use flags syntax for POSITIONAL ARGUMENTS
+```
+
+</details>
 
 To evaluate a model you need to:
 
@@ -327,15 +463,149 @@ See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpa
 - **Seeding based on instructions** For reproducibility and more fair comparison between models, we seed all
   randomness (output order, order in batches,
   examples for each annotator in a pool) based on the instruction.
-- </details>
+
+</details>
+
+### Making a new leaderboard
+
+<details>
+  <summary><code>>>> alpaca_eval make_leaderboard -- --help</code></summary>
+
+```bash
+NAME
+    alpaca_eval make_leaderboard - Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
+
+SYNOPSIS
+    alpaca_eval make_leaderboard LEADERBOARD_PATH <flags>
+
+DESCRIPTION
+    Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
+
+POSITIONAL ARGUMENTS
+    LEADERBOARD_PATH
+        Type: Union
+        The path to save the leaderboard to. The leaderboard will be saved as a csv file, if it already exists it will
+
+FLAGS
+    --annotators_config=ANNOTATORS_CONFIG
+        Type: Union
+        Default: 'alpaca_eval_gpt4'
+        The path the (or list of dict of) the annotator's config file.
+    --all_model_outputs=ALL_MODEL_OUTPUTS
+        Type: Union
+        Default: <fu...
+        The outputs of all models to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe, datas
+ets.Dataset) or a path to read those (json, csv, tsv potentially with globbing) or a function to generate those. I
+f the path contains a globbing pattern, we will read all files matching the pattern and concatenate them. Each dic
+tionary (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruct
+ion` and `output` with optional `input`. It should also contain a column `generator` with the name of the current
+model.
+    -r, --reference_outputs=REFERENCE_OUTPUTS
+        Type: Union
+        Defaul...
+        The outputs of the reference model. Same format as `all_model_outputs` but without needing `generator`. By
+ default, the reference outputs are the 003 outputs on AlpacaEval set.
+    -f, --fn_add_to_leaderboard=FN_ADD_TO_LEADERBOARD
+        Type: Callable
+        Default: 'evaluate'
+        The function to use to add a model to the leaderboard. If a string, it should be the name of a function in
+ `main.py`. The function should take the arguments: `model_outputs`, `annotators_config`, `name`, `precomputed_lea
+derboard`, `is_return_instead_of_print`, `reference_outputs`.
+    -i, --is_return_instead_of_print=IS_RETURN_INSTEAD_OF_PRINT
+        Type: bool
+        Default: False
+        Whether to return the metrics instead of printing the results.
+    Additional flags are accepted.
+        Additional arguments to pass to `fn_add_to_leaderboard`.
+
+NOTES
+    You can also use flags syntax for POSITIONAL ARGUMENTS
+```
+
+</details>
+
+
+If you want to make a new leaderboard in one go (rather than multiple `alpaca_eval` calls), for your desired evaluation
+set and evaluators, you can use the following:
+
+```bash
+alpaca_eval make_leaderboard --leaderboard_path <path_to_save_leaderboard>\
+                             --all_model_outputs <model_outputs_path>\
+                             --reference_outputs <reference_outputs_path>\
+                              --annotators_config <path_to_config.yaml>
+```
+
+where:
+
+- `leaderboard_path`: path to save the leaderboard to. The leaderboard will be saved as a csv file, if it already exists
+  it will append.
+- `all_model_outputs` : The json path to outputs of all models to add to the leaderboard. Each dictionary should contain
+  the keys that are formatted in the prompts. E.g. by default `instruction` and `output` with optional `input`. It
+  should also contain a column `generator` with the name of the current model.
+- `reference_outputs` the path to the outputs of the reference model. Same format as `all_model_outputs` but without
+  needing `generator`. By
+  default, the reference outputs are the 003 outputs on AlpacaEval set.
+- `annotators_config`: The path to the annotator's config file. Defaults to `gpt4`.
 
 ### Making a new evaluator
 
-There are 4 main ways of making new evaluators: changing the prompt, changing decoding parameters (eg temperature),
-changing the model, or using multiple annotators.
-In each of these cases what you need is a new `configs.yaml` configuration file, which you will then pass
+<details>
+  <summary><code>>>> alpaca_eval analyze_evaluators -- --help</code></summary>
+
+```bash
+NAME
+    alpaca_eval analyze_evaluators - Analyze an evaluator (agreement with human, speed, price,...).
+
+SYNOPSIS
+    alpaca_eval analyze_evaluators <flags>
+
+DESCRIPTION
+    Analyze an evaluator (agreement with human, speed, price,...).
+
+FLAGS
+    --annotators_config=ANNOTATORS_CONFIG
+        Type: Union
+        Default: 'alpaca_eval_gpt4'
+        The path the (or list of dict of) the annotator's config file.
+    -A, --Annotator=ANNOTATOR
+        Default: <class 'alpaca_eval.annotators.pairwise_evaluator.PairwiseAn...
+        The annotator class to use.
+    --analyzer_kwargs=ANALYZER_KWARGS
+        Type: Optional[]
+        Default: None
+        Additional arguments to pass to the analyzer.
+    -p, --precomputed_leaderboard=PRECOMPUTED_LEADERBOARD
+        Type: Union
+        Default: PosixPath('/Users/yanndubois/Desktop/GitHub/alpaca_eval/src/...
+        The precomputed (meta)leaderboard of annotators or a path to it (json, csv, or tsv).
+    --is_save_leaderboard=IS_SAVE_LEADERBOARD
+        Type: bool
+        Default: False
+        Whether to save the leaderboard (ie analyzed results).
+    --is_return_instead_of_print=IS_RETURN_INSTEAD_OF_PRINT
+        Type: bool
+        Default: False
+        Whether to return the leaderboard (ie analyzed results). If True, it will not print the results.
+    --is_overwrite_leaderboard=IS_OVERWRITE_LEADERBOARD
+        Type: bool
+        Default: False
+        Whether to overwrite the leaderboard if it already exists.
+    -m, --max_instances=MAX_INSTANCES
+        Type: Optional[Optional]
+        Default: None
+        The maximum number of instances to analyze.
+    --is_single_annotator=IS_SINGLE_ANNOTATOR
+        Type: bool
+        Default: False
+        Whether to analyze a single annotator. If True, will not be able to estimate the annotator's bias.
+```
+
+</details>
+
+AlpacaEval provides a simple way to make a new evaluator. All you need is to make a new `configs.yaml` configuration
+file, which you will then pass
 as `--annotators_config <path_to_config.yaml>` to `alpaca_eval`.
-In particular, you should follow the following simple steps:
+Here are some ways you can make a new evaluator:
 
 - **Changing the prompt**: Write a new prompt in a text file and specify the path in `prompt_template` of the
   configuration file. Paths are relative to the configuration file.
@@ -352,9 +622,12 @@ In particular, you should follow the following simple steps:
   provide `fn_completions` functions to use any model on OpenAI API, Anthropic API, Cohere API, or HuggingFace hub. If
   you change provider you will need to install there API and set the appropriate API_KEY. To install all
   use `pip install alpaca_eval[all]`.
-- **Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an
-  example
-  see [alpaca_farm configuration](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/alpaca_farm/configs.yaml).
+
+[//]: # (- **Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an)
+
+[//]: # (  example)
+
+[//]: # (  see [alpaca_farm configuration]&#40;https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/alpaca_farm/configs.yaml&#41;.)
 
 <details>
   <summary><b>Other parameters in the configuration file</b></b></summary>
@@ -403,30 +676,7 @@ alpaca_eval analyze_evaluators --annotators_config '<path_to_config.yaml>'
 Note that this will evaluate 4 times (different seeds) every example in the AlpacaFarm evaluation set, i.e., ~3K
 evaluation.
 Be mindful of the cost of this operation depending on your model.
-
-### Making a new leaderboard
-
-If you want to make a new leaderboard in one go (rather than multiple `alpaca_eval` calls), for your desired evaluation
-set and evaluators, you can use the following:
-
-```bash
-alpaca_eval make_leaderboard --leaderboard_path <path_to_save_leaderboard>\
-                             --all_model_outputs <model_outputs_path>\
-                             --reference_outputs <reference_outputs_path>\
-                              --annotators_config <path_to_config.yaml>
-```
-
-where:
-
-- `leaderboard_path`: path to save the leaderboard to. The leaderboard will be saved as a csv file, if it already exists
-  it will append.
-- `all_model_outputs` : The json path to outputs of all models to add to the leaderboard. Each dictionary should contain
-  the keys that are formatted in the prompts. E.g. by default `instruction` and `output` with optional `input`. It
-  should also contain a column `generator` with the name of the current model.
-- `reference_outputs` the path to the outputs of the reference model. Same format as `all_model_outputs` but without
-  needing `generator`. By
-  default, the reference outputs are the 003 outputs on AlpacaEval set.
-- `annotators_config`: The path to the annotator's config file. Defaults to `gpt4`.
+If you want a less expensive evaluation you can use a single seed using `--is_single_annotator True`.
 
 # Analysis
 
