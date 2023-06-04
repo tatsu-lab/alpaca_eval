@@ -18,8 +18,8 @@ def precompute_on_all_human_leaderboard(
 
 
 def precompute_evaluator_leaderboard(
-        annotators_configs_to_analyze="EVALUATORS_LEADERBOARD",
-        annotators_configs_to_benchmark="EVALUATORS_TO_BENCHMARK",
+        annotators_configs_to_analyze="MINIMAL_EVALUATORS",
+        annotators_configs_to_benchmark="VERIFIED_EVALUATORS",
         max_instances=None,
         **kwargs
 ):
@@ -37,6 +37,7 @@ def precompute_evaluator_leaderboard(
             max_instances=max_instances,
             is_save_leaderboard=max_instances is None,
             is_return_instead_of_print=True,  # don't print
+            current_leaderboard_mode="minimal",
             **kwargs
         )
 
@@ -48,6 +49,7 @@ def precompute_evaluator_leaderboard(
             is_save_leaderboard=max_instances is None,
             is_return_instead_of_print=True,  # don't print
             is_single_annotator=True,
+            current_leaderboard_mode="verified",
             **kwargs
         )
 
