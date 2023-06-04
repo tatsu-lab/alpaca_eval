@@ -697,16 +697,10 @@ AlpacaEval. Here are the main differences:
   data. If the goal is to use an automatic annotator for evaluation or simply training better models, then this variance
   is not desirable. The default annotators thus remove this variance in AlpacaEval. We give the option to add it back by
   using `--anotators_config 'alpaca_farm'` and `--p_label_flip 0.25` when creating an evaluator.
-- **Different goals** The goal of AlpacaEval is to provide a package for simple,fast, reproducible,cheap, and
-  high-quality automatic evaluation of instruction-following models.
--
--
-- The goal of AlpacaFarm was to provide a simulator for studying the human-based RLHF pipeline. This means that
-  AlpacaFarm has more features and is more complex. For example, AlpacaFarm has a more complex annotator model, a more
-  complex annotator selection process, and a more complex evaluation set. AlpacaFarm also has a more complex simulator
-  that allows you to simulate the human-based RLHF pipeline. If you are interested in studying the human-based RLHF
-  pipeline, then you should use AlpacaFarm. If you are interested in evaluating or training better instruction-following
-  models, then you should use AlpacaEval.
+
+[//]: # (- **Different goals** The goal of AlpacaEval is to provide a package for fast, reproducible,cheap, and)
+
+[//]: # (  high-quality automatic evaluation of instruction-following models. As a secondary goal, we also provide simple toolkit for developing new evaluators. The goal of AlpacaFarm was to provide a simulator for studying the human-based RLHF pipeline.)
 
 ## Citation
 
