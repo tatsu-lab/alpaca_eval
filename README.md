@@ -77,10 +77,9 @@ recomputed, which greatly decreases cost and time for repeated evaluations (many
 
 Our leaderboards are computed are on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) evaluation set.
 We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (free for academics,
-and high quality). Details:
-
-- [Adding your model to the leaderboard](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model)
-- [Making a leaderboard for a new evaluator / dataset](https://github.com/tatsu-lab/alpaca_eval#making-a-new-leaderboard)
+and high quality). See below for [adding your model](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model) to the
+leaderboard or making
+a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpaca_eval#making-a-new-leaderboard).
 
 **GPT-4 Leaderboard**:
 
@@ -126,6 +125,9 @@ we collected. For details about the evaluation metrics see [here]().
 | guanaco_33b      |                59.1 |                         |                        929.7 | 54.5 |     27.1 |                  0.7 |                 0.7 |   1761.0 |
 | chatgpt          |                57.2 |                     0.8 |                        285.0 | 39.4 |     34.1 |                  0.6 |                 0.6 |   2589.0 |
 
+<details>
+  <summary><b>Tips for choosing evaluators</b></summary>
+
 Note that when choosing an annotator we recommend you to (obviously) consider the quality / price / time, but we also
 suggest considering the following:
 
@@ -144,6 +146,8 @@ We filtered the rest of the annotators in the table above (besides humans / Chat
 all
 results see [here](). In general, we found `alpaca_eval` to be a good trade-off between quality / price / time /
 variance / length bias.
+
+</details>
 
 ## Use-cases
 
