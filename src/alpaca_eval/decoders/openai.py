@@ -204,6 +204,8 @@ def _openai_completion_helper(
             if "Please reduce your prompt" in str(e):
                 kwargs["max_tokens"] = int(kwargs["max_tokens"] * 0.8)
                 logging.warning(f"Reducing target length to {kwargs['max_tokens']}, Retrying...")
+                if kwargs["max_tokens"] == 0:
+                    raise e
             else:
                 logging.warning("Hit request rate limit; retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:

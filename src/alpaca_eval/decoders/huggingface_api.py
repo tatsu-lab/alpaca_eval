@@ -99,6 +99,8 @@ def inference_helper(prompt: str, inference, params, n_retries=100, waiting_time
                 params["max_new_tokens"] = int(params["max_new_tokens"] * 0.8)
                 logging.warning(f"`max_new_tokens` too large. Reducing target length to {params['max_tokens']}, "
                                 f"Retrying...")
+                if params["max_new_tokens"] == 0:
+                    raise ValueError(f"Error in inference. Full error: {error}")
             else:
                 raise ValueError(f"Error in inference. Full error: {error}")
         else:

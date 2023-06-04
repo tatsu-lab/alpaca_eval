@@ -108,6 +108,8 @@ def _anthropic_completion_helper(
                 time.sleep(sleep_time)
             elif "exceeds max" in str(e):
                 curr_kwargs["max_tokens_to_sample"] = int(curr_kwargs["max_tokens_to_sample"] * 0.8)
+                if curr_kwargs["max_tokens_to_sample"] == 0:
+                    raise e
                 logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
             else:
                 raise ValueError(f"Unknown ApiException {e}.")
