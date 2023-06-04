@@ -157,7 +157,10 @@ def evaluate(
     if is_return_instead_of_print:
         return df_leaderboard, annotations
     else:
-        utils.print_leaderboard(df_leaderboard, leaderboard_mode_to_print, current_name=name)
+        utils.print_leaderboard(df_leaderboard,
+                                leaderboard_mode_to_print,
+                                current_name=name,
+                                cols_to_print=["win_rate", "standard_error", "n_total"])
 
 
 def evaluate_from_model(
@@ -388,6 +391,12 @@ def analyze_evaluators(
 
     is_single_annotator : bool, optional
         Whether to analyze a single annotator. If True, will not be able to estimate the annotator's bias.
+
+    leaderboard_mode_to_print : {"minimal", "verified", "community"}, optional
+        The mode of the leaderboard to print.
+
+    current_leaderboard_mode : {"minimal", "verified", "community"}, optional
+        The mode of the leaderboard to save all new entries with.
     """
 
     leaderboard = dict()
@@ -421,15 +430,14 @@ def analyze_evaluators(
                 )
 
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
+            leaderboard[key]["mode"] = current_leaderboard_mode
             all_crossannotations[key] = df_crossannotations
 
     df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient='index').sort_values(by="Human agreement [%]",
                                                                                      ascending=False)
+
     df_leaderboard = df_leaderboard[
-        utils.prioritize_elements(list(df_leaderboard.columns),
-                                  ["Human agreement [%]", "Price [$/1000 examples]", "Time [seconds/1000 examples]",
-                                   "Bias", "Variance", "Proba. prefer longer", "Proba. prefer lists",
-                                   "Proba. prefer 1"])
+        utils.prioritize_elements(list(df_leaderboard.columns), constants.EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE)
     ]
 
     if is_save_leaderboard:
@@ -438,7 +446,8 @@ def analyze_evaluators(
     if is_return_instead_of_print:
         return df_leaderboard, all_crossannotations
     else:
-        print(df_leaderboard.to_string(float_format="%.2f"))
+        utils.print_leaderboard(df_leaderboard, leaderboard_mode_to_print,
+                                cols_to_print=constants.EVALUATORS_LEADERBOARD_COLS_TO_PRINT)
 
 
 ALL_FUNCTIONS = {
