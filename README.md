@@ -25,7 +25,8 @@ AlpacaEval provides the following:
   inputs" are merged
   into a single field.
 
-Table of Contents:
+<details open>
+  <summary><b>Table of Contents</b></b></summary>
 
 1. [Quick Start](#quick-start)
 2. [Leaderboard](#leaderboard)
@@ -40,6 +41,8 @@ Table of Contents:
     - [Analyzing an eval set](#analyzing-an-eval-set)
 5. [Data Release](#data-release)
 6. [Citation](#citation)
+
+</details>
 
 ## Quick Start
 
