@@ -3,8 +3,11 @@
 
 <head>
     <title>Alpaca Eval Leaderboard</title>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="icon" href="https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/AlpacaFarm_small.png">
+    <link href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css" rel="stylesheet" />
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +19,6 @@
 
         .container {
             max-width: 1000px;
-            /* Increased max-width */
             margin: auto;
         }
 
@@ -40,30 +42,25 @@
             max-width: 600px;
             width: 100%;
             table-layout: fixed;
-            /* border: 1px solid #000000; Removed border */
             margin: auto;
             font-size: 1.2em;
-            /* Increased font-size */
         }
 
         table th,
         table td {
             padding: 10px;
-            /* Increased padding */
             word-wrap: break-word;
             vertical-align: middle;
         }
 
         table th {
             border-bottom: 2px solid #000;
-            /* Add horizontal line beneath the header */
         }
 
         th:first-child,
         td:first-child {
             width: 70%;
             padding-left: 30px;
-            /* Add more padding to the left */
         }
 
         th:last-child,
@@ -74,7 +71,6 @@
         th {
             text-align: left;
             padding-bottom: 15px;
-            /* border-bottom: 1px solid #000000; Removed border */
         }
 
         td {
@@ -87,7 +83,45 @@
 
         table tr:nth-child(odd) {
             background-color: #F8F8F8;
-            /* Eggshell white */
+        }
+
+        .switch-toggle {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .switch-toggle input+label {
+            padding: 2px;
+            padding-left: 7px;
+            padding-right: 7px;
+            cursor: pointer;
+            background-color: lightgrey;
+            border: 1px solid transparent;
+            font-size: 18px;
+        }
+
+        .switch-toggle input:checked+label {
+            border-color: green;
+            color: green;
+        }
+
+        .switch-toggle input:not(:checked)+label {
+            color: black;
+            box-shadow: none !important;
+            user-select: none;
+        }
+
+
+        .toggle-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .toggle-line .switch-toggle {
+            margin: 0 10px;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -105,43 +139,84 @@
             <h2>A Validated, Automatic Evaluation for Open-Domain Instruction-Following Models</h2>
         </div>
 
-        <br>
+        <div class="toggle-line">
+
+            Evaluator:
+            <div class="switch-toggle switch-evaluator" style="margin-right: 4em">
+                <input id="gpt4" name="evaluator" type="radio" checked="checked" />
+                <label for="gpt4" onclick="">GPT-4</label>
+                <input id="claude" name="evaluator" type="radio" />
+                <label for="claude" onclick="">Claude</label>
+            </div>
+
+            Filter:
+            <div class="switch-toggle switch-compactness">
+                <input id="community" name="compactness" type="radio" checked="checked" />
+                <label for="community" onclick="">Community</label>
+                <input id="verified" name="compactness" type="radio" />
+                <label for="verified" onclick="">Verified</label>
+            </div>
+        </div>
+
         <table id="leaderboard">
             <tr>
                 <th>Model Name</th>
                 <th>Win Rate</th>
             </tr>
-            <!-- Data will be populated here -->
         </table>
     </div>
 
     <script>
-        const csvUrl = 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/claude_leaderboard.csv';
+        const gpt4Radio = document.getElementById('gpt4');
+        const claudeRadio = document.getElementById('claude');
+        const table = document.getElementById('leaderboard');
+        const urls = {
+            'gpt4': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/alpaca_eval_gpt4_leaderboard.csv',
+            'claude': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/full_claude_leaderboard.csv'
+        }
 
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true,
-            complete: function (results) {
-                const table = document.getElementById('leaderboard');
-                results.data.forEach(row => {
-                    // Don't display the last line of the CSV if it's empty
-                    if (row[''] || row['win_rate']) {
-                        const tr = document.createElement('tr');
-                        const nameTd = document.createElement('td');
-                        const winRateTd = document.createElement('td');
-
-                        nameTd.textContent = row[''];
-                        winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
-
-                        tr.appendChild(nameTd);
-                        tr.appendChild(winRateTd);
-
-                        table.appendChild(tr);
-                    }
-                });
+        function updateTable(url) {
+            // remove all rows except for the header
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
             }
+
+            Papa.parse(url, {
+                download: true,
+                header: true,
+                complete: function (results) {
+                    results.data.forEach(row => {
+                        if (row[''] || row['win_rate']) {
+                            const tr = document.createElement('tr');
+                            const nameTd = document.createElement('td');
+                            const winRateTd = document.createElement('td');
+
+                            nameTd.textContent = row[''];
+                            winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+
+                            tr.appendChild(nameTd);
+                            tr.appendChild(winRateTd);
+
+                            table.appendChild(tr);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Initial load
+        updateTable(urls['gpt4']);
+
+        // Event handlers for radios
+        gpt4Radio.addEventListener('click', function () {
+            updateTable(urls['gpt4']);
+        });
+
+        claudeRadio.addEventListener('click', function () {
+            updateTable(urls['claude']);
         });
     </script>
+
 </body>
 
 </html>
