@@ -414,8 +414,9 @@ def get_output_path(output_path, model_outputs, name):
         output_path.mkdir(exist_ok=True, parents=True)
 
 
-def print_leaderboard(df_leaderboard, leaderboard_mode, current_name=None):
-    cols_to_print = ["win_rate", "standard_error", "n_total"]
+def print_leaderboard(df_leaderboard, leaderboard_mode, cols_to_print, current_name=None):
+    cols_to_print = list(cols_to_print)
+    
     if leaderboard_mode is not None:
         if "mode" in df_leaderboard.columns:
             # select all modes that come before
