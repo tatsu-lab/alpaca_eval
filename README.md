@@ -649,18 +649,39 @@ notebooks for all analysis.
 
 ### Analyzing an evaluator
 
-**Notebook:**
-[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
+**Analyzing evaluators:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb)
 
 The most important factors when selecting an evaluator are the quality, price, and speed. The following plot shows how
 the different evaluators compare on these factors.
 
 ![plot_quality_vs_price_and_time.png](figures%2Fplot_quality_vs_price_and_time.png)
 
+Here we see that `alpaca_eval_gpt4` performs very well and is better than humans on all the considered metrics.
+Once we decided on which automatic annotator to use, a natural
+question is whether making a leaderboard using our
+automatic annotator gives similar results as a leaderboard from humans. As part of AlpacaEval, we provide human
+annotations of outputs from 22 methods annotated on our eval set => 22*805 = ~18K annotations. As a result we can test
+the correlation of any automatic annotation with human annotations.
+
+
+<p float="left" align="middle">
+<img src="figures/plot_winrate_correlations.png" alt="Correlation between humans and alpaca_eval" width="400"/>
+</p>
+
+We see that the leaderboard from `alpaca_eval_gpt4` is highly correlated to the leaderboard from humans, which further
+suggests that automatic evaluation is a good proxy for human evaluation.
+
+For the code and more analysis such as bias vs variance tradeoff of annotators,
+see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb), or the
+colab notebook above.
+
 ### Analyzing an eval set
 
-**Notebook:**
-[![analyzing an evaluation set](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
+**Analyzing eval set:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/developing_evalset.ipynb)
+
+When creating an evaluation set there are usually two main factors to consider: what data to use? and how much?
 
 # Data release
 
