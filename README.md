@@ -652,8 +652,10 @@ notebooks for all analysis.
 **Notebook:**
 [![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
 
-The most important factors when selecting a an evaluator are likely the quality, price, and speed. The following plot
-measures
+The most important factors when selecting an evaluator are the quality, price, and speed. The following plot shows how
+the different evaluators compare on these factors.
+
+![plot_quality_vs_price_and_time.png](figures%2Fplot_quality_vs_price_and_time.png)
 
 ### Analyzing an eval set
 

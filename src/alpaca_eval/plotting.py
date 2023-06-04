@@ -322,15 +322,16 @@ def plot_all_properties(evaluator_leaderboard: pd.DataFrame,
                         min_agreement: float = 0.55,
                         config_kwargs=dict(is_use_tex=False,
                                            palette=sns.color_palette(np.array(sns.color_palette("colorblind"))[1:])),
-                        annotators_to_rm: Sequence[str] = ('longest', 'human'),
+                        annotators_to_rm: Sequence[str] = ('longest',),
                         **preprocess_kwargs
                         ):
 
     properties_to_rm = list(properties_to_rm)
     config_kwargs = config_kwargs or dict()
+    annotators_to_keep = [c for c in evaluator_leaderboard.index if c not in annotators_to_rm]
     df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard.drop(columns=properties_to_rm),
                                                min_agreement=min_agreement,
-                                               annotators_to_rm=annotators_to_rm,
+                                               annotators_to_keep=annotators_to_keep,
                                                **preprocess_kwargs)
 
     df_all["jitter"] = np.random.uniform(-0.5, 0.5, len(df_all))
@@ -356,7 +357,7 @@ def plot_all_properties(evaluator_leaderboard: pd.DataFrame,
 
         # g.set_titles("")
 
-        sns.move_legend(g, "center right", bbox_to_anchor=(1.3, 0.6))
+        sns.move_legend(g, "center right", bbox_to_anchor=(1.4, 0.6))
 
     plt.show()
     return g
@@ -396,7 +397,7 @@ def plot_winrate_correlations(human_leaderboard, auto_leaderboard,
     return g
 
 
-def save_fig(fig, filename, dpi, is_tight=True):
+def save_fig(fig, filename, dpi=300, is_tight=True):
     """General function for saving many different types of figures."""
 
     # order matters ! and don't use elif!
@@ -441,7 +442,7 @@ def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
     # select only useful
     df_all = df_all[df_all["Human agreement [%]"] > min_agreement]
 
-    if is_human_at_top:
+    if is_human_at_top and "humans" in df_all.index:
         # puts humans at the top (easier for colors)
         idcs = list(df_all.index)
         idx_humans = idcs.index("humans")

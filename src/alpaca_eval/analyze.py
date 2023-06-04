@@ -373,11 +373,13 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
 
     if evaluator_name == "humans":
         all_metrics["Bias"] = 0
+        all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
     else:
         try:
             all_metrics["Bias"] = analyzer.estimate_bias(df_crossannotations) * 100
         except:
             all_metrics["Bias"] = np.nan
+
         try:
             all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
         except:
