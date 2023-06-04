@@ -42,7 +42,8 @@ AlpacaEval provides the following:
     - [Analyzing an evaluator](#analyzing-an-evaluator)
     - [Analyzing an eval set](#analyzing-an-eval-set)
 5. [Data Release](#data-release)
-6. [Citation](#citation)
+6. [Differences with AlpacaFarm](#differences-with-alpacafarm)
+7. [Citation](#citation)
 
 </details>
 
@@ -74,7 +75,7 @@ model, or a model from a standard API (OpenAI, anthropic, cohere). Other command
 <details open>
   <summary><code>>>> alpaca_eval -- --help</code></summary>
 
-```bash
+```
 SYNOPSIS
     alpaca_eval COMMAND
 
@@ -123,7 +124,6 @@ a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpa
 | falcon-40b-instruct   |     45.7 |      1.8 |
 | alpaca-farm-ppo-human |     41.2 |      1.7 |
 | alpaca-7b             |     26.5 |      1.5 |
-| cohere                |     17.5 |      1.3 |
 | text_davinci_001      |     15.2 |      1.2 |
 
 <details>
@@ -142,7 +142,6 @@ a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpa
 | falcon-40b-instruct   |     46.7 |      1.8 |
 | alpaca-farm-ppo-human |     46.5 |      1.8 |
 | alpaca-7b             |     32.3 |      1.6 |
-| cohere                |     27.5 |      1.6 |
 | text_davinci_001      |     21.5 |      1.4 |
 
 </details>
@@ -209,7 +208,7 @@ variance / length bias.
 <details>
   <summary><code>>>> alpaca_eval evaluate -- --help</code></summary>
 
-```bash
+```
 NAME
     alpaca_eval evaluate - Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
 
@@ -251,6 +250,19 @@ e. If `auto` we use `model_outputs` if it is a path, and otherwise use the direc
         The precomputed leaderboard or a path to it (json, csv, or tsv). The leaderboard should contain at least t
 he column `win_rate`. If `auto` we will try to use the corresponding leaderboard for the reference outputs (only i
 f in CORRESPONDING_OUTPUTS_LEADERBOARDS). If `None` we won't add other models from the leaderboard.
+    --is_overwrite_leaderboard=IS_OVERWRITE_LEADERBOARD
+        Type: bool
+        Default: False
+        Whether to overwrite the leaderboard if the model is already in it.
+    -l, --leaderboard_mode_to_print=LEADERBOARD_MODE_TO_PRINT
+        Type: Optional
+        Default: 'minimal'
+        The mode of the leaderboard to use. Only used if the precomputed leaderboard has a column `mode`, in which
+ case it will filter the leaderboard by this mode. If None keeps all.
+    -c, --current_leaderboard_mode=CURRENT_LEADERBOARD_MODE
+        Type: str
+        Default: 'community'
+        The mode of the leaderboard for the current method.
     --is_return_instead_of_print=IS_RETURN_INSTEAD_OF_PRINT
         Type: bool
         Default: False
@@ -270,7 +282,7 @@ rn a dictionary of metrics and the key by which to sort the leaderboard.
         Default: False
         Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances
 . A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously saved
-leaderboard at `<output_path>/leaderboard.csv`
+leaderboard at `<output_path>/leaderboard.csv`.
     --max_instances=MAX_INSTANCES
         Type: Optional[Optional]
         Default: None
@@ -288,7 +300,7 @@ leaderboard at `<output_path>/leaderboard.csv`
 <details>
   <summary><code>>>> alpaca_eval evaluate_from_model -- --help</code></summary>
 
-```bash
+```
 NAME
     alpaca_eval evaluate_from_model - Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes generating from a desired model.
 
@@ -367,54 +379,6 @@ discussed below.
    set the appropriate API_KEY in your environment
    or [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7).
 
-<details>
-  <summary><b>Other parameters</b></b></summary>
-
-The easiest is to check the docstrings
-of [`evaluate`](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/main.py#L15). Here are some
-important ones:
-
-```
-Parameters
-----------
-model_outputs : path or data or dict
-    The outputs of the model to add to the leaderboard. Accepts data (list of dictionary, pd.dataframe,
-    datasets.Dataset) or a path to read those (json, csv, tsv) or a function to generate those. Each dictionary
-    (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by default `instruction`
-    and `output` with optional `input`. If None, we just print the leaderboard.
-
-reference_outputs : path or data, optional
-    The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
-    003 outputs on AlpacaEval evaluation set.
-
-annotators_config : path or list of dict, optional
-    The path the (or list of dict of) the annotator's config file. For details see the docstring of
-    `PairwiseAnnotator`.
-
-name : str, optional
-    The name of the model to add to the leaderboard.
-
-output_path : bool, optional
-    Path to the directory where the new leaderboard and the annotations should be stored. If None we don't save.
-    If `auto` we use `model_outputs` if it is a path, and otherwise use the directory from which we call the script.
-
-precomputed_leaderboard : path or data, optional
-    The precomputed leaderboard or a path to it (json, csv, or tsv). The leaderboard should contain at least the
-    column `win_rate`. If `auto` we will try to use the corresponding leaderboard for the reference outputs (only if
-    in CORRESPONDING_OUTPUTS_LEADERBOARDS). If `None` we won't add other models from the leaderboard.
-
-max_instances : int, optional
-    The maximum number of instances to annotate. Useful for testing.
-
-annotation_kwargs : dict, optional
-    Additional arguments to pass to `PairwiseAnnotator.annotate_head2head`.
-
-annotator_kwargs :
-    Additional arguments to pass to `PairwiseAnnotator`.
-```
-
-</details>
-
 Running all together:
 
 ```bash
@@ -471,7 +435,7 @@ See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpa
 <details>
   <summary><code>>>> alpaca_eval make_leaderboard -- --help</code></summary>
 
-```bash
+```
 NAME
     alpaca_eval make_leaderboard - Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
 
@@ -552,7 +516,7 @@ where:
 <details>
   <summary><code>>>> alpaca_eval analyze_evaluators -- --help</code></summary>
 
-```bash
+```
 NAME
     alpaca_eval analyze_evaluators - Analyze an evaluator (agreement with human, speed, price,...).
 
@@ -711,6 +675,38 @@ As part of AlpacaEval, we release the following data:
   the instruction and input fields into a single instruction field. This affects 1/4 of the examples in the AlpacaFarm
   evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560). Second we
   regenerated the text-davinci-003 reference outputs without limiting the length of its outputs.
+
+## Differences with AlpacaFarm
+
+AlpacaEval is an improvement and simplification of the automatic pairwise preference
+from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm). Outside of the AlpacaFarm simulator, you should be using
+AlpacaEval. Here are the main differences:
+
+- **AlpacaEval merges instructions and inputs**: The AlpacaEval evaluation is the same as the AlpacaFarm evaluation
+  except that the instruction and input fields are merged as `{instruction}\n\n{input}`. This affects 1/4 of the
+  examples in the AlpacaFarm evaluation set, all in the [self-instruct](https://arxiv.org/abs/2212.10560) subset.
+  Merging fields simpler and provides a more fair comparison for models that were not trained by distinguishing between
+  the two fields.
+- **AlpacaEval increases length of generations** Models in AlpacaFarm were limited to generations of 300 tokens. We
+  changed that to 2000 as the field is moving towards models with longer outputs. Note that this also affects the
+  reference (`text-davinci-003`), so results are nto comparable with AlpacaFarm even for examples that had no input
+  field.
+- **AlpacaEval removes intra- and inter-annotator variance**  The goal of AlpacaFarm was to have a simulator for
+  studying the human-based RLHF pipeline. In particular, we had to add intra- and inter-annotator variance (via a pool
+  of noisy automatic annotators) for the training dynamics (overoptimization) in simulation to match those with human
+  data. If the goal is to use an automatic annotator for evaluation or simply training better models, then this variance
+  is not desirable. The default annotators thus remove this variance in AlpacaEval. We give the option to add it back by
+  using `--anotators_config 'alpaca_farm'` and `--p_label_flip 0.25` when creating an evaluator.
+- **Different goals** The goal of AlpacaEval is to provide a package for simple,fast, reproducible,cheap, and
+  high-quality automatic evaluation of instruction-following models.
+-
+-
+- The goal of AlpacaFarm was to provide a simulator for studying the human-based RLHF pipeline. This means that
+  AlpacaFarm has more features and is more complex. For example, AlpacaFarm has a more complex annotator model, a more
+  complex annotator selection process, and a more complex evaluation set. AlpacaFarm also has a more complex simulator
+  that allows you to simulate the human-based RLHF pipeline. If you are interested in studying the human-based RLHF
+  pipeline, then you should use AlpacaFarm. If you are interested in evaluating or training better instruction-following
+  models, then you should use AlpacaEval.
 
 ## Citation
 
