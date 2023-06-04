@@ -678,10 +678,24 @@ colab notebook above.
 
 ### Analyzing an eval set
 
-**Analyzing eval set:**
-[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/developing_evalset.ipynb)
+**Making evaluation sets:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb)
 
-When creating an evaluation set there are usually two main factors to consider: what data to use? and how much?
+When creating an evaluation set there are usually two main factors to consider: how much data to use? and what data?
+
+One way of answering the first question is by considering a leaderboard of models that you believe are of different
+quality and then checking how many examples are needed to distinguish between them in a statistically significant way (
+using pairwise t-test). We show this in the following plot for all the pairs in the minimal `claude` leaderboard.
+
+[//]: # (![plot_paired_ttest_nsamples.png]&#40;figures%2Fplot_paired_ttest_nsamples.png&#41;)
+
+<p float="left" align="middle">
+<img src="figures/plot_paired_ttest_nsamples.png" alt="Number of samples needed to distingusih pairs in the Claude leaderboard" width="500"/>
+</p>
+
+This shows that many pairs can already be distinguished with as few as 50 examples, but going up to 450 allows to
+distinguish many other models. This suggests that we could likely decrease the evaluation set size by a factor of nearly
+2 in case 800 annotations are too expensive.
 
 # Data release
 

@@ -448,7 +448,7 @@ def plot_paired_ttests_per_dataset(df, is_print_values=False, is_add_alpaca_eval
     for d in df["dataset"].unique():
         df_sub = df.query(f"dataset=='{d}'")
         all_pvalues[d] = _get_ttest_df(df_sub, n_samples=min_dataset_size)
-        
+
     if is_add_alpaca_eval:
         all_pvalues["AlpacaEval"] = _get_ttest_df(df, n_samples=min_dataset_size)
 
@@ -525,7 +525,7 @@ def plot_paired_ttest_nsamples(df):
     df_min_samples = pd.DataFrame(arr_min_samples, index=df_ttest.index, columns=df_ttest.index)
 
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 15))
-    with plot_config(font_scale=0.4):
+    with plot_config(font_scale=0.55):
         sns.heatmap(df_min_samples.isnull(), cbar=False, color='black', alpha=0.5,
                     mask=~df_min_samples.isnull() | np.triu(np.ones_like(df_ttest, dtype=bool), k=0))
         g = sns.heatmap(df_min_samples,
