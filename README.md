@@ -697,6 +697,20 @@ This shows that many pairs can already be distinguished with as few as 50 exampl
 distinguish many other models. This suggests that we could likely decrease the evaluation set size by a factor of nearly
 2 in case 800 annotations are too expensive.
 
+The second question is what data to use. Again we can try to answer this question from a statistical power perspective:
+what data allows to best distinguish between models. Let's consider this for all the datasets that are part of
+AlpacaEval, but let us control for the size of the evaluation sets as we only care about the quality of the data. The
+following plot shows the p-values from the relative t-tests of each pairs of models on 80 examples of each datasets.
+
+![plot_paired_ttests_per_dataset.png](figures%2Fplot_paired_ttests_per_dataset.png)
+
+We see for example that the self-instruct dataset yields the least statistical power. This is likely because the
+questions are too simple for current models, and suggests that one could remove this dataset from the evaluation set.
+
+For the code and more analysis of the evaluation set,
+see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
+colab notebook above.
+
 # Data release
 
 As part of AlpacaEval, we release the following data:
