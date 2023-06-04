@@ -8,15 +8,18 @@ import scipy
 from matplotlib.ticker import LogLocator
 from typing import Callable, Optional, Sequence
 
-import numpy as np
 import pandas as pd
-import seaborn as sns
 from matplotlib import MatplotlibDeprecationWarning
 from matplotlib import pyplot as plt
+from matplotlib.lines import Line2D
+
 from matplotlib import rc_params_from_file
 from scipy import stats
+import numpy as np
+from scipy import stats
+import seaborn as sns
 
-from . import constants
+from . import constants, metrics
 
 RC_IF_NO_FILE = {
     "axes.grid": True,
@@ -419,6 +422,131 @@ def save_fig(fig, filename, dpi=300, is_tight=True):
         raise ValueError(f"Unknown figure type {type(fig)}")
 
 
+def plot_paired_ttests(df):
+    df_ttest = _get_ttest_df(df)
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 15))
+    with plot_config(font_scale=0.4):
+        g = sns.heatmap(df_ttest.astype(float),
+                        annot=True,
+                        fmt=".2f",
+                        cbar=False,
+                        square=True,
+                        xticklabels=False,
+                        ax=ax,
+                        mask=np.triu(np.ones_like(df_ttest, dtype=bool)),
+                        cmap=sns.color_palette("rocket", as_cmap=True)
+                        )
+        g.set(xlabel="", ylabel="")
+    plt.show()
+    return g
+
+
+def plot_paired_ttests_per_dataset(df, is_print_values=False, is_add_alpaca_eval=False):
+    min_dataset_size = df.drop_duplicates("instruction").groupby("dataset")["instruction"].count().min()
+
+    all_pvalues = dict()
+    for d in df["dataset"].unique():
+        df_sub = df.query(f"dataset=='{d}'")
+        all_pvalues[d] = _get_ttest_df(df_sub, n_samples=min_dataset_size)
+        
+    if is_add_alpaca_eval:
+        all_pvalues["AlpacaEval"] = _get_ttest_df(df, n_samples=min_dataset_size)
+
+    if is_print_values:
+        for i, (key, curr_df) in enumerate(all_pvalues.items()):
+            print(key, f"mean p-val: {curr_df.mean(axis=None):.3f}", f"max p-val: {curr_df.max(axis=None):.3f}")
+
+    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(23, 15))
+
+    with plot_config(font_scale=0.5):
+        for i, (key, curr_df) in enumerate(all_pvalues.items()):
+            ax = axes[i // 3][i % 3]
+            g = sns.heatmap(curr_df, annot=True, fmt=".2f", cbar=False, square=True, xticklabels=False, ax=ax,
+                            mask=np.triu(np.ones_like(curr_df, dtype=bool)))
+            ax.set_title(key + f" n={min_dataset_size}", fontsize=20)
+            g.set(xlabel="", ylabel="")
+
+        for i in range(len(all_pvalues), axes.size):
+            ax = axes.flatten()[i]
+            ax.set_visible(False)
+
+        # adjust spacing between plots
+        plt.tight_layout()
+
+    plt.show()
+    return g
+
+
+def plot_paired_ttests_pvalues(df):
+    df_ttest = _get_ttest_df(df)
+    all_sub_ttest_df = {n: _get_ttest_df(df, n_samples=n, random_state=123, sorted_idx=list(df_ttest.index))
+                        for n in range(50, len(df["instruction"].unique()), 50)}
+
+    df_describe = pd.DataFrame({"mean": {k: v.mean(axis=None) for k, v in all_sub_ttest_df.items()},
+                                "90% quantile": {k: v.stack().quantile(q=0.9) for k, v in all_sub_ttest_df.items()},
+                                "max": {k: v.max(axis=None) for k, v in all_sub_ttest_df.items()},
+                                })
+
+    melted = df_describe.melt(ignore_index=False,
+                              value_name="p-value",
+                              var_name="aggregator").reset_index(names="# samples")
+
+    with plot_config(rc={'lines.linewidth': 4, "axes.grid": False}):
+        ax = sns.lineplot(melted,
+                          x="# samples",
+                          y="p-value",
+                          hue="aggregator")
+
+        ax.axhline(y=0.05, color='black', linestyle='--', linewidth=2, alpha=0.5)
+
+        # Get the handles and labels from the existing line plot legend
+        handles, labels = ax.get_legend_handles_labels()
+
+        # Create a new legend element for the horizontal line
+        legend_elements = [Line2D([0], [0], color='black', linestyle='--', label='0.05')]
+
+        # Combine the handles, labels, and new legend element
+        all_handles = handles + legend_elements
+        all_labels = labels + ['0.05']
+
+        # Plot the combined legend
+        ax.legend(handles=all_handles, labels=all_labels)
+    plt.show()
+    return ax
+
+
+def plot_paired_ttest_nsamples(df):
+    df_ttest = _get_ttest_df(df)
+    all_sub_ttest_df = {n: _get_ttest_df(df, n_samples=n, random_state=123, sorted_idx=list(df_ttest.index))
+                        for n in range(50, len(df["instruction"].unique()), 50)}
+
+    arr_min_samples = np.minimum.reduce([np.where(v < 0.05, k, float("inf")) for k, v in all_sub_ttest_df.items()])
+    arr_min_samples[np.isinf(arr_min_samples)] = np.nan
+    df_min_samples = pd.DataFrame(arr_min_samples, index=df_ttest.index, columns=df_ttest.index)
+
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 15))
+    with plot_config(font_scale=0.4):
+        sns.heatmap(df_min_samples.isnull(), cbar=False, color='black', alpha=0.5,
+                    mask=~df_min_samples.isnull() | np.triu(np.ones_like(df_ttest, dtype=bool), k=0))
+        g = sns.heatmap(df_min_samples,
+                        annot=True,
+                        fmt=".0f",
+                        cbar=False,
+                        square=True,
+                        xticklabels=False,
+                        ax=ax,
+                        vmin=0,
+                        vmax=1000,
+                        cmap=sns.color_palette("rocket_r", as_cmap=True),
+                        mask=np.triu(np.ones_like(df_ttest, dtype=bool)))
+
+        g.set(xlabel="", ylabel="")
+
+    plt.show()
+
+    return g
+
+
 ##########
 def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
                                       min_agreement: float = 0.55,
@@ -436,9 +564,6 @@ def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
     df_all["Annotator"] = df_all.index
     df_all = df_all.query("Annotator.isin(@annotators_to_keep)")
 
-    # annotators_to_rm = [evaluator_renamer(a) for a in annotators_to_rm]
-    # df_all = df_all.query("not Annotator.isin(@annotators_to_rm)")
-
     # select only useful
     df_all = df_all[df_all["Human agreement [%]"] > min_agreement]
 
@@ -450,3 +575,31 @@ def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
         df_all = df_all.iloc[idcs_reordered]
 
     return df_all
+
+
+def _pairwise_ttest(df):
+    p_values = pd.DataFrame(index=df.columns, columns=df.columns)
+
+    for i in df.columns:
+        for j in df.columns:
+            if i == j:
+                p_values.loc[i, j] = np.nan
+            else:
+                t_stat, p_val = stats.ttest_rel(df[i], df[j], nan_policy="omit")
+                p_values.loc[i, j] = p_val
+
+    return p_values
+
+
+def _get_ttest_df(df, n_samples=None, random_state=123, sorted_idx=None):
+    """return a dataframe of pairwise relative ttest with potential subsampling"""
+    df_pivoted = df.pivot(index="instruction", values="preference", columns=["generator_2"])
+    if n_samples is not None:
+        df_pivoted = df_pivoted.sample(n=n_samples, random_state=random_state)
+    # win_rate = metrics.pairwise_to_winrate(df["preference"])['win_rate']
+    if sorted_idx is None:
+        sorted_idx = list(df.groupby("generator_2")["preference"].apply(lambda x: metrics.pairwise_to_winrate(x)[
+            'win_rate']).sort_values(ascending=False).index)
+    return _pairwise_ttest(df_pivoted[sorted_idx].replace({0: 1,
+                                                           1: 0})).astype(float)  # draw is 0 but to test order it
+    # should be in the middle
