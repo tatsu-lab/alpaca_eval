@@ -11,7 +11,8 @@ AlpacaEval provides the following:
 
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans. We evaluate a
   model M by
-  measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the desired model M over a reference.
+  measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model M over a
+  reference.
 - [**Leaderboard**](#models): a leaderboard of common models on the AlpacaFarm evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
@@ -24,7 +25,23 @@ AlpacaEval provides the following:
   inputs" are merged
   into a single field.
 
-# Quick Start
+Table of Contents:
+
+1. [Quick Start](#quick-start)
+2. [Leaderboard](#leaderboard)
+    - [Models](#models)
+    - [Evaluators](#evaluators)
+3. [Use-cases](#use-cases)
+    - [Evaluating a model](#evaluating-a-model)
+    - [Making a new evaluator](#making-a-new-evaluator)
+    - [Making a new leaderboard](#making-a-new-leaderboard)
+4. [Analysis](#analysis)
+    - [Analyzing an evaluator](#analyzing-an-evaluator)
+    - [Analyzing an eval set](#analyzing-an-eval-set)
+5. [Data Release](#data-release)
+6. [Citation](#citation)
+
+## Quick Start
 
 Fist, install the package: `pip install alpaca-eval`.
 
@@ -51,9 +68,9 @@ model, or a model from a standard API (OpenAI, anthropic, cohere). For more deta
 see [here](#evaluating-a-model). Note that by default annotations are cached on disk. Annotations are thus never
 recomputed, which greatly decreases cost and time for repeated evaluations (many models have the same outputs)
 
-# Leaderboard
+## Leaderboard
 
-## Models
+### Models
 
 Our leaderboards are computed are on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) evaluation set.
 We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (free for academics,
@@ -89,7 +106,7 @@ and high quality). Details:
 
 </details>
 
-## Evaluators
+### Evaluators
 
 We evaluate different automatic annotators on the AlpacaFarm evaluation set by comparing to
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
@@ -125,7 +142,7 @@ all
 results see [here](). In general, we found `alpaca_eval` to be a good trade-off between quality / price / time /
 variance / length bias.
 
-# Use-cases
+## Use-cases
 
 <details>
   <summary><b>Installation from source (optional)</b></b></summary>
@@ -139,7 +156,7 @@ variance / length bias.
 
 </details>
 
-## Evaluating a model
+### Evaluating a model
 
 To evaluate a model you need to:
 
@@ -249,7 +266,7 @@ evaluations (many models
 have
 the same outputs).
 
-## Making a new evaluator
+### Making a new evaluator
 
 There are 4 main ways of making new evaluators: changing the prompt, changing decoding parameters (eg temperature),
 changing the model, or using multiple annotators.
@@ -324,7 +341,7 @@ Note that this will evaluate 4 times (different seeds) every example in the Alpa
 evaluation.
 Be mindful of the cost of this operation depending on your model.
 
-## Making a new leaderboard
+### Making a new leaderboard
 
 If you want to make a new leaderboard in one go (rather than multiple `alpaca_eval` calls), for your desired evaluation
 set and evaluators, you can use the following:
@@ -353,7 +370,7 @@ where:
 AlpacaEval provides a few analysis tools to help you automatic evaluation. We briefly explain them here and provide
 notebooks for all analysis.
 
-## Analyzing an evaluator
+### Analyzing an evaluator
 
 **Notebook:**
 [![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
@@ -361,7 +378,7 @@ notebooks for all analysis.
 The most important factors when selecting a an evaluator are likely the quality, price, and speed. The following plot
 measures
 
-## Analyzing an evaluation set
+### Analyzing an eval set
 
 **Notebook:**
 [![analyzing an evaluation set](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_farm/blob/main/examples/auto_annotations.ipynb)
@@ -382,7 +399,7 @@ As part of AlpacaEval, we release the following data:
   evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560). Second we
   regenerated the text-davinci-003 reference outputs without limiting the length of its outputs.
 
-# Citation
+## Citation
 
 Please consider citing the repo if you use the automatic annotators, code, or results in this repo.
 
