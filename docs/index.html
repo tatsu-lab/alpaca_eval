@@ -167,31 +167,56 @@
     </div>
 
     <script>
-        const csvUrl = 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/claude_leaderboard.csv';
+        const gpt4Radio = document.getElementById('gpt4');
+        const claudeRadio = document.getElementById('claude');
+        const table = document.getElementById('leaderboard');
+        const urls = {
+            'gpt4': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/alpaca_eval_gpt4_leaderboard.csv',
+            'claude': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/full_claude_leaderboard.csv'
+        }
 
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true,
-            complete: function (results) {
-                const table = document.getElementById('leaderboard');
-                results.data.forEach(row => {
-                    if (row[''] || row['win_rate']) {
-                        const tr = document.createElement('tr');
-                        const nameTd = document.createElement('td');
-                        const winRateTd = document.createElement('td');
-
-                        nameTd.textContent = row[''];
-                        winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
-
-                        tr.appendChild(nameTd);
-                        tr.appendChild(winRateTd);
-
-                        table.appendChild(tr);
-                    }
-                });
+        function updateTable(url) {
+            // remove all rows except for the header
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
             }
+
+            Papa.parse(url, {
+                download: true,
+                header: true,
+                complete: function (results) {
+                    results.data.forEach(row => {
+                        if (row[''] || row['win_rate']) {
+                            const tr = document.createElement('tr');
+                            const nameTd = document.createElement('td');
+                            const winRateTd = document.createElement('td');
+
+                            nameTd.textContent = row[''];
+                            winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+
+                            tr.appendChild(nameTd);
+                            tr.appendChild(winRateTd);
+
+                            table.appendChild(tr);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Initial load
+        updateTable(urls['gpt4']);
+
+        // Event handlers for radios
+        gpt4Radio.addEventListener('click', function () {
+            updateTable(urls['gpt4']);
+        });
+
+        claudeRadio.addEventListener('click', function () {
+            updateTable(urls['claude']);
         });
     </script>
+
 </body>
 
 </html>
