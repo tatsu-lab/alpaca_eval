@@ -66,6 +66,9 @@ EVALUATORS_TO_BENCHMARK = tuple(
     ]
 )
 
+# order matters i => i+1 when filtering
+ORDERED_LEADERBOARD_MODES = ["minimal", "verified", "community"]
+
 
 def ALPACAEVAL_REFERENCE_OUTPUTS():
     dataset = datasets.load_dataset(

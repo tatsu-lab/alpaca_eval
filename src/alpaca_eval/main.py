@@ -20,6 +20,9 @@ def evaluate(
         name: Optional[str] = None,
         output_path: Optional[Union[AnyPath, str]] = "auto",
         precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+        is_overwrite_leaderboard: bool = False,
+        leaderboard_mode_to_print: Optional[str] = "minimal",
+        current_leaderboard_mode: str = "community",
         is_return_instead_of_print: bool = False,
         fn_metric: Union[str, callable] = "pairwise_to_winrate",
         sort_by: str = "win_rate",
@@ -59,6 +62,16 @@ def evaluate(
         column `win_rate`. If `auto` we will try to use the corresponding leaderboard for the reference outputs (only if
         in CORRESPONDING_OUTPUTS_LEADERBOARDS). If `None` we won't add other models from the leaderboard.
 
+    is_overwrite_leaderboard : bool, optional
+        Whether to overwrite the leaderboard if the model is already in it.
+
+    leaderboard_mode_to_print : {"minimal", "verified", "community", None}, optional
+        The mode of the leaderboard to use. Only used if the precomputed leaderboard has a column `mode`, in which case
+        it will filter the leaderboard by this mode. If None keeps all.
+
+    current_leaderboard_mode : {"minimal", "verified", "community"}, optional
+        The mode of the leaderboard for the current method.
+
     is_return_instead_of_print : bool, optional
         Whether to return the metrics instead of printing the results.
 
@@ -73,7 +86,7 @@ def evaluate(
     is_cache_leaderboard : bool, optional
         Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances.
         A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously
-        saved leaderboard at `<output_path>/leaderboard.csv`
+        saved leaderboard at `<output_path>/leaderboard.csv`.
 
     max_instances : int, optional
         The maximum number of instances to annotate. Useful for testing.
@@ -84,79 +97,44 @@ def evaluate(
     annotator_kwargs :
         Additional arguments to pass to `PairwiseAnnotator`.
     """
+    if isinstance(current_leaderboard_mode,
+                  str) and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES:
+        raise ValueError(f"current_leaderboard_mode should be one of {constants.ORDERED_LEADERBOARD_MODES}")
+
     annotation_kwargs = annotation_kwargs or dict()
 
-    if precomputed_leaderboard == "auto":
-        try:
-            precomputed_leaderboard = constants.PRECOMPUTED_LEADERBOARDS[
-                (str(reference_outputs), str(annotators_config))
-            ]
-        except KeyError:
-            try:
-                if Path(reference_outputs).is_absolute():
-                    logging.warning(
-                        f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard for"
-                        f" {reference_outputs} and {annotators_config}"
-                    )
-            except:
-                logging.warning(f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard")
-            precomputed_leaderboard = None
-
-    if precomputed_leaderboard is not None:
-        try:
-            leaderboard = utils.load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
-        except FileNotFoundError:
-            logging.warning(f"precomputed_leaderboard = {precomputed_leaderboard} not found => computing from scratch.")
-            leaderboard = dict()
-    else:
-        leaderboard = dict()
+    leaderboard = utils.get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, annotators_config)
+    annotations = None
 
     if model_outputs is not None:
         model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
         reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
+        name = utils.get_generator_name(name, model_outputs)
 
-        if name is None:
-            try:
-                assert len(model_outputs["generator"].unique()) == 1
-                name = model_outputs["generator"].iloc[0]
-            except:
-                name = "Current model"
+        if (name not in leaderboard) or is_overwrite_leaderboard:
 
-        logging.info(f"Evaluating the {name} outputs.")
+            logging.info(f"Evaluating the {name} outputs.")
 
-        if max_instances is not None:
-            model_outputs = model_outputs[:max_instances]
-            reference_outputs = reference_outputs[:max_instances]
+            if max_instances is not None:
+                model_outputs = model_outputs[:max_instances]
+                reference_outputs = reference_outputs[:max_instances]
 
-        annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
-        annotations = annotator.annotate_head2head(
-            outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
-        )
+            annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
+            annotations = annotator.annotate_head2head(
+                outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
+            )
 
-        if isinstance(fn_metric, str):
-            fn_metric = getattr(metrics, fn_metric)
+            if isinstance(fn_metric, str):
+                fn_metric = getattr(metrics, fn_metric)
 
-        leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
-
-    else:
-        annotations = None
-
-    if output_path == "auto":
-        if model_outputs is None:
-            output_path = None
+            leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
+            leaderboard[name]["mode"] = current_leaderboard_mode
         else:
-            try:
-                output_path = Path(model_outputs).parent
-            except:
-                if name is not None:
-                    output_path = Path("results") / name
-                else:
-                    output_path = "."
-    if output_path is not None:
-        output_path = Path(output_path)
-        output_path.mkdir(exist_ok=True, parents=True)
+            logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
 
-    df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by=sort_by, ascending=False)
+    output_path = utils.get_output_path(output_path, model_outputs, name)
+
+    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient='index').sort_values(by=sort_by, ascending=False)
     df_leaderboard = df_leaderboard[
         utils.prioritize_elements(list(df_leaderboard.columns), ["win_rate", "standard_error"])
     ]
@@ -171,6 +149,7 @@ def evaluate(
 
     if is_cache_leaderboard is None:
         is_cache_leaderboard = max_instances is None
+
     if is_cache_leaderboard:
         logging.info(f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}")
         df_leaderboard.to_csv(precomputed_leaderboard)
@@ -178,7 +157,7 @@ def evaluate(
     if is_return_instead_of_print:
         return df_leaderboard, annotations
     else:
-        print(df_leaderboard.to_string(float_format="%.2f"))
+        utils.print_leaderboard(df_leaderboard, leaderboard_mode_to_print, current_name=name)
 
 
 def evaluate_from_model(
@@ -289,6 +268,7 @@ def make_leaderboard(
         all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
         reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
         fn_add_to_leaderboard: Callable = "evaluate",
+        leaderboard_mode: str = "verified",
         is_return_instead_of_print: bool = False,
         **kwargs,
 ):
@@ -321,6 +301,9 @@ def make_leaderboard(
         `main.py`. The function should take the arguments: `model_outputs`, `annotators_config`, `name`,
         `precomputed_leaderboard`, `is_return_instead_of_print`, `reference_outputs`.
 
+    leaderboard_mode : {"minimal", "verified", "community"}, optional
+        The mode of the leaderboard to save all new entries with.
+
     is_return_instead_of_print : bool, optional
         Whether to return the metrics instead of printing the results.
 
@@ -344,9 +327,11 @@ def make_leaderboard(
             name=model,
             precomputed_leaderboard=leaderboard_path,
             is_return_instead_of_print=True,
+            current_leaderboard_mode=leaderboard_mode,
             **kwargs,
         )
-        all_annotations += annotations
+        if annotations is not None:
+            all_annotations += annotations
         df_leaderboard.to_csv(leaderboard_path)
 
     leaderboard = utils.load_or_convert_to_dataframe(leaderboard_path)
@@ -355,7 +340,7 @@ def make_leaderboard(
     if is_return_instead_of_print:
         return df_leaderboard, all_annotations
     else:
-        print(df_leaderboard[["win_rate", "standard_error", "n_total"]].to_string(float_format="%.2f"))
+        utils.print_leaderboard(df_leaderboard, leaderboard_mode=None)
 
 
 def analyze_evaluators(
@@ -370,6 +355,8 @@ def analyze_evaluators(
         is_overwrite_leaderboard: bool = False,
         max_instances: Optional[int] = None,
         is_single_annotator: bool = False,
+        leaderboard_mode_to_print: str = "minimal",
+        current_leaderboard_mode: str = "minimal",
 ):
     """Analyze an evaluator (agreement with human, speed, price,...).
 
@@ -436,7 +423,8 @@ def analyze_evaluators(
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
             all_crossannotations[key] = df_crossannotations
 
-    df_leaderboard = pd.DataFrame(leaderboard).T.sort_values(by="Human agreement [%]", ascending=False)
+    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient='index').sort_values(by="Human agreement [%]",
+                                                                                     ascending=False)
     df_leaderboard = df_leaderboard[
         utils.prioritize_elements(list(df_leaderboard.columns),
                                   ["Human agreement [%]", "Price [$/1000 examples]", "Time [seconds/1000 examples]",

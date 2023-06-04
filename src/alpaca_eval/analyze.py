@@ -187,6 +187,7 @@ class Analyzer:
             f"Compared results of indices: {list(results.keys())}"
         )
 
+        # maybe better to use from_dict(results, orient='index')
         sem_annotators = pd.DataFrame(results).T["accuracy"].sem()
         results = sum(results.values()) / len(results.values())
         results["sem_annotators"] = sem_annotators

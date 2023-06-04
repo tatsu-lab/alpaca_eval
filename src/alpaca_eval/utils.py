@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from . import constants
+
 # don't load from utils to avoid unnecessary dependencies
 AnyPath = Union[str, os.PathLike, pathlib.Path]
 AnyData = Union[Sequence[dict[str, Any]], pd.DataFrame, datasets.Dataset]
@@ -365,3 +367,78 @@ def load_configs(configs: Union[AnyPath, dict], relative_to: Optional[AnyPath] =
                 logging.exception(exc)
 
     return configs
+
+
+def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, annotators_config):
+    if precomputed_leaderboard == "auto":
+        try:
+            precomputed_leaderboard = constants.PRECOMPUTED_LEADERBOARDS[
+                (str(reference_outputs), str(annotators_config))
+            ]
+        except KeyError:
+            try:
+                if Path(reference_outputs).is_absolute():
+                    logging.warning(
+                        f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard for"
+                        f" {reference_outputs} and {annotators_config}"
+                    )
+            except:
+                logging.warning(f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard")
+            precomputed_leaderboard = None
+
+    if precomputed_leaderboard is not None:
+        try:
+            leaderboard = load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
+        except FileNotFoundError:
+            logging.warning(f"precomputed_leaderboard = {precomputed_leaderboard} not found => computing from scratch.")
+            leaderboard = dict()
+    else:
+        leaderboard = dict()
+    return leaderboard
+
+
+def get_output_path(output_path, model_outputs, name):
+    if output_path == "auto":
+        if model_outputs is None:
+            output_path = None
+        else:
+            try:
+                output_path = Path(model_outputs).parent
+            except:
+                if name is not None:
+                    output_path = Path("results") / name
+                else:
+                    output_path = "."
+    if output_path is not None:
+        output_path = Path(output_path)
+        output_path.mkdir(exist_ok=True, parents=True)
+
+
+def print_leaderboard(df_leaderboard, leaderboard_mode, current_name=None):
+    cols_to_print = ["win_rate", "standard_error", "n_total"]
+    if leaderboard_mode is not None:
+        if "mode" in df_leaderboard.columns:
+            # select all modes that come before
+            current_idx = constants.ORDERED_LEADERBOARD_MODES.index(leaderboard_mode)
+            df_leaderboard["mode_idx"] = df_leaderboard["mode"].apply(constants.ORDERED_LEADERBOARD_MODES.index)
+
+            is_smaller_mode = (df_leaderboard["mode_idx"] <= current_idx)
+            is_selected = is_smaller_mode | (df_leaderboard["mode"].isnull())
+
+            if current_name is not None:
+                is_selected |= df_leaderboard.index == current_name
+
+            df_leaderboard = df_leaderboard[is_selected]
+    elif "mode" in df_leaderboard.columns:
+        cols_to_print = cols_to_print + ["mode"]
+    print(df_leaderboard[cols_to_print].to_string(float_format="%.2f"))
+
+
+def get_generator_name(name, model_outputs):
+    if name is None:
+        try:
+            assert len(model_outputs["generator"].unique()) == 1
+            name = model_outputs["generator"].iloc[0]
+        except:
+            name = "Current model"
+    return name
