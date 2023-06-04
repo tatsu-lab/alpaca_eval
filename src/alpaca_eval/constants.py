@@ -25,7 +25,7 @@ CURRENT_DIR = Path(__file__).parent
 EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
 MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
 
-MODEL_LEADERBOARD = (
+MINIMAL_MODELS = (
     "gpt4",
     "claude",
     "chatgpt",
@@ -38,7 +38,7 @@ MODEL_LEADERBOARD = (
     "alpaca-7b",
     "text_davinci_001",
 )
-EVALUATORS_LEADERBOARD = (
+MINIMAL_EVALUATORS = (
     "alpaca_eval_gpt4",
     "aviary_gpt4",
     "gpt4",
@@ -50,9 +50,8 @@ EVALUATORS_LEADERBOARD = (
     "alpaca_farm_greedy_gpt4",
 )
 
-MODEL_TO_BENCHMARK = tuple(list(MODEL_LEADERBOARD) + [])
-EVALUATORS_TO_BENCHMARK = tuple(
-    list(EVALUATORS_LEADERBOARD)
+VERIFIED_EVALUATORS = tuple(
+    list(MINIMAL_EVALUATORS)
     + [
         "claude_ranking",
         "improved_aviary_gpt4",
@@ -145,6 +144,12 @@ HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "Davinci001",
     "LLaMA 7B",
 )
+
+EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = ["Human agreement [%]", "Price [$/1000 examples]",
+                                             "Time [seconds/1000 examples]",
+                                             "Bias", "Variance", "Proba. prefer longer", "Proba. prefer lists",
+                                             "Proba. prefer 1"]
+EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:6]
 
 CURRENT_USER = getpass.getuser()
 if CURRENT_USER in ["yanndubs"]:

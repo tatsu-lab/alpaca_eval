@@ -421,7 +421,7 @@ def save_fig(fig, filename, dpi, is_tight=True):
 ##########
 def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
                                       min_agreement: float = 0.55,
-                                      annotators_to_keep: Sequence[str] = constants.EVALUATORS_TO_BENCHMARK,
+                                      annotators_to_keep: Sequence[str] = constants.VERIFIED_EVALUATORS,
                                       evaluator_renamer: Optional[Callable] = evaluator_renamer,
                                       is_human_at_top: bool = True,
                                       ) -> pd.DataFrame:
