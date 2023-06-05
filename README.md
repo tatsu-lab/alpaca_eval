@@ -737,24 +737,23 @@ As part of AlpacaEval, we release the following data:
 
 ## Differences with AlpacaFarm
 
-AlpacaEval is an improvement and simplification of the automatic pairwise preference
-from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm). Outside of the AlpacaFarm simulator, you should be using
-AlpacaEval. Here are the main differences:
+AlpacaEval is an improvement and simplification of the automatic pairwise preference simulator 
+from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm). 
+Outside of AlpacaFarm, you should be using AlpacaEval. 
+Here are the main differences:
 
 - **AlpacaEval merges instructions and inputs**: The AlpacaEval evaluation is the same as the AlpacaFarm evaluation
   except that the instruction and input fields are merged as `{instruction}\n\n{input}`. This affects 1/4 of the
-  examples in the AlpacaFarm evaluation set, all in the [self-instruct](https://arxiv.org/abs/2212.10560) subset.
-  Merging fields simpler and provides a more fair comparison for models that were not trained by distinguishing between
-  the two fields.
-- **AlpacaEval increases length of generations** Models in AlpacaFarm were limited to generations of 300 tokens. We
-  changed that to 2000 as the field is moving towards models with longer outputs. Note that this also affects the
-  reference (`text-davinci-003`), so results are nto comparable with AlpacaFarm even for examples that had no input
+  examples in the AlpacaFarm evaluation set (the [self-instruct](https://arxiv.org/abs/2212.10560) subset).
+  This simplification provides a more fair comparison for models that were not trained by distinguishing between
+  the two fields (while making models that were trained with this field as separate appear worse).
+- **AlpacaEval handles longer generations**: Models in AlpacaFarm were limited to a maximum number of 300 tokens for generations. We
+  change this number to 2000 for AlpacaEval. Note that this also affects the reference generations (`text-davinci-003`), so the results on AlpacaEval are not comparable that on AlpacaFarm even for examples that had no input
   field.
-- **AlpacaEval removes intra- and inter-annotator variance**  The goal of AlpacaFarm was to have a simulator for
-  studying the human-based RLHF pipeline. In particular, we had to add intra- and inter-annotator variance (via a pool
-  of noisy automatic annotators) for the training dynamics (overoptimization) in simulation to match those with human
-  data. If the goal is to use an automatic annotator for evaluation or simply training better models, then this variance
-  is not desirable. The default annotators thus remove this variance in AlpacaEval. We give the option to add it back by
+- **AlpacaEval removes intra- and inter-annotator variance**: The AlpacaFarm simulator replicates human annotation in terms of both mode behavior and diversity. 
+  In particular, AlpacaFarm's simulator uses a pool of models and prompts and adds noise to replicate human intra- and inter-annotator variance.
+  If the goal is to use an automatic annotator for evaluation or simply training better models, then this variance
+  may not be desirable. The default annotators in AlpacaEval thus don't have this variance. We give the option to add it back by
   using `--anotators_config 'alpaca_farm'` and `--p_label_flip 0.25` when creating an evaluator.
 
 [//]: # (- **Different goals** The goal of AlpacaEval is to provide a package for fast, reproducible,cheap, and)
