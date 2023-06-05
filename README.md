@@ -763,7 +763,7 @@ AlpacaEval. Here are the main differences:
 
 ## Citation
 
-Please consider citing the repo if you use the automatic annotators, code, or results in this repo.
+Please consider citing the repo if you used the automatic annotators, code, or results.
 
 ```
 @misc{alpaca_eval,
@@ -772,20 +772,20 @@ Please consider citing the repo if you use the automatic annotators, code, or re
   year = {2023},
   publisher = {GitHub},
   journal = {GitHub repository},
-  howpublished = {\url{https://github.com/tatsu-lab/stanford_eval}},
+  howpublished = {\url{https://github.com/tatsu-lab/alpaca_eval}}
 }
 ```
 
-If you use the human annotations, please also cite the [AlpacaFarm](https://arxiv.org/abs/2305.14387)
+If you used our human annotation data, please also consider citing the [AlpacaFarm](https://arxiv.org/abs/2305.14387)
 paper:
 
 ```
 @misc{dubois2023alpacafarm,
-      title={AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback}, 
-      author={Yann Dubois and Xuechen Li and Rohan Taori and Tianyi Zhang and Ishaan Gulrajani and Jimmy Ba and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto},
-      year={2023},
-      eprint={2305.14387},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+  title={AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback}, 
+  author={Yann Dubois and Xuechen Li and Rohan Taori and Tianyi Zhang and Ishaan Gulrajani and Jimmy Ba and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto},
+  year={2023},
+  eprint={2305.14387},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG}
 }
 ```
