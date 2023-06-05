@@ -23,11 +23,11 @@ PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_
 
 setuptools.setup(
     name="alpaca_eval",
-    version="0.1.0",
-    description="Automatic evaluation of instruction-following models by LLMs.",
+    version=version,
+    description="AlpacaEval : An Automatic Evaluator of Instruction-following Models",
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),
-    author="Alpaca Team",
+    author="The Alpaca Team",
     install_requires=[
         "datasets",
         "openai",
