@@ -18,7 +18,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 700px;
             margin: auto;
         }
 
@@ -39,7 +39,7 @@
         }
 
         table {
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             table-layout: fixed;
             margin: auto;
@@ -60,7 +60,7 @@
         th:first-child,
         td:first-child {
             width: 70%;
-            padding-left: 30px;
+            padding-left: 40px;
         }
 
         th:last-child,
@@ -130,13 +130,13 @@
 <body>
     <div class="container">
         <div id="branding">
-            <h1>Alpaca Eval
+            <h1>AlpacaEval
                 <img src="https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/AlpacaFarm_small.png"
                     alt="Logo" style="height: 2em; vertical-align: middle;">
                 Leaderboard
             </h1>
             <br>
-            <h2>A Validated, Automatic Evaluation for Open-Domain Instruction-Following Models</h2>
+            <h2>A validated, automatic evaluation of instruction-following LMs</h2>
         </div>
 
         <div class="toggle-line">
@@ -155,6 +155,8 @@
                 <label for="community" onclick="">Community</label>
                 <input id="verified" name="compactness" type="radio" />
                 <label for="verified" onclick="">Verified</label>
+                <input id="minimal" name="compactness" type="radio" />
+                <label for="minimal" onclick="">Minimal</label>
             </div>
         </div>
 
@@ -169,14 +171,21 @@
     <script>
         const gpt4Radio = document.getElementById('gpt4');
         const claudeRadio = document.getElementById('claude');
+
+        const communityRadio = document.getElementById('community');
+        const verifiedRadio = document.getElementById('verified');
+        const minimalRadio = document.getElementById('minimal');
+
         const table = document.getElementById('leaderboard');
+
         const urls = {
             'gpt4': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/alpaca_eval_gpt4_leaderboard.csv',
-            'claude': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/full_claude_leaderboard.csv'
+            'claude': 'https://raw.githubusercontent.com/rtaori/rtaori.github.io/master/tmp/claude_leaderboard.csv'
         }
 
+        let currentUrl = urls['gpt4'];
+
         function updateTable(url) {
-            // remove all rows except for the header
             while (table.rows.length > 1) {
                 table.deleteRow(1);
             }
@@ -187,33 +196,52 @@
                 complete: function (results) {
                     results.data.forEach(row => {
                         if (row[''] || row['win_rate']) {
-                            const tr = document.createElement('tr');
-                            const nameTd = document.createElement('td');
-                            const winRateTd = document.createElement('td');
+                            let mode = row['mode'];
 
-                            nameTd.textContent = row[''];
-                            winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+                            if ((communityRadio.checked) ||
+                                (verifiedRadio.checked && (mode === 'verified' || mode === 'minimal')) ||
+                                (minimalRadio.checked && mode === 'minimal')) {
 
-                            tr.appendChild(nameTd);
-                            tr.appendChild(winRateTd);
+                                const tr = document.createElement('tr');
+                                const nameTd = document.createElement('td');
+                                const winRateTd = document.createElement('td');
 
-                            table.appendChild(tr);
+                                nameTd.textContent = row[''];
+                                winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+
+                                tr.appendChild(nameTd);
+                                tr.appendChild(winRateTd);
+
+                                table.appendChild(tr);
+                            }
                         }
                     });
                 }
             });
         }
 
-        // Initial load
         updateTable(urls['gpt4']);
 
-        // Event handlers for radios
         gpt4Radio.addEventListener('click', function () {
-            updateTable(urls['gpt4']);
+            currentUrl = urls['gpt4'];
+            updateTable(currentUrl);
         });
 
         claudeRadio.addEventListener('click', function () {
-            updateTable(urls['claude']);
+            currentUrl = urls['claude'];
+            updateTable(currentUrl);
+        });
+
+        communityRadio.addEventListener('click', function () {
+            updateTable(currentUrl);
+        });
+
+        verifiedRadio.addEventListener('click', function () {
+            updateTable(currentUrl);
+        });
+
+        minimalRadio.addEventListener('click', function () {
+            updateTable(currentUrl);
         });
     </script>
 
