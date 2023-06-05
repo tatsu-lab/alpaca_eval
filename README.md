@@ -63,8 +63,9 @@ pip install git+https://github.com/tatsu-lab/alpaca_eval
 Then you can use it as follows:
 
 ```bash
-export OPENAI_API_KEY=<your_api_key> 
-alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'
+export OPENAI_API_KEY=<your_api_key>
+export OPENAI_ORGANIZATION_IDS=<your_organization_id>  # Optional; if not set, this will be your default org id.
+alpaca_eval --model_outputs 'example/outputs.json'
 ```
 
 Important parameters are the following:
