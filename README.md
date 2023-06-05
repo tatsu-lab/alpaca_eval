@@ -4,24 +4,23 @@
 [![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
-Evaluation of instruction-following models (GPT4, ChatGPT) typically requires human interactions. This is
+Evaluation of instruction-following models (e.g., GPT4, ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
 and replicable.
 AlpacaEval provides the following:
 
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans. We evaluate a
-  model M by
-  measuring the fraction of time an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model M over a
-  reference. Our automatic evaluators enable caching and randomization by default, and allow for advance features such
-  as batching
-  or having a pool of annotators.
+  model by
+  measuring the fraction of times an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model over a
+  fixed reference model. Our automatic evaluators enable caching and randomization by default, and allow for advanced features such
+  as batching or pooling different annotators.
 - [**Leaderboard**](#models): a leaderboard of common models on the AlpacaEval evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
-- [**Human evaluation data**](#data-release): 20K human annotations of preferences between a given and reference model
+- [**Human evaluation data**](#data-release): 20K human preferences between a given and reference model
   on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
-  evaluation set. 2.5K of which are cross-annotations (4 humans annotating the same 650 examples).
+  evaluation set. 2.5K of these are cross-annotations (4 humans annotating the same 650 examples).
 - [**AlpacaEval dataset**](#data-release): a simplification of
   the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
   inputs" are merged
@@ -49,7 +48,17 @@ AlpacaEval provides the following:
 
 ## Quick Start
 
-Fist, install the package: `pip install alpaca-eval`.
+To install the stable release, run
+
+```bash
+pip install alpaca-eval
+```
+
+To install from the latest main, run
+
+```bash
+pip install git+https://github.com/tatsu-lab/alpaca_eval
+```
 
 Then you can use it as follows:
 
@@ -60,17 +69,16 @@ alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'
 
 Important parameters are the following:
 
-- **model_outputs** : A json path to the outputs of the model to add to the leaderboard. Each dictionary should
-  contain `instruction` and `output` with optional `input`.
-- **annotators_config**: `gpt4`, `text-davinci-003`, `claude`... Annotator to use. `gpt4` works best. If you are
-  academics, we recommend `claude` which is free for academics and nearly as good. For a comparison of
+- **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary should
+  contain the keys `instruction`, `output`, and (optionally) `input`.
+- **annotators_config**: This is the annotator to use (e.g., `gpt4`, `text-davinci-003`, `claude`). `gpt4` has the highest agreement rate with our human annotation data. For a comparison of
   annotators see [here](#evaluators).
-- **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, 003 outputs on
+- **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, this is `text-davinci0003` outputs on
   AlpacaEval dataset.
 - **output_path**: Path for saving annotations and leaderboard.
 
 If you don't have the model outputs, you can use `evaluate_from_model` and pass a local path or a name of a HuggingFace
-model, or a model from a standard API (OpenAI, anthropic, cohere). Other commands:
+model, or a model from a standard API (OpenAI, Anthropic, Cohere). Other commands:
 
 <details open>
   <summary><code>>>> alpaca_eval -- --help</code></summary>
