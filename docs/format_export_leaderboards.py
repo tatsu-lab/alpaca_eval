@@ -8,7 +8,6 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = df.reset_index(names='name')
     df['link'] = ''
     df['filter'] = ''
-    breakpoint()
     for idx in range(len(df)):
         informal_name = df.loc[idx, 'name']
         model_config = load_configs(df.loc[idx, 'name'], relative_to=MODELS_CONFIG_DIR)[informal_name]
@@ -23,5 +22,4 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
         else:
             df.loc[idx, 'filter'] = 'community'
     df = df.sort_values(by=['win_rate'], ascending=False)
-    breakpoint()
     df.to_csv(Path('docs') / leaderboard_file.name, index=False)

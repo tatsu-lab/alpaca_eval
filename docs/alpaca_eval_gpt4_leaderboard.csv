@@ -9,6 +9,6 @@ LLaMA 33B OASST RLHF,66.52173913043478,https://huggingface.co/OpenAssistant/oass
 Davinci003,50.0,,minimal
 Falcon 40B Instruct,45.71428571428572,https://huggingface.co/tiiuae/falcon-40b-instruct,minimal
 Alpaca Farm PPO Human 7B,41.24223602484472,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,minimal
-Vicuna 7B,26.459627329192543,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
+Alpaca 7B,26.459627329192543,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
 Cohere,17.51552795031056,,verified
 Davinci001,15.17412935323383,,minimal

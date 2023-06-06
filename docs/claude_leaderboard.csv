@@ -18,7 +18,7 @@ Falcon 40B Instruct,46.70807453416149,https://huggingface.co/tiiuae/falcon-40b-i
 Alpaca Farm PPO Human 7B,46.45962732919255,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,minimal
 Pythia 12B SFT,43.22981366459627,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,verified
 Pythia 12B OASST SFT,32.79503105590062,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,verified
-Vicuna 7B,32.298136645962735,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
+Alpaca 7B,32.298136645962735,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
 Falcon 7B Instruct,29.565217391304348,https://huggingface.co/tiiuae/falcon-7b-instruct,verified
 Cohere,27.45341614906832,,verified
 Davinci001,21.490683229813666,,minimal

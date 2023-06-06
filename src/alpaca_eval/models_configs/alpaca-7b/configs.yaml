@@ -9,5 +9,5 @@ alpaca-7b:
     temperature: 0.7
     top_p: 1.0
     do_sample: True
-  pretty_name: "Vicuna 7B"
+  pretty_name: "Alpaca 7B"
   link: "https://huggingface.co/tatsu-lab/alpaca-7b-wdiff"
