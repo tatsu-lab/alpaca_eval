@@ -28,13 +28,13 @@ AlpacaEval provides the following:
   inputs" are merged
   into a single field.
 
-**When to use AlpacaEval?**: AlpacaEval is a cheap and quick proxy for human evaluation, which is especially useful you
-have to run many evaluations quickly, e.g., during initial model development. However, AlpacaEval ---as any automatic
-evaluator--- should not be used as a complete replacement for human evaluation in important settings (e.g., deciding on
+**When to use AlpacaEval?** AlpacaEval is a cheap and quick proxy for human evaluation, which is useful if you
+have to run many evaluations quickly, e.g., during initial model development. However, automatic
+evaluator such as AlpacaEval should not be used as a complete replacement for human evaluation in important settings (
+e.g., deciding on
 model release). In particular AlpacaEval, is limited by the fact that (1) the AlpacaEval set contains relatively simple
 instructions; (2) automatic evaluators seem to favor style over
-factuality of the answer; and (3) AlpacaEval only measures instruction-following capabilities of a model not the risks
-that it could cause.
+factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
 Details in [limitations](#limitations).
 
 
