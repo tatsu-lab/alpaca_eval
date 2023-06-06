@@ -195,18 +195,18 @@
                 header: true,
                 complete: function (results) {
                     results.data.forEach(row => {
-                        if (row[''] || row['win_rate']) {
-                            let mode = row['mode'];
+                        if (row['name'] || row['win_rate']) {
+                            let filter = row['filter'];
 
                             if ((communityRadio.checked) ||
-                                (verifiedRadio.checked && (mode === 'verified' || mode === 'minimal')) ||
-                                (minimalRadio.checked && mode === 'minimal')) {
+                                (verifiedRadio.checked && (filter === 'verified' || filter === 'minimal')) ||
+                                (minimalRadio.checked && filter === 'minimal')) {
 
                                 const tr = document.createElement('tr');
                                 const nameTd = document.createElement('td');
                                 const winRateTd = document.createElement('td');
 
-                                nameTd.textContent = row[''];
+                                nameTd.textContent = row['name'];
                                 winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
 
                                 tr.appendChild(nameTd);
