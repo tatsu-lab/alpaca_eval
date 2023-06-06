@@ -10,6 +10,7 @@ from transformers import (
     AutoTokenizer,
 )
 import transformers
+from peft import PeftModel
 from .. import utils, constants
 
 __all__ = ["huggingface_local_completions"]
@@ -22,8 +23,8 @@ def huggingface_local_completions(
         batch_size: int = 1,
         model_kwargs=None,
         cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
-        trust_remote_code: bool = False,
         is_fast_tokenizer: bool = True,
+        adapters_name: Optional[str] = None,
         **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
@@ -51,14 +52,9 @@ def huggingface_local_completions(
     kwargs :
         Additional kwargs to pass to `InferenceApi.__call__`.
     """
-    default_model_kwargs = {  # "load_in_8bit": True, # divides memory by 2 but is slower,
-        "device_map": "auto",
-        "torch_dtype": torch.float16,
-    }
     model_kwargs = model_kwargs or {}
-    default_model_kwargs.update(model_kwargs)
-    model_kwargs = default_model_kwargs
-
+    if "device_map" not in model_kwargs:
+        model_kwargs["device_map"] = "auto"
     if isinstance(model_kwargs["torch_dtype"], str):
         model_kwargs["torch_dtype"] = getattr(torch, model_kwargs["torch_dtype"])
 
@@ -79,9 +75,12 @@ def huggingface_local_completions(
     tokenizer = AutoTokenizer.from_pretrained(
         model_name, cache_dir=cache_dir, padding_side="left", use_fast=is_fast_tokenizer, **model_kwargs
     )
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name, cache_dir=cache_dir, trust_remote_code=trust_remote_code, **model_kwargs
-    )
+    model = AutoModelForCausalLM.from_pretrained(model_name, cache_dir=cache_dir, **model_kwargs).eval()
+    
+    if adapters_name:
+        logging.info(f"Merging adapter from {adapters_name}.")
+        model = PeftModel.from_pretrained(model, adapters_name)
+        model = model.merge_and_unload()
 
     if batch_size == 1:
         try:
@@ -96,6 +95,11 @@ def huggingface_local_completions(
         # save also index to reorder the completions
         original_order, prompts = zip(*sorted(enumerate(prompts), key=lambda x: len(x[1])))
         prompts = list(prompts)
+    
+    if not tokenizer.pad_token_id:
+        # set padding token if not set
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+        tokenizer.pad_token = tokenizer.eos_token
 
     default_kwargs = dict(
         do_sample=do_sample,
@@ -104,7 +108,6 @@ def huggingface_local_completions(
     )
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
-    tokenizer.pad_token_id = model.config.eos_token_id
     pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs)
 
     ## compute and log the time for completions
@@ -112,9 +115,9 @@ def huggingface_local_completions(
         logging.info(f"Starting {n_examples} completions. Hugging face pipeline doesn't allow generators => no"
                      f"progress bar. Sorry for that.")
         completions = [completion[0]["generated_text"]
-                       for completion in pipeline(prompts,
-                                                  return_full_text=False,
-                                                  pad_token_id=pipeline.tokenizer.eos_token_id)]
+                       for completion in pipeline(
+                            prompts, return_full_text=False, pad_token_id=tokenizer.pad_token_id
+                      )]
 
     logging.info(f"Time for {n_examples} completions: {t}")
 

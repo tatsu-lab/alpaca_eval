@@ -4,3 +4,4 @@ cohere:
   completions_kwargs:
     model_name: "command"
     max_tokens: 2048
+  pretty_name: "Cohere"

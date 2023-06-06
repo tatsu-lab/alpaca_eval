@@ -191,7 +191,7 @@ def evaluate_from_model(
         - completions_kwargs (dict): kwargs for fn_completions. E.g. model_name, max_tokens, temperature...
 
     reference_model_configs : path or dict, optional
-        Same as in `model_configs` but for the reference model. If None, we use the same model as the one we are
+        Same as in `model_configs` but for the reference model. If None, we use the default Davinci003 outputs.
 
     evaluation_dataset : path or callable, optional
         Path to the evaluation dataset or a function that returns a dataframe. If None, we use the default evaluation

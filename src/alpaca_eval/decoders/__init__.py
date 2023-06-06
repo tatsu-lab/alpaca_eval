@@ -38,7 +38,7 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
         try:
             from .huggingface_local import huggingface_local_completions
         except ImportError:
-            packages = ["accelerate", "transformers", "bitsandbytes", "xformers", "optimum", "scipy"]
+            packages = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "scipy"]
             logging.exception(f"You need {packages} to use huggingface_local_completions. Error:")
 
         return huggingface_local_completions
