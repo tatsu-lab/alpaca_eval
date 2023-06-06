@@ -38,6 +38,21 @@ MINIMAL_MODELS = (
     "alpaca-7b",
     "text_davinci_001",
 )
+VERIFIED_MODELS = MINIMAL_MODELS + (
+    "alpaca-farm-ppo-sim-gpt4-20k",
+    "cohere",
+    "falcon-7b-instruct",
+    "guanaco-7b",
+    "guanaco-13b",
+    "guanaco-33b",
+    "nous-hermes-13b",
+    "oasst-sft-llama-33b",
+    "oasst-sft-pythia-12b",
+    "pythia-12b-mix-sft",
+    "vicuna-7b",
+    "wizardlm-13b"
+)
+
 MINIMAL_EVALUATORS = (
     "alpaca_eval_gpt4",
     "aviary_gpt4",

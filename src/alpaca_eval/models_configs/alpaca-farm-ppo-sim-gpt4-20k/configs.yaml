@@ -1,8 +1,8 @@
-alpaca-farm-sim-gpt4:
+alpaca-farm-ppo-sim-gpt4-20k:
   prompt_template: "alpaca-7b/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
-    model_name: "./alpaca_farm_sim_gpt4" # local path
+    model_name: "./alpaca_farm_sim_gpt4_20k" # local path
     model_kwargs:
       torch_dtype: 'bfloat16'
     max_new_tokens: 2048
