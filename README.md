@@ -32,10 +32,10 @@ AlpacaEval provides the following:
 have to run many evaluations quickly, e.g., during initial model development. However, AlpacaEval ---as any automatic
 evaluator--- should not be used as a complete replacement for human evaluation in important settings (e.g., deciding on
 model release). In particular AlpacaEval, is limited by the fact that (1) the AlpacaEval set contains relatively simple
-instructions; (2) automatic evaluators seem to give more importance for the style (e.g. length of the output) than
+instructions; (2) automatic evaluators seem to favor style over
 factuality of the answer; and (3) AlpacaEval only measures instruction-following capabilities of a model not the risks
-or potential harm that it could cause.
-We discuss detail those limitations in [Limitations](#limitations).
+that it could cause.
+Details in [limitations](#limitations).
 
 
 <details open>
