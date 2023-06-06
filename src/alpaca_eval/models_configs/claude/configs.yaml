@@ -4,3 +4,4 @@ claude:
   completions_kwargs:
     model_name: "claude-v1"
     max_tokens: 2048
+  pretty_name: "Claude"

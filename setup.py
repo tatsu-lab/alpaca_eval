@@ -17,7 +17,7 @@ PACKAGES_ANALYSIS = [
     "matplotlib",
     "jupyterlab"
 ]
-PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "optimum", "scipy"]
+PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "scipy"]
 PACKAGES_ALL_API = ["anthropic", "huggingface_hub", "cohere"]
 PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
 

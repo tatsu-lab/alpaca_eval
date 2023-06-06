@@ -208,7 +208,7 @@ variance / length bias.
 3. (optional) export
    all [API_KEYs](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7)
 4. test your installation (assuming you have OpenAI
-   key) `alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'text-davinci-003' --max_instances 3 --caching_path None `
+   key) `alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'text-davinci-003' --max_instances 3 --caching_path None`
 
 </details>
 
@@ -402,19 +402,16 @@ for you. Here's an
 example:
 
 ```bash
-# need a GPU for pythia
-export ANTHROPIC_API_KEY=<your_api_key> # let's use claude as reference
+# need a GPU for local models
+export ANTHROPIC_API_KEY=<your_api_key> # let's annotate with claude
 alpaca_eval evaluate_from_model --model_configs 'oasst_pythia_12b'\
-              --reference_model_configs 'claude'\
-             --annotators_config 'chatgpt'\
-             --max_instances 3
+              --annotators_config 'claude'
 ```
 
 Here the `model_configs` and `reference_model_configs` (optional) are paths to a directory that specifies the prompt,
 the model
 provider (here HuggingFace and Anthropic) and decoding parameters.
 See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/models_configs) for examples.
-
 
 <details>
   <summary><b>Information about annotators</b></b></summary>
@@ -496,7 +493,6 @@ NOTES
 ```
 
 </details>
-
 
 If you want to make a new leaderboard in one go (rather than multiple `alpaca_eval` calls), for your desired evaluation
 set and evaluators, you can use the following:
@@ -673,7 +669,6 @@ automatic annotator gives similar results as a leaderboard from humans. As part 
 annotations of outputs from 22 methods annotated on our eval set => 22*805 = ~18K annotations. As a result we can test
 the correlation of any automatic annotation with human annotations.
 
-
 <p float="left" align="middle">
 <img src="figures/plot_winrate_correlations.png" alt="Correlation between humans and alpaca_eval" width="400"/>
 </p>
@@ -738,9 +733,9 @@ As part of AlpacaEval, we release the following data:
 
 ## Differences with AlpacaFarm
 
-AlpacaEval is an improvement and simplification of the automatic pairwise preference simulator 
-from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm). 
-Outside of AlpacaFarm, you should be using AlpacaEval. 
+AlpacaEval is an improvement and simplification of the automatic pairwise preference simulator
+from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm).
+Outside of AlpacaFarm, you should be using AlpacaEval.
 Here are the main differences:
 
 - **AlpacaEval merges instructions and inputs**: The AlpacaEval evaluation is the same as the AlpacaFarm evaluation
@@ -751,7 +746,7 @@ Here are the main differences:
 - **AlpacaEval handles longer generations**: Models in AlpacaFarm were limited to a maximum number of 300 tokens for generations. We
   change this number to 2000 for AlpacaEval. Note that this also affects the reference generations (`text-davinci-003`), so the results on AlpacaEval are not comparable that on AlpacaFarm even for examples that had no input
   field.
-- **AlpacaEval removes intra- and inter-annotator variance**: The AlpacaFarm simulator replicates human annotation in terms of both mode behavior and diversity. 
+- **AlpacaEval removes intra- and inter-annotator variance**: The AlpacaFarm simulator replicates human annotation in terms of both mode behavior and diversity.
   In particular, AlpacaFarm's simulator uses a pool of models and prompts and adds noise to replicate human intra- and inter-annotator variance.
   If the goal is to use an automatic annotator for evaluation or simply training better models, then this variance
   may not be desirable. The default annotators in AlpacaEval thus don't have this variance. We give the option to add it back by

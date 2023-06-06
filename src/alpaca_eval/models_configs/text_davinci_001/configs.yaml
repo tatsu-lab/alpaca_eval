@@ -4,3 +4,4 @@ text_davinci_001:
   completions_kwargs:
     model_name: "text-davinci-001"
     max_tokens: 1500
+  pretty_name: "Davinci001"
