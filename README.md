@@ -6,13 +6,15 @@
 
 Evaluation of instruction-following models (e.g., GPT4, ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
-and replicable.
+replicable, and validated against human evaluation.
 AlpacaEval provides the following:
 
-- [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans. We evaluate a
+- [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
+  human annotations). We evaluate a
   model by
   measuring the fraction of times an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model over a
-  fixed reference model. Our automatic evaluators enable caching and randomization by default, and allow for advanced features such
+  fixed reference model. Our automatic evaluators enable caching and randomization by default, and allows for advanced
+  features such
   as batching or pooling different annotators.
 - [**Leaderboard**](#models): a leaderboard of common models on the AlpacaEval evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
@@ -26,11 +28,21 @@ AlpacaEval provides the following:
   inputs" are merged
   into a single field.
 
+**When to use AlpacaEval?**: AlpacaEval is a cheap and quick proxy for human evaluation, which is especially useful you
+have to run many evaluations quickly, e.g., during initial model development. However, AlpacaEval ---as any automatic
+evaluator--- should not be used as a complete replacement for human evaluation in important settings (e.g., deciding on
+model release). In particular AlpacaEval, is limited by the fact that (1) the AlpacaEval set contains relatively simple
+instructions; (2) automatic evaluators seem to give more importance for the style (e.g. length of the output) than
+factuality of the answer; and (3) AlpacaEval only measures instruction-following capabilities of a model not the risks
+or potential harm that it could cause.
+We discuss detail those limitations in [Limitations](#limitations).
+
+
 <details open>
   <summary><b>Table of Contents</b></b></summary>
 
 1. [Quick Start](#quick-start)
-2. [Leaderboard](#leaderboard)
+2. [Leaderboards and how to interpret them](#leaderboards-and-how-to-interpret-them)
     - [Models](#models)
     - [Evaluators](#evaluators)
 3. [Use-cases](#use-cases)
@@ -40,9 +52,12 @@ AlpacaEval provides the following:
 4. [Analysis](#analysis)
     - [Analyzing an evaluator](#analyzing-an-evaluator)
     - [Analyzing an eval set](#analyzing-an-eval-set)
-5. [Data Release](#data-release)
-6. [Differences with AlpacaFarm](#differences-with-alpacafarm)
-7. [Citation](#citation)
+5. [Limitation](#limitation)
+6. [Data Release](#data-release)
+7. [Differences with AlpacaFarm](#differences-with-alpacafarm)
+8. [Related work](#related-work)
+9. [Contributing](#contributing)
+10. [Citation](#citation)
 
 </details>
 
@@ -70,11 +85,14 @@ alpaca_eval --model_outputs 'example/outputs.json'
 
 Important parameters are the following:
 
-- **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary should
+- **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary
+  should
   contain the keys `instruction`, `output`, and (optionally) `input`.
-- **annotators_config**: This is the annotator to use (e.g., `gpt4`, `text-davinci-003`, `claude`). `gpt4` has the highest agreement rate with our human annotation data. For a comparison of
+- **annotators_config**: This is the annotator to use (e.g., `gpt4` or `claude`). `gpt4` has the
+  highest agreement rate with our human annotation data. For a comparison of
   annotators see [here](#evaluators).
-- **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, this is `text-davinci0003` outputs on
+- **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, this
+  is `text-davinci003` outputs on
   AlpacaEval dataset.
 - **output_path**: Path for saving annotations and leaderboard.
 
@@ -108,14 +126,16 @@ COMMANDS
 
 For more information about each function use `alpaca_eval <command> -- --help`.
 
-## Leaderboard
+## Leaderboards and how to interpret them
 
 ### Models
 
-Our leaderboards are computed are on the [AlpacaEval dataset](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
+Our leaderboards are computed on the [AlpacaEval dataset](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
 We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (free for academics,
-and high quality). See below for [adding your model](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model) to the
-leaderboard or making
+and high quality). Our full leaderboards can be found at [on this page](https://tatsu-lab.github.io/alpaca_eval/), but
+we give minimal leaderboards below.
+Later we also show how to [add your model](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model) to the
+leaderboard and how to make
 a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpaca_eval#making-a-new-leaderboard).
 
 **GPT-4 Leaderboard**:
@@ -743,13 +763,18 @@ Here are the main differences:
   examples in the AlpacaFarm evaluation set (the [self-instruct](https://arxiv.org/abs/2212.10560) subset).
   This simplification provides a more fair comparison for models that were not trained by distinguishing between
   the two fields (while making models that were trained with this field as separate appear worse).
-- **AlpacaEval handles longer generations**: Models in AlpacaFarm were limited to a maximum number of 300 tokens for generations. We
-  change this number to 2000 for AlpacaEval. Note that this also affects the reference generations (`text-davinci-003`), so the results on AlpacaEval are not comparable that on AlpacaFarm even for examples that had no input
+- **AlpacaEval handles longer generations**: Models in AlpacaFarm were limited to a maximum number of 300 tokens for
+  generations. We
+  change this number to 2000 for AlpacaEval. Note that this also affects the reference generations (`text-davinci-003`),
+  so the results on AlpacaEval are not comparable that on AlpacaFarm even for examples that had no input
   field.
-- **AlpacaEval removes intra- and inter-annotator variance**: The AlpacaFarm simulator replicates human annotation in terms of both mode behavior and diversity.
-  In particular, AlpacaFarm's simulator uses a pool of models and prompts and adds noise to replicate human intra- and inter-annotator variance.
+- **AlpacaEval removes intra- and inter-annotator variance**: The AlpacaFarm simulator replicates human annotation in
+  terms of both mode behavior and diversity.
+  In particular, AlpacaFarm's simulator uses a pool of models and prompts and adds noise to replicate human intra- and
+  inter-annotator variance.
   If the goal is to use an automatic annotator for evaluation or simply training better models, then this variance
-  may not be desirable. The default annotators in AlpacaEval thus don't have this variance. We give the option to add it back by
+  may not be desirable. The default annotators in AlpacaEval thus don't have this variance. We give the option to add it
+  back by
   using `--anotators_config 'alpaca_farm'` and `--p_label_flip 0.25` when creating an evaluator.
 
 [//]: # (- **Different goals** The goal of AlpacaEval is to provide a package for fast, reproducible,cheap, and)
