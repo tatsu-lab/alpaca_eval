@@ -206,7 +206,16 @@
                                 const nameTd = document.createElement('td');
                                 const winRateTd = document.createElement('td');
 
-                                nameTd.textContent = row['name'];
+                                if (row['link'] && row['link'].trim() !== '') {
+                                    const a = document.createElement('a');
+                                    a.textContent = row['name'];
+                                    a.href = row['link'];
+                                    a.target = "_blank";
+                                    nameTd.appendChild(a);
+                                } else {
+                                    nameTd.textContent = row['name'];
+                                }
+
                                 winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
 
                                 tr.appendChild(nameTd);
