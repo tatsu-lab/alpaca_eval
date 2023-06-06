@@ -29,12 +29,12 @@
 
         #branding h1 {
             margin: 0;
-            font-size: 3em;
+            font-size: 2em;
         }
 
-        #branding h2 {
+        h2 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #777;
         }
 
@@ -43,12 +43,12 @@
             width: 100%;
             table-layout: fixed;
             margin: auto;
-            font-size: 1.2em;
+            font-size: 1em;
         }
 
         table th,
         table td {
-            padding: 10px;
+            padding: 6px;
             word-wrap: break-word;
             vertical-align: middle;
         }
@@ -97,7 +97,7 @@
             cursor: pointer;
             background-color: lightgrey;
             border: 1px solid transparent;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .switch-toggle input:checked+label {
@@ -117,7 +117,7 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
-            font-size: 18px;
+            font-size: 17px;
         }
 
         .toggle-line .switch-toggle {
@@ -166,6 +166,64 @@
                 <th>Win Rate</th>
             </tr>
         </table>
+
+        <div id="documentation">
+            <br>
+            <h2>About AlpacaEval</h2>
+            <p>
+                <a href="https://github.com/tatsu-lab/alpaca_eval" target="_blank">AlpacaEval</a>
+                an LLM-based automatic evaluation that is fast, cheap, and reliable.
+                It is based on the
+                <a href="https://crfm.stanford.edu/2023/05/22/alpaca-farm.html">AlpacaFarm</a>
+                evaluation set,
+                which tests the ability of models to follow general user instructions.
+                These responses are then compared to reference Davinci003 responses by
+                the provided GPT-4 or Claude based auto-annotators,
+                which results in the win rates presented above.
+                AlpacaEval displays a high agreement rate with ground truth human annotations,
+                and leaderboard rankings on AlpacaEval are very correlated with leaderboard rankings
+                based on human annotators.
+                Please see our
+                <a href="https://github.com/tatsu-lab/alpaca_eval#analysis" target="_blank">documentation</a>
+                for more details on our analysis.
+            </p>
+            <h2>Adding new models</h2>
+            <p>
+                We welcome new model contributions to the leaderboard from the community!
+                To do so, please follow the steps in the
+                <a href="https://github.com/tatsu-lab/alpaca_eval#analysis" target="_blank">contributions section</a>.
+                Specifically, you'll need to run the model on the evaluation set,
+                auto-annotate the outputs, and submit a PR with the model config and leaderboard results.
+                We also provide an AlpacaEval community Discord for support.
+            </p>
+            <h2>Adding new evaluators or eval sets </h2>
+            <p>
+                We also welcome contributions for new evaluators or new eval sets!
+                For making new evaluators, we release our ground-truth
+                <a href="https://github.com/tatsu-lab/alpaca_eval#data-release" target="_blank">human annotations</a>
+                and <a href="https://github.com/tatsu-lab/alpaca_eval#analyzing-an-evaluator" target="_blank">comparison
+                    metrics</a>.
+                We also release a
+                <a href="https://github.com/tatsu-lab/alpaca_eval#analyzing-an-eval-set" target="_blank">rough guide</a>
+                to follow for making new eval sets.
+                We specifically encourage contributions for harder instructions distributions and for safety testing of
+                LLMs.
+            </p>
+            <h2>AlpacaEval limitations</h2>
+            <p>
+                While AlpacaEval provides a useful comparison of model capabilities in following instructions,
+                it is not a comprehensive or gold-standard evaluation of model abilities.
+                For one, as detailed in the
+                <a href="https://arxiv.org/abs/2305.14387" target="_blank">AlpacaFarm paper</a>,
+                the auto annotator winrates are correlated with length.
+                Though human annotations also display this bias,
+                it is unclear if more verbose answers add utility in downstream tasks.
+                Additionally, the AlpacaFarm eval set, though diverse, consists mainly of simple instructions.
+                We encourage the community to contribute new, more complex eval sets, such as for tool use.
+                Finally, AlpacaEval does not evaluate the safety of any of the models.
+            </p>
+        </div>
+
     </div>
 
     <script>
