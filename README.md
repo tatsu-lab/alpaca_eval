@@ -1083,6 +1083,15 @@ Our `alpaca_eval_gpt4` is a mix between the AlpacaFarm and Aviary annotators. It
 by preference, but it uses temperature 0, randomizes over outputs, and made some modifications to the prompt to decrease
 length bias to 0.68.
 
+Other related work include recent papers which analyze automatic evaluators.
+For example:
 
+- [AlpacaFarm Appx C](https://arxiv.org/abs/2305.14387)
+  and [https://arxiv.org/abs/2305.17926v1](https://arxiv.org/abs/2305.17926v1) both found that automatic annotators have
+  a position bias.
+- [AlpacaFarm Sec. 5.2.](https://arxiv.org/abs/2305.15717)
+  and [The False Promise of Imitating Proprietary LLMs](https://arxiv.org/abs/2305.15717) both found that
+  automatic
+  annotators favor style (e.g. use of list, tone, word choice, length) over factuality.
 
 </details>
