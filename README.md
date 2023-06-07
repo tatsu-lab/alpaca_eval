@@ -325,10 +325,12 @@ due to resource (time and price) constraints. This explains why the #parsed is 6
 <details>
   <summary><b>Tips for choosing evaluators</b></summary>
 
-When choosing an annotator we recommend you to (obviously) consider the **quality** / **price** / **time**, but we also
-suggest considering the following:
+When choosing an annotator we recommend you to consider the following (the first three are obvious):
 
-- "Proba. prefer longer " approx. < 0.7. Indeed, we found see that the majority of preference of human annotators have
+- `"Human agreement [%]"`
+- `"Price [$/1000 examples]"`
+- `"Time [seconds/1000 examples]"`
+- `"Proba. prefer longer"` approx. < 0.7. Indeed, we found see that the majority of preference of human annotators have
   strong bias for longer answers (as shown by the
   high [performance=62.2](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md)
   of
@@ -336,7 +338,7 @@ suggest considering the following:
   prefers the longest output). This suggests that it might more of a bias with the human annotators. In order to avoid
   having leaderboards with strong biases for length, we suggest using automatic annotators with less than 0.7 "Proba.
   prefer longer".
-- "Variance" approx. < 0.2. We believe that a good evaluator should have as little variance as possible so that
+- `"Variance"` approx. < 0.2. We believe that a good evaluator should have as little variance as possible so that
   results are mostly reproducible. Note that variance can be desirable in the case where we are simulating humans
   as shown in [AlpacaFarm](https://arxiv.org/abs/2305.14387).
 
