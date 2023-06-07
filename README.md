@@ -6,33 +6,42 @@
 
 Evaluation of instruction-following models (e.g., GPT4, ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
-replicable, and validated against human evaluation.
+replicable, and validated against 20K human annotations.
 AlpacaEval provides the following:
 
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
-  human annotations). We evaluate a
+  annotations). We evaluate a
   model by
-  measuring the fraction of times an oracle LLM (e.g. Claude or GPT 4) prefers the outputs from that model over a
-  fixed reference model. Our automatic evaluators enable caching and randomization by default, and allows for advanced
+  measuring the fraction of times an oracle LLM (e.g. GPT 4 or Claude) prefers the outputs from that model over
+  outputs from a reference model. Our evaluators enable caching and output randomization by default, and allows
+  for
+  advanced
   features such
-  as batching or pooling different annotators.
-- [**Leaderboard**](#models): a leaderboard of common models on the AlpacaEval evaluation set.
+  as batching or multi-annotators.
+- [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
+  evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a toolkit for
   building and analyzing automatic evaluators (quality,
   price, speed, statistical power, etc).
 - [**Human evaluation data**](#data-release): 20K human preferences between a given and reference model
   on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
   evaluation set. 2.5K of these are cross-annotations (4 humans annotating the same 650 examples).
-- [**AlpacaEval dataset**](#data-release): a simplification of
-  the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
+- [**AlpacaEval dataset**](#data-release): a simplification
+  of [AlpacaFarm's](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
   inputs" are merged
-  into a single field.
+  into one field, and reference outputs are longer.
 
-**When to use AlpacaEval?** AlpacaEval is a cheap and quick proxy for human evaluation, which is useful if you
-have to run many evaluations quickly, e.g., during initial model development. However, automatic
-evaluator such as AlpacaEval should not be used as a complete replacement for human evaluation in important settings (
+**When to use AlpacaEval?** Our automatic evaluator is a quick and cheap proxy for human evaluation of simple
+instruction-following tasks.
+It is useful if you
+have to run many evaluations quickly, e.g., during model development.
+AlpacaEval's data and toolkit is also useful for building and analyzing automatic evaluators.
+
+**When not to use AlpacaEval?**
+Just as any other automatic evaluator, AlpacaEval should **not replace human evaluation in
+important settings**  (
 e.g., deciding on
-model release). In particular AlpacaEval, is limited by the fact that (1) the AlpacaEval set contains relatively simple
+model release). In particular AlpacaEval, is limited by the fact that (1) the dataset contains relatively simple
 instructions; (2) automatic evaluators seem to favor style over
 factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
 Details in [limitations](#limitations).
@@ -87,16 +96,20 @@ Important parameters are the following:
 
 - **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary
   should
-  contain the keys `instruction`, `output`, and (optionally) `input`.
+  contain the keys `instruction` and `output`.
 - **annotators_config**: This is the annotator to use (e.g., `gpt4` or `claude`). `gpt4` has the
-  highest agreement rate with our human annotation data. For a comparison of
+  highest agreement rate with our human annotation data. `claude` has a decent agreement and is free for academics. For
+  a comparison of
   annotators see [here](#evaluators).
 - **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, this
   is `text-davinci003` outputs on
   AlpacaEval dataset.
 - **output_path**: Path for saving annotations and leaderboard.
 
-If you don't have the model outputs, you can use `evaluate_from_model` and pass a local path or a name of a HuggingFace
+If you don't have the model outputs, you can
+use [`evaluate_from_model`](https://github.com/tatsu-lab/alpaca_eval/tree/main#evaluating-a-model) and
+pass a local path or a name of a
+HuggingFace
 model, or a model from a standard API (OpenAI, Anthropic, Cohere). Other commands:
 
 <details open>
@@ -138,40 +151,63 @@ Later we also show how to [add your model](https://github.com/tatsu-lab/alpaca_e
 leaderboard and how to make
 a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpaca_eval#making-a-new-leaderboard).
 
-**GPT-4 Leaderboard**:
+**GPT-4 minimal leaderboard**:
 
-|                       | Win Rate | Std Err. |
-|:----------------------|---------:|---------:|
-| gpt4                  |     95.3 |      0.7 |
-| claude                |     88.4 |      1.1 |
-| chatgpt               |     86.1 |      1.2 |
-| wizardlm-13b          |     75.3 |      1.5 |
-| guanaco-65b           |     71.8 |      1.6 |
-| vicuna-13b            |     70.4 |      1.6 |
-| oasst-rlhf-llama-33b  |     66.5 |      1.7 |
-| text_davinci_003      |     50.0 |      0.0 |
-| falcon-40b-instruct   |     45.7 |      1.8 |
-| alpaca-farm-ppo-human |     41.2 |      1.7 |
-| alpaca-7b             |     26.5 |      1.5 |
-| text_davinci_001      |     15.2 |      1.2 |
+|                       | Win Rate | Std Error |
+|:----------------------|---------:|----------:|
+| gpt4                  |     95.3 |       0.7 |
+| claude                |     88.4 |       1.1 |
+| chatgpt               |     86.1 |       1.2 |
+| wizardlm-13b          |     75.3 |       1.5 |
+| guanaco-65b           |     71.8 |       1.6 |
+| vicuna-13b            |     70.4 |       1.6 |
+| oasst-rlhf-llama-33b  |     66.5 |       1.7 |
+| text_davinci_003      |     50.0 |       0.0 |
+| falcon-40b-instruct   |     45.7 |       1.8 |
+| alpaca-farm-ppo-human |     41.2 |       1.7 |
+| alpaca-7b             |     26.5 |       1.5 |
+| text_davinci_001      |     15.2 |       1.2 |
 
 <details>
-  <summary><b>Claude Leaderboard</b></summary>
+  <summary><b>Claude minimal leaderboard</b></summary>
 
-|                       | Win Rate | Std Err. |
-|:----------------------|---------:|---------:|
-| gpt4                  |     77.0 |      1.5 |
-| claude                |     75.8 |      1.5 |
-| chatgpt               |     67.7 |      1.6 |
-| wizardlm-13b          |     66.1 |      1.7 |
-| vicuna-13b            |     63.2 |      1.7 |
-| guanaco-65b           |     62.6 |      1.7 |
-| oasst-rlhf-llama-33b  |     57.3 |      1.7 |
-| text_davinci_003      |     50.0 |      0.0 |
-| falcon-40b-instruct   |     46.7 |      1.8 |
-| alpaca-farm-ppo-human |     46.5 |      1.8 |
-| alpaca-7b             |     32.3 |      1.6 |
-| text_davinci_001      |     21.5 |      1.4 |
+|                       | Win Rate | Std Error |
+|:----------------------|---------:|----------:|
+| gpt4                  |     77.0 |       1.5 |
+| claude                |     75.8 |       1.5 |
+| chatgpt               |     67.7 |       1.6 |
+| wizardlm-13b          |     66.1 |       1.7 |
+| vicuna-13b            |     63.2 |       1.7 |
+| guanaco-65b           |     62.6 |       1.7 |
+| oasst-rlhf-llama-33b  |     57.3 |       1.7 |
+| text_davinci_003      |     50.0 |       0.0 |
+| falcon-40b-instruct   |     46.7 |       1.8 |
+| alpaca-farm-ppo-human |     46.5 |       1.8 |
+| alpaca-7b             |     32.3 |       1.6 |
+| text_davinci_001      |     21.5 |       1.4 |
+
+</details>
+
+<details>
+  <summary><b>How exactly are those numbers computed?</b></summary>
+
+**Win Rate**: the win rate measures the fraction of time the model's output is preferred over the reference outputs.
+More specifically, to compute the win rate we collect pairs of outputs of the desired model on every instruction from
+the
+ApacaEval dataset.
+We then pair each output with the output of our reference model (`text-davinci-003`) on the same instruction.
+We then ask our automatic evaluator which output they prefer.
+See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4)
+and [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/claude) for the exact
+prompts and configs for GPT4 and Claude, in particular we randomize the order of
+outputs to avoid position bias.
+We then average the preferences over all instructions in the dataset to get the win rate of the model over the
+reference.
+If both outputs are exactly the same we use a half preference for both models.
+
+**Standard error**: this is the standard error (normalized by N-1) of the win rate, i.e., the preferences averaged over
+the different instructions.
+The standard error only measures the uncertainty over instructions, not over calls to the model or evaluator.
 
 </details>
 
@@ -179,7 +215,14 @@ a [new leaderboard for your evaluator/dataset](https://github.com/tatsu-lab/alpa
 
 We evaluate different automatic annotators on the AlpacaEval set by comparing to
 2.5k [human annotation](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
-we collected. For details about the evaluation metrics see [here](#analyzing-an-evaluator).
+we collected (~650 instructions each with 4 human annotations).
+Below we show metrics for our suggested evaluator (`alpaca_eval_gpt4`), for prior
+automatic
+evaluators ([`alpaca_farm_greedy_gpt4`](https://github.com/tatsu-lab/alpaca_farm),[`aviary_gpt4`](https://aviary.anyscale.com/),[`lmsys_gpt4`](https://chat.lmsys.org/)),
+for humans (`humans`), and for different base models with essentially the same
+prompt (`gpt4`,`claude`,`text_davinci_003`,`guanaco_33b`, `chatgpt`).
+See [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md) for more
+models and metrics.
 
 |                         | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer |
 |:------------------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|
@@ -193,6 +236,31 @@ we collected. For details about the evaluation metrics see [here](#analyzing-an-
 | lmsys_gpt4              |                63.2 |                    13.9 |                        17982 | 34.7 |     16.1 |                 0.74 |
 | guanaco_33b             |                59.1 |                         |                          930 | 54.5 |     27.1 |                 0.70 |
 | chatgpt                 |                57.2 |                     0.8 |                          285 | 39.4 |     34.1 |                 0.59 |
+
+<details>
+  <summary><b>How exactly are those numbers computed?</b></summary>
+
+**Win Rate**: the win rate measures the fraction of time the model's output is preferred over the reference outputs.
+More specifically, to compute the win rate we collect pairs of outputs of the desired model on every instruction from
+the
+ApacaEval dataset.
+We then pair each output with the output of our reference model (`text-davinci-003`) on the same instruction.
+We then ask our automatic evaluator which output they prefer.
+See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4)
+and [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/claude) for the exact
+prompts and configs for GPT4 and Claude, in particular we randomize the order of
+outputs to avoid position bias.
+We then average the preferences over all instructions in the dataset to get the win rate of the model over the
+reference.
+If both outputs are exactly the same we use a half preference for both models.
+
+**Standard error**: this is the standard error (normalized by N-1) of the win rate, i.e., the preferences averaged over
+the different instructions.
+The standard error only measures the uncertainty over instructions, not over calls to the model or evaluator.
+
+
+
+</details>
 
 <details>
   <summary><b>Tips for choosing evaluators</b></summary>
