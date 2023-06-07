@@ -347,7 +347,8 @@ When choosing an annotator we recommend you to consider the following (the first
   results are mostly reproducible. Note that variance can be desirable in the case where we are simulating humans
   as shown in [AlpacaFarm](https://arxiv.org/abs/2305.14387).
 
-We filtered the annotators that do not satisfy those requirements in the table above (besides humans / ChatGPT / 003 for
+We filtered the annotators that do not satisfy those requirements in the table above (besides humans / ChatGPT / 003 /
+lmsys for
 reference purposes). For
 all
 results see [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md).
@@ -928,7 +929,9 @@ For the code and more analysis of the evaluation set,
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
 colab notebook above.
 
-## Citation
+# Contributing
+
+# Citation
 
 Please consider citing the repo if you used the automatic annotators, code, or results.
 
@@ -1020,5 +1023,35 @@ Here are the main differences:
 
 <details>
   <summary><h2 tabindex="-1" dir="auto">Related work</h2></summary>
+
+There have been several work that propose new automatic annotators for instruction-following models. Here we list the
+ones that we are aware of and discuss how they differ from ours. We evaluated all of those
+in [our evaluator's leaderboard](https://github.com/tatsu-lab/alpaca_eval#evaluators).
+
+- **Vicuna/lmsys** The lmsys annotator (`lmsys_gpt4`) evaluates the pair by asking the annotator a score from 1-10 for
+  each output, and then selecting the output with the highest score as preferred. They do not randomize over output
+  order and they ask an explanation _after_ the score. Overall, we found that this annotator has strong bias towards
+  longer outputs (0.74) and relatively low correlation with human annotations (63.2).
+- **AlpacaFarm** The best AlpacaFarm annotator (`alpaca_farm_greedy_gpt4`) evaluates the pair by directly asking the
+  annotator
+  which output it prefers. Furthermore, it batches 5 examples together to amortize the length of the prompt and
+  randomizes the order of outputs. Overall, we
+  found that this annotator has much less bias towards longer outputs (0.60) and is faster (878 seconds/1000 examples)
+  than others. It has a
+  slightly higher correlation with the majority of human annotations (66.4) than humans themselves (65.7).
+  However, it is more expensive ($15.3/1000 examples) and doesn't work with very long outputs given the batching.
+- **Aviary** The Aviary annotator (`aviary_gpt4`) asks the annotator to order the output by its preference, rather than
+  simply selecting the preferred output. It does not randomize the order of outputs and uses high temperature for
+  decoding (0.9). Overall, we found that this annotator has relatively strong bias towards longer outputs (0.70) and
+  very high
+  correlation with human annotations (69.1). By decreasing the temperature and randomizing the order of outputs,
+  we [further improved](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md)
+  the correlation to 69.8 (`improved_aviary_gpt4`) but this further increased the length bias to 0.73.
+
+Our `alpaca_eval_gpt4` is a mix between the AlpacaFarm and Aviary annotators. It asks the annotator to order the outputs
+by preference, but it uses temperature 0, randomizes over outputs, and made some modifications to the prompt to decrease
+length bias to 0.68.
+
+
 
 </details>
