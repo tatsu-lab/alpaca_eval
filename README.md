@@ -1087,9 +1087,10 @@ Other related work include recent papers which analyze automatic evaluators.
 For example:
 
 - [AlpacaFarm Appx C](https://arxiv.org/abs/2305.14387)
-  and [https://arxiv.org/abs/2305.17926v1](https://arxiv.org/abs/2305.17926v1) both found that automatic annotators have
+  and [Large Language Models are not Fair Evaluators](https://arxiv.org/abs/2305.17926v1) both found that automatic
+  annotators have
   a position bias.
-- [AlpacaFarm Sec. 5.2.](https://arxiv.org/abs/2305.15717)
+- [AlpacaFarm Sec. 5.2.](https://arxiv.org/abs/2305.14387)
   and [The False Promise of Imitating Proprietary LLMs](https://arxiv.org/abs/2305.15717) both found that
   automatic
   annotators favor style (e.g. use of list, tone, word choice, length) over factuality.
