@@ -927,9 +927,40 @@ For the code and more analysis of the evaluation set,
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
 colab notebook above.
 
+# Contributing
+
 # Limitations
 
-# Contributing
+The AlpacaEval annotators, like any other automatic evaluators have important limitations and should therefore not be
+used as replacement for human evaluation in important settings, such as to decide whether a model is ready to be
+deployed.
+Those can broadly be clustered into 3 categories:
+
+1. **Simple instructions**:  the AlpacaEval set contains examples from a variety of
+   datasets ([self-instruct](https://github.com/yizhongw/self-instruct),
+   [open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set))
+   all of which contain relatively simple instruction compared to some applications of better models like GPT4. As a
+   result, the gap between the top and the rest of the AlpacaEval leaderboard is likely smaller than it would be on more
+   complex instructions. See for
+   example [this blog](https://medium.com/@marcotcr/exploring-chatgpt-vs-open-source-models-on-slightly-harder-tasks-aa0395c31610)
+   for preliminary results on more complex instructions.
+
+2. **Biases of automatic annotators**: the automatic annotators seem to have implicit biases. In particular, we found
+   that they tend to prefer longer outputs and outputs that contain lists (e.g. 0.68 / 0.69 for `alpaca_eval_gpt4`
+   and 0.62 / 0.58 for `claude`).
+   Although we found that humans have similar biases (0.64 / 0.61), we believe that this could be more of a limitation
+   of human annotation pipeline we used rather than a true human bias. More generally, through qualitative analysis, we
+   found that automatic annotators give more importance to the style
+   of the output than its content (e.g. factuality).
+   Finally, we found that automatic evaluators tend to prefer outputs from models that are similar (likely trained on
+   the same data) as suggested by the big difference between ChatGPT/GPT4 on `claude`'s and `alpaca_eval_gpt4`'s
+   leaderboard.
+3. **Lack of safety evaluation**: importantly, AlpacaEval only evaluates the instruction-following capabilities of
+   models rather than the harm that they could cause (e.g. toxic behavior or bias). As a result the small gap between
+   current ChatGPT and the best open source models **should not** be interpreted as if that the latter are ready to be
+   deployed.
+
+If you find other limitations please open a GitHub issue or ping us on discord.
 
 # Citation
 
