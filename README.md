@@ -847,6 +847,8 @@ estimation of bias and variance.
 AlpacaEval provides a few tools to help you analyze and improve your automatic evaluation pipeline. We briefly explain
 them here and provide
 notebooks for more analysis.
+For a description of all the metrics we consider
+refer to [How exactly are those numbers computed?](https://github.com/tatsu-lab/alpaca_eval#evaluators)
 
 ### Analyzing an evaluator
 
@@ -859,17 +861,23 @@ the different evaluators compare on these factors.
 ![plot_quality_vs_price_and_time.png](figures%2Fplot_quality_vs_price_and_time.png)
 
 Here we see that `alpaca_eval_gpt4` performs very well and is better than humans on all the considered metrics.
-Once we decided on which automatic annotator to use, a natural
+
+Once we on which automatic annotator to use, a natural
 question is whether making a leaderboard using our
-automatic annotator gives similar results as a leaderboard from humans. As part of AlpacaEval, we provide human
-annotations of outputs from 22 methods annotated on our eval set => 22*805 = ~18K annotations. As a result we can test
-the correlation of any automatic annotation with human annotations.
+automatic annotator gives similar results as a leaderboard from humans.
+As part of AlpacaEval, we release [human
+annotations](#data-release) of outputs from 22 methods from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) =>
+22*805 = ~18K annotations. As a result we
+can
+test
+the correlation between the win-rates of the 22 models as evaluated by the humans and our automatic annotator.
+The plot below shows such correlation for the `claude` evaluator.
 
 <p float="left" align="middle">
-<img src="figures/plot_winrate_correlations.png" alt="Correlation between humans and alpaca_eval" width="400"/>
+<img src="figures/plot_winrate_correlations.png" alt="Correlation between humans and claude" width="400"/>
 </p>
 
-We see that the leaderboard from `alpaca_eval_gpt4` is highly correlated to the leaderboard from humans, which further
+We see that the `claude` leaderboard is highly correlated to the leaderboard from humans, which further
 suggests that automatic evaluation is a good proxy for human evaluation.
 
 For the code and more analysis such as bias vs variance tradeoff of annotators,
@@ -883,9 +891,17 @@ colab notebook above.
 
 When creating an evaluation set there are usually two main factors to consider: how much data to use? and what data?
 
-One way of answering the first question is by considering a leaderboard of models that you believe are of different
-quality and then checking how many examples are needed to distinguish between them in a statistically significant way (
-using pairwise t-test). We show this in the following plot for all the pairs in the minimal `claude` leaderboard.
+One way of answering those question is by considering a leaderboard of models that you believe are of different
+quality and checking what and how much data is needed to distinguish between them in a statistically significant way.
+We will do so below using a paired sample t-test to test if the difference in win-rates between every pair of models is
+statistically significant.
+
+First, le us consider the question of how much data to use.
+Below we show the number of random samples needed from AlpacaEval for the paired t-test to give a p-value < 0.05 for
+each pair of models in the minimal `alpaca_eval_gpt4`
+leaderboard.
+Grey cells correspond to pairs that are not significantly different on the 805 samples.
+y- and x-axis are ordered by the win-rate of the first and second model respectively.
 
 [//]: # (![plot_paired_ttest_nsamples.png]&#40;figures%2Fplot_paired_ttest_nsamples.png&#41;)
 
@@ -893,14 +909,15 @@ using pairwise t-test). We show this in the following plot for all the pairs in 
 <img src="figures/plot_paired_ttest_nsamples.png" alt="Number of samples needed to distingusih pairs in the Claude leaderboard" width="500"/>
 </p>
 
-This shows that many pairs can already be distinguished with as few as 50 examples, but going up to 450 allows to
-distinguish many other models. This suggests that we could likely decrease the evaluation set size by a factor of nearly
-2 in case 800 annotations are too expensive.
+We see that most models can already be distinguished with 50 samples, and that 150 samples allows distinguishing the
+majority of pairs (74 out of 78). This suggests that we could likely decrease the evaluation set size by a factor of
+4 in case 800 annotations are too expensive.
 
 The second question is what data to use. Again we can try to answer this question from a statistical power perspective:
 what data allows to best distinguish between models. Let's consider this for all the datasets that are part of
 AlpacaEval, but let us control for the size of the evaluation sets as we only care about the quality of the data. The
-following plot shows the p-values from the relative t-tests of each pairs of models on 80 examples of each datasets.
+following plot shows the p-values from the relative t-tests of each pairs of models on 80 examples of each subset of
+AlpacaEval.
 
 ![plot_paired_ttests_per_dataset.png](figures%2Fplot_paired_ttests_per_dataset.png)
 
@@ -947,17 +964,22 @@ paper:
 
 As part of AlpacaEval, we release the following data:
 
-- **Human annotations (17K)** in order to develop and understand automatic evaluators, we release all the human pairwise
-  evaluation that we collected for AlpacaFarm. This contains comparisons between 18 models with the `text-davinci-003`
-  reference on the AlpacaFarm evaluation set. Annotations are from a pool of 16 crowdworkers on Amazon Mechanical Turk.
-- **Human cross-annotations (3K)** in order to further analyze automatic evaluators we selected (via stratified sampling
+- **Human annotations (17701)** in order to develop and understand automatic evaluators, we release all the human
+  pairwise
+  evaluation that we collected for AlpacaFarm. This contains comparisons between 22 models with the `text-davinci-003`
+  reference on the AlpacaFarm evaluation set. Annotations are from a pool of 16 crowd workers on Amazon Mechanical Turk.
+  The different models are: 6 from OpenAI, 2 SFT models from AlpacaFarm, 13 RLHF methods from AlpacaFarm, and LLaMA 7B.
+- **Human cross-annotations (2596)** in order to further analyze automatic evaluators we selected (via stratified
+  sampling
   across models and datasets) 650 examples from the AlpacaFarm evaluation set and collected 4 human annotations per
-  example. This allows us to estimate the bias and variance of automatic evaluators.
-- **AlpacaEval set (800)** we made slight modifications/simplification of the AlpacaFarm evaluation set. In particular,
+  example.
+- **AlpacaEval set (805)** we made slight modifications/simplification of the AlpacaFarm evaluation set. In particular,
   we first merged
   the instruction and input fields into a single instruction field. This affects 1/4 of the examples in the AlpacaFarm
   evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560). Second we
   regenerated the text-davinci-003 reference outputs without limiting the length of its outputs.
+
+For more details about the human annotations refer to the [AlpacaFarm paper](https://arxiv.org/abs/2305.14387).
 
 </details>
 
@@ -968,18 +990,18 @@ As part of AlpacaEval, we release the following data:
 
 AlpacaEval is an improvement and simplification of the automatic pairwise preference simulator
 from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm).
-Outside of AlpacaFarm, you should be using AlpacaEval.
+Outside AlpacaFarm, you should be using AlpacaEval.
 Here are the main differences:
 
 - **AlpacaEval merges instructions and inputs**: The AlpacaEval evaluation is the same as the AlpacaFarm evaluation
   except that the instruction and input fields are merged as `{instruction}\n\n{input}`. This affects 1/4 of the
   examples in the AlpacaFarm evaluation set (the [self-instruct](https://arxiv.org/abs/2212.10560) subset).
   This simplification provides a more fair comparison for models that were not trained by distinguishing between
-  the two fields (while making models that were trained with this field as separate appear worse).
+  the two fields.
 - **AlpacaEval handles longer generations**: Models in AlpacaFarm were limited to a maximum number of 300 tokens for
   generations. We
   change this number to 2000 for AlpacaEval. Note that this also affects the reference generations (`text-davinci-003`),
-  so the results on AlpacaEval are not comparable that on AlpacaFarm even for examples that had no input
+  so the results on AlpacaEval are not comparable to those on AlpacaFarm even for examples that had no input
   field.
 - **AlpacaEval removes intra- and inter-annotator variance**: The AlpacaFarm simulator replicates human annotation in
   terms of both mode behavior and diversity.
