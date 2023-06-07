@@ -87,7 +87,7 @@ Then you can use it as follows:
 ```bash
 export OPENAI_API_KEY=<your_api_key>
 export OPENAI_ORGANIZATION_IDS=<your_organization_id>  # Optional; if not set, this will be your default org id.
-alpaca_eval --model_outputs 'example/outputs.json'
+alpaca_eval --model_outputs 'example/outputs.json' 
 ```
 
 Important parameters are the following:
@@ -95,7 +95,8 @@ Important parameters are the following:
 - **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary
   should
   contain the keys `instruction` and `output`.
-- **annotators_config**: This is the annotator to use (e.g., `gpt4` or `claude`). `gpt4` has the
+- **annotators_config**: This is the annotator to use (e.g., `alpaca_eval_gpt4` or `claude`). `alpaca_eval_gpt4` (
+  default) has the
   highest agreement rate with our human annotation data. `claude` has a decent agreement and is free for academics. For
   a comparison of
   annotators see [here](#evaluators).
@@ -325,6 +326,9 @@ due to resource (time and price) constraints. This explains why the #parsed is 6
 <details>
   <summary><b>Tips for choosing evaluators</b></summary>
 
+Overall we recommend using `annotators_config=alpaca_eval_gpt4` if you want the highest agreement with humans, and
+`annotators_config=claude` if you have academic (free) access to Claude and have a low budget.
+
 When choosing an annotator we recommend you to consider the following (the first three are obvious):
 
 - `"Human agreement [%]"`
@@ -346,24 +350,54 @@ We filtered the annotators that do not satisfy those requirements in the table a
 reference purposes). For
 all
 results see [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md).
-In general, we found `alpaca_eval` to be a good trade-off between quality / price / time /
+In general, we found `alpaca_eval_gpt4` to be a good trade-off between quality / price / time /
 variance / length bias.
 
 </details>
 
 ## Use-cases
 
-<details>
-  <summary><b>Installation from source (optional)</b></b></summary>
+[//]: # ()
 
-1. clone the repository
-2. install as dev the package: `pip install -e .`
-3. (optional) export
-   all [API_KEYs](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7)
-4. test your installation (assuming you have OpenAI
-   key) `alpaca_eval --model_outputs 'example/eval_gpt_3.5-turbo-0301.json' --annotators_config 'text-davinci-003' --max_instances 3 --caching_path None`
+[//]: # (<details>)
 
-</details>
+[//]: # ()
+
+[//]: # (  <summary><b>Installation from source &#40;optional&#41;</b></b></summary>)
+
+[//]: # ()
+
+[//]: # (If you make changes to the configurations files or code, it might be easier to install `alpaca_eval` from source.)
+
+[//]: # (If so follow the following steps:)
+
+[//]: # ()
+
+[//]: # (1. clone the repository)
+
+[//]: # ()
+
+[//]: # (2. install as dev the package: `pip install -e .`)
+
+[//]: # ()
+
+[//]: # (3. &#40;optional&#41; export)
+
+[//]: # ()
+
+[//]: # (   all [API_KEYs]&#40;https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7&#41;)
+
+[//]: # ()
+
+[//]: # (4. test your installation &#40;assuming you have OpenAI)
+
+[//]: # ()
+
+[//]: # (   key&#41; `alpaca_eval --model_outputs 'example/outputs.json' --annotators_config 'text_davinci_003' --max_instances 3 --caching_path None`)
+
+[//]: # ()
+
+[//]: # (</details>)
 
 ### Evaluating a model
 
@@ -528,13 +562,12 @@ for example in eval_set:
 ```
 
 if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can
-directly use `alpaca_eval evaluate_from_model` to also take care of generating outputs on the desired data as
-discussed below.
+directly use `alpaca_eval evaluate_from_model` to also take care of generating outputs.
 
 2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of `text-davinci-003` on
    AlpacaEval.
    If you
-   want to use a different model or a different dataset use the same as (1.).
+   want to use a different model or a different dataset follow the same steps as (1.).
 3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4` or `claude` (if you are
    an
    academic). For options and comparisons see [this table](#evaluators). Depending on the evaluator you might need to
@@ -544,10 +577,10 @@ discussed below.
 Running all together:
 
 ```bash
-alpaca_eval  --model_outputs 'example/eval_gpt_3.5-turbo-0301.json'\
-              --reference_outputs <path> \
-             --annotators_config 'alpaca_eval'\
-             --max_instances <specify for testing>
+alpaca_eval  --model_outputs 'example/outputs.json'\
+            --annotators_config 'alpaca_eval_gpt4'\
+              --reference_outputs <path to outputs if not text_davinci_003 on AlpacaEval> \
+             
 ```
 
 If you don't have decoded outputs, you can use `evaluate_from_model` which takes care of decoding (model and reference)
@@ -558,12 +591,13 @@ example:
 # need a GPU for local models
 export ANTHROPIC_API_KEY=<your_api_key> # let's annotate with claude
 alpaca_eval evaluate_from_model --model_configs 'oasst_pythia_12b'\
-              --annotators_config 'claude'
+              --annotators_config 'claude'\
+              --reference_model_configs <path to configs not text_davinci_003 on AlpacaEval>        
 ```
 
 Here the `model_configs` and `reference_model_configs` (optional) are paths to a directory that specifies the prompt,
 the model
-provider (here HuggingFace and Anthropic) and decoding parameters.
+provider (here HuggingFace) and decoding parameters.
 See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/models_configs) for examples.
 
 <details>
@@ -571,7 +605,7 @@ See [this directory](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpa
 
 - **Caching**: by default all annotations are cached on
   disk at `caching_path`. Annotations are thus never recomputed, which makes annotations faster, cheaper and allow for
-  reproducibility. This helps even when evalauting different models as many models
+  reproducibility. This helps even when evaluating different models as many models
   have
   the same outputs.
 - **Output randomization** by default, we randomize over the examples of outputs, as we found that annotators tend to
@@ -647,7 +681,8 @@ NOTES
 
 </details>
 
-If you want to make a new leaderboard in one go (rather than multiple `alpaca_eval` calls), for your desired evaluation
+If you want to make a new leaderboard using a single command (rather than multiple `alpaca_eval` calls), for your
+desired evaluation
 set and evaluators, you can use the following:
 
 ```bash
@@ -661,13 +696,15 @@ where:
 
 - `leaderboard_path`: path to save the leaderboard to. The leaderboard will be saved as a csv file, if it already exists
   it will append.
-- `all_model_outputs` : The json path to outputs of all models to add to the leaderboard. Each dictionary should contain
-  the keys that are formatted in the prompts. E.g. by default `instruction` and `output` with optional `input`. It
-  should also contain a column `generator` with the name of the current model.
-- `reference_outputs` the path to the outputs of the reference model. Same format as `all_model_outputs` but without
-  needing `generator`. By
+- `all_model_outputs` : The json path to the outputs of all models to add to the leaderboard (as a single file or by
+  globbing multiple files). Each dictionary should contain
+  the keys (`instruction` and `output`) that are formatted in the prompts and a column `generator` with the name of the
+  current model. As an example
+  see [this file](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_eval_all_outputs.json).
+- `reference_outputs` the path to the outputs of the reference model. Each dictionary should contain
+  the keys (`instruction` and `output`) that are formatted in the prompts. By
   default, the reference outputs are the 003 outputs on AlpacaEval set.
-- `annotators_config`: The path to the annotator's config file. Defaults to `gpt4`.
+- `annotators_config`: The path to the annotator's config file. Defaults to `alpaca_eval_gpt4`.
 
 ### Making a new evaluator
 
@@ -724,7 +761,7 @@ FLAGS
 
 </details>
 
-AlpacaEval provides a simple way to make a new evaluator. All you need is to make a new `configs.yaml` configuration
+AlpacaEval provides a simple way of making new evaluators. All you need is to make a new `configs.yaml` configuration
 file, which you will then pass
 as `--annotators_config <path_to_config.yaml>` to `alpaca_eval`.
 Here are some ways you can make a new evaluator:
@@ -732,17 +769,19 @@ Here are some ways you can make a new evaluator:
 - **Changing the prompt**: Write a new prompt in a text file and specify the path in `prompt_template` of the
   configuration file. Paths are relative to the configuration file.
 - **Changing decoding parameters**: Specify the desired parameters in `completions_kwargs` in the configuration file. To
-  see all available parameters refer to the docstring corresponding
+  see all available parameters refer to the docstrings of the corresponding
   function [in this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py)
   specified by `fn_completions`
   in the configuration file.
 - **Changing the model**: Specify the desired model in `model_name` in the configuration file. You will likely have to
-  change the prompt as `prompt_template` to match that model. If the model comes from another provider you will also
+  change the prompt (specified by `prompt_template`) to match that model. If the model comes from another provider you
+  will also
   have
   to change the `fn_completions` in the configuration file which maps to the corresponding function
   in [this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py). We
   provide `fn_completions` functions to use any model on OpenAI API, Anthropic API, Cohere API, or HuggingFace hub. If
-  you change provider you will need to install there API and set the appropriate API_KEY. To install all
+  you change provider you will need to install their API and set the appropriate API_KEY. To install packages needed for
+  all providers
   use `pip install alpaca_eval[all]`.
 
 [//]: # (- **Using multiple annotators**: Specify a list of annotators in `annotators_config` in the configuration file. For an)
@@ -795,15 +834,18 @@ following command:
 alpaca_eval analyze_evaluators --annotators_config '<path_to_config.yaml>'    
 ```
 
-Note that this will evaluate 4 times (different seeds) every example in the AlpacaFarm evaluation set, i.e., ~3K
+Note that to estimate the bias and variance of the annotator, this will evaluate 4 times (different seeds) every example
+in the AlpacaFarm evaluation set, i.e., 2.5K
 evaluation.
 Be mindful of the cost of this operation depending on your model.
-If you want a less expensive evaluation you can use a single seed using `--is_single_annotator True`.
+If you want a less expensive evaluation you can use a single seed using `--is_single_annotator True` which will skip the
+estimation of bias and variance.
 
 # Analysis
 
-AlpacaEval provides a few analysis tools to help you automatic evaluation. We briefly explain them here and provide
-notebooks for all analysis.
+AlpacaEval provides a few tools to help you analyze and improve your automatic evaluation pipeline. We briefly explain
+them here and provide
+notebooks for more analysis.
 
 ### Analyzing an evaluator
 
