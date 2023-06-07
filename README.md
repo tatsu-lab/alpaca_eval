@@ -328,20 +328,23 @@ due to resource (time and price) constraints. This explains why the #parsed is 6
 When choosing an annotator we recommend you to (obviously) consider the **quality** / **price** / **time**, but we also
 suggest considering the following:
 
-- "Proba. prefer longer " approx. < 0.7. Indeed, we found see that the majority of preference of human annotators (which
-  we use
-  as gold
-  standard) have strong bias for longer answers (as shown by the high quality of the "longest" evaluator that always
+- "Proba. prefer longer " approx. < 0.7. Indeed, we found see that the majority of preference of human annotators have
+  strong bias for longer answers (as shown by the
+  high [performance=62.2](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md)
+  of
+  the `"longest"` evaluator that always
   prefers the longest output). This suggests that it might more of a bias with the human annotators. In order to avoid
   having leaderboards with strong biases for length, we suggest using automatic annotators with less than 0.7 "Proba.
   prefer longer".
 - "Variance" approx. < 0.2. We believe that a good evaluator should have as little variance as possible so that
-  different people get similar results. Note that variance can be desirable in the case where we are simulating humans
+  results are mostly reproducible. Note that variance can be desirable in the case where we are simulating humans
   as shown in [AlpacaFarm](https://arxiv.org/abs/2305.14387).
 
-We filtered the rest of the annotators in the table above (besides humans / ChatGPT / 003 for reference purposes), for
+We filtered the annotators that do not satisfy those requirements in the table above (besides humans / ChatGPT / 003 for
+reference purposes). For
 all
-results see [here](). In general, we found `alpaca_eval` to be a good trade-off between quality / price / time /
+results see [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md).
+In general, we found `alpaca_eval` to be a good trade-off between quality / price / time /
 variance / length bias.
 
 </details>
