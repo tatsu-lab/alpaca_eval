@@ -938,7 +938,7 @@ Those can broadly be clustered into 3 categories:
 
 1. **Simple instructions**:  the AlpacaEval set contains examples from a variety of
    datasets ([self-instruct](https://github.com/yizhongw/self-instruct),
-   [open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set))
+   [open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test))
    all of which contain relatively simple instruction compared to some applications of better models like GPT4. As a
    result, the gap between the top and the rest of the AlpacaEval leaderboard is likely smaller than it would be on more
    complex instructions. See for
@@ -990,6 +990,10 @@ paper:
   primaryClass={cs.LG}
 }
 ```
+
+If you use the AlpacaEval evaluation set, please cite each of the constituent
+datasets: [self-instruct](https://github.com/yizhongw/self-instruct),
+[open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test).
 
 # More information
 
