@@ -910,6 +910,13 @@ For the code and more analysis of the evaluation set,
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
 colab notebook above.
 
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Citation</h2></summary>
+
+fadfadf
+</details>
+
 # Data release
 
 As part of AlpacaEval, we release the following data:
