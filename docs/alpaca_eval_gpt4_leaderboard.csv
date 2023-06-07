@@ -6,9 +6,19 @@ WizardLM 13B,75.31094527363184,https://huggingface.co/WizardLM/WizardLM-13B-1.0,
 Guanaco 65B,71.80124223602485,https://huggingface.co/timdettmers/guanaco-65b,minimal
 Vicuna 13B,70.43478260869566,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,minimal
 LLaMA 33B OASST RLHF,66.52173913043478,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,minimal
+Guanaco 33B,65.96273291925466,https://huggingface.co/timdettmers/guanaco-33b,verified
+Nous Hermes 13B,65.46583850931677,https://huggingface.co/NousResearch/Nous-Hermes-13b,verified
+Vicuna 7B,64.40993788819875,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,verified
+LLaMA 33B OASST SFT,54.96894409937888,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,verified
+Guanaco 13B,52.60869565217391,https://huggingface.co/timdettmers/guanaco-13b,verified
 Davinci003,50.0,,minimal
+Guanaco 7B,46.58385093167702,https://huggingface.co/timdettmers/guanaco-7b,verified
 Falcon 40B Instruct,45.71428571428572,https://huggingface.co/tiiuae/falcon-40b-instruct,minimal
+Alpaca Farm PPO Sim (GPT-4) 7B,44.099378881987576,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,verified
+Pythia 12B SFT,41.86335403726708,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,verified
 Alpaca Farm PPO Human 7B,41.24223602484472,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,minimal
 Alpaca 7B,26.459627329192543,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
+Pythia 12B OASST SFT,25.962732919254663,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,verified
+Falcon 7B Instruct,23.60248447204969,https://huggingface.co/tiiuae/falcon-7b-instruct,verified
 Cohere,17.51552795031056,,verified
 Davinci001,15.17412935323383,,minimal
