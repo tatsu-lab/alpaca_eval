@@ -59,7 +59,7 @@ Details in [limitations](#limitations).
 4. [Analysis](#analysis)
     - [Analyzing an evaluator](#analyzing-an-evaluator)
     - [Analyzing an eval set](#analyzing-an-eval-set)
-5. [Limitation](#limitation)
+5. [Limitations](#limitations)
 6. [Contributing](#contributing)
 7. [Citation](#citation)
 8. [Additional information](#additional-information)
@@ -775,14 +775,14 @@ Here are some ways you can make a new evaluator:
   function [in this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py)
   specified by `fn_completions`
   in the configuration file.
-- **Changing the model**: Specify the desired model in `model_name` in the configuration file. You will likely have to
-  change the prompt (specified by `prompt_template`) to match that model. If the model comes from another provider you
-  will also
+- **Changing the model**: Specify the desired model in `model_name` and the corresponding
+  prompt in `prompt_template`. If the model comes from another provider you
+  will
   have
-  to change the `fn_completions` in the configuration file which maps to the corresponding function
+  to change `fn_completions` which maps to the corresponding function
   in [this file](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py). We
-  provide `fn_completions` functions to use any model on OpenAI API, Anthropic API, Cohere API, or HuggingFace hub. If
-  you change provider you will need to install their API and set the appropriate API_KEY. To install packages needed for
+  provide `fn_completions` functions to use models from OpenAI, Anthropic, Cohere, or HuggingFace. To
+  install packages needed for
   all providers
   use `pip install alpaca_eval[all]`.
 
@@ -836,11 +836,9 @@ following command:
 alpaca_eval analyze_evaluators --annotators_config '<path_to_config.yaml>'    
 ```
 
-Note that to estimate the bias and variance of the annotator, this will evaluate 4 times (different seeds) every example
-in the AlpacaFarm evaluation set, i.e., 2.5K
+To estimate the bias and variance this evaluates every example with 4 seeds, i.e., 2.5K
 evaluation.
-Be mindful of the cost of this operation depending on your model.
-If you want a less expensive evaluation you can use a single seed using `--is_single_annotator True` which will skip the
+If you want a cheaper evaluation you can use a single seed using `--is_single_annotator True` which will skip the
 estimation of bias and variance.
 
 # Analysis
@@ -928,6 +926,8 @@ questions are too simple for current models, and suggests that one could remove 
 For the code and more analysis of the evaluation set,
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
 colab notebook above.
+
+# Limitations
 
 # Contributing
 
