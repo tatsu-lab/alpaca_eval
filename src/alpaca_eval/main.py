@@ -343,7 +343,7 @@ def make_leaderboard(
     if is_return_instead_of_print:
         return df_leaderboard, all_annotations
     else:
-        utils.print_leaderboard(df_leaderboard, leaderboard_mode=None)
+        utils.print_leaderboard(df_leaderboard, leaderboard_mode=None, cols_to_print=["win_rate", "standard_error", "n_total"])
 
 
 def analyze_evaluators(
