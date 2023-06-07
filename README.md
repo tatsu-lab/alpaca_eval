@@ -60,11 +60,12 @@ Details in [limitations](#limitations).
     - [Analyzing an evaluator](#analyzing-an-evaluator)
     - [Analyzing an eval set](#analyzing-an-eval-set)
 5. [Limitation](#limitation)
-6. [Data Release](#data-release)
-7. [Differences with AlpacaFarm](#differences-with-alpacafarm)
-8. [Related work](#related-work)
-9. [Contributing](#contributing)
-10. [Citation](#citation)
+6. [Contributing](#contributing)
+7. [Citation](#citation)
+8. [Additional information](#additional-information)
+    - [Data Release](#data-release)
+    - [Differences with AlpacaFarm](#differences-with-alpacafarm)
+    - [Related work](#related-work)
 
 </details>
 
@@ -910,14 +911,39 @@ For the code and more analysis of the evaluation set,
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
 colab notebook above.
 
+## Citation
+
+Please consider citing the repo if you used the automatic annotators, code, or results.
+
+```
+@misc{alpaca_eval,
+  author = {Xuechen Li and Tianyi Zhang and Yann Dubois and Rohan Taori and Ishaan Gulrajani and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto },
+  title = {AlpacaEval: An Automatic Evaluator of Instruction-following Models},
+  year = {2023},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/tatsu-lab/alpaca_eval}}
+}
+```
+
+If you used our human annotation data, please also consider citing the [AlpacaFarm](https://arxiv.org/abs/2305.14387)
+paper:
+
+```
+@misc{dubois2023alpacafarm,
+  title={AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback}, 
+  author={Yann Dubois and Xuechen Li and Rohan Taori and Tianyi Zhang and Ishaan Gulrajani and Jimmy Ba and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto},
+  year={2023},
+  eprint={2305.14387},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG}
+}
+```
+
+# More information
 
 <details>
-  <summary><h2 tabindex="-1" dir="auto">Citation</h2></summary>
-
-fadfadf
-</details>
-
-# Data release
+  <summary><h2 tabindex="-1" dir="auto">Data Release</h2></summary>
 
 As part of AlpacaEval, we release the following data:
 
@@ -933,7 +959,12 @@ As part of AlpacaEval, we release the following data:
   evaluation set, all of which are from the [self-instruct evaluation set](https://arxiv.org/abs/2212.10560). Second we
   regenerated the text-davinci-003 reference outputs without limiting the length of its outputs.
 
-## Differences with AlpacaFarm
+</details>
+
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Differences with AlpacaFarm</h2></summary>
+
 
 AlpacaEval is an improvement and simplification of the automatic pairwise preference simulator
 from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm).
@@ -963,31 +994,9 @@ Here are the main differences:
 
 [//]: # (  high-quality automatic evaluation of instruction-following models. As a secondary goal, we also provide simple toolkit for developing new evaluators. The goal of AlpacaFarm was to provide a simulator for studying the human-based RLHF pipeline.)
 
-## Citation
+</details>
 
-Please consider citing the repo if you used the automatic annotators, code, or results.
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Related work</h2></summary>
 
-```
-@misc{alpaca_eval,
-  author = {Xuechen Li and Tianyi Zhang and Yann Dubois and Rohan Taori and Ishaan Gulrajani and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto },
-  title = {AlpacaEval: An Automatic Evaluator of Instruction-following Models},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/tatsu-lab/alpaca_eval}}
-}
-```
-
-If you used our human annotation data, please also consider citing the [AlpacaFarm](https://arxiv.org/abs/2305.14387)
-paper:
-
-```
-@misc{dubois2023alpacafarm,
-  title={AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback}, 
-  author={Yann Dubois and Xuechen Li and Rohan Taori and Tianyi Zhang and Ishaan Gulrajani and Jimmy Ba and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto},
-  year={2023},
-  eprint={2305.14387},
-  archivePrefix={arXiv},
-  primaryClass={cs.LG}
-}
-```
+</details>
