@@ -4,7 +4,7 @@
 [![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
-Evaluation of instruction-following models (e.g., GPT4, ChatGPT) typically requires human interactions. This is
+Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
 replicable, and validated against 20K human annotations.
 AlpacaEval provides the following:
@@ -38,14 +38,12 @@ have to run many evaluations quickly, e.g., during model development.
 AlpacaEval's data and toolkit is also useful for building and analyzing automatic evaluators.
 
 **When not to use AlpacaEval?**
-Just as any other automatic evaluator, AlpacaEval should **not replace human evaluation in
-important settings**  (
-e.g., deciding on
-model release). In particular AlpacaEval, is limited by the fact that (1) the dataset contains relatively simple
+As any other automatic evaluator, AlpacaEval should **not replace human evaluation in
+important settings**, e.g., to decide on model release. In particular, AlpacaEval is limited by the fact
+that (1) the dataset contains relatively simple
 instructions; (2) automatic evaluators seem to favor style over
 factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
 Details in [limitations](#limitations).
-
 
 <details open>
   <summary><b>Table of Contents</b></b></summary>
@@ -240,23 +238,86 @@ models and metrics.
 <details>
   <summary><b>How exactly are those numbers computed?</b></summary>
 
-**Win Rate**: the win rate measures the fraction of time the model's output is preferred over the reference outputs.
-More specifically, to compute the win rate we collect pairs of outputs of the desired model on every instruction from
-the
-ApacaEval dataset.
-We then pair each output with the output of our reference model (`text-davinci-003`) on the same instruction.
-We then ask our automatic evaluator which output they prefer.
-See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4)
-and [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/claude) for the exact
-prompts and configs for GPT4 and Claude, in particular we randomize the order of
-outputs to avoid position bias.
-We then average the preferences over all instructions in the dataset to get the win rate of the model over the
-reference.
-If both outputs are exactly the same we use a half preference for both models.
+We now explain in words how we compute the metrics in the table
+above. [The code is here](https://github.com/tatsu-lab/alpaca_eval/blob/f05cbd651b79ac93906b19d01fe443b45828b0f2/src/alpaca_eval/analyze.py#L366).
 
-**Standard error**: this is the standard error (normalized by N-1) of the win rate, i.e., the preferences averaged over
+**Human agreement [%]**: this measures the agreement between the current annotator and the majority preferences of
+humans on
+our
+~650 annotations from
+our [cross-annotation set](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json),
+which contains 4 human annotations per example.
+To estimate the agreement between a single human (`humans` row in the table above) and the majority of humans, we take
+one of the 4 annotations and compute the accuracy that it has when predicting the mode of the other 3 annotations.
+We then average this accuracy over all 4 annotations and over the 650 instructions to get the human agreement, i.e., we
+compute the expected (over humans and samples)
+leave-one-out agreement.
+If the mode is not unique, we take one of the modes at random.
+We perform exactly the same computation for the automatic annotators, so that the final numbers are comparable.
+
+[//]: # ($$agreement = E[E_i[I[z_i == mode&#40;{z^*_j}_{j \neq i}&#41;]]]$$)
+
+**Price [$/1000 examples]**: this is the average price of every 1000 annotations.
+For humans, it is the price that [we paid Mechanical Turkers](https://arxiv.org/abs/2305.14387) to collect those
+annotations ($18/hour).
+If the price depends on the machine used to compute the annotations (e.g. Guanaco) we leave it empty.
+
+**Time [seconds/1000 examples]**: this is the average time it takes to compute 1000 annotations.
+For humans, it is the estimated median time that each Mechanical Turker took to annotate 1000 examples.
+For automatic annotators, it is the average time that it took us when running the annotations. Note that this can depend
+on API limits that are different for different users and the number of requests that the clusters are
+processing.
+
+**Bias**: this is the (over)estimated classification error when using the majority of automatic preferences to predict
+the majority of human preferences.
+For automatic annotators we estimate it by sampling 4 different annotations for each example.
+The randomness here comes from the order of the outputs in the prompt, sampling from the LLM, and if applicable the
+order of the instruction in the batch and the choice of annotator in the pool.
+We then take the mode of the 4 annotations and compute the accuracy of the mode when predicting the mode of the 4 human
+annotations.
+Note that this is likely an overestimate on the real bias that we would get if we had an "infinite" number of
+cross-annotations.
+A low bias means that the annotator has in expectation the same preferences as humans.
+For the case of humans, the bias is zero by definition.
+Note that this is related to but not the standard statistical bias, because we take the mode instead of average over
+annotations and we consider 0-1 loss instead of squared loss.
+
+[//]: # ($$agreement = 1 - E[E_i[I[mode&#40;{z_j}_{j \neq i} == mode&#40;{z^*_j}_{j \neq i}&#41;]]]$$)
+
+**Variance**: this is the (over)estimated classification error when using a single automatic preference to predict the
+majority of automatic preferences.
+We estimate it the same way as we estimated "human agreement" for humans, i.e., we take the expected leave one out error
+when predicting the mode of the 3 annotations using the 4th annotation.
+A low variance means that the annotator is consistent with its preference, i.e., if you sample from it with different
+seeds it will give the same result.
+As with the bias, this is not exactly the standard statistical variance, because we take the mode instead of average
+over annotations and we
+consider 0-1 loss instead of squared loss.
+
+Note that the "human agreement" is tightly related to the bias and variance. In particular, the variance
+measures the error due to the fact that we only use a single annotation while the bias measures the irreducible error
+for the current annotator. More specifically we have that $agreement \approx (1 - bias)*(1 - variance) + bias*variance$.
+Where the first term measures the agreement due to having no errors from bias and variance, while the second term
+measures the accuracy due to having errors caused from both the bias and variance.
+
+[//]: # ($$agreement = 1 - E[E_i[I[z_i == mode&#40;{z_j}_{j \neq i}&#41;]]]$$)
+
+**Proba. prefer longer**: this is the probability that the annotator prefers the longer output when the two outputs
+
+In the [full table](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md) we
+also provide the following metrics:
+
+**Proba. prefer lists**: this is the standard error (normalized by N-1) of the win rate, i.e., the preferences averaged
+over
 the different instructions.
 The standard error only measures the uncertainty over instructions, not over calls to the model or evaluator.
+
+**Proba. prefer 1**: this is the probability that the annotator prefers the longer output when the two outputs
+
+**# parsed**: this is the number of examples that the annotator was able to parse.
+
+Note that if the variance and bias is empty, it means that we only performed one single annotation for each 648 example
+due to resource (time and price) constraints. This explains why the #parsed is 648.
 
 
 
