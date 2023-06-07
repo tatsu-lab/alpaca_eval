@@ -296,30 +296,29 @@ consider 0-1 loss instead of squared loss.
 
 Note that the "human agreement" is tightly related to the bias and variance. In particular, the variance
 measures the error due to the fact that we only use a single annotation while the bias measures the irreducible error
-for the current annotator. More specifically we have that $agreement \approx (1 - bias)*(1 - variance) + bias*variance$.
+for the current annotator. More specifically we have that `agreement ≈ (1 - bias)*(1 - variance) + bias*variance`.
 Where the first term measures the agreement due to having no errors from bias and variance, while the second term
 measures the accuracy due to having errors caused from both the bias and variance.
 
 [//]: # ($$agreement = 1 - E[E_i[I[z_i == mode&#40;{z_j}_{j \neq i}&#41;]]]$$)
 
-**Proba. prefer longer**: this is the probability that the annotator prefers the longer output when the two outputs
+**Proba. prefer longer**: this is the probability that the annotator prefers the longer output when one of the two
+outputs is significantly longer than the other (more than 30 characters difference).
 
 In the [full table](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md) we
 also provide the following metrics:
 
-**Proba. prefer lists**: this is the standard error (normalized by N-1) of the win rate, i.e., the preferences averaged
-over
-the different instructions.
-The standard error only measures the uncertainty over instructions, not over calls to the model or evaluator.
+**Proba. prefer lists**: this is the probability that the annotator prefers the output that contains a list/bullet
+points when one output does but not the other.
 
-**Proba. prefer 1**: this is the probability that the annotator prefers the longer output when the two outputs
+**Proba. prefer 1**: this is the probability that the annotator prefers the first of the pair of outputs. All our
+proposed annotators randomize over outputs in the prompt, so this should be 0.5. Prior annotators, such as `lmsys`
+and `aviary`, do not.
 
 **# parsed**: this is the number of examples that the annotator was able to parse.
 
 Note that if the variance and bias is empty, it means that we only performed one single annotation for each 648 example
-due to resource (time and price) constraints. This explains why the #parsed is 648.
-
-
+due to resource (time and price) constraints. This explains why the #parsed is 648, otherwise it should be 2592.
 
 </details>
 
