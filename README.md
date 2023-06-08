@@ -8,10 +8,7 @@ Evaluation of instruction-following models (e.g., ChatGPT) typically requires hu
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
 replicable, and validated against 20K human annotations.
 It is particularly useful for model development.
-Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations)
-and AlpacaEval should
-thus not be used as a substitute for human evaluation in
-high-stake decision-making.
+Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations).
 AlpacaEval provides the following:
 
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
@@ -39,7 +36,7 @@ have to run many evaluations quickly, e.g., during model development.
 
 **When not to use AlpacaEval?**
 As any other automatic evaluator, AlpacaEval should **not replace human evaluation in
-important settings**, e.g., to decide on model release. In particular, AlpacaEval is limited by the fact
+high-stake decision-making**, e.g., to decide on model release. In particular, AlpacaEval is limited by the fact
 that (1) the instructions in the eval set might not be representative of advanced usage of LLMs; (2) automatic
 evaluators may have biases such as favoring style over
 factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
