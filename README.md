@@ -32,14 +32,10 @@ AlpacaEval provides the following:
   inputs" are merged
   into one field, and reference outputs are longer.
 
-<details>
-  <summary><b>When to use and not use AlpacaEval</b></summary>
-
 **When to use AlpacaEval?** Our automatic evaluator is a quick and cheap proxy for human evaluation of simple
 instruction-following tasks.
 It is useful if you
 have to run many evaluations quickly, e.g., during model development.
-AlpacaEval's data and codebase is also useful for building and analyzing automatic evaluators.
 
 **When not to use AlpacaEval?**
 As any other automatic evaluator, AlpacaEval should **not replace human evaluation in
@@ -49,7 +45,6 @@ evaluators may have biases such as favoring style over
 factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
 Details in [limitations](#limitations).
 
-</details>
 
 <details open>
   <summary><b>Table of Contents</b></summary>
@@ -1078,8 +1073,9 @@ Those can broadly be clustered into 3 categories:
    for preliminary results on more complex instructions.
    Note, however, that in [AlpacaFarm](https://arxiv.org/abs/2305.14387) we showed that win-rates on our evaluation set
    are highly correlated (0.97 R2) with win-rates on instructions from user interactions with the Alpaca Demo.
-   Furthermore, AlpacaEval leaderboard shows larger
-   gap between the open models and OpenAi models than others (e.g. [lmsys](https://lmsys.org/blog/2023-03-30-vicuna/)).
+   Furthermore, the AlpacaEval leaderboard shows larger
+   gap between the open models and OpenAI models than other leaderboards (
+   e.g. [lmsys](https://lmsys.org/blog/2023-03-30-vicuna/)).
 
 2. **Biases of automatic annotators**: the automatic annotators seem to have implicit biases. In particular, we found
    that they tend to prefer longer outputs and outputs that contain lists (e.g. 0.68 / 0.69 for `alpaca_eval_gpt4`
