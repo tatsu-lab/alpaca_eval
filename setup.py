@@ -59,6 +59,7 @@ setuptools.setup(
             "alpaca_eval=alpaca_eval.main:main",
         ],
     },
-    # package_data={'alpaca_eval': ['evaluators_configs/*/*.*', 'models_configs/*/*.*', 'leaderboards/*/*.csv']},
-    include_package_data=True
+    include_package_data=True,
+    long_description=open("README.md", "r", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
 )
