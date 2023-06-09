@@ -3,7 +3,7 @@ cohere:
   fn_completions: "cohere_completions"
   completions_kwargs:
     model_name: "command"
-    mode: "instruct"
+    mode: "chat"
     max_tokens: 2048
     num_procs: 16
-  pretty_name: "Cohere"
+  pretty_name: "Cohere Chat"
