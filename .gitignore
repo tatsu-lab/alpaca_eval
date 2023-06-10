@@ -1,7 +1,5 @@
 notebooks/
-*.json
 .idea
-results/
 example/
 
 # Byte-compiled / optimized / DLL files
