@@ -1004,6 +1004,14 @@ alpaca_eval evaluate_from_model \
   --annotators_config 'alpaca_eval_gpt4'
 ```
 
+You'll then need to update the leaderboard. An exmple command for that may look like:
+
+```sh
+alpaca_eval evaluate_from_model \
+  'src/alpaca_eval/leaderboards/data_AlpacaEval/alpaca_eval_gpt4_leaderboard.csv' \
+  --annotators_config 'alpaca_eval_gpt4'
+```
+
 After running this command, you should have generated an outputs json and a new entry in the corresponding leaderboard
 file. Please make a PR with the config, outputs file, and updated leaderboard.
 
