@@ -388,7 +388,7 @@ def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, anno
 
     if precomputed_leaderboard is not None:
         try:
-            leaderboard = load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
+            leaderboard = pd.read_csv(precomputed_leaderboard).to_dict(orient="index")
         except FileNotFoundError:
             logging.warning(f"precomputed_leaderboard = {precomputed_leaderboard} not found => computing from scratch.")
             leaderboard = dict()
@@ -416,7 +416,7 @@ def get_output_path(output_path, model_outputs, name):
 
 def print_leaderboard(df_leaderboard, leaderboard_mode, cols_to_print, current_name=None):
     cols_to_print = list(cols_to_print)
-    
+
     if leaderboard_mode is not None:
         if "mode" in df_leaderboard.columns:
             # select all modes that come before
