@@ -42,16 +42,16 @@ setuptools.setup(
         "api": PACKAGES_ALL_API,
         "all": PACKAGES_ALL,
     },
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     classifiers=[
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     entry_points={
