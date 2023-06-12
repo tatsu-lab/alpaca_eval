@@ -256,7 +256,6 @@ def evaluate_from_model(
         reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
 
 
-    raise NotImplemented("nope")
     return evaluate(
         model_outputs=model_outputs,
         reference_outputs=reference_outputs,
