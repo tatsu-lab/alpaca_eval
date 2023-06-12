@@ -1,9 +1,0 @@
-cohere:
-  prompt_template: "cohere/prompt.txt"
-  fn_completions: "cohere_completions"
-  completions_kwargs:
-    model_name: "command-nightly"
-    mode: "instruct"
-    max_tokens: 2048
-    num_procs: 16
-  pretty_name: "Cohere Command Nightly"
