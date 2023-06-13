@@ -13,7 +13,20 @@ import transformers
 from peft import PeftModel
 from .. import utils, constants
 
+from torch.utils.data import Dataset
+from tqdm import tqdm
+
 __all__ = ["huggingface_local_completions"]
+
+class ListDataset(Dataset):
+    def __init__(self, original_list):
+        self.original_list = original_list
+
+    def __len__(self):
+        return len(self.original_list)
+
+    def __getitem__(self, i):
+        return self.original_list[i]
 
 
 def huggingface_local_completions(
@@ -82,11 +95,11 @@ def huggingface_local_completions(
         model = PeftModel.from_pretrained(model, adapters_name)
         model = model.merge_and_unload()
 
-    if batch_size == 1:
-        try:
-            model = model.to_bettertransformer()
-        except NotImplementedError:
-            pass
+    # if batch_size == 1:
+    #     try:
+    #         model = model.to_bettertransformer()
+    #     except NotImplementedError:
+    #         pass
 
     logging.info(f"Model memory: {model.get_memory_footprint() / 1e9} GB")
 
@@ -111,13 +124,15 @@ def huggingface_local_completions(
     pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs)
 
     ## compute and log the time for completions
+    prompts_dataset = ListDataset(prompts)
+    completions = []
+    
     with utils.Timer() as t:
         logging.info(f"Starting {n_examples} completions. Hugging face pipeline doesn't allow generators => no"
                      f"progress bar. Sorry for that.")
-        completions = [completion[0]["generated_text"]
-                       for completion in pipeline(
-                            prompts, return_full_text=False, pad_token_id=tokenizer.pad_token_id
-                      )]
+        
+        for out in tqdm(pipeline(prompts_dataset, return_full_text=False, pad_token_id=tokenizer.pad_token_id)):
+            completions.append(out[0]["generated_text"])
 
     logging.info(f"Time for {n_examples} completions: {t}")
 
