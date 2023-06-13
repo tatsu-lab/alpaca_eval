@@ -95,11 +95,13 @@ def huggingface_local_completions(
         model = PeftModel.from_pretrained(model, adapters_name)
         model = model.merge_and_unload()
 
-    # if batch_size == 1:
-    #     try:
-    #         model = model.to_bettertransformer()
-    #     except NotImplementedError:
-    #         pass
+    if batch_size == 1:
+        try:
+            model = model.to_bettertransformer()
+        except NotImplementedError:
+            pass
+        except AttributeError:
+            pass
 
     logging.info(f"Model memory: {model.get_memory_footprint() / 1e9} GB")
 
