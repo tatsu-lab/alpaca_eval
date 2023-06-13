@@ -128,8 +128,6 @@ def huggingface_local_completions(
     completions = []
     
     with utils.Timer() as t:
-        logging.info(f"Starting {n_examples} completions. Hugging face pipeline doesn't allow generators => no"
-                     f"progress bar. Sorry for that.")
         
         for out in tqdm(pipeline(prompts_dataset, return_full_text=False, pad_token_id=tokenizer.pad_token_id)):
             completions.append(out[0]["generated_text"])
