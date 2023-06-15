@@ -5,5 +5,4 @@ cohere-chat:
     model_name: "command"
     mode: "chat"
     max_tokens: 2048
-    num_procs: 16
   pretty_name: "Cohere Chat"

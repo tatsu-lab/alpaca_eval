@@ -1,9 +1,0 @@
-cohere-template:
-  prompt_template: "text_davinci_003/prompt.txt"
-  fn_completions: "cohere_completions"
-  completions_kwargs:
-    model_name: "command"
-    mode: "instruct"
-    max_tokens: 2048
-    num_procs: 16
-  pretty_name: "Cohere with Template"
