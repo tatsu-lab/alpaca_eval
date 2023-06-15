@@ -3,7 +3,7 @@
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/LICENSE)
 [![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-[![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/yKbbQga9WE)
+[![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
 Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
@@ -983,7 +983,7 @@ colab notebook above.
 We are accepting PRs for new models, evaluators, and eval sets, in addition to bug fixes.
 We will update the [leaderboard website](https://tatsu-lab.github.io/alpaca_eval/) regularly with new community
 contributions.
-We have also created a [support discord](https://discord.gg/qVYd69ye) for AlpacaEval in case you run into any issues and
+We have also created a [support discord](https://discord.gg/GJMxJSVZZM) for AlpacaEval in case you run into any issues and
 wish to ask help from the community.
 
 <details>
