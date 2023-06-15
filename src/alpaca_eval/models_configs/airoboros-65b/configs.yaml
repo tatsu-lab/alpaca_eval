@@ -2,7 +2,7 @@ airoboros-65b:
   prompt_template: "airoboros-33b/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
-    model_name: "./airoboros-65b-gpt5-1.2"  # local path
+    model_name: "./airoboros-65b-gpt4-1.2"  # local path
     model_kwargs:
       torch_dtype: 'float16'
     max_new_tokens: 2048
