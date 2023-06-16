@@ -983,7 +983,8 @@ colab notebook above.
 We are accepting PRs for new models, evaluators, and eval sets, in addition to bug fixes.
 We will update the [leaderboard website](https://tatsu-lab.github.io/alpaca_eval/) regularly with new community
 contributions.
-We have also created a [support discord](https://discord.gg/GJMxJSVZZM) for AlpacaEval in case you run into any issues and
+We have also created a [support discord](https://discord.gg/GJMxJSVZZM) for AlpacaEval in case you run into any issues
+and
 wish to ask help from the community.
 
 <details>
@@ -994,18 +995,22 @@ an example, you can look at
 the [falcon-7b-instruct yaml](src/alpaca_eval/models_configs/falcon-7b-instruct/configs.yaml). Please make sure the
 folder name and key name in the yaml match exactly.
 
-Then, please follow the steps in [Evaluating-a-model](#evaluating-a-model) to run inference on the model to produce
+Then, please follow the steps in [Evaluating a model](#evaluating-a-model) to run inference on the model to produce
 outputs on the eval set and score the model according to one of the evaluators.
 An example command may look like:
 
 ```sh
 alpaca_eval evaluate_from_model \
   --model_configs 'falcon-7b-instruct' \
-  --annotators_config 'alpaca_eval_gpt4'
+  --annotators_config 'alpaca_eval_gpt4' \
+  --is_cache_leaderboard True \
+  --is_overwrite_leaderboard True
 ```
 
-After running this command, you should have generated an outputs json and a new entry in the corresponding leaderboard
-file. Please make a PR with the config, outputs file, and updated leaderboard.
+After running this command, you should have generated an outputs json and a new entry in the corresponding [leaderboard
+file](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/leaderboards/data_AlpacaEval). Please make a PR
+with the
+config, outputs file, and updated leaderboard.
 
 </details>
 
