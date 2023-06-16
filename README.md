@@ -516,7 +516,7 @@ rn a dictionary of metrics and the key by which to sort the leaderboard.
         The key by which to sort the leaderboard.
     --is_cache_leaderboard=IS_CACHE_LEADERBOARD
         Type: Optional
-        Default: False
+        Default: None
         Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances
 . A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously saved
 leaderboard at `<output_path>/leaderboard.csv`.
@@ -1002,8 +1002,7 @@ An example command may look like:
 ```sh
 alpaca_eval evaluate_from_model \
   --model_configs 'falcon-7b-instruct' \
-  --annotators_config 'alpaca_eval_gpt4' \
-  --is_cache_leaderboard True
+  --annotators_config 'alpaca_eval_gpt4' 
 ```
 
 After running this command, you should have generated an outputs json and a new entry in the corresponding [leaderboard

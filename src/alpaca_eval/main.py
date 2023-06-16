@@ -26,7 +26,7 @@ def evaluate(
         is_return_instead_of_print: bool = False,
         fn_metric: Union[str, callable] = "pairwise_to_winrate",
         sort_by: str = "win_rate",
-        is_cache_leaderboard: Optional[bool] = False,
+        is_cache_leaderboard: Optional[bool] = None,
         max_instances: Optional[int] = None,
         annotation_kwargs: Optional[dict[str, Any]] = None,
         **annotator_kwargs,
