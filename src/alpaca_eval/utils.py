@@ -261,7 +261,7 @@ def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs)
     if isinstance(df, Callable):
         df = df(**kwargs)
 
-    if isinstance(df, AnyPath):
+    if isinstance(df, (str, os.PathLike, pathlib.Path)):
         df = Path(df)
 
         # check if it's a globbing pattern

@@ -8,6 +8,7 @@ import random
 from typing import Optional, Sequence
 import tqdm
 import cohere
+from cohere import CohereError
 
 from .. import constants, utils
 
@@ -17,6 +18,7 @@ __all__ = ["cohere_completions"]
 def cohere_completions(
         prompts: Sequence[str],
         model_name="command",
+        mode = "instruct",
         num_procs: int = 5,
         **decoding_kwargs,
 ) -> dict[str, list]:
@@ -43,8 +45,9 @@ def cohere_completions(
     else:
         logging.info(f"Using `cohere_completions` on {n_examples} prompts using {model_name}.")
 
-    kwargs = dict(model=model_name, **decoding_kwargs)
+    kwargs = dict(model=model_name, mode=mode, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
+
     with utils.Timer() as t:
         if num_procs == 1:
             completions = [_cohere_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")]
@@ -72,18 +75,34 @@ def _cohere_completion_helper(
         cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
         max_tokens: Optional[int] = 1000,
         temperature: Optional[float] = 0.7,
+        max_tries = 5,
+        mode = "instruct",
         **kwargs,
 ) -> str:
-    anthropic_api_key = random.choice(cohere_api_keys)
-    client = cohere.Client(anthropic_api_key)
+    cohere_api_key = random.choice(cohere_api_keys)
+    client = cohere.Client(cohere_api_key)
 
     kwargs.update(dict(max_tokens=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
 
-    # TODO deal with errors as with anthropic and openai
-    response = client.generate(prompt=prompt, **curr_kwargs)
+    for trynum in range(max_tries):  # retry errors
+        try:
+            if mode == "instruct":
+                response = client.generate(prompt=prompt, **curr_kwargs)
+                text = response[0].text
+            elif mode == "chat":
+                response = client.chat(prompt, **curr_kwargs)
+                text = response.text
+            else:
+                raise ValueError(f"Invalid mode {mode} for cohere_completions")
 
-    if response == "":
-        response = " "  # annoying doesn't allow empty string
+            if text == "":
+                raise CohereError("Empty string response")
 
-    return response[0].text
+            return text
+
+        except CohereError as e:
+            print(f"Try #{trynum+1}/{max_tries}: Error running prompt {repr(prompt)}: {e}")
+
+    return " " # placeholder response for errors, doesn't allow empty string
+ 

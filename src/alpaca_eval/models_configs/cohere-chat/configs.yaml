@@ -1,8 +1,8 @@
-cohere:
+cohere-chat:
   prompt_template: "cohere/prompt.txt"
   fn_completions: "cohere_completions"
   completions_kwargs:
     model_name: "command"
-    mode: "instruct"
+    mode: "chat"
     max_tokens: 2048
-  pretty_name: "Cohere"
+  pretty_name: "Cohere Chat"
