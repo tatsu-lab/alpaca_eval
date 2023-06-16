@@ -1003,8 +1003,7 @@ An example command may look like:
 alpaca_eval evaluate_from_model \
   --model_configs 'falcon-7b-instruct' \
   --annotators_config 'alpaca_eval_gpt4' \
-  --is_cache_leaderboard True \
-  --is_overwrite_leaderboard True
+  --is_cache_leaderboard True
 ```
 
 After running this command, you should have generated an outputs json and a new entry in the corresponding [leaderboard

@@ -394,7 +394,7 @@ def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, anno
             leaderboard = dict()
     else:
         leaderboard = dict()
-    return leaderboard
+    return leaderboard, precomputed_leaderboard
 
 
 def get_output_path(output_path, model_outputs, name):
@@ -416,14 +416,14 @@ def get_output_path(output_path, model_outputs, name):
 
 def print_leaderboard(df_leaderboard, leaderboard_mode, cols_to_print, current_name=None):
     cols_to_print = list(cols_to_print)
-    
+
     if leaderboard_mode is not None:
         if "mode" in df_leaderboard.columns:
             # select all modes that come before
             current_idx = constants.ORDERED_LEADERBOARD_MODES.index(leaderboard_mode)
             df_leaderboard["mode_idx"] = df_leaderboard["mode"].apply(constants.ORDERED_LEADERBOARD_MODES.index)
 
-            is_smaller_mode = (df_leaderboard["mode_idx"] <= current_idx)
+            is_smaller_mode = df_leaderboard["mode_idx"] <= current_idx
             is_selected = is_smaller_mode | (df_leaderboard["mode"].isnull())
 
             if current_name is not None:
