@@ -3,7 +3,7 @@
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/LICENSE)
 [![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-[![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/yKbbQga9WE)
+[![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
 Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
@@ -516,7 +516,7 @@ rn a dictionary of metrics and the key by which to sort the leaderboard.
         The key by which to sort the leaderboard.
     --is_cache_leaderboard=IS_CACHE_LEADERBOARD
         Type: Optional
-        Default: False
+        Default: None
         Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances
 . A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously saved
 leaderboard at `<output_path>/leaderboard.csv`.
@@ -983,8 +983,11 @@ colab notebook above.
 We are accepting PRs for new models, evaluators, and eval sets, in addition to bug fixes.
 We will update the [leaderboard website](https://tatsu-lab.github.io/alpaca_eval/) regularly with new community
 contributions.
-We have also created a [support discord](https://discord.gg/qVYd69ye) for AlpacaEval in case you run into any issues and
+We have also created a [support discord](https://discord.gg/GJMxJSVZZM) for AlpacaEval in case you run into any issues
+and
 wish to ask help from the community.
+
+To get started, please first fork the repo, and install the package from source `pip install -e .`
 
 <details>
   <summary><h2 tabindex="-1" dir="auto">Contributing a model</h2></summary>
@@ -994,18 +997,20 @@ an example, you can look at
 the [falcon-7b-instruct yaml](src/alpaca_eval/models_configs/falcon-7b-instruct/configs.yaml). Please make sure the
 folder name and key name in the yaml match exactly.
 
-Then, please follow the steps in [Evaluating-a-model](#evaluating-a-model) to run inference on the model to produce
+Then, please follow the steps in [Evaluating a model](#evaluating-a-model) to run inference on the model to produce
 outputs on the eval set and score the model according to one of the evaluators.
 An example command may look like:
 
 ```sh
 alpaca_eval evaluate_from_model \
   --model_configs 'falcon-7b-instruct' \
-  --annotators_config 'alpaca_eval_gpt4'
+  --annotators_config 'alpaca_eval_gpt4' 
 ```
 
-After running this command, you should have generated an outputs json and a new entry in the corresponding leaderboard
-file. Please make a PR with the config, outputs file, and updated leaderboard.
+After running this command, you should have generated an outputs json and a new entry in the corresponding [leaderboard
+file](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/leaderboards/data_AlpacaEval). Please make a PR
+with the
+config, outputs file, and updated leaderboard.
 
 </details>
 

@@ -26,7 +26,7 @@ def evaluate(
         is_return_instead_of_print: bool = False,
         fn_metric: Union[str, callable] = "pairwise_to_winrate",
         sort_by: str = "win_rate",
-        is_cache_leaderboard: Optional[bool] = False,
+        is_cache_leaderboard: Optional[bool] = None,
         max_instances: Optional[int] = None,
         annotation_kwargs: Optional[dict[str, Any]] = None,
         **annotator_kwargs,
@@ -97,13 +97,17 @@ def evaluate(
     annotator_kwargs :
         Additional arguments to pass to `PairwiseAnnotator`.
     """
-    if isinstance(current_leaderboard_mode,
-                  str) and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES:
+    if (
+            isinstance(current_leaderboard_mode, str)
+            and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES
+    ):
         raise ValueError(f"current_leaderboard_mode should be one of {constants.ORDERED_LEADERBOARD_MODES}")
 
     annotation_kwargs = annotation_kwargs or dict()
 
-    leaderboard = utils.get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, annotators_config)
+    leaderboard, precomputed_leaderboard = utils.get_precomputed_leaderboard(
+        precomputed_leaderboard, reference_outputs, annotators_config
+    )
     annotations = None
 
     if model_outputs is not None:
@@ -112,7 +116,6 @@ def evaluate(
         name = utils.get_generator_name(name, model_outputs)
 
         if (name not in leaderboard) or is_overwrite_leaderboard:
-
             logging.info(f"Evaluating the {name} outputs.")
 
             if max_instances is not None:
@@ -134,7 +137,7 @@ def evaluate(
 
     output_path = utils.get_output_path(output_path, model_outputs, name)
 
-    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient='index').sort_values(by=sort_by, ascending=False)
+    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(by=sort_by, ascending=False)
     df_leaderboard = df_leaderboard[
         utils.prioritize_elements(list(df_leaderboard.columns), ["win_rate", "standard_error"])
     ]
@@ -151,16 +154,24 @@ def evaluate(
         is_cache_leaderboard = max_instances is None
 
     if is_cache_leaderboard:
-        logging.info(f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}")
-        df_leaderboard.to_csv(precomputed_leaderboard)
+        if isinstance(precomputed_leaderboard, AnyPath):
+            logging.info(f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}")
+            df_leaderboard.to_csv(precomputed_leaderboard)
+        else:
+            logging.info(
+                f"Not saving the result to the cached leaderboard because precomputed_leaderboard is not a "
+                f"path but {type(precomputed_leaderboard)}."
+            )
 
     if is_return_instead_of_print:
         return df_leaderboard, annotations
     else:
-        utils.print_leaderboard(df_leaderboard,
-                                leaderboard_mode_to_print,
-                                current_name=name,
-                                cols_to_print=["win_rate", "standard_error", "n_total"])
+        utils.print_leaderboard(
+            df_leaderboard,
+            leaderboard_mode_to_print,
+            current_name=name,
+            cols_to_print=["win_rate", "standard_error", "n_total"],
+        )
 
 
 def evaluate_from_model(
@@ -343,9 +354,9 @@ def make_leaderboard(
     if is_return_instead_of_print:
         return df_leaderboard, all_annotations
     else:
-        utils.print_leaderboard(df_leaderboard,
-                                leaderboard_mode=None,
-                                cols_to_print=["win_rate", "standard_error", "n_total"])
+        utils.print_leaderboard(
+            df_leaderboard, leaderboard_mode=None, cols_to_print=["win_rate", "standard_error", "n_total"]
+        )
 
 
 def analyze_evaluators(
@@ -435,8 +446,9 @@ def analyze_evaluators(
             leaderboard[key]["mode"] = current_leaderboard_mode
             all_crossannotations[key] = df_crossannotations
 
-    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient='index').sort_values(by="Human agreement [%]",
-                                                                                     ascending=False)
+    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(
+        by="Human agreement [%]", ascending=False
+    )
 
     df_leaderboard = df_leaderboard[
         utils.prioritize_elements(list(df_leaderboard.columns), constants.EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE)
@@ -448,20 +460,21 @@ def analyze_evaluators(
     if is_return_instead_of_print:
         return df_leaderboard, all_crossannotations
     else:
-        utils.print_leaderboard(df_leaderboard, leaderboard_mode_to_print,
-                                cols_to_print=constants.EVALUATORS_LEADERBOARD_COLS_TO_PRINT)
+        utils.print_leaderboard(
+            df_leaderboard, leaderboard_mode_to_print, cols_to_print=constants.EVALUATORS_LEADERBOARD_COLS_TO_PRINT
+        )
 
 
 ALL_FUNCTIONS = {
-    'evaluate': evaluate,
-    'evaluate_from_model': evaluate_from_model,
-    'make_leaderboard': make_leaderboard,
-    'analyze_evaluators': analyze_evaluators,
+    "evaluate": evaluate,
+    "evaluate_from_model": evaluate_from_model,
+    "make_leaderboard": make_leaderboard,
+    "analyze_evaluators": analyze_evaluators,
 }
 
 
 def main():
-    is_fn_name = (len(sys.argv) > 1 and "--" not in sys.argv[1])
+    is_fn_name = len(sys.argv) > 1 and "--" not in sys.argv[1]
     is_help = any(a == "--help" for a in sys.argv)
 
     if is_fn_name or is_help:

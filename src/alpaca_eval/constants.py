@@ -41,7 +41,7 @@ MINIMAL_MODELS = (
 )
 VERIFIED_MODELS = MINIMAL_MODELS + (
     "alpaca-farm-ppo-sim-gpt4-20k",
-    "cohere",
+    # "cohere", we only ran eval not generations
     "falcon-7b-instruct",
     "guanaco-7b",
     "guanaco-13b",
