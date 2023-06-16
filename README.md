@@ -162,6 +162,8 @@ models that are available out of the box.
 | claude                |     88.4 |       1.1 |
 | chatgpt               |     86.1 |       1.2 |
 | wizardlm-13b          |     75.3 |       1.5 |
+| airoboros-65b         |     73.5 |       1.5 |
+| airoboros-33b         |     72.8 |       1.6 |
 | guanaco-65b           |     71.8 |       1.6 |
 | vicuna-13b            |     70.4 |       1.6 |
 | oasst-rlhf-llama-33b  |     66.5 |       1.7 |
