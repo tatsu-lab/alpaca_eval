@@ -987,6 +987,8 @@ We have also created a [support discord](https://discord.gg/GJMxJSVZZM) for Alpa
 and
 wish to ask help from the community.
 
+To get started, please first fork the repo, and install the package from source `pip install -e .`
+
 <details>
   <summary><h2 tabindex="-1" dir="auto">Contributing a model</h2></summary>
 
