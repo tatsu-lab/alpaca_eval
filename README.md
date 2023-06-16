@@ -165,6 +165,7 @@ models that are available out of the box.
 | guanaco-65b           |     71.8 |       1.6 |
 | vicuna-13b            |     70.4 |       1.6 |
 | oasst-rlhf-llama-33b  |     66.5 |       1.7 |
+| minotaur-13b          |     66.0 |       1.7 |
 | text_davinci_003      |     50.0 |       0.0 |
 | falcon-40b-instruct   |     45.7 |       1.8 |
 | alpaca-farm-ppo-human |     41.2 |       1.7 |
