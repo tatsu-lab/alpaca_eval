@@ -205,9 +205,13 @@ def _openai_completion_helper(
                 kwargs["max_tokens"] = int(kwargs["max_tokens"] * 0.8)
                 logging.warning(f"Reducing target length to {kwargs['max_tokens']}, Retrying...")
                 if kwargs["max_tokens"] == 0:
+                    logging.exception("Prompt is already longer than max context length. Error:")
                     raise e
             else:
-                logging.warning("Hit request rate limit; retrying...")
+                if "rate limit" in str(e).lower():
+                    logging.warning("Hit request rate limit; retrying...")
+                else:
+                    logging.warning(f"Unknown error {e}. \n It's likely a rate limit so we are retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
                     openai.organization = random.choice(
                         [o for o in openai_organization_ids if o != openai.organization]

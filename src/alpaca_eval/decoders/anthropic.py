@@ -65,10 +65,7 @@ def anthropic_completions(
     logging.info(f"Completed {n_examples} examples in {t}.")
 
     # anthropic doesn't return total tokens but 1 token approx 4 chars
-    price = [
-        len(prompt) / 4 * _get_price_per_token(model_name)
-        for prompt in prompts
-    ]
+    price = [len(prompt) / 4 * _get_price_per_token(model_name) for prompt in prompts]
 
     avg_time = [t.duration / n_examples] * len(completions)
 
@@ -112,7 +109,11 @@ def _anthropic_completion_helper(
                     raise e
                 logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
             else:
-                raise ValueError(f"Unknown ApiException {e}.")
+                if n_retries > 0:
+                    logging.warning(f"{e}. \nRetrying...")
+                    n_retries = n_retries - 1
+                else:
+                    raise ValueError(f"Unknown ApiException {e}.")
         except Exception as e:
             if n_retries > 0:
                 logging.warning(f"{e}. \nRetrying...")
