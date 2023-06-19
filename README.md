@@ -15,7 +15,8 @@ AlpacaEval provides the following:
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
   annotations). We evaluate a
   model by
-  measuring the fraction of times an powerful LLM (e.g. GPT 4 or Claude) prefers the outputs from that model over
+  measuring the fraction of times an powerful LLM (e.g. GPT 4 or Claude or ChatGPT) prefers the outputs from that model
+  over
   outputs from a reference model. Our evaluators enable caching and output randomization by default.
 - [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
   evaluation set.
@@ -67,6 +68,7 @@ Details in [limitations](#limitations).
     - [Data Release](#data-release)
     - [Differences with AlpacaFarm](#differences-with-alpacafarm)
     - [Related work](#related-work)
+    - [Major updates](#major-updates)
 
 </details>
 
@@ -97,11 +99,12 @@ Important parameters are the following:
 - **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary
   should
   contain the keys `instruction` and `output`.
-- **annotators_config**: This is the annotator to use (e.g., `alpaca_eval_gpt4` or `claude`). `alpaca_eval_gpt4` (
+- **annotators_config**: This is the annotator to use (e.g., `alpaca_eval_gpt4` or `claude`
+  or `chatgpt_fn`). `alpaca_eval_gpt4` (
   default) has the
-  highest agreement rate with our human annotation data. `claude` has a decent agreement and is free for academics. For
-  a comparison of
-  annotators see [here](#evaluators).
+  highest agreement rate with our human annotation data. `claude` has a decent agreement and is free for
+  academics. `chatgpt_fn` is the worst of the three, but is available to everyone, cheap, and has 2x larger context
+  window (16K tokens). For a comparison of annotators see [here](#evaluators).
 - **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, this
   is `text-davinci003` outputs on
   AlpacaEval dataset.
@@ -145,8 +148,9 @@ For more information about each function use `alpaca_eval <command> -- --help`.
 ## Models
 
 Our leaderboards are computed on the [AlpacaEval dataset](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
-We precomputed the leaderboard for important models both using `gpt4` (best quality) and  `claude` (free for academics,
-and high quality). Our full leaderboards can be found at [on this page](https://tatsu-lab.github.io/alpaca_eval/), but
+We precomputed the leaderboard for important models using `alpaca_eval_gpt4` (best quality),  `claude` (free for
+academics, and high quality), and `chatgpt_fn` (cheap and available for everyone). Our full leaderboards can be found
+at [on this page](https://tatsu-lab.github.io/alpaca_eval/), but
 we give minimal leaderboards below.
 Later we also show how to [add your model](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model) to the
 leaderboard and how to make
@@ -241,6 +245,26 @@ Details in [Related work](#related-work).
 
 </details>
 
+<details>
+  <summary><b><code>chatgpt_fn</code> minimal leaderboard</b></summary>
+
+|                       | Win Rate | Std Err. |
+|:----------------------|---------:|---------:|
+| gpt4                  |     73.8 |      1.5 |
+| claude                |     70.4 |      1.6 |
+| chatgpt               |     66.1 |      1.7 |
+| wizardlm-13b          |     65.2 |      1.7 |
+| vicuna-13b            |     64.1 |      1.7 |
+| guanaco-65b           |     62.4 |      1.7 |
+| oasst-rlhf-llama-33b  |     62.0 |      1.7 |
+| alpaca-farm-ppo-human |     60.2 |      1.7 |
+| falcon-40b-instruct   |     56.5 |      1.7 |
+| text_davinci_003      |     50.0 |      0.0 |
+| alpaca-7b             |     45.2 |      1.7 |
+| text_davinci_001      |     28.1 |      1.6 |
+
+</details>
+
 ## Evaluators
 
 We evaluate different automatic annotators on the AlpacaEval set by comparing to
@@ -250,7 +274,7 @@ Below we show metrics for our suggested evaluator (`alpaca_eval_gpt4`), for prio
 automatic
 evaluators ([`alpaca_farm_greedy_gpt4`](https://github.com/tatsu-lab/alpaca_farm),[`aviary_gpt4`](https://aviary.anyscale.com/),[`lmsys_gpt4`](https://chat.lmsys.org/)),
 for humans (`humans`), and for different base models with essentially the same
-prompt (`gpt4`,`claude`,`text_davinci_003`,`guanaco_33b`, `chatgpt`).
+prompt (`gpt4`,`claude`,`text_davinci_003`,`chatgpt_fn`,`guanaco_33b`, `chatgpt`).
 See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs) for the configs of all
 evaluators that are available out of the box and their associated metrics.
 
@@ -260,11 +284,11 @@ evaluators that are available out of the box and their associated metrics.
 | aviary_gpt4             |                69.1 |                    12.8 |                         1869 | 29.5 |     13.1 |                 0.70 |
 | gpt4                    |                66.9 |                    12.5 |                         1037 | 31.5 |     14.6 |                 0.65 |
 | alpaca_farm_greedy_gpt4 |                66.4 |                    15.3 |                          878 | 30.2 |     19.3 |                 0.60 |
-| humans                  |                65.7 |                   300.0 |                        36800 |  0.0 |          |                 0.64 |
+| humans                  |                65.7 |                   300.0 |                        36800 |  0.0 |     34.3 |                 0.64 |
 | claude                  |                65.5 |                    11.1 |                          173 | 31.9 |     18.0 |                 0.62 |
 | text_davinci_003        |                64.1 |                     8.7 |                          121 | 33.8 |     22.7 |                 0.70 |
 | lmsys_gpt4              |                63.2 |                    13.9 |                        17982 | 34.7 |     16.1 |                 0.74 |
-| guanaco_33b             |                59.1 |                         |                          930 | 54.5 |     27.1 |                 0.70 |
+| chatgpt_fn              |                60.0 |                     1.0 |                          530 | 36.9 |     27.7 |                 0.62 |
 | chatgpt                 |                57.2 |                     0.8 |                          285 | 39.4 |     34.1 |                 0.59 |
 
 <details>
@@ -360,8 +384,9 @@ due to resource (time and price) constraints. This explains why the #parsed is 6
 <details>
   <summary><b>Tips for choosing evaluators</b></summary>
 
-Overall we recommend using `annotators_config=alpaca_eval_gpt4` if you want the highest agreement with humans, and
-`annotators_config=claude` if you have academic (free) access to Claude and have a low budget.
+Overall we recommend using `annotators_config=alpaca_eval_gpt4` if you want the highest agreement with humans,
+`annotators_config=claude` if you have academic (free) access to Claude and have a low budget, and
+`annotators_config=chatgpt_fn` if you don't have access to the other two models.
 
 When choosing an annotator we recommend you to consider the following (the first three are obvious):
 
@@ -434,7 +459,7 @@ Details in [limitations](#limitations).
 
 [//]: # ()
 
-[//]: # (   key&#41; `alpaca_eval --model_outputs 'example/outputs.json' --annotators_config 'text_davinci_003' --max_instances 3 --caching_path None`)
+[//]: # (   key&#41; `alpaca_eval --model_outputs 'example/outputs.json' --annotators_config 'text_davinci_003' ~~--max_instances 3~~ --caching_path None`)
 
 [//]: # ()
 
@@ -611,7 +636,8 @@ directly use `alpaca_eval evaluate_from_model` to also take care of generating o
    want to use a different model or a different dataset follow the same steps as (1.).
 3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4` or `claude` (if you are
    an
-   academic). For options and comparisons see [this table](#evaluators). Depending on the evaluator you might need to
+   academic) or `chatgpt_fn` (if you don't have access to the other two). For options and comparisons
+   see [this table](#evaluators). Depending on the evaluator you might need to
    set the appropriate API_KEY in your environment
    or [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7).
 
@@ -1024,9 +1050,9 @@ downloading [alpaca_eval_all_outputs.json](https://huggingface.co/datasets/tatsu
 
 ```bash
 alpaca_eval make_leaderboard \
-  --leaderboard_path <src/alpaca_eval/leaderboards/data_AlpacaEval/your_leaderboard_name.csv> \
+  --leaderboard_path src/alpaca_eval/leaderboards/data_AlpacaEval/<evaluator>_leaderboard.csv \
   --all_model_outputs alpaca_eval_all_outputs.json \
-  --annotators_config <path_to_your_config.yaml>
+  --annotators_config <evaluator_config>
 ```
 
 Then, please create a PR with the annotator config and leaderboard csv.
@@ -1247,5 +1273,17 @@ For example:
   and [The False Promise of Imitating Proprietary LLMs](https://arxiv.org/abs/2305.15717) both found that
   automatic
   annotators favor style (e.g. use of list, tone, word choice, length) over factuality.
+
+</details>
+
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Major updates</h2></summary>
+
+- 19th June 2023: add leaderboard `chatgpt_fn` that anyone can use (no waiting lists).
+- 19th June 2023: update to
+  use [OpenAI's function calling](https://openai.com/blog/function-calling-and-other-api-updates).
+  Example: [`chatgpt_fn`](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/chatgpt_fn)
+  or [`alpaca_eval_gpt4_fn`](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4_fn).
 
 </details>

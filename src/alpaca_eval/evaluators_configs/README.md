@@ -19,6 +19,7 @@ essentially the same prompt (`gpt4`, `text_davinci_003`, `claude`, `chatgpt`).
 | text_davinci_003        |                64.1 |                     8.7 |                          121 | 33.8 |     22.7 |                 0.70 |                0.64 |            0.47 |     2592 | minimal  |
 | lmsys_gpt4              |                63.2 |                    13.9 |                        17982 | 34.7 |     16.1 |                 0.74 |                0.64 |            0.56 |     2592 | minimal  |
 | longest                 |                62.2 |                     0.0 |                            0 | 37.8 |      0.0 |                 1.00 |                0.85 |            0.42 |     2592 | verified |
+| chatgpt_fn              |                60.0 |                     1.0 |                          530 | 36.9 |     27.7 |                 0.62 |                0.65 |            0.49 |     2592 | minimal  |
 | chatgpt                 |                57.2 |                     0.8 |                          285 | 39.4 |     34.1 |                 0.59 |                0.56 |            0.49 |     2589 | minimal  |
 
 We also provide partial metrics (only 1 seed) for the following evaluators, which include prior work that we
