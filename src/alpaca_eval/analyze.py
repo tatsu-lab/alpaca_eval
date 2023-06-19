@@ -233,24 +233,32 @@ class Analyzer:
             self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
     ) -> dict[str, float]:
         """Estimate the biases for longer sentences."""
-        df = annotations.drop_duplicates(subset=self.keys).copy()
-        df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
-        df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+        try:
+            df = annotations.drop_duplicates(subset=self.keys).copy()
+            df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
+            df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
 
-        # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
-        df["best_output_length"] = df["best_output"].apply(len)
-        df["worse_output_length"] = df["worse_output"].apply(len)
-        # Step 2: Create a new column indicating whether one output is (significantly) longer than the other
-        df["one_is_longer"] = (df["best_output_length"] - df["worse_output_length"]).abs() > significant_delta_length
-        df["is_prefer_longer"] = df["best_output_length"] > df["worse_output_length"]
-        # Step 3: Count the number of times you prefer the longer output
-        prefer_longer = df[df["one_is_longer"] & df["is_prefer_longer"]].shape[0]
-        # Step 4: Count the total number of instances when one output is longer than the other
-        total_one_is_longer = df[df["one_is_longer"]].shape[0]
-        # Step 5: Calculate the probability of preferring the longer output
-        probability_prefer_longer = prefer_longer / total_one_is_longer
+            # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
+            df["best_output_length"] = df["best_output"].apply(len)
+            df["worse_output_length"] = df["worse_output"].apply(len)
+            # Step 2: Create a new column indicating whether one output is (significantly) longer than the other
+            df["one_is_longer"] = (df["best_output_length"] - df[
+                "worse_output_length"]).abs() > significant_delta_length
+            df["is_prefer_longer"] = df["best_output_length"] > df["worse_output_length"]
+            # Step 3: Count the number of times you prefer the longer output
+            prefer_longer = df[df["one_is_longer"] & df["is_prefer_longer"]].shape[0]
+            # Step 4: Count the total number of instances when one output is longer than the other
+            total_one_is_longer = df[df["one_is_longer"]].shape[0]
+            # Step 5: Calculate the probability of preferring the longer output
+            probability_prefer_longer = prefer_longer / total_one_is_longer
 
-        percentage_longer = ((df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]).mean()
+            percentage_longer = (
+                    (df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]).mean()
+
+        except Exception as e:
+            logging.warning(f"Could not compute length biases: {e}")
+            probability_prefer_longer = np.nan
+            percentage_longer = np.nan
 
         return dict(
             probability_prefer_longer=probability_prefer_longer,
@@ -259,24 +267,30 @@ class Analyzer:
 
     def get_list_biases(self, annotations: Union[pd.DataFrame, str]) -> dict[str, float]:
         """Estimate the biases for sentences with lists."""
-        df = annotations.drop_duplicates(subset=self.keys).copy()
-        df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
-        df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+        try:
+            df = annotations.drop_duplicates(subset=self.keys).copy()
+            df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
+            df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
 
-        # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
-        df["is_best_list"] = df["best_output"].apply(utils.contains_list)
-        df["is_worse_list"] = df["worse_output"].apply(utils.contains_list)
-        # Step 2: Create a new column indicating whether either `best_output` or `worse_output` has a list but not both
-        df["either_list"] = df["is_best_list"] ^ df["is_worse_list"]
-        # Step 3: Count the number of times you prefer `best_output` when either `best_output` or `worse_output` has
-        # a list but not both
-        prefer_best_either_list = df[(df["either_list"]) & df["is_best_list"]].shape[0]
-        # Step 4: Count number of instances when either `best_output` or `worse_output` has a list but not both
-        total_either_list = df[df["either_list"]].shape[0]
-        # Step 5: Calculate the probability
-        probability_prefer_list = prefer_best_either_list / total_either_list
+            # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
+            df["is_best_list"] = df["best_output"].apply(utils.contains_list)
+            df["is_worse_list"] = df["worse_output"].apply(utils.contains_list)
+            # Step 2: Create a new column indicating whether either `best_output` or `worse_output` has a list but
+            # not both
+            df["either_list"] = df["is_best_list"] ^ df["is_worse_list"]
+            # Step 3: Count the number of times you prefer `best_output` when either `best_output` or `worse_output` has
+            # a list but not both
+            prefer_best_either_list = df[(df["either_list"]) & df["is_best_list"]].shape[0]
+            # Step 4: Count number of instances when either `best_output` or `worse_output` has a list but not both
+            total_either_list = df[df["either_list"]].shape[0]
+            # Step 5: Calculate the probability
+            probability_prefer_list = prefer_best_either_list / total_either_list
 
-        percentage_longer = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
+            percentage_longer = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
+        except Exception as e:
+            logging.warning(f"Could not compute list biases: {e}")
+            probability_prefer_list = np.nan
+            percentage_longer = np.nan
 
         return dict(
             probability_prefer_list=probability_prefer_list,
