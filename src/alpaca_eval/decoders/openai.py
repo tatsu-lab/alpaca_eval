@@ -193,6 +193,14 @@ def _openai_completion_helper(
                     else:
                         choice["text"] = choice.message.content
 
+                    if choice.message.get("function_call"):
+                        # currently we only use function calls to get a JSON object
+                        # => overwrite text with the JSON object. In the future, we could
+                        # allow actual function calls
+                        all_args = json.loads(choice.message.function_call.arguments)
+                        assert len(all_args) == 1
+                        choice["text"] = all_args[list(all_args.keys())[0]]
+
             else:
                 completion_batch = openai.Completion.create(prompt=prompt_batch, **curr_kwargs)
                 choices = completion_batch.choices

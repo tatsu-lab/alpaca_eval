@@ -1,0 +1,13 @@
+name,win_rate,link,filter
+GPT-4,73.7888198757764,,minimal
+Claude,70.37267080745342,,minimal
+ChatGPT,66.08695652173913,,minimal
+WizardLM 13B,65.15527950310559,https://huggingface.co/WizardLM/WizardLM-13B-1.0,minimal
+Vicuna 13B,64.09937888198758,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,minimal
+Guanaco 65B,62.36024844720497,https://huggingface.co/timdettmers/guanaco-65b,minimal
+LLaMA 33B OASST RLHF,62.0496894409938,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,minimal
+Alpaca Farm PPO Human 7B,60.24844720496895,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,minimal
+Falcon 40B Instruct,56.52173913043478,https://huggingface.co/tiiuae/falcon-40b-instruct,minimal
+Davinci003,50.0,,minimal
+Alpaca 7B,45.21739130434783,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
+Davinci001,28.07453416149068,,minimal

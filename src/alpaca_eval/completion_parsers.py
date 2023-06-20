@@ -26,9 +26,9 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
     --------
     >>> completion = '\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best
     output for example 10:\n(a)\n\n### Best output for example 11:\n(a)'
-    >>> parse_batched_completion(completion, {1: '\n\(a\)', 2: '\n\(b\)'})
+    >>> regex_parser(completion, {1: '\n\(a\)', 2: '\n\(b\)'})
     [2, 1, 2, 1, 1]
-    >>> parse_batched_completion(' (a)', {1: ' \(a\)', 2: ' \(b\)'})
+    >>> regex_parser(' (a)', {1: ' \(a\)', 2: ' \(b\)'})
     [1]
     >>> completion = '### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both
     outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output
@@ -84,7 +84,10 @@ def lmsys_parser(completion):
 
 def ranking_parser(completion):
     try:
-        ordered_completions = ast.literal_eval(completion)
+        if isinstance(completion, str):
+            ordered_completions = ast.literal_eval(completion)
+        else:
+            ordered_completions = completion
 
         rank = [c for c in ordered_completions if c["model"] == "model_1"][0]["rank"]
         assert rank in [1, 2]

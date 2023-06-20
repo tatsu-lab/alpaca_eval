@@ -51,7 +51,7 @@ VERIFIED_MODELS = MINIMAL_MODELS + (
     "oasst-sft-pythia-12b",
     "pythia-12b-mix-sft",
     "vicuna-7b",
-    "wizardlm-13b"
+    "wizardlm-13b",
 )
 
 MINIMAL_EVALUATORS = (
@@ -141,6 +141,7 @@ PRECOMPUTED_LEADERBOARDS = {
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS / "claude_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
                                                              / "alpaca_eval_gpt4_leaderboard.csv",
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "chatgpt_fn"): ALPACAEVAL_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
 }
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
@@ -161,10 +162,16 @@ HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "LLaMA 7B",
 )
 
-EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = ["Human agreement [%]", "Price [$/1000 examples]",
-                                             "Time [seconds/1000 examples]",
-                                             "Bias", "Variance", "Proba. prefer longer", "Proba. prefer lists",
-                                             "Proba. prefer 1"]
+EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = [
+    "Human agreement [%]",
+    "Price [$/1000 examples]",
+    "Time [seconds/1000 examples]",
+    "Bias",
+    "Variance",
+    "Proba. prefer longer",
+    "Proba. prefer lists",
+    "Proba. prefer 1",
+]
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:6]
 
 CURRENT_USER = getpass.getuser()
