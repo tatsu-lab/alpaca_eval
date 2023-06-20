@@ -1,5 +1,6 @@
 import copy
 import functools
+import json
 import logging
 import math
 import multiprocessing
@@ -162,7 +163,7 @@ def _openai_completion_helper(
         is_chat: bool,
         sleep_time: int = 2,
         openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
-        openai_api_keys: Optional[Sequence[str]] = None,
+        openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
         max_tokens: Optional[int] = 1000,
         top_p: Optional[float] = 1.0,
         temperature: Optional[float] = 0.7,
@@ -251,7 +252,7 @@ def _prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token:
     <|im_start|>user
     Orange.
     <|im_end|>
-    >>> prompt_to_chatml(prompt)
+    >>> _prompt_to_chatml(prompt)
     [{'role': 'system', 'content': 'You are a helpful assistant.'},
      {'role': 'user', 'content': 'Knock knock.'},
      {'role': 'assistant', 'content': "Who's there?"},

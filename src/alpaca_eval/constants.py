@@ -5,7 +5,7 @@ from pathlib import Path
 import datasets
 
 ### API specific ###
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", None)
+OPENAI_API_KEYS = os.environ.get("OPENAI_API_KEYS", os.environ.get("OPENAI_API_KEY", None)).split(",")
 OPENAI_ORGANIZATION_IDS = os.environ.get("OPENAI_ORGANIZATION_IDS", None)
 if isinstance(OPENAI_ORGANIZATION_IDS, str):
     OPENAI_ORGANIZATION_IDS = OPENAI_ORGANIZATION_IDS.split(",")
