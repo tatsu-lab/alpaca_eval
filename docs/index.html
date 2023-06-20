@@ -163,8 +163,8 @@
             <label for="gpt4" onclick="">GPT-4</label>
             <input id="claude" name="evaluator" type="radio"/>
             <label for="claude" onclick="">Claude</label>
-            <input id="chatgpt" name="evaluator" type="radio"/>
-            <label for="chatgpt" onclick="">ChatGPT</label>
+            <!--            <input id="chatgpt" name="evaluator" type="radio"/>-->
+            <!--            <label for="chatgpt" onclick="">ChatGPT</label>-->
         </div>
 
         Filter:
@@ -256,7 +256,7 @@
 <script>
     const gpt4Radio = document.getElementById('gpt4');
     const claudeRadio = document.getElementById('claude');
-    const chatgptRadio = document.getElementById('chatgpt');
+    // const chatgptRadio = document.getElementById('chatgpt');
 
     const communityRadio = document.getElementById('community');
     const verifiedRadio = document.getElementById('verified');
@@ -328,10 +328,10 @@
         updateTable(currentUrl);
     });
 
-    chatgptRadio.addEventListener('click', function () {
-        currentUrl = urls['chatgpt'];
-        updateTable(currentUrl);
-    });
+    // chatgptRadio.addEventListener('click', function () {
+    //     currentUrl = urls['chatgpt'];
+    //     updateTable(currentUrl);
+    // });
 
     communityRadio.addEventListener('click', function () {
         updateTable(currentUrl);
