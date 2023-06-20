@@ -15,7 +15,7 @@ models above (`cohere`, `guanaco_33b`):
 
 |                         | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer | Proba. prefer lists | Proba. prefer 1 | # parsed | mode     |
 |:------------------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|--------------------:|----------------:|---------:|:---------|
-| alpaca_eval_gpt4_fn     |                70.2 |                    14.5 |                         2741 |      |          |                 0.75 |                0.63 |            0.49 |      648 | verified |
+| alpaca_eval_gpt4_fn     |                71.0 |                    14.5 |                         5046 | 27.6 |     11.1 |                 0.75 |                0.63 |            0.48 |     2592 | verified |
 | improved_aviary_gpt4    |                69.8 |                    12.8 |                         1831 |      |          |                 0.73 |                0.68 |            0.49 |      648 | verified |
 | alpaca_eval_gpt4        |                69.2 |                    13.6 |                         1455 | 28.4 |     14.6 |                 0.68 |                0.69 |            0.50 |     2592 | minimal  |
 | aviary_gpt4             |                69.1 |                    12.8 |                         1869 | 29.5 |     13.1 |                 0.70 |                0.65 |            0.53 |     2592 | minimal  |
