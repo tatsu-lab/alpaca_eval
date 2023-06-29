@@ -5,6 +5,7 @@ falcon-7b-instruct:
     model_name: "tiiuae/falcon-7b-instruct"
     model_kwargs:
       torch_dtype: 'bfloat16'
+      trust_remote_code: True
     max_new_tokens: 2048
     temperature: 0.7
     top_p: 1.0
