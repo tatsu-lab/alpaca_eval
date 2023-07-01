@@ -2,7 +2,10 @@ name,win_rate,link,filter
 GPT-4,95.27950310559004,,minimal
 Claude,88.38509316770187,,minimal
 ChatGPT,86.08695652173914,,minimal
+OpenChat-13B,80.8695652173913,https://github.com/imoneoi/openchat,community
 UltraLM 13B,80.63511830635119,https://github.com/thunlp/UltraChat,community
+OpenChat8192-13B,79.53980099502488,https://github.com/imoneoi/openchat,community
+OpenCoderPlus-15B,78.69565217391305,https://github.com/imoneoi/openchat,community
 WizardLM 13B,75.31094527363184,https://huggingface.co/WizardLM/WizardLM-13B-1.0,minimal
 airoboros 65B,73.91304347826086,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,community
 airoboros 33B,73.29192546583852,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,community
