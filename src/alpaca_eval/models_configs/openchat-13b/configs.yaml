@@ -13,4 +13,4 @@ openchat-13b:
     temperature: 0.7
 
   pretty_name: "OpenChat-13B"
-  link: "https://huggingface.co/openchat/openchat"
+  link: "https://github.com/imoneoi/openchat"
