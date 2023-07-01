@@ -18,6 +18,8 @@ from .. import utils, constants
 
 __all__ = ["openai_completions"]
 
+DEFAULT_OPENAI_API_BASE = openai.api_base
+
 
 def openai_completions(
         prompts: Sequence[str],
@@ -105,7 +107,7 @@ def openai_completions(
     if is_strip:
         prompts = [p.strip() for p in prompts]
 
-    is_chat = _requires_chatml(model_name)
+    is_chat = decoding_kwargs.get("requires_chatml", _requires_chatml(model_name))
     if is_chat:
         prompts = [_prompt_to_chatml(prompt) for prompt in prompts]
         num_procs = num_procs or 4
@@ -164,6 +166,7 @@ def _openai_completion_helper(
         sleep_time: int = 2,
         openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
         openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
+        openai_api_base: Optional[str] = None,
         max_tokens: Optional[int] = 1000,
         top_p: Optional[float] = 1.0,
         temperature: Optional[float] = 0.7,
@@ -175,6 +178,9 @@ def _openai_completion_helper(
 
     if openai_api_keys is not None:
         openai.api_key = random.choice(openai_api_keys)
+
+    # set api base
+    openai.api_base = openai_api_base if openai_api_base is not None else DEFAULT_OPENAI_API_BASE
 
     # copy shared_kwargs to avoid modifying it
     kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
