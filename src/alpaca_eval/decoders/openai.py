@@ -18,6 +18,8 @@ from .. import utils, constants
 
 __all__ = ["openai_completions"]
 
+DEFAULT_OPENAI_API_BASE = openai.api_base
+
 
 def openai_completions(
         prompts: Sequence[str],
@@ -178,7 +180,7 @@ def _openai_completion_helper(
         openai.api_key = random.choice(openai_api_keys)
 
     # set api base
-    openai.api_base = openai_api_base if openai_api_base is not None else 'https://api.openai.com/v1'
+    openai.api_base = openai_api_base if openai_api_base is not None else DEFAULT_OPENAI_API_BASE
 
     # copy shared_kwargs to avoid modifying it
     kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
