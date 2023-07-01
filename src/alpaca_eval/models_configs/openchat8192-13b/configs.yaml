@@ -13,3 +13,4 @@ openchat8192-13b:
     temperature: 0.7
 
   pretty_name: "OpenChat8192-13B"
+  link: "https://huggingface.co/openchat/openchat_8192"

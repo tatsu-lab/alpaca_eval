@@ -13,3 +13,4 @@ opencoderplus-15b:
     temperature: 0.7
 
   pretty_name: "OpenCoderPlus-15B"
+  link: "https://huggingface.co/openchat/opencoderplus"
