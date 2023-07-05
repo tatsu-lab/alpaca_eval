@@ -118,12 +118,13 @@ def huggingface_local_completions(
 
     default_kwargs = dict(
         do_sample=do_sample,
-        model_kwargs=model_kwargs,
+        model_kwargs={k: v for k, v in model_kwargs.items() if k != "trust_remote_code"},
         batch_size=batch_size,
     )
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
-    pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs)
+    pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs,
+                                     trust_remote_code=model_kwargs.get("trust_remote_code", False))
 
     ## compute and log the time for completions
     prompts_dataset = ListDataset(prompts)
