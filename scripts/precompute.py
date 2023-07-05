@@ -1,5 +1,8 @@
-from alpaca_eval import utils, metrics, annotators, constants, analyze, main as alpaca_main
 import fire
+
+from alpaca_eval import analyze, annotators, constants
+from alpaca_eval import main as alpaca_main
+from alpaca_eval import metrics, utils
 
 
 def precompute_on_all_human_leaderboard(

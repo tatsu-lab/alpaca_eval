@@ -1,13 +1,13 @@
 import logging
+import os
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence, Union
-import os
 
 import numpy as np
 import pandas as pd
 
-from .. import completion_parsers, utils, constants
+from .. import completion_parsers, constants, utils
 from ..decoders import get_fn_completions
 
 CURRENT_DIR = Path(__file__).parent

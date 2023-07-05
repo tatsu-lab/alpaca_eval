@@ -6,8 +6,9 @@ import multiprocessing
 import os
 import random
 from typing import Optional, Sequence
-import tqdm
+
 import cohere
+import tqdm
 from cohere import CohereError
 
 from .. import constants, utils

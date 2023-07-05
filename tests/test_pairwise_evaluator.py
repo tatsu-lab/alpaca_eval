@@ -1,8 +1,9 @@
-### test SinglePairwiseAnnotator
-import pytest
-import pandas as pd
 from unittest.mock import MagicMock
-from alpaca_eval.annotators import SinglePairwiseAnnotator, PairwiseAnnotator
+
+import pandas as pd
+import pytest
+
+from alpaca_eval.annotators import PairwiseAnnotator, SinglePairwiseAnnotator
 
 
 @pytest.fixture

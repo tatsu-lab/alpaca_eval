@@ -1,13 +1,13 @@
 import logging
 import sys
-
-import pandas as pd
-from typing import Any, Callable, Optional, Union
 from pathlib import Path
-import fire
+from typing import Any, Callable, Optional, Union
 
-from .types import AnyPath, AnyData
-from . import decoders, utils, metrics, annotators, constants, analyze
+import fire
+import pandas as pd
+
+from . import analyze, annotators, constants, decoders, metrics, utils
+from .types import AnyData, AnyPath
 
 CUR_DIR = Path(__file__).parent
 DEFAULT_CONFIGS = "alpaca_eval_gpt4"

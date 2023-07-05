@@ -4,17 +4,16 @@ import json
 import logging
 import math
 import multiprocessing
-import time
 import random
+import time
 from typing import Optional, Sequence
 
 import numpy as np
-import tqdm
-
 import openai
 import tiktoken
+import tqdm
 
-from .. import utils, constants
+from .. import constants, utils
 
 __all__ = ["openai_completions"]
 

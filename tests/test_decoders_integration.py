@@ -3,11 +3,11 @@
 import pytest
 
 from alpaca_eval import constants, utils
-from alpaca_eval.decoders.openai import openai_completions
 from alpaca_eval.decoders.anthropic import anthropic_completions
 from alpaca_eval.decoders.cohere import cohere_completions
 from alpaca_eval.decoders.huggingface_api import huggingface_api_completions
 from alpaca_eval.decoders.huggingface_local import huggingface_local_completions
+from alpaca_eval.decoders.openai import openai_completions
 
 
 def _get_formatted_prompts(model):

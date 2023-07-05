@@ -2,22 +2,19 @@
 import logging
 import warnings
 from contextlib import contextmanager
-
-import matplotlib
-import scipy
-from matplotlib.ticker import LogLocator
 from typing import Callable, Optional, Sequence
 
+import matplotlib
+import numpy as np
 import pandas as pd
+import scipy
+import seaborn as sns
 from matplotlib import MatplotlibDeprecationWarning
 from matplotlib import pyplot as plt
-from matplotlib.lines import Line2D
-
 from matplotlib import rc_params_from_file
+from matplotlib.lines import Line2D
+from matplotlib.ticker import LogLocator
 from scipy import stats
-import numpy as np
-from scipy import stats
-import seaborn as sns
 
 from . import constants, metrics
 
