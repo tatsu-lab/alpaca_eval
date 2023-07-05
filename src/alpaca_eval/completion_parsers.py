@@ -9,7 +9,7 @@ from . import utils as ann_utils
 
 
 def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]:
-    """Parse a single batch of completions, by returning a sequence of keys in the order in which outputs_to_match
+    r"""Parse a single batch of completions, by returning a sequence of keys in the order in which outputs_to_match
     was matched.
 
     Parameters
@@ -26,9 +26,9 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
     --------
     >>> completion = '\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best
     output for example 10:\n(a)\n\n### Best output for example 11:\n(a)'
-    >>> regex_parser(completion, {1: '\n\(a\)', 2: '\n\(b\)'})
+    >>> regex_parser(completion, {1: r"\n(a)", 2: "\n(b)"})
     [2, 1, 2, 1, 1]
-    >>> regex_parser(' (a)', {1: ' \(a\)', 2: ' \(b\)'})
+    >>> regex_parser(' (a)', {1: r" (a)", 2: r" (b)"})
     [1]
     >>> completion = '### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both
     outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output
@@ -61,7 +61,18 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
 
 # modified from: https://github.com/lm-sys/FastChat/blob/main/fastchat/eval/eval_gpt_review.py#L47
 # does not work with batched completions
-def lmsys_parser(completion):
+def lmsys_parser(completion: str):
+    """Parse a pair of scores from a single completion and returns which is better.
+
+    Examples
+    --------
+    >>> lmsys_parser("1, 7 ...")
+    [2]
+    >>> lmsys_parser("7, 1 more text")
+    [1]
+    >>> lmsys_parser("1, 1 ...")
+    [0]
+    """
     try:
         score_pair = completion.split("\n")[0]
         score_pair = score_pair.replace(",", " ")
@@ -83,6 +94,17 @@ def lmsys_parser(completion):
 
 
 def ranking_parser(completion):
+    """Parse a completion that contains a list of dictionary and returns the name of the preferred model.
+
+    Examples
+    --------
+    >>> ranking_parser("[{'model': 'model_1', 'rank': 1}, {'model': 'model_2', 'rank': 2}]")
+    [1]
+    >>> ranking_parser("[{'model': 'model_1', 'rank': 2}, {'model': 'model_2', 'rank': 1}]")
+    [2]
+    >>> ranking_parser("[{'model': 'model_1', 'rank': 3}, {'model': 'model_2', 'rank': 1}]")
+    [np.nan]
+    """
     try:
         if isinstance(completion, str):
             ordered_completions = ast.literal_eval(completion)
