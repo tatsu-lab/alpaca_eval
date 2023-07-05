@@ -11,6 +11,7 @@ airoboros 65B,73.91304347826086,https://huggingface.co/jondurbin/airoboros-65b-g
 airoboros 33B,73.29192546583852,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,community
 Guanaco 65B,71.80124223602485,https://huggingface.co/timdettmers/guanaco-65b,minimal
 Vicuna 13B,70.43478260869566,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,minimal
+Baize-v2 13B,66.95652173913044,https://huggingface.co/project-baize/baize-v2-13b,community
 LLaMA 33B OASST RLHF,66.52173913043478,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,minimal
 Minotaur 13B,66.02484472049689,https://huggingface.co/openaccess-ai-collective/minotaur-13b-fixed,community
 Guanaco 33B,65.96273291925466,https://huggingface.co/timdettmers/guanaco-33b,verified
