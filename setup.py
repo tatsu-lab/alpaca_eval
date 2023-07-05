@@ -18,7 +18,7 @@ PACKAGES_ANALYSIS = [
     "jupyterlab"
 ]
 PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "scipy"]
-PACKAGES_ALL_API = ["anthropic<=0.2.10", "huggingface_hub", "cohere"]
+PACKAGES_ALL_API = ["anthropic", "huggingface_hub", "cohere"]
 PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
 
 setuptools.setup(
