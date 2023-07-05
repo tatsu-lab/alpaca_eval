@@ -113,7 +113,7 @@ class Analyzer:
         >>> df_crossannotations = analyzer.df_gold_crossannotations.head(8).copy()
         >>> df_crossannotations["preference"] = [1] * 4 + [2,2,2,1]
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
-        >>>                                   n_majority_vote_1=1,  n_majority_vote_2=1)
+        ...                                   n_majority_vote_1=1,  n_majority_vote_2=1)
         accuracy          0.750000
         sem_samples       0.250000
         counts            2.000000
@@ -242,8 +242,9 @@ class Analyzer:
             df["best_output_length"] = df["best_output"].apply(len)
             df["worse_output_length"] = df["worse_output"].apply(len)
             # Step 2: Create a new column indicating whether one output is (significantly) longer than the other
-            df["one_is_longer"] = (df["best_output_length"] - df[
-                "worse_output_length"]).abs() > significant_delta_length
+            df["one_is_longer"] = (
+                                          df["best_output_length"] - df["worse_output_length"]
+                                  ).abs() > significant_delta_length
             df["is_prefer_longer"] = df["best_output_length"] > df["worse_output_length"]
             # Step 3: Count the number of times you prefer the longer output
             prefer_longer = df[df["one_is_longer"] & df["is_prefer_longer"]].shape[0]
@@ -253,7 +254,8 @@ class Analyzer:
             probability_prefer_longer = prefer_longer / total_one_is_longer
 
             percentage_longer = (
-                    (df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]).mean()
+                    (df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]
+            ).mean()
 
         except Exception as e:
             logging.warning(f"Could not compute length biases: {e}")
@@ -286,15 +288,15 @@ class Analyzer:
             # Step 5: Calculate the probability
             probability_prefer_list = prefer_best_either_list / total_either_list
 
-            percentage_longer = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
+            percentage_list = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
         except Exception as e:
             logging.warning(f"Could not compute list biases: {e}")
             probability_prefer_list = np.nan
-            percentage_longer = np.nan
+            percentage_list = np.nan
 
         return dict(
             probability_prefer_list=probability_prefer_list,
-            percentage_longer=percentage_longer,
+            percentage_list=percentage_list,
         )
 
     def _select_n_annotations(self, df, n_annotators=None, is_rm_less_than: bool = True):
@@ -347,8 +349,9 @@ class Analyzer:
         )
 
 
-def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = None,
-                         is_single_annotator: bool = False, **kwargs):
+def get_crossannotations(
+        analyzer, Annotator, max_instances: Optional[int] = None, is_single_annotator: bool = False, **kwargs
+):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
     n_crossannotations = 1 if is_single_annotator else analyzer.n_annotators
     all_annotations = []
@@ -380,8 +383,9 @@ def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **
 def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     """Gets the metrics for an annotator given its crossannotations."""
     all_metrics = dict()
-    all_metrics["Human agreement [%]"] = \
-        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
+    all_metrics["Human agreement [%]"] = (
+            analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
+    )
     all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
     all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
 
@@ -399,8 +403,7 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
         except:
             all_metrics["Variance"] = np.nan
 
-    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)[
-        "probability_prefer_longer"]
+    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)["probability_prefer_longer"]
     all_metrics["Proba. prefer lists"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
     all_metrics["Proba. prefer 1"] = 2 - df_crossannotations["preference"].mean()
     all_metrics["# parsed"] = len(df_crossannotations.preference.dropna())

@@ -246,13 +246,16 @@ def _requires_chatml(model: str) -> bool:
 
 
 def _prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token: str = "<|im_end|>"):
-    """Convert a text prompt to ChatML formal
+    r"""Convert a text prompt to ChatML formal
 
     Examples
     --------
-    >>> prompt = "<|im_start|>system\nYou are a helpful assistant.\n<|im_end|>\n<|im_start|>system
-    name=example_user\nKnock knock.\n<|im_end|>\n<|im_start|>system name=example_assistant\nWho's
-    there?\n<|im_end|>\n<|im_start|>user\nOrange.\n<|im_end|>"
+    >>> prompt = (
+    ... "<|im_start|>system\n"
+    ... "You are a helpful assistant.\n<|im_end|>\n"
+    ... "<|im_start|>system name=example_user\nKnock knock.\n<|im_end|>\n<|im_start|>system name=example_assistant\n"
+    ... "Who's there?\n<|im_end|>\n<|im_start|>user\nOrange.\n<|im_end|>"
+    ... )
     >>> print(prompt)
     <|im_start|>system
     You are a helpful assistant.
@@ -267,10 +270,10 @@ def _prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token:
     Orange.
     <|im_end|>
     >>> _prompt_to_chatml(prompt)
-    [{'role': 'system', 'content': 'You are a helpful assistant.'},
-     {'role': 'user', 'content': 'Knock knock.'},
-     {'role': 'assistant', 'content': "Who's there?"},
-     {'role': 'user', 'content': 'Orange.'}]
+    [{'content': 'You are a helpful assistant.', 'role': 'system'},
+      {'content': 'Knock knock.', 'role': 'system', 'name': 'example_user'},
+      {'content': "Who's there?", 'role': 'system', 'name': 'example_assistant'},
+      {'content': 'Orange.', 'role': 'user'}]
     """
     prompt = prompt.strip()
     assert prompt.startswith(start_token)
@@ -299,7 +302,7 @@ def _prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token:
 
 def _string_to_dict(to_convert):
     """Converts a string with equal signs to dictionary. E.g.
-    >>> string_to_dict(" name=user university=stanford")
+    >>> _string_to_dict(" name=user university=stanford")
     {'name': 'user', 'university': 'stanford'}
     """
     return {s.split("=", 1)[0]: s.split("=", 1)[1] for s in to_convert.split(" ") if len(s) > 0}

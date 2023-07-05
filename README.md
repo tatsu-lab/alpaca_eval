@@ -945,7 +945,7 @@ the correlation between the win-rates of the 22 models as evaluated by the human
 Note that this is arguably a better way of selecting an automatic evaluator than using "human agreement [%]" but is
 expensive given that it requires 18K
 annotations.
-The plot below shows such correlation for the `claude` evaluator.
+The plot below shows such correlation for the `alpaca_eval_gpt4` evaluator.
 
 <p float="left" align="middle">
 <img src="figures/plot_winrate_correlations_alpaca_eval.png" alt="Correlation between humans and alpaca_eval_gpt4" width="400"/>
