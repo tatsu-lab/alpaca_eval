@@ -50,21 +50,21 @@ def huggingface_api_completions(
     else:
         logging.info(f"Using `huggingface_api_completions` on {n_examples} prompts using {model_name}.")
 
-    inference = InferenceApi(model_name, task="text-generation", token=constants.HUGGINGFACEHUB_API_TOKEN, gpu=gpu)
+    inference = InferenceApi(
+        model_name,
+        task="text-generation",
+        token=constants.HUGGINGFACEHUB_API_TOKEN,
+        gpu=gpu,
+    )
 
     default_kwargs = dict(do_sample=do_sample, options=dict(wait_for_model=True), return_full_text=False)
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
 
     with utils.Timer() as t:
-        partial_completion_helper = functools.partial(inference_helper,
-                                                      inference=inference,
-                                                      params=default_kwargs)
+        partial_completion_helper = functools.partial(inference_helper, inference=inference, params=default_kwargs)
         if num_procs == 1:
-            completions = [
-                partial_completion_helper(inputs=prompt) for prompt in
-                tqdm.tqdm(prompts, desc="prompts")
-            ]
+            completions = [partial_completion_helper(prompt) for prompt in tqdm.tqdm(prompts, desc="prompts")]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 completions = list(
@@ -76,9 +76,7 @@ def huggingface_api_completions(
                 )
     logging.info(f"Time for {n_examples} completions: {t}")
 
-    completions = [
-        completion[0]["generated_text"] for completion in completions
-    ]
+    completions = [completion["generated_text"] for completion in completions]
 
     # unclear pricing
     price = [np.nan] * len(completions)
@@ -97,12 +95,13 @@ def inference_helper(prompt: str, inference, params, n_retries=100, waiting_time
                 time.sleep(waiting_time)
             elif "Input validation error" in error and "max_new_tokens" in error:
                 params["max_new_tokens"] = int(params["max_new_tokens"] * 0.8)
-                logging.warning(f"`max_new_tokens` too large. Reducing target length to {params['max_tokens']}, "
-                                f"Retrying...")
+                logging.warning(
+                    f"`max_new_tokens` too large. Reducing target length to {params['max_tokens']}, " f"Retrying..."
+                )
                 if params["max_new_tokens"] == 0:
                     raise ValueError(f"Error in inference. Full error: {error}")
             else:
                 raise ValueError(f"Error in inference. Full error: {error}")
         else:
-            return output
+            return output[0]
     raise ValueError(f"Error in inference. We tried {n_retries} times and failed.")
