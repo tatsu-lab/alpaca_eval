@@ -16,6 +16,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 import datasets
 import numpy as np
 import pandas as pd
+import pkg_resources
 import yaml
 
 from . import constants
@@ -254,6 +255,11 @@ def check_imports(modules: Sequence[str], to_use: str = "this fnction"):
         if module not in sys.modules:
             error = f"You need {modules} to use {to_use}. Try `pip install {' '.join(modules)}`."
             raise ImportError(error)
+
+
+def check_pkg_atleast_version(package, atleast_version):
+    curr_version = pkg_resources.get_distribution(package).version
+    return pkg_resources.parse_version(curr_version) > pkg_resources.parse_version(atleast_version)
 
 
 def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs):
