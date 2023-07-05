@@ -113,7 +113,7 @@ class Analyzer:
         >>> df_crossannotations = analyzer.df_gold_crossannotations.head(8).copy()
         >>> df_crossannotations["preference"] = [1] * 4 + [2,2,2,1]
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
-        >>>                                   n_majority_vote_1=1,  n_majority_vote_2=1)
+        ...                                   n_majority_vote_1=1,  n_majority_vote_2=1)
         accuracy          0.750000
         sem_samples       0.250000
         counts            2.000000
@@ -286,15 +286,15 @@ class Analyzer:
             # Step 5: Calculate the probability
             probability_prefer_list = prefer_best_either_list / total_either_list
 
-            percentage_longer = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
+            percentage_list = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
         except Exception as e:
             logging.warning(f"Could not compute list biases: {e}")
             probability_prefer_list = np.nan
-            percentage_longer = np.nan
+            percentage_list = np.nan
 
         return dict(
             probability_prefer_list=probability_prefer_list,
-            percentage_longer=percentage_longer,
+            percentage_list=percentage_list,
         )
 
     def _select_n_annotations(self, df, n_annotators=None, is_rm_less_than: bool = True):
