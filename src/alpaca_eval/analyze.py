@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 from . import constants, utils
-from .types import AnyPath, AnyData
+from .types import AnyData, AnyPath
 
 
 class Analyzer:

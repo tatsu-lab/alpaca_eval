@@ -3,18 +3,14 @@ from typing import Optional, Sequence
 
 import numpy as np
 import torch
-from datasets import Dataset
-from tqdm import tqdm, trange
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-)
 import transformers
+from datasets import Dataset
 from peft import PeftModel
-from .. import utils, constants
-
 from torch.utils.data import Dataset
-from tqdm import tqdm
+from tqdm import tqdm, trange
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from .. import constants, utils
 
 __all__ = ["huggingface_local_completions"]
 

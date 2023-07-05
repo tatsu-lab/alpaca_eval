@@ -6,9 +6,9 @@ import random
 import time
 from typing import Optional, Sequence
 
+import anthropic
 import numpy as np
 import tqdm
-import anthropic
 
 from .. import constants, utils
 

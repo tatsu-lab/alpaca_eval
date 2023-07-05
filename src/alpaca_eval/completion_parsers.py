@@ -1,8 +1,9 @@
 import ast
 import copy
 import logging
-from typing import Any
 import re
+from typing import Any
+
 import numpy as np
 
 from . import utils as ann_utils

@@ -5,8 +5,8 @@ import time
 from typing import Sequence
 
 import numpy as np
-from huggingface_hub.inference_api import InferenceApi
 import tqdm
+from huggingface_hub.inference_api import InferenceApi
 
 from .. import constants, utils
 

@@ -1,17 +1,14 @@
 """Runs all unit tests for the decoders."""
+import doctest
 import math
 
-from alpaca_eval.decoders.openai import (
-    openai_completions,
-    _prompt_to_chatml,
-    _string_to_dict,
-)
+import pytest
+from openai.openai_object import OpenAIObject
+
 from alpaca_eval.decoders.anthropic import anthropic_completions
 from alpaca_eval.decoders.cohere import cohere_completions
 from alpaca_eval.decoders.huggingface_api import huggingface_api_completions
-import doctest
-import pytest
-from openai.openai_object import OpenAIObject
+from alpaca_eval.decoders.openai import _prompt_to_chatml, _string_to_dict, openai_completions
 
 MOCKED_COMPLETION = "Mocked completion text"
 

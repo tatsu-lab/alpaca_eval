@@ -3,9 +3,9 @@ import copy
 import glob
 import itertools
 import logging
-import random
 import os
 import pathlib
+import random
 import re
 import sys
 import time

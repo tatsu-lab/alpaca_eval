@@ -4,12 +4,12 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 import pandas as pd
+import pytest
 import yaml
 
 from alpaca_eval import constants, main, utils
-from alpaca_eval.annotators import SinglePairwiseAnnotator, PairwiseAnnotator
+from alpaca_eval.annotators import PairwiseAnnotator, SinglePairwiseAnnotator
 
 
 @pytest.fixture
