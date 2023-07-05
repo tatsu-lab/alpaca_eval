@@ -31,15 +31,15 @@ class ListDataset(Dataset):
 
 
 def huggingface_local_completions(
-        prompts: Sequence[str],
-        model_name: str,
-        do_sample: bool = False,
-        batch_size: int = 1,
-        model_kwargs=None,
-        cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
-        is_fast_tokenizer: bool = True,
-        adapters_name: Optional[str] = None,
-        **kwargs,
+    prompts: Sequence[str],
+    model_name: str,
+    do_sample: bool = False,
+    batch_size: int = 1,
+    model_kwargs=None,
+    cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+    is_fast_tokenizer: bool = True,
+    adapters_name: Optional[str] = None,
+    **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
 
@@ -128,8 +128,13 @@ def huggingface_local_completions(
     )
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
-    pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs,
-                                     trust_remote_code=model_kwargs.get("trust_remote_code", False))
+    pipeline = transformers.pipeline(
+        task="text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        **default_kwargs,
+        trust_remote_code=model_kwargs.get("trust_remote_code", False),
+    )
 
     ## compute and log the time for completions
     prompts_dataset = ListDataset(prompts)
@@ -137,11 +142,11 @@ def huggingface_local_completions(
 
     with utils.Timer() as t:
         for out in tqdm(
-                pipeline(
-                    prompts_dataset,
-                    return_full_text=False,
-                    pad_token_id=tokenizer.pad_token_id,
-                )
+            pipeline(
+                prompts_dataset,
+                return_full_text=False,
+                pad_token_id=tokenizer.pad_token_id,
+            )
         ):
             completions.append(out[0]["generated_text"])
 

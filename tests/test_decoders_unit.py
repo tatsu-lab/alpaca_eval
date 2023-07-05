@@ -31,9 +31,7 @@ def test_openai_completions(mocker, mock_openai_completion):
         "alpaca_eval.decoders.openai._openai_completion_helper",
         return_value=[mock_openai_completion],
     )
-    result = openai_completions(
-        ["Prompt 1", "Prompt 2"], "text-davinci-003", batch_size=1
-    )
+    result = openai_completions(["Prompt 1", "Prompt 2"], "text-davinci-003", batch_size=1)
     _run_all_asserts_completions(result)
 
 
@@ -80,18 +78,12 @@ def _run_all_asserts_completions(result):
         assert result["price_per_example"][0] == result["price_per_example"][1]
         assert 0 <= result["price_per_example"][0] < 1e-2
     else:
-        assert math.isnan(result["price_per_example"][1]) == math.isnan(
-            result["price_per_example"][0]
-        )
+        assert math.isnan(result["price_per_example"][1]) == math.isnan(result["price_per_example"][0])
 
 
 def test_prompt_to_chatml():
-    doctest.run_docstring_examples(
-        _prompt_to_chatml, globals(), name="_prompt_to_chatml", verbose=True
-    )
+    doctest.run_docstring_examples(_prompt_to_chatml, globals(), name="_prompt_to_chatml", verbose=True)
 
 
 def test_string_to_dict():
-    doctest.run_docstring_examples(
-        _string_to_dict, globals(), name="_string_to_dict", verbose=True
-    )
+    doctest.run_docstring_examples(_string_to_dict, globals(), name="_string_to_dict", verbose=True)

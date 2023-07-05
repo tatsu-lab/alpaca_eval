@@ -22,9 +22,7 @@ def _get_formatted_prompts(model):
 def test_openai_completions_integration():
     prompts = _get_formatted_prompts("gpt4")
     print(prompts)
-    results = openai_completions(
-        prompts, model_name="gpt-3.5-turbo", tokens_to_avoid=["2", " 2", "2 "]
-    )
+    results = openai_completions(prompts, model_name="gpt-3.5-turbo", tokens_to_avoid=["2", " 2", "2 "])
     assert len(results["completions"]) == len(prompts)
     assert "4" in results["completions"][1]
     assert "2" not in results["completions"][0]
@@ -51,9 +49,7 @@ def test_cohere_completions_integration():
 @pytest.mark.slow
 def test_huggingface_api_completions_integration():
     prompts = _get_formatted_prompts("guanaco-7b")
-    results = huggingface_api_completions(
-        prompts, model_name="timdettmers/guanaco-33b-merged"
-    )
+    results = huggingface_api_completions(prompts, model_name="timdettmers/guanaco-33b-merged")
     assert len(results["completions"]) == len(prompts)
     assert "2" in results["completions"][0]
     assert "4" in results["completions"][1]
@@ -62,8 +58,6 @@ def test_huggingface_api_completions_integration():
 @pytest.mark.slow
 def test_huggingface_local_completions_integration():
     prompts = _get_formatted_prompts("text_davinci_003")  # nor formatting
-    results = huggingface_local_completions(
-        prompts, model_name="hf-internal-testing/tiny-random-gpt2"
-    )
+    results = huggingface_local_completions(prompts, model_name="hf-internal-testing/tiny-random-gpt2")
     assert len(results["completions"]) == len(prompts)
     # nothing to test because random model

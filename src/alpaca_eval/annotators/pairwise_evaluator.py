@@ -110,20 +110,13 @@ class PairwiseAnnotator:
         if caching_path == "auto":
             if isinstance(annotators_config, (str, Path, os.PathLike)):
                 stem = Path(annotators_config).stem
-                caching_path = (
-                    Path(annotators_config).parent
-                    / f"annotations_seed{seed}_{stem}.json"
-                )
+                caching_path = Path(annotators_config).parent / f"annotations_seed{seed}_{stem}.json"
                 logging.info(f"Saving annotations to `{caching_path}`.")
             else:
-                logging.warning(
-                    "caching_path cannot be 'auto' if annotators_config is not a path. Setting to None."
-                )
+                logging.warning("caching_path cannot be 'auto' if annotators_config is not a path. Setting to None.")
                 caching_path = None
         elif caching_path is not None:
-            logging.warning(
-                "Saving_path is given but not 'auto', make sure that it's different for different seeds."
-            )
+            logging.warning("Saving_path is given but not 'auto', make sure that it's different for different seeds.")
 
         self.seed = seed
         self.is_avoid_reannotations = is_avoid_reannotations
@@ -190,11 +183,7 @@ class PairwiseAnnotator:
         all_outputs = utils.convert_to_dataframe(all_outputs)
 
         if is_multisample_list:
-            all_outputs = (
-                all_outputs.explode("output")
-                .reset_index()
-                .rename(columns={"index": "sample_id"})
-            )
+            all_outputs = all_outputs.explode("output").reset_index().rename(columns={"index": "sample_id"})
             all_outputs["sample_id"] = all_outputs.groupby("sample_id").cumcount()
 
         if keys_to_sample_output_2 is None:
@@ -218,9 +207,7 @@ class PairwiseAnnotator:
             )
 
         # sample an output 2 for each output 1 that are different
-        df_to_annotate["output_2"] = df_to_annotate.groupby(
-            list(keys_to_sample_output_2)
-        )["output_1"].transform(
+        df_to_annotate["output_2"] = df_to_annotate.groupby(list(keys_to_sample_output_2))["output_1"].transform(
             lambda x: utils.random_derangement(x.values, seed=self.seed)
         )
 
@@ -228,9 +215,7 @@ class PairwiseAnnotator:
             n_pre_dedup = len(df_to_annotate)
             df_to_annotate = df_to_annotate.drop_duplicates(subset=self.input_keys)
             if len(df_to_annotate) != n_pre_dedup:
-                logging.info(
-                    f"Filtered unique instruction/input pairs: {n_pre_dedup} -> {len(df_to_annotate)}"
-                )
+                logging.info(f"Filtered unique instruction/input pairs: {n_pre_dedup} -> {len(df_to_annotate)}")
 
         if p_label_flip is not None:
             old_p_label_flip = self.p_label_flip
@@ -300,11 +285,7 @@ class PairwiseAnnotator:
             keys_to_merge += ["tmp_idx"]  # add a temporary index to merge on
 
         # find all the columns that are in both
-        other_same_cols = [
-            k
-            for k in outputs_1.columns
-            if k in outputs_2 and k not in (keys_to_merge + ["output"])
-        ]
+        other_same_cols = [k for k in outputs_1.columns if k in outputs_2 and k not in (keys_to_merge + ["output"])]
 
         df_to_annotate = pd.merge(
             outputs_1,
@@ -316,9 +297,7 @@ class PairwiseAnnotator:
         for c in other_same_cols:
             # if the columns are the same, we can drop the _2
             if df_to_annotate[c + "_1"].equals(df_to_annotate[c + "_2"]):
-                df_to_annotate = df_to_annotate.drop(columns=c + "_2").rename(
-                    columns={c + "_1": c}
-                )
+                df_to_annotate = df_to_annotate.drop(columns=c + "_2").rename(columns={c + "_1": c})
 
         if is_ordered:
             df_to_annotate = df_to_annotate.drop(columns="tmp_idx")
@@ -387,9 +366,7 @@ class PairwiseAnnotator:
 
         for c in self.other_keys_to_keep + ["preference"]:
             if c in df_to_annotate.columns:
-                logging.warning(
-                    f"""{c} column is already in the dataframe. We will overwrite it."""
-                )
+                logging.warning(f"""{c} column is already in the dataframe. We will overwrite it.""")
                 df_to_annotate[c] = np.nan
 
         # remove duplicates because you only need to annotate one of them
@@ -407,15 +384,11 @@ class PairwiseAnnotator:
 
         if self.is_avoid_reannotations:
             # merge the old annotations
-            df_to_annotate = self._merge_annotations(
-                df_to_annotate, self.df_annotations
-            )
+            df_to_annotate = self._merge_annotations(df_to_annotate, self.df_annotations)
 
         # adds random noise => avoids annotating examples that will be noised out.
         if self.p_label_flip:
-            logging.info(
-                f"Adding random noise to the labels p_label_flip={self.p_label_flip}."
-            )
+            logging.info(f"Adding random noise to the labels p_label_flip={self.p_label_flip}.")
             # if you have 25% change of flipping the label, you have 50% chance of selecting random label
             p_noise = self.p_label_flip * 2
             noisy_preference = df_to_annotate.apply(
@@ -446,30 +419,22 @@ class PairwiseAnnotator:
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(annotators_config)
         return {
-            name: self.SingleAnnotator(
-                seed=self.seed, base_dir=self.base_dir, **annotator_config
-            )
+            name: self.SingleAnnotator(seed=self.seed, base_dir=self.base_dir, **annotator_config)
             for name, annotator_config in annotators_config.items()
         }
 
-    def _annotate(
-        self, df_to_annotate: pd.DataFrame, **decoding_kwargs
-    ) -> pd.DataFrame:
+    def _annotate(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
         """Annotate the examples."""
 
         df_annotated = df_to_annotate
         for annotator in self.annotators.keys():
             # only annotate examples that have not been annotated yet
-            curr_idcs = (df_annotated["annotator"] == annotator) & df_annotated[
-                "preference"
-            ].isna()
+            curr_idcs = (df_annotated["annotator"] == annotator) & df_annotated["preference"].isna()
 
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
             # actual annotation
-            curr_annotated = self.annotators[annotator](
-                df_annotated.loc[curr_idcs, self.all_keys], **decoding_kwargs
-            )
+            curr_annotated = self.annotators[annotator](df_annotated.loc[curr_idcs, self.all_keys], **decoding_kwargs)
 
             df_annotated = self._merge_annotations(df_annotated, curr_annotated)
 
@@ -493,35 +458,25 @@ class PairwiseAnnotator:
         df_annotated = df_annotated[~df_annotated["preference"].isna()].copy()
 
         # try converting to int now that no nan
-        df_annotated["preference"] = pd.to_numeric(
-            df_annotated["preference"], downcast="integer", errors="ignore"
-        )
+        df_annotated["preference"] = pd.to_numeric(df_annotated["preference"], downcast="integer", errors="ignore")
 
         if "is_noisy_label" in df_annotated.columns:
             # dont' store noisy labels
-            df_annotated_to_store = df_annotated.query("is_noisy_label == False").drop(
-                columns=["is_noisy_label"]
-            )
+            df_annotated_to_store = df_annotated.query("is_noisy_label == False").drop(columns=["is_noisy_label"])
             df_annotated = df_annotated.drop(columns=["is_noisy_label"])
         else:
             df_annotated_to_store = df_annotated
 
-        other_keys_to_keep = [
-            c for c in self.other_keys_to_keep if c in df_annotated_to_store.columns
-        ]
+        other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_annotated_to_store.columns]
         all_keys_to_keep = self.all_keys + ["preference"] + other_keys_to_keep
         df_annotated_to_store = df_annotated_to_store[all_keys_to_keep]
 
         if self.df_annotations is None:
             df_annotations = df_annotated_to_store
         else:
-            df_annotations = pd.concat(
-                [self.df_annotations, df_annotated_to_store], axis=0, ignore_index=True
-            )
+            df_annotations = pd.concat([self.df_annotations, df_annotated_to_store], axis=0, ignore_index=True)
 
-        self.df_annotations = df_annotations.drop_duplicates(
-            subset=self.all_keys, keep="last"
-        )
+        self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys, keep="last")
 
         self.save()
 
@@ -532,13 +487,7 @@ class PairwiseAnnotator:
         # need to merge with df_to_annotate in case you dropped duplicates
         on = list(self.input_keys + self.output_keys)
         df_annotated = df_annotated[all_keys_to_keep]
-        df_to_annotate = df_to_annotate[
-            [
-                c
-                for c in df_to_annotate.columns
-                if c not in df_annotated.columns or c in on
-            ]
-        ]
+        df_to_annotate = df_to_annotate[[c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
         # need to remove all other columns before merging if not you will
         df_annotated = df_to_annotate.merge(df_annotated, on=on, how="outer")
 
@@ -554,9 +503,7 @@ class PairwiseAnnotator:
             # to make sure that we don't overwrite the annotations we load again from file (ideally would use a DB)
             self._refresh_annotations_()
             if not self.is_store_missing_preferences:
-                self.df_annotations = self.df_annotations[
-                    ~self.df_annotations["preference"].isna()
-                ]
+                self.df_annotations = self.df_annotations[~self.df_annotations["preference"].isna()]
             self.df_annotations.to_json(path, orient="records", indent=2)
 
     def _refresh_annotations_(self):
@@ -576,16 +523,12 @@ class PairwiseAnnotator:
                 logging.info(f"Loading all annotations from {path}.")
                 self.df_annotations = pd.read_json(path)
 
-    def _merge_annotations(
-        self, df_to_annotate: pd.DataFrame, df_partially_annotated: pd.DataFrame
-    ) -> pd.DataFrame:
+    def _merge_annotations(self, df_to_annotate: pd.DataFrame, df_partially_annotated: pd.DataFrame) -> pd.DataFrame:
         """Merge (partial) annotations with the original df to keep the same order and avoid duplicates annotations."""
         if df_partially_annotated is None or df_partially_annotated.empty:
             return df_to_annotate
 
-        other_keys_to_keep = [
-            c for c in self.other_keys_to_keep if c in df_partially_annotated.columns
-        ]
+        other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_partially_annotated.columns]
 
         df_to_annotate = df_to_annotate.merge(
             df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep],
@@ -596,13 +539,8 @@ class PairwiseAnnotator:
 
         # if columns were in both dataframes, try to merge them
         for c in other_keys_to_keep + ["preference"]:
-            if (
-                f"{c}_old" in df_to_annotate.columns
-                and f"{c}_new" in df_to_annotate.columns
-            ):
-                df_to_annotate[c] = df_to_annotate[c + "_old"].fillna(
-                    df_to_annotate[c + "_new"]
-                )
+            if f"{c}_old" in df_to_annotate.columns and f"{c}_new" in df_to_annotate.columns:
+                df_to_annotate[c] = df_to_annotate[c + "_old"].fillna(df_to_annotate[c + "_new"])
                 df_to_annotate = df_to_annotate.drop(columns=[c + "_old", c + "_new"])
 
         return df_to_annotate
@@ -667,9 +605,7 @@ class SinglePairwiseAnnotator:
         if isinstance(fn_completion_parser, str):
             fn_completion_parser = getattr(completion_parsers, fn_completion_parser)
         completion_parser_kwargs = completion_parser_kwargs or {}
-        self.fn_completion_parser = partial(
-            fn_completion_parser, **completion_parser_kwargs
-        )
+        self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
 
         self.is_randomize_output_order = is_randomize_output_order
         self.fn_completions = get_fn_completions(fn_completions)
@@ -704,9 +640,7 @@ class SinglePairwiseAnnotator:
         """
         if prompt_template is None:
             prompt_template = self.prompt_template
-        return utils.make_prompts(
-            df=df_to_annotate, template=prompt_template, batch_size=self.batch_size
-        )
+        return utils.make_prompts(df=df_to_annotate, template=prompt_template, batch_size=self.batch_size)
 
     def __call__(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
         """Annotates the given examples.
@@ -730,13 +664,9 @@ class SinglePairwiseAnnotator:
         # prompts and completions here will not be the same length as the dataframe due to batching
         prompts, df_to_annotate = self.make_prompts(df_to_annotate)
 
-        completions = self.fn_completions(
-            prompts=prompts, **self.completions_kwargs, **decoding_kwargs
-        )
+        completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
-        df_to_annotate["preference"] = self.parse_completions(
-            completions=completions["completions"]
-        )
+        df_to_annotate["preference"] = self.parse_completions(completions=completions["completions"])
         for k, v in completions.items():
             if k != "completions":
                 if len(df_to_annotate["preference"]) == len(v) * self.batch_size:
@@ -762,9 +692,7 @@ class SinglePairwiseAnnotator:
                 ),
                 axis=1,
             )
-            df_to_annotate = utils.shuffle_pairwise_preferences(
-                df_to_annotate, df_to_annotate["is_switched_outputs"]
-            )
+            df_to_annotate = utils.shuffle_pairwise_preferences(df_to_annotate, df_to_annotate["is_switched_outputs"])
 
         if self.is_shuffle:
             df_to_annotate = df_to_annotate.sample(frac=1, random_state=self.seed)
@@ -790,9 +718,7 @@ class SinglePairwiseAnnotator:
         """Postprocess the annotated examples."""
 
         # remove padding examples when using batch_size > 1
-        df_annotated = df_annotated.query("is_padding == False").drop(
-            columns=["is_padding"]
-        )
+        df_annotated = df_annotated.query("is_padding == False").drop(columns=["is_padding"])
 
         arr_is_na = df_annotated["preference"].isna()
         if arr_is_na.any():
@@ -806,9 +732,7 @@ class SinglePairwiseAnnotator:
 
         if self.is_randomize_output_order:
             # unshuffles output 1 and output 2. For binary preference, unshuffling is equivalent to reshuffling
-            df_annotated = utils.shuffle_pairwise_preferences(
-                df_annotated, df_annotated["is_switched_outputs"]
-            )
+            df_annotated = utils.shuffle_pairwise_preferences(df_annotated, df_annotated["is_switched_outputs"])
             df_annotated = df_annotated.drop(columns=["is_switched_outputs"])
 
         return df_annotated

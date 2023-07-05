@@ -16,11 +16,11 @@ __all__ = ["cohere_completions"]
 
 
 def cohere_completions(
-        prompts: Sequence[str],
-        model_name="command",
-        mode = "instruct",
-        num_procs: int = 5,
-        **decoding_kwargs,
+    prompts: Sequence[str],
+    model_name="command",
+    mode="instruct",
+    num_procs: int = 5,
+    **decoding_kwargs,
 ) -> dict[str, list]:
     """Decode with Cohere API.
 
@@ -71,13 +71,13 @@ def cohere_completions(
 
 
 def _cohere_completion_helper(
-        prompt: str,
-        cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
-        max_tokens: Optional[int] = 1000,
-        temperature: Optional[float] = 0.7,
-        max_tries = 5,
-        mode = "instruct",
-        **kwargs,
+    prompt: str,
+    cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
+    max_tokens: Optional[int] = 1000,
+    temperature: Optional[float] = 0.7,
+    max_tries=5,
+    mode="instruct",
+    **kwargs,
 ) -> str:
     cohere_api_key = random.choice(cohere_api_keys)
     client = cohere.Client(cohere_api_key)
@@ -104,5 +104,4 @@ def _cohere_completion_helper(
         except CohereError as e:
             print(f"Try #{trynum+1}/{max_tries}: Error running prompt {repr(prompt)}: {e}")
 
-    return " " # placeholder response for errors, doesn't allow empty string
- 
+    return " "  # placeholder response for errors, doesn't allow empty string

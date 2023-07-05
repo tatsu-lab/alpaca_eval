@@ -14,22 +14,22 @@ DEFAULT_CONFIGS = "alpaca_eval_gpt4"
 
 
 def evaluate(
-        model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
-        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        name: Optional[str] = None,
-        output_path: Optional[Union[AnyPath, str]] = "auto",
-        precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
-        is_overwrite_leaderboard: bool = False,
-        leaderboard_mode_to_print: Optional[str] = "minimal",
-        current_leaderboard_mode: str = "community",
-        is_return_instead_of_print: bool = False,
-        fn_metric: Union[str, callable] = "pairwise_to_winrate",
-        sort_by: str = "win_rate",
-        is_cache_leaderboard: Optional[bool] = None,
-        max_instances: Optional[int] = None,
-        annotation_kwargs: Optional[dict[str, Any]] = None,
-        **annotator_kwargs,
+    model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
+    reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    name: Optional[str] = None,
+    output_path: Optional[Union[AnyPath, str]] = "auto",
+    precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+    is_overwrite_leaderboard: bool = False,
+    leaderboard_mode_to_print: Optional[str] = "minimal",
+    current_leaderboard_mode: str = "community",
+    is_return_instead_of_print: bool = False,
+    fn_metric: Union[str, callable] = "pairwise_to_winrate",
+    sort_by: str = "win_rate",
+    is_cache_leaderboard: Optional[bool] = None,
+    max_instances: Optional[int] = None,
+    annotation_kwargs: Optional[dict[str, Any]] = None,
+    **annotator_kwargs,
 ):
     """Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
 
@@ -98,8 +98,8 @@ def evaluate(
         Additional arguments to pass to `PairwiseAnnotator`.
     """
     if (
-            isinstance(current_leaderboard_mode, str)
-            and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES
+        isinstance(current_leaderboard_mode, str)
+        and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES
     ):
         raise ValueError(f"current_leaderboard_mode should be one of {constants.ORDERED_LEADERBOARD_MODES}")
 
@@ -175,14 +175,14 @@ def evaluate(
 
 
 def evaluate_from_model(
-        model_configs: Union[AnyPath, dict],
-        reference_model_configs: Optional[Union[AnyPath, dict]] = None,
-        evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        output_path: AnyPath = "auto",
-        max_instances: int = None,
-        is_strip_output: bool = True,
-        **kwargs,
+    model_configs: Union[AnyPath, dict],
+    reference_model_configs: Optional[Union[AnyPath, dict]] = None,
+    evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    output_path: AnyPath = "auto",
+    max_instances: int = None,
+    is_strip_output: bool = True,
+    **kwargs,
 ):
     """Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes
     generating from
@@ -277,14 +277,14 @@ def evaluate_from_model(
 
 
 def make_leaderboard(
-        leaderboard_path: AnyPath,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
-        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-        fn_add_to_leaderboard: Callable = "evaluate",
-        leaderboard_mode: str = "verified",
-        is_return_instead_of_print: bool = False,
-        **kwargs,
+    leaderboard_path: AnyPath,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
+    reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    fn_add_to_leaderboard: Callable = "evaluate",
+    leaderboard_mode: str = "verified",
+    is_return_instead_of_print: bool = False,
+    **kwargs,
 ):
     """Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
 
@@ -360,19 +360,18 @@ def make_leaderboard(
 
 
 def analyze_evaluators(
-        annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
-        Annotator=annotators.PairwiseAnnotator,
-        analyzer_kwargs=None,
-        precomputed_leaderboard: Optional[Union[AnyPath, AnyData]] = CUR_DIR
-                                                                     /
-                                                                     "leaderboards/evaluators/evaluators_leaderboard.csv",
-        is_save_leaderboard: bool = False,
-        is_return_instead_of_print: bool = False,
-        is_overwrite_leaderboard: bool = False,
-        max_instances: Optional[int] = None,
-        is_single_annotator: bool = False,
-        leaderboard_mode_to_print: str = "minimal",
-        current_leaderboard_mode: str = "minimal",
+    annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
+    Annotator=annotators.PairwiseAnnotator,
+    analyzer_kwargs=None,
+    precomputed_leaderboard: Optional[Union[AnyPath, AnyData]] = CUR_DIR
+    / "leaderboards/evaluators/evaluators_leaderboard.csv",
+    is_save_leaderboard: bool = False,
+    is_return_instead_of_print: bool = False,
+    is_overwrite_leaderboard: bool = False,
+    max_instances: Optional[int] = None,
+    is_single_annotator: bool = False,
+    leaderboard_mode_to_print: str = "minimal",
+    current_leaderboard_mode: str = "minimal",
 ):
     """Analyze an evaluator and populates the evaluators leaderboard (agreement with human, speed, price,...).
 

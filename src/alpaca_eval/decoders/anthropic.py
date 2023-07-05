@@ -16,10 +16,10 @@ __all__ = ["anthropic_completions"]
 
 
 def anthropic_completions(
-        prompts: Sequence[str],
-        model_name="claude-v1",
-        num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
-        **decoding_kwargs,
+    prompts: Sequence[str],
+    model_name="claude-v1",
+    num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
+    **decoding_kwargs,
 ) -> dict[str, list]:
     """Decode with Anthropic API.
 
@@ -72,13 +72,13 @@ def anthropic_completions(
 
 
 def _anthropic_completion_helper(
-        prompt: str,
-        sleep_time: int = 2,
-        anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
-        max_tokens_to_sample: Optional[int] = 1000,
-        temperature: Optional[float] = 0.7,
-        n_retries: Optional[int] = 3,
-        **kwargs,
+    prompt: str,
+    sleep_time: int = 2,
+    anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
+    max_tokens_to_sample: Optional[int] = 1000,
+    temperature: Optional[float] = 0.7,
+    n_retries: Optional[int] = 3,
+    **kwargs,
 ) -> str:
     anthropic_api_key = random.choice(anthropic_api_keys)
     if not utils.check_pkg_atleast_version("anthropic", "0.3.0"):
@@ -115,7 +115,7 @@ def _get_price_per_token(model):
     # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
     if "claude-v1" in model:
         return (
-                11.02 / 1e6
+            11.02 / 1e6
         )  # that's not completely true because decoding is 32.68 but close enough given that most is context
     else:
         logging.warning(f"Unknown model {model} for computing price per token.")

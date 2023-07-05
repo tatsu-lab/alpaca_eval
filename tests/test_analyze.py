@@ -12,9 +12,7 @@ import pytest
 
 @pytest.fixture
 def analyzer():
-    return analyze.Analyzer(
-        n_annotators=4, gold_crossannotations=RECORDS, gold_annotations=None
-    )
+    return analyze.Analyzer(n_annotators=4, gold_crossannotations=RECORDS, gold_annotations=None)
 
 
 def test_agreement_of_annotations(analyzer):

@@ -108,10 +108,7 @@ def test_evaluate_print(model_outputs, reference_outputs, capsys, expected_annot
         printed_string = re.sub(r"\s+", " ", printed_string)
 
         print(printed_string)
-        assert (
-            printed_string
-            == "win_rate standard_error n_total Current model 0.00 0.00 3"
-        )
+        assert printed_string == "win_rate standard_error n_total Current model 0.00 0.00 3"
 
 
 def test_evaluate_basic(model_outputs, reference_outputs, expected_annotations):
@@ -146,8 +143,7 @@ def test_evaluate_advanced(model_outputs, reference_outputs, expected_annotation
             current_leaderboard_mode=current_leaderboard_mode,
             name=name,
             max_instances=2,
-            precomputed_leaderboard=constants.ALPACAEVAL_LEADERBOARD_PATHS
-            / "alpaca_eval_gpt4_leaderboard.csv",
+            precomputed_leaderboard=constants.ALPACAEVAL_LEADERBOARD_PATHS / "alpaca_eval_gpt4_leaderboard.csv",
         )
         assert annotations == expected_annotations[:2]
         assert isinstance(df_leaderboard, pd.DataFrame)
