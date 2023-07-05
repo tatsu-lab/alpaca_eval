@@ -38,13 +38,13 @@ class Analyzer:
     """
 
     def __init__(
-            self,
-            gold_crossannotations: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_GOLD_CROSSANNOTATIONS,
-            gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = constants.ALPACAFARM_GOLD_ANNOTATIONS,
-            keys=("instruction", "output_1", "output_2"),
-            n_annotators: Optional[int] = 4,
-            seed: Optional[int] = 0,
-            **annotator_kwargs,
+        self,
+        gold_crossannotations: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_GOLD_CROSSANNOTATIONS,
+        gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = constants.ALPACAFARM_GOLD_ANNOTATIONS,
+        keys=("instruction", "output_1", "output_2"),
+        n_annotators: Optional[int] = 4,
+        seed: Optional[int] = 0,
+        **annotator_kwargs,
     ):
         self.keys = list(keys)
         self.n_annotators = n_annotators
@@ -65,12 +65,12 @@ class Analyzer:
         self.seed = seed
 
     def agreement_of_annotations(
-            self,
-            annotations_1: Union[pd.DataFrame, str],
-            annotations_2: Optional[Union[pd.DataFrame, str]] = "gold_crossannotations",
-            n_majority_vote_1: Optional[int] = 1,
-            n_majority_vote_2: Optional[int] = None,
-            is_same_annotator: Optional[bool] = None,
+        self,
+        annotations_1: Union[pd.DataFrame, str],
+        annotations_2: Optional[Union[pd.DataFrame, str]] = "gold_crossannotations",
+        n_majority_vote_1: Optional[int] = 1,
+        n_majority_vote_2: Optional[int] = None,
+        is_same_annotator: Optional[bool] = None,
     ) -> pd.Series:
         """Compare (cross)annotations from two annotators.
 
@@ -230,7 +230,7 @@ class Analyzer:
         return 1 - agreement["accuracy"]
 
     def get_length_biases(
-            self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
+        self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
     ) -> dict[str, float]:
         """Estimate the biases for longer sentences."""
         try:
@@ -243,8 +243,8 @@ class Analyzer:
             df["worse_output_length"] = df["worse_output"].apply(len)
             # Step 2: Create a new column indicating whether one output is (significantly) longer than the other
             df["one_is_longer"] = (
-                                          df["best_output_length"] - df["worse_output_length"]
-                                  ).abs() > significant_delta_length
+                df["best_output_length"] - df["worse_output_length"]
+            ).abs() > significant_delta_length
             df["is_prefer_longer"] = df["best_output_length"] > df["worse_output_length"]
             # Step 3: Count the number of times you prefer the longer output
             prefer_longer = df[df["one_is_longer"] & df["is_prefer_longer"]].shape[0]
@@ -254,7 +254,7 @@ class Analyzer:
             probability_prefer_longer = prefer_longer / total_one_is_longer
 
             percentage_longer = (
-                    (df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]
+                (df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]
             ).mean()
 
         except Exception as e:
@@ -334,9 +334,9 @@ class Analyzer:
         return annotations.groupby(self.keys)["preference"].aggregate(_random_mode)
 
     def _agreement_of_single_annotations(
-            self,
-            df_annotations_1: pd.DataFrame,
-            df_annotations_2: pd.DataFrame,
+        self,
+        df_annotations_1: pd.DataFrame,
+        df_annotations_2: pd.DataFrame,
     ):
         out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
         out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
@@ -350,7 +350,7 @@ class Analyzer:
 
 
 def get_crossannotations(
-        analyzer, Annotator, max_instances: Optional[int] = None, is_single_annotator: bool = False, **kwargs
+    analyzer, Annotator, max_instances: Optional[int] = None, is_single_annotator: bool = False, **kwargs
 ):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
     n_crossannotations = 1 if is_single_annotator else analyzer.n_annotators
@@ -384,7 +384,7 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     """Gets the metrics for an annotator given its crossannotations."""
     all_metrics = dict()
     all_metrics["Human agreement [%]"] = (
-            analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
+        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
     )
     all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
     all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000

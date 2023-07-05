@@ -22,15 +22,15 @@ DEFAULT_OPENAI_API_BASE = openai.api_base
 
 
 def openai_completions(
-        prompts: Sequence[str],
-        model_name: str,
-        tokens_to_favor: Optional[Sequence[str]] = None,
-        tokens_to_avoid: Optional[Sequence[str]] = None,
-        is_skip_multi_tokens_to_avoid: bool = True,
-        is_strip: bool = True,
-        num_procs: Optional[int] = None,
-        batch_size: Optional[int] = None,
-        **decoding_kwargs,
+    prompts: Sequence[str],
+    model_name: str,
+    tokens_to_favor: Optional[Sequence[str]] = None,
+    tokens_to_avoid: Optional[Sequence[str]] = None,
+    is_skip_multi_tokens_to_avoid: bool = True,
+    is_strip: bool = True,
+    num_procs: Optional[int] = None,
+    batch_size: Optional[int] = None,
+    **decoding_kwargs,
 ) -> dict[str, list]:
     """Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
     tokens to favor.
@@ -124,7 +124,7 @@ def openai_completions(
     logging.info(f"Kwargs to completion: {decoding_kwargs}")
     n_batches = int(math.ceil(n_examples / batch_size))
 
-    prompt_batches = [prompts[batch_id * batch_size: (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
+    prompt_batches = [prompts[batch_id * batch_size : (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
 
     kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
@@ -161,16 +161,16 @@ def openai_completions(
 
 
 def _openai_completion_helper(
-        prompt_batch: Sequence[str],
-        is_chat: bool,
-        sleep_time: int = 2,
-        openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
-        openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
-        openai_api_base: Optional[str] = None,
-        max_tokens: Optional[int] = 1000,
-        top_p: Optional[float] = 1.0,
-        temperature: Optional[float] = 0.7,
-        **kwargs,
+    prompt_batch: Sequence[str],
+    is_chat: bool,
+    sleep_time: int = 2,
+    openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
+    openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
+    openai_api_base: Optional[str] = None,
+    max_tokens: Optional[int] = 1000,
+    top_p: Optional[float] = 1.0,
+    temperature: Optional[float] = 0.7,
+    **kwargs,
 ):
     # randomly select orgs
     if openai_organization_ids is not None:
@@ -312,7 +312,7 @@ def _get_price_per_token(model):
     """Returns the price per token for a given model"""
     if "gpt-4" in model:
         return (
-                0.03 / 1000
+            0.03 / 1000
         )  # that's not completely true because decoding is 0.06 but close enough given that most is context
     elif "gpt-3.5-turbo" in model:
         return 0.002 / 1000

@@ -142,7 +142,7 @@ ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / "leaderboards/data_AlpacaEval"
 PRECOMPUTED_LEADERBOARDS = {
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS / "claude_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
-                                                             / "alpaca_eval_gpt4_leaderboard.csv",
+    / "alpaca_eval_gpt4_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS), "chatgpt_fn"): ALPACAEVAL_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
 }
 

@@ -12,9 +12,7 @@ def test_shuffle_pairwise_preferences():
 
 
 def test_make_prompts():
-    doctest.run_docstring_examples(
-        utils.make_prompts, globals(), name="make_prompts", verbose=True
-    )
+    doctest.run_docstring_examples(utils.make_prompts, globals(), name="make_prompts", verbose=True)
 
 
 def test_convert_ordinal_to_binary_preference():

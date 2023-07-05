@@ -47,9 +47,7 @@ def expected_annotations():
 def single_annotator():
     return SinglePairwiseAnnotator(
         prompt_template="text_davinci_003/basic_prompt.txt",
-        completion_parser_kwargs=dict(
-            outputs_to_match={1: "(?:^|\n) ?Output \(a\)", 2: "(?:^|\n) ?Output \(b\)"}
-        ),
+        completion_parser_kwargs=dict(outputs_to_match={1: "(?:^|\n) ?Output \(a\)", 2: "(?:^|\n) ?Output \(b\)"}),
         is_randomize_output_order=False,
         is_shuffle=False,
     )
@@ -100,9 +98,7 @@ def _get_mock_annotator(annotator, preference=None):
 
 
 def test_annotate_pairs(pairwise_annotator, df_to_annotate, expected_annotations):
-    pairwise_annotator, mock_function = _get_mock_annotator(
-        pairwise_annotator, preference=[1, 2, 1]
-    )
+    pairwise_annotator, mock_function = _get_mock_annotator(pairwise_annotator, preference=[1, 2, 1])
 
     # Call the annotate_pairs method and assert output
     annotated = pairwise_annotator.annotate_pairs(df_to_annotate)
@@ -148,31 +144,21 @@ def test_annotate_samples(pairwise_annotator):
         assert (df_annotated["preference"] == 1).all()
 
     # let's sample one pair from the list of outputs (is_unique_instructions=True)
-    annotated = pairwise_annotator.annotate_samples(
-        outputs_to_annotate, is_unique_instructions=True
-    )
+    annotated = pairwise_annotator.annotate_samples(outputs_to_annotate, is_unique_instructions=True)
     assert len(annotated) == 1
     run_all_tests(annotated)
 
     # same but one pair per output (is_unique_instructions=False)
-    annotated = pairwise_annotator.annotate_samples(
-        outputs_to_annotate, is_unique_instructions=False
-    )
+    annotated = pairwise_annotator.annotate_samples(outputs_to_annotate, is_unique_instructions=False)
     assert len(annotated) == 3
     run_all_tests(annotated)
 
 
 def test_annotate_head2head(pairwise_annotator, df_to_annotate, expected_annotations):
-    pairwise_annotator, mock_function = _get_mock_annotator(
-        pairwise_annotator, preference=[1, 2, 1]
-    )
+    pairwise_annotator, mock_function = _get_mock_annotator(pairwise_annotator, preference=[1, 2, 1])
 
-    df_1 = df_to_annotate.drop(columns="output_2").rename(
-        columns={"output_1": "output"}
-    )
-    df_2 = df_to_annotate.drop(columns="output_1").rename(
-        columns={"output_2": "output"}
-    )
+    df_1 = df_to_annotate.drop(columns="output_2").rename(columns={"output_1": "output"})
+    df_2 = df_to_annotate.drop(columns="output_1").rename(columns={"output_2": "output"})
     annotated = pairwise_annotator.annotate_head2head(df_1, df_2, is_ordered=True)
 
     assert annotated == expected_annotations
