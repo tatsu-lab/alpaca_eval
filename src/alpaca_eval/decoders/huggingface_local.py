@@ -18,6 +18,7 @@ from tqdm import tqdm
 
 __all__ = ["huggingface_local_completions"]
 
+
 class ListDataset(Dataset):
     def __init__(self, original_list):
         self.original_list = original_list
@@ -68,7 +69,7 @@ def huggingface_local_completions(
     model_kwargs = model_kwargs or {}
     if "device_map" not in model_kwargs:
         model_kwargs["device_map"] = "auto"
-    if isinstance(model_kwargs["torch_dtype"], str):
+    if "torch_dtype" in model_kwargs and isinstance(model_kwargs["torch_dtype"], str):
         model_kwargs["torch_dtype"] = getattr(torch, model_kwargs["torch_dtype"])
 
     n_examples = len(prompts)
@@ -86,10 +87,14 @@ def huggingface_local_completions(
     torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = True
 
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name, cache_dir=cache_dir, padding_side="left", use_fast=is_fast_tokenizer, **model_kwargs
+        model_name,
+        cache_dir=cache_dir,
+        padding_side="left",
+        use_fast=is_fast_tokenizer,
+        **model_kwargs,
     )
     model = AutoModelForCausalLM.from_pretrained(model_name, cache_dir=cache_dir, **model_kwargs).eval()
-    
+
     if adapters_name:
         logging.info(f"Merging adapter from {adapters_name}.")
         model = PeftModel.from_pretrained(model, adapters_name)
@@ -110,7 +115,7 @@ def huggingface_local_completions(
         # save also index to reorder the completions
         original_order, prompts = zip(*sorted(enumerate(prompts), key=lambda x: len(x[1])))
         prompts = list(prompts)
-    
+
     if not tokenizer.pad_token_id:
         # set padding token if not set
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -128,10 +133,15 @@ def huggingface_local_completions(
     ## compute and log the time for completions
     prompts_dataset = ListDataset(prompts)
     completions = []
-    
+
     with utils.Timer() as t:
-        
-        for out in tqdm(pipeline(prompts_dataset, return_full_text=False, pad_token_id=tokenizer.pad_token_id)):
+        for out in tqdm(
+                pipeline(
+                    prompts_dataset,
+                    return_full_text=False,
+                    pad_token_id=tokenizer.pad_token_id,
+                )
+        ):
             completions.append(out[0]["generated_text"])
 
     logging.info(f"Time for {n_examples} completions: {t}")
