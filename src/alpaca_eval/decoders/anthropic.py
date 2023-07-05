@@ -17,10 +17,10 @@ __all__ = ["anthropic_completions"]
 
 
 def anthropic_completions(
-        prompts: Sequence[str],
-        model_name="claude-v1",
-        num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
-        **decoding_kwargs,
+    prompts: Sequence[str],
+    model_name="claude-v1",
+    num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
+    **decoding_kwargs,
 ) -> dict[str, list]:
     """Decode with Anthropic API.
 
@@ -43,18 +43,23 @@ def anthropic_completions(
         logging.info("No samples to annotate.")
         return []
     else:
-        logging.info(f"Using `anthropic_completions` on {n_examples} prompts using {model_name}.")
+        logging.info(
+            f"Using `anthropic_completions` on {n_examples} prompts using {model_name}."
+        )
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
     with utils.Timer() as t:
         if num_procs == 1:
             completions = [
-                _anthropic_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")
+                _anthropic_completion_helper(prompt, **kwargs)
+                for prompt in tqdm.tqdm(prompts, desc="prompts")
             ]
         else:
             with multiprocessing.Pool(num_procs) as p:
-                partial_completion_helper = functools.partial(_anthropic_completion_helper, **kwargs)
+                partial_completion_helper = functools.partial(
+                    _anthropic_completion_helper, **kwargs
+                )
                 completions = list(
                     tqdm.tqdm(
                         p.imap(partial_completion_helper, prompts),
@@ -69,22 +74,26 @@ def anthropic_completions(
 
     avg_time = [t.duration / n_examples] * len(completions)
 
-    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
+    return dict(
+        completions=completions, price_per_example=price, time_per_example=avg_time
+    )
 
 
 def _anthropic_completion_helper(
-        prompt: str,
-        sleep_time: int = 2,
-        anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
-        max_tokens_to_sample: Optional[int] = 1000,
-        temperature: Optional[float] = 0.7,
-        n_retries: Optional[int] = 3,
-        **kwargs,
+    prompt: str,
+    sleep_time: int = 2,
+    anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
+    max_tokens_to_sample: Optional[int] = 1000,
+    temperature: Optional[float] = 0.7,
+    n_retries: Optional[int] = 3,
+    **kwargs,
 ) -> str:
     anthropic_api_key = random.choice(anthropic_api_keys)
     client = anthropic.Client(anthropic_api_key)
 
-    kwargs.update(dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature))
+    kwargs.update(
+        dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature)
+    )
     curr_kwargs = copy.deepcopy(kwargs)
     while True:
         try:
@@ -104,10 +113,14 @@ def _anthropic_completion_helper(
                 logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
                 time.sleep(sleep_time)
             elif "exceeds max" in str(e):
-                curr_kwargs["max_tokens_to_sample"] = int(curr_kwargs["max_tokens_to_sample"] * 0.8)
+                curr_kwargs["max_tokens_to_sample"] = int(
+                    curr_kwargs["max_tokens_to_sample"] * 0.8
+                )
                 if curr_kwargs["max_tokens_to_sample"] == 0:
                     raise e
-                logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
+                logging.warning(
+                    f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying..."
+                )
             else:
                 if n_retries > 0:
                     logging.warning(f"{e}. \nRetrying...")
@@ -129,7 +142,7 @@ def _get_price_per_token(model):
     # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
     if "claude-v1" in model:
         return (
-                11.02 / 1e6
+            11.02 / 1e6
         )  # that's not completely true because decoding is 32.68 but close enough given that most is context
     else:
         logging.warning(f"Unknown model {model} for computing price per token.")

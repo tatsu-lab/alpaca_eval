@@ -12,7 +12,9 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
             from .anthropic import anthropic_completions
         except ImportError:
             packages = ["anthropic"]
-            logging.exception(f"You need {packages} to use anthropic_completions. Error:")
+            logging.exception(
+                f"You need {packages} to use anthropic_completions. Error:"
+            )
 
         return anthropic_completions
 
@@ -30,7 +32,9 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
             from .huggingface_api import huggingface_api_completions
         except ImportError:
             packages = ["huggingface_hub"]
-            logging.exception(f"You need {packages} to use huggingface_api_completions. Error:")
+            logging.exception(
+                f"You need {packages} to use huggingface_api_completions. Error:"
+            )
 
         return huggingface_api_completions
 
@@ -38,8 +42,18 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
         try:
             from .huggingface_local import huggingface_local_completions
         except ImportError:
-            packages = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "scipy"]
-            logging.exception(f"You need {packages} to use huggingface_local_completions. Error:")
+            packages = [
+                "accelerate",
+                "transformers",
+                "bitsandbytes",
+                "xformers",
+                "peft",
+                "optimum",
+                "scipy",
+            ]
+            logging.exception(
+                f"You need {packages} to use huggingface_local_completions. Error:"
+            )
 
         return huggingface_local_completions
 

@@ -3,7 +3,6 @@ import functools
 import logging
 import math
 import multiprocessing
-import os
 import random
 from typing import Optional, Sequence
 import tqdm
@@ -18,7 +17,7 @@ __all__ = ["cohere_completions"]
 def cohere_completions(
         prompts: Sequence[str],
         model_name="command",
-        mode = "instruct",
+        mode="instruct",
         num_procs: int = 5,
         **decoding_kwargs,
 ) -> dict[str, list]:
@@ -75,8 +74,8 @@ def _cohere_completion_helper(
         cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
         max_tokens: Optional[int] = 1000,
         temperature: Optional[float] = 0.7,
-        max_tries = 5,
-        mode = "instruct",
+        max_tries=5,
+        mode="instruct",
         **kwargs,
 ) -> str:
     cohere_api_key = random.choice(cohere_api_keys)
@@ -102,7 +101,6 @@ def _cohere_completion_helper(
             return text
 
         except CohereError as e:
-            print(f"Try #{trynum+1}/{max_tries}: Error running prompt {repr(prompt)}: {e}")
+            print(f"Try #{trynum + 1}/{max_tries}: Error running prompt {repr(prompt)}: {e}")
 
-    return " " # placeholder response for errors, doesn't allow empty string
- 
+    return " "  # placeholder response for errors, doesn't allow empty string

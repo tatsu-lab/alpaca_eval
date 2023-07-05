@@ -38,39 +38,49 @@ class Analyzer:
     """
 
     def __init__(
-            self,
-            gold_crossannotations: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_GOLD_CROSSANNOTATIONS,
-            gold_annotations: Optional[Union[AnyPath, AnyData, Callable]] = constants.ALPACAFARM_GOLD_ANNOTATIONS,
-            keys=("instruction", "output_1", "output_2"),
-            n_annotators: Optional[int] = 4,
-            seed: Optional[int] = 0,
-            **annotator_kwargs,
+        self,
+        gold_crossannotations: Union[
+            AnyPath, AnyData, Callable
+        ] = constants.ALPACAFARM_GOLD_CROSSANNOTATIONS,
+        gold_annotations: Optional[
+            Union[AnyPath, AnyData, Callable]
+        ] = constants.ALPACAFARM_GOLD_ANNOTATIONS,
+        keys=("instruction", "output_1", "output_2"),
+        n_annotators: Optional[int] = 4,
+        seed: Optional[int] = 0,
+        **annotator_kwargs,
     ):
         self.keys = list(keys)
         self.n_annotators = n_annotators
         self.annotator_kwargs = annotator_kwargs
 
-        df_gold_crossannotations = utils.load_or_convert_to_dataframe(gold_crossannotations)
+        df_gold_crossannotations = utils.load_or_convert_to_dataframe(
+            gold_crossannotations
+        )
         # adding a random index to differentiate between the n_annotators
         self.df_gold_crossannotations = self._select_n_annotations(
             df_gold_crossannotations, n_annotators=self.n_annotators
         )
 
         if gold_annotations is None:
-            self.df_gold_annotations = self.df_gold_crossannotations.query("annotator_index == 0")
+            self.df_gold_annotations = self.df_gold_crossannotations.query(
+                "annotator_index == 0"
+            )
         else:
-            self.df_gold_annotations = utils.load_or_convert_to_dataframe(gold_annotations)
+            self.df_gold_annotations = utils.load_or_convert_to_dataframe(
+                gold_annotations
+            )
 
         self.all_df_annotations = dict()
         self.seed = seed
 
     def agreement_of_annotations(
-            self,
-            annotations_1: Union[pd.DataFrame, str],
-            annotations_2: Optional[Union[pd.DataFrame, str]] = "gold_crossannotations",
-            n_majority_vote_1: Optional[int] = 1,
-            n_majority_vote_2: Optional[int] = None,
-            is_same_annotator: Optional[bool] = None,
+        self,
+        annotations_1: Union[pd.DataFrame, str],
+        annotations_2: Optional[Union[pd.DataFrame, str]] = "gold_crossannotations",
+        n_majority_vote_1: Optional[int] = 1,
+        n_majority_vote_2: Optional[int] = None,
+        is_same_annotator: Optional[bool] = None,
     ) -> pd.Series:
         """Compare (cross)annotations from two annotators.
 
@@ -141,28 +151,40 @@ class Analyzer:
             is_same_annotator = annotations_2.equals(annotations_1)
 
         if is_same_annotator and n_majority_vote_1 is None:
-            raise ValueError("n_majority_vote_1 cannot be None if annotations_1 and annotations_2 are the same")
+            raise ValueError(
+                "n_majority_vote_1 cannot be None if annotations_1 and annotations_2 are the same"
+            )
 
-        annotations_1 = self._select_n_annotations(annotations_1, n_annotators=n_majority_vote_1, is_rm_less_than=False)
+        annotations_1 = self._select_n_annotations(
+            annotations_1, n_annotators=n_majority_vote_1, is_rm_less_than=False
+        )
         max_majority_vote_1 = annotations_1["n_annotated"].max()
         n_majority_vote_1 = n_majority_vote_1 or max_majority_vote_1
         if n_majority_vote_1 > max_majority_vote_1:
             raise ValueError(
-                f"n_majority_vote_1={n_majority_vote_1} is larger than the maximum possible " f"({max_majority_vote_1})"
+                f"n_majority_vote_1={n_majority_vote_1} is larger than the maximum possible "
+                f"({max_majority_vote_1})"
             )
 
         if is_same_annotator:
             logging.info("You are comparing twice the same annotators.")
             # the maximum number of votes you should compare is the complement given that it's the same data
-            n_majority_vote_2 = n_majority_vote_2 or (max_majority_vote_1 - n_majority_vote_1)
-            assert (n_majority_vote_2 <= max_majority_vote_1) and (n_majority_vote_1 <= max_majority_vote_1)
+            n_majority_vote_2 = n_majority_vote_2 or (
+                max_majority_vote_1 - n_majority_vote_1
+            )
+            assert (n_majority_vote_2 <= max_majority_vote_1) and (
+                n_majority_vote_1 <= max_majority_vote_1
+            )
 
-        annotations_2 = self._select_n_annotations(annotations_2, n_annotators=n_majority_vote_2, is_rm_less_than=False)
+        annotations_2 = self._select_n_annotations(
+            annotations_2, n_annotators=n_majority_vote_2, is_rm_less_than=False
+        )
         max_majority_vote_2 = annotations_2["n_annotated"].max()
         n_majority_vote_2 = n_majority_vote_2 or max_majority_vote_2
         if n_majority_vote_2 > max_majority_vote_2:
             raise ValueError(
-                f"n_majority_vote_2={n_majority_vote_2} is larger than the maximum possible " f"({max_majority_vote_2})"
+                f"n_majority_vote_2={n_majority_vote_2} is larger than the maximum possible "
+                f"({max_majority_vote_2})"
             )
 
         results = dict()
@@ -230,21 +252,28 @@ class Analyzer:
         return 1 - agreement["accuracy"]
 
     def get_length_biases(
-            self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
+        self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
     ) -> dict[str, float]:
         """Estimate the biases for longer sentences."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+            df["best_output"] = np.where(
+                df["preference"] == 1, df.output_1, df.output_2
+            )
+            df["worse_output"] = np.where(
+                df["preference"] == 2, df.output_1, df.output_2
+            )
 
             # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
             df["best_output_length"] = df["best_output"].apply(len)
             df["worse_output_length"] = df["worse_output"].apply(len)
             # Step 2: Create a new column indicating whether one output is (significantly) longer than the other
-            df["one_is_longer"] = (df["best_output_length"] - df[
-                "worse_output_length"]).abs() > significant_delta_length
-            df["is_prefer_longer"] = df["best_output_length"] > df["worse_output_length"]
+            df["one_is_longer"] = (
+                df["best_output_length"] - df["worse_output_length"]
+            ).abs() > significant_delta_length
+            df["is_prefer_longer"] = (
+                df["best_output_length"] > df["worse_output_length"]
+            )
             # Step 3: Count the number of times you prefer the longer output
             prefer_longer = df[df["one_is_longer"] & df["is_prefer_longer"]].shape[0]
             # Step 4: Count the total number of instances when one output is longer than the other
@@ -253,7 +282,9 @@ class Analyzer:
             probability_prefer_longer = prefer_longer / total_one_is_longer
 
             percentage_longer = (
-                    (df["best_output_length"] - df["worse_output_length"]) / df["worse_output_length"]).mean()
+                (df["best_output_length"] - df["worse_output_length"])
+                / df["worse_output_length"]
+            ).mean()
 
         except Exception as e:
             logging.warning(f"Could not compute length biases: {e}")
@@ -265,12 +296,18 @@ class Analyzer:
             percentage_longer=percentage_longer,
         )
 
-    def get_list_biases(self, annotations: Union[pd.DataFrame, str]) -> dict[str, float]:
+    def get_list_biases(
+        self, annotations: Union[pd.DataFrame, str]
+    ) -> dict[str, float]:
         """Estimate the biases for sentences with lists."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+            df["best_output"] = np.where(
+                df["preference"] == 1, df.output_1, df.output_2
+            )
+            df["worse_output"] = np.where(
+                df["preference"] == 2, df.output_1, df.output_2
+            )
 
             # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
             df["is_best_list"] = df["best_output"].apply(utils.contains_list)
@@ -280,13 +317,17 @@ class Analyzer:
             df["either_list"] = df["is_best_list"] ^ df["is_worse_list"]
             # Step 3: Count the number of times you prefer `best_output` when either `best_output` or `worse_output` has
             # a list but not both
-            prefer_best_either_list = df[(df["either_list"]) & df["is_best_list"]].shape[0]
+            prefer_best_either_list = df[
+                (df["either_list"]) & df["is_best_list"]
+            ].shape[0]
             # Step 4: Count number of instances when either `best_output` or `worse_output` has a list but not both
             total_either_list = df[df["either_list"]].shape[0]
             # Step 5: Calculate the probability
             probability_prefer_list = prefer_best_either_list / total_either_list
 
-            percentage_list = (df["is_best_list"].mean() - df["is_worse_list"].mean()) / df["is_worse_list"].mean()
+            percentage_list = (
+                df["is_best_list"].mean() - df["is_worse_list"].mean()
+            ) / df["is_worse_list"].mean()
         except Exception as e:
             logging.warning(f"Could not compute list biases: {e}")
             probability_prefer_list = np.nan
@@ -297,7 +338,9 @@ class Analyzer:
             percentage_list=percentage_list,
         )
 
-    def _select_n_annotations(self, df, n_annotators=None, is_rm_less_than: bool = True):
+    def _select_n_annotations(
+        self, df, n_annotators=None, is_rm_less_than: bool = True
+    ):
         """Gets examples with at least n annotations. Adds `index` and `n_annotated` columns."""
         if "n_annotated" in df.columns:
             df = df.drop(columns="n_annotated")
@@ -332,11 +375,13 @@ class Analyzer:
         return annotations.groupby(self.keys)["preference"].aggregate(_random_mode)
 
     def _agreement_of_single_annotations(
-            self,
-            df_annotations_1: pd.DataFrame,
-            df_annotations_2: pd.DataFrame,
+        self,
+        df_annotations_1: pd.DataFrame,
+        df_annotations_2: pd.DataFrame,
     ):
-        out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
+        out = pd.merge(
+            df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2")
+        )
         out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
         return pd.Series(
             dict(
@@ -347,14 +392,21 @@ class Analyzer:
         )
 
 
-def get_crossannotations(analyzer, Annotator, max_instances: Optional[int] = None,
-                         is_single_annotator: bool = False, **kwargs):
+def get_crossannotations(
+    analyzer,
+    Annotator,
+    max_instances: Optional[int] = None,
+    is_single_annotator: bool = False,
+    **kwargs,
+):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
     n_crossannotations = 1 if is_single_annotator else analyzer.n_annotators
     all_annotations = []
     for seed in range(n_crossannotations):
         annotator = Annotator(seed=seed, **kwargs)
-        df_gold_crossannotations = analyzer.df_gold_crossannotations.query(f"index == {seed}")
+        df_gold_crossannotations = analyzer.df_gold_crossannotations.query(
+            f"index == {seed}"
+        )
         if max_instances is not None:
             df_gold_crossannotations = df_gold_crossannotations.head(max_instances)
         annotations = annotator.annotate_pairs(df_gold_crossannotations)
@@ -380,10 +432,18 @@ def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **
 def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     """Gets the metrics for an annotator given its crossannotations."""
     all_metrics = dict()
-    all_metrics["Human agreement [%]"] = \
-        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
-    all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
-    all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
+    all_metrics["Human agreement [%]"] = (
+        analyzer.agreement_of_annotations(
+            annotations_1=df_crossannotations, n_majority_vote_1=1
+        )["accuracy"]
+        * 100
+    )
+    all_metrics["Price [$/1000 examples]"] = (
+        df_crossannotations["price_per_example"].mean() * 1000
+    )
+    all_metrics["Time [seconds/1000 examples]"] = (
+        df_crossannotations["time_per_example"].mean() * 1000
+    )
 
     if evaluator_name == "humans":
         all_metrics["Bias"] = 0
@@ -395,13 +455,18 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
             all_metrics["Bias"] = np.nan
 
         try:
-            all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
+            all_metrics["Variance"] = (
+                analyzer.estimate_variance(df_crossannotations) * 100
+            )
         except:
             all_metrics["Variance"] = np.nan
 
-    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(df_crossannotations)[
-        "probability_prefer_longer"]
-    all_metrics["Proba. prefer lists"] = analyzer.get_list_biases(df_crossannotations)["probability_prefer_list"]
+    all_metrics["Proba. prefer longer"] = analyzer.get_length_biases(
+        df_crossannotations
+    )["probability_prefer_longer"]
+    all_metrics["Proba. prefer lists"] = analyzer.get_list_biases(df_crossannotations)[
+        "probability_prefer_list"
+    ]
     all_metrics["Proba. prefer 1"] = 2 - df_crossannotations["preference"].mean()
     all_metrics["# parsed"] = len(df_crossannotations.preference.dropna())
     return all_metrics
@@ -447,7 +512,9 @@ def _get_longest_predictor(df_annotations):
     """TUrn the current predictions as the predictions from an annotator that always picks the longest output."""
     curr = df_annotations.copy()
     curr["annotator"] = "longest"
-    curr["preference"] = np.where(curr.output_1.str.len() > curr.output_2.str.len(), 1, 2)
+    curr["preference"] = np.where(
+        curr.output_1.str.len() > curr.output_2.str.len(), 1, 2
+    )
     curr["time_per_example"] = 0
     curr["price_per_example"] = 0
     return curr

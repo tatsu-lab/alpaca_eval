@@ -18,6 +18,7 @@ from tqdm import tqdm
 
 __all__ = ["huggingface_local_completions"]
 
+
 class ListDataset(Dataset):
     def __init__(self, original_list):
         self.original_list = original_list
@@ -30,15 +31,15 @@ class ListDataset(Dataset):
 
 
 def huggingface_local_completions(
-        prompts: Sequence[str],
-        model_name: str,
-        do_sample: bool = False,
-        batch_size: int = 1,
-        model_kwargs=None,
-        cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
-        is_fast_tokenizer: bool = True,
-        adapters_name: Optional[str] = None,
-        **kwargs,
+    prompts: Sequence[str],
+    model_name: str,
+    do_sample: bool = False,
+    batch_size: int = 1,
+    model_kwargs=None,
+    cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+    is_fast_tokenizer: bool = True,
+    adapters_name: Optional[str] = None,
+    **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
 
@@ -68,7 +69,7 @@ def huggingface_local_completions(
     model_kwargs = model_kwargs or {}
     if "device_map" not in model_kwargs:
         model_kwargs["device_map"] = "auto"
-    if isinstance(model_kwargs["torch_dtype"], str):
+    if "torch_dtype" in model_kwargs and isinstance(model_kwargs["torch_dtype"], str):
         model_kwargs["torch_dtype"] = getattr(torch, model_kwargs["torch_dtype"])
 
     n_examples = len(prompts)
@@ -76,7 +77,9 @@ def huggingface_local_completions(
         logging.info("No samples to annotate.")
         return []
     else:
-        logging.info(f"Using `huggingface_local_completions` on {n_examples} prompts using {model_name}.")
+        logging.info(
+            f"Using `huggingface_local_completions` on {n_examples} prompts using {model_name}."
+        )
 
     if not torch.cuda.is_available():
         model_kwargs["load_in_8bit"] = False
@@ -86,10 +89,16 @@ def huggingface_local_completions(
     torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = True
 
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name, cache_dir=cache_dir, padding_side="left", use_fast=is_fast_tokenizer, **model_kwargs
+        model_name,
+        cache_dir=cache_dir,
+        padding_side="left",
+        use_fast=is_fast_tokenizer,
+        **model_kwargs,
     )
-    model = AutoModelForCausalLM.from_pretrained(model_name, cache_dir=cache_dir, **model_kwargs).eval()
-    
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, cache_dir=cache_dir, **model_kwargs
+    ).eval()
+
     if adapters_name:
         logging.info(f"Merging adapter from {adapters_name}.")
         model = PeftModel.from_pretrained(model, adapters_name)
@@ -108,9 +117,11 @@ def huggingface_local_completions(
     if batch_size > 1:
         # sort the prompts by length so that we don't necessarily pad them by too much
         # save also index to reorder the completions
-        original_order, prompts = zip(*sorted(enumerate(prompts), key=lambda x: len(x[1])))
+        original_order, prompts = zip(
+            *sorted(enumerate(prompts), key=lambda x: len(x[1]))
+        )
         prompts = list(prompts)
-    
+
     if not tokenizer.pad_token_id:
         # set padding token if not set
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -123,26 +134,37 @@ def huggingface_local_completions(
     )
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
-    pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs)
+    pipeline = transformers.pipeline(
+        task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs
+    )
 
     ## compute and log the time for completions
     prompts_dataset = ListDataset(prompts)
     completions = []
-    
+
     with utils.Timer() as t:
-        
-        for out in tqdm(pipeline(prompts_dataset, return_full_text=False, pad_token_id=tokenizer.pad_token_id)):
+        for out in tqdm(
+            pipeline(
+                prompts_dataset,
+                return_full_text=False,
+                pad_token_id=tokenizer.pad_token_id,
+            )
+        ):
             completions.append(out[0]["generated_text"])
 
     logging.info(f"Time for {n_examples} completions: {t}")
 
     if batch_size > 1:
         # reorder the completions to match the original order
-        completions, _ = zip(*sorted(list(zip(completions, original_order)), key=lambda x: x[1]))
+        completions, _ = zip(
+            *sorted(list(zip(completions, original_order)), key=lambda x: x[1])
+        )
         completions = list(completions)
 
     # local => price is really your compute
     price = [np.nan] * len(completions)
     avg_time = [t.duration / n_examples] * len(completions)
 
-    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
+    return dict(
+        completions=completions, price_per_example=price, time_per_example=avg_time
+    )

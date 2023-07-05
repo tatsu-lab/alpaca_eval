@@ -55,7 +55,7 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
             break
         responses.append(key)
         # avoid matching the same output twice
-        completion = completion[match.end():]
+        completion = completion[match.end() :]
     return responses
 
 
@@ -89,7 +89,9 @@ def lmsys_parser(completion: str):
         else:
             raise Exception("Invalid score pair.")
     except Exception as e:
-        logging.error(f"{e}\nContent: {completion}\n" "You must manually fix the score pair.")
+        logging.error(
+            f"{e}\nContent: {completion}\n" "You must manually fix the score pair."
+        )
         return [np.nan]
 
 
@@ -116,5 +118,7 @@ def ranking_parser(completion):
 
         return [rank]
     except Exception as e:
-        logging.error(f"{e}\nContent: {completion}\n" "You must manually fix the score pair.")
+        logging.error(
+            f"{e}\nContent: {completion}\n" "You must manually fix the score pair."
+        )
         return [np.nan]

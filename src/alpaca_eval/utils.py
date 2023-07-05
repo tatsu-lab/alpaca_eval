@@ -348,7 +348,15 @@ def contains_list(text):
     # Alphabetic lists with '.' or ')'
     alpha_list_pattern = r"(\s*[a-zA-Z]\.|\s*[a-zA-Z]\))\s*(\w+)"
 
-    patterns = [bullet_point_pattern, number_list_pattern, alpha_list_pattern]
+    # List items starting with a dash '-'
+    dash_list_pattern = r"(\s*-\s*)(\w+)"
+
+    patterns = [
+        bullet_point_pattern,
+        number_list_pattern,
+        alpha_list_pattern,
+        dash_list_pattern,
+    ]
 
     for pattern in patterns:
         if re.search(pattern, text):

@@ -5,7 +5,9 @@ from pathlib import Path
 import datasets
 
 ### API specific ###
-OPENAI_API_KEYS = os.environ.get("OPENAI_API_KEYS", os.environ.get("OPENAI_API_KEY", None))
+OPENAI_API_KEYS = os.environ.get(
+    "OPENAI_API_KEYS", os.environ.get("OPENAI_API_KEY", None)
+)
 if isinstance(OPENAI_API_KEYS, str):
     OPENAI_API_KEYS = OPENAI_API_KEYS.split(",")
 OPENAI_ORGANIZATION_IDS = os.environ.get("OPENAI_ORGANIZATION_IDS", None)
@@ -140,10 +142,15 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
 
 ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / "leaderboards/data_AlpacaEval"
 PRECOMPUTED_LEADERBOARDS = {
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS / "claude_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
-                                                             / "alpaca_eval_gpt4_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "chatgpt_fn"): ALPACAEVAL_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS
+    / "claude_leaderboard.csv",
+    (
+        str(ALPACAEVAL_REFERENCE_OUTPUTS),
+        "alpaca_eval_gpt4",
+    ): ALPACAEVAL_LEADERBOARD_PATHS
+    / "alpaca_eval_gpt4_leaderboard.csv",
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "chatgpt_fn"): ALPACAEVAL_LEADERBOARD_PATHS
+    / "chatgpt_fn_leaderboard.csv",
 }
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (

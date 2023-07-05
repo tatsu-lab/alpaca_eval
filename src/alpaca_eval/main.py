@@ -14,22 +14,24 @@ DEFAULT_CONFIGS = "alpaca_eval_gpt4"
 
 
 def evaluate(
-        model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
-        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        name: Optional[str] = None,
-        output_path: Optional[Union[AnyPath, str]] = "auto",
-        precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
-        is_overwrite_leaderboard: bool = False,
-        leaderboard_mode_to_print: Optional[str] = "minimal",
-        current_leaderboard_mode: str = "community",
-        is_return_instead_of_print: bool = False,
-        fn_metric: Union[str, callable] = "pairwise_to_winrate",
-        sort_by: str = "win_rate",
-        is_cache_leaderboard: Optional[bool] = None,
-        max_instances: Optional[int] = None,
-        annotation_kwargs: Optional[dict[str, Any]] = None,
-        **annotator_kwargs,
+    model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
+    reference_outputs: Union[
+        AnyPath, AnyData, Callable
+    ] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    name: Optional[str] = None,
+    output_path: Optional[Union[AnyPath, str]] = "auto",
+    precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
+    is_overwrite_leaderboard: bool = False,
+    leaderboard_mode_to_print: Optional[str] = "minimal",
+    current_leaderboard_mode: str = "community",
+    is_return_instead_of_print: bool = False,
+    fn_metric: Union[str, callable] = "pairwise_to_winrate",
+    sort_by: str = "win_rate",
+    is_cache_leaderboard: Optional[bool] = None,
+    max_instances: Optional[int] = None,
+    annotation_kwargs: Optional[dict[str, Any]] = None,
+    **annotator_kwargs,
 ):
     """Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
 
@@ -98,10 +100,12 @@ def evaluate(
         Additional arguments to pass to `PairwiseAnnotator`.
     """
     if (
-            isinstance(current_leaderboard_mode, str)
-            and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES
+        isinstance(current_leaderboard_mode, str)
+        and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES
     ):
-        raise ValueError(f"current_leaderboard_mode should be one of {constants.ORDERED_LEADERBOARD_MODES}")
+        raise ValueError(
+            f"current_leaderboard_mode should be one of {constants.ORDERED_LEADERBOARD_MODES}"
+        )
 
     annotation_kwargs = annotation_kwargs or dict()
 
@@ -122,24 +126,36 @@ def evaluate(
                 model_outputs = model_outputs[:max_instances]
                 reference_outputs = reference_outputs[:max_instances]
 
-            annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
+            annotator = annotators.PairwiseAnnotator(
+                annotators_config=annotators_config, **annotator_kwargs
+            )
             annotations = annotator.annotate_head2head(
-                outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
+                outputs_1=reference_outputs,
+                outputs_2=model_outputs,
+                **annotation_kwargs,
             )
 
             if isinstance(fn_metric, str):
                 fn_metric = getattr(metrics, fn_metric)
 
-            leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
+            leaderboard[name] = fn_metric(
+                preferences=[a["preference"] for a in annotations]
+            )
             leaderboard[name]["mode"] = current_leaderboard_mode
         else:
-            logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
+            logging.info(
+                f"Skipping evaluation of {name} as it is already in the precomputed leaderboard."
+            )
 
     output_path = utils.get_output_path(output_path, model_outputs, name)
 
-    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(by=sort_by, ascending=False)
+    df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(
+        by=sort_by, ascending=False
+    )
     df_leaderboard = df_leaderboard[
-        utils.prioritize_elements(list(df_leaderboard.columns), ["win_rate", "standard_error"])
+        utils.prioritize_elements(
+            list(df_leaderboard.columns), ["win_rate", "standard_error"]
+        )
     ]
 
     if output_path is not None:
@@ -155,7 +171,9 @@ def evaluate(
 
     if is_cache_leaderboard:
         if isinstance(precomputed_leaderboard, AnyPath):
-            logging.info(f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}")
+            logging.info(
+                f"Saving result to the precomputed leaderboard at {precomputed_leaderboard}"
+            )
             df_leaderboard.to_csv(precomputed_leaderboard)
         else:
             logging.info(
@@ -175,14 +193,16 @@ def evaluate(
 
 
 def evaluate_from_model(
-        model_configs: Union[AnyPath, dict],
-        reference_model_configs: Optional[Union[AnyPath, dict]] = None,
-        evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        output_path: AnyPath = "auto",
-        max_instances: int = None,
-        is_strip_output: bool = True,
-        **kwargs,
+    model_configs: Union[AnyPath, dict],
+    reference_model_configs: Optional[Union[AnyPath, dict]] = None,
+    evaluation_dataset: Union[
+        AnyPath, AnyData, Callable
+    ] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    output_path: AnyPath = "auto",
+    max_instances: int = None,
+    is_strip_output: bool = True,
+    **kwargs,
 ):
     """Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes
     generating from
@@ -224,13 +244,19 @@ def evaluate_from_model(
     """
     evaluation_dataset = utils.load_or_convert_to_dataframe(evaluation_dataset)
 
-    model_configs = utils.load_configs(model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+    model_configs = utils.load_configs(
+        model_configs, relative_to=constants.MODELS_CONFIG_DIR
+    )
     if reference_model_configs is not None:
-        reference_model_configs = utils.load_configs(reference_model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+        reference_model_configs = utils.load_configs(
+            reference_model_configs, relative_to=constants.MODELS_CONFIG_DIR
+        )
 
     def get_completions(configs):
         columns_to_keep = ["dataset", "instruction", "output"]
-        columns_to_keep = [c for c in columns_to_keep if c in evaluation_dataset.columns]
+        columns_to_keep = [
+            c for c in columns_to_keep if c in evaluation_dataset.columns
+        ]
         curr_outputs = evaluation_dataset.copy()[columns_to_keep]
         if max_instances is not None:
             curr_outputs = curr_outputs.iloc[:max_instances]
@@ -239,10 +265,14 @@ def evaluate_from_model(
         configs = list(configs.values())[0]
         prompts, _ = utils.make_prompts(
             curr_outputs,
-            template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
+            template=utils.read_or_return(
+                constants.MODELS_CONFIG_DIR / configs["prompt_template"]
+            ),
         )
         fn_completions = decoders.get_fn_completions(configs["fn_completions"])
-        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])["completions"]
+        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])[
+            "completions"
+        ]
         if is_strip_output:
             completions = [c.strip() for c in completions]
         curr_outputs["output"] = completions
@@ -252,7 +282,9 @@ def evaluate_from_model(
     model_outputs = get_completions(model_configs)
     if reference_model_configs is None:
         if "output" not in evaluation_dataset.columns:
-            raise ValueError("evaluation_dataset should have a column 'output' containing references outputs")
+            raise ValueError(
+                "evaluation_dataset should have a column 'output' containing references outputs"
+            )
         reference_outputs = evaluation_dataset.copy()
     else:
         reference_outputs = get_completions(reference_model_configs)
@@ -263,8 +295,12 @@ def evaluate_from_model(
     if output_path is not None:
         output_path = Path(output_path)
         output_path.mkdir(exist_ok=True, parents=True)
-        model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
-        reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
+        model_outputs.to_json(
+            output_path / "model_outputs.json", orient="records", indent=2
+        )
+        reference_outputs.to_json(
+            output_path / "reference_outputs.json", orient="records", indent=2
+        )
 
     return evaluate(
         model_outputs=model_outputs,
@@ -277,14 +313,18 @@ def evaluate_from_model(
 
 
 def make_leaderboard(
-        leaderboard_path: AnyPath,
-        annotators_config: AnyPath = DEFAULT_CONFIGS,
-        all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
-        reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-        fn_add_to_leaderboard: Callable = "evaluate",
-        leaderboard_mode: str = "verified",
-        is_return_instead_of_print: bool = False,
-        **kwargs,
+    leaderboard_path: AnyPath,
+    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    all_model_outputs: Union[
+        AnyPath, AnyData, Callable
+    ] = constants.ALPACAFARM_ALL_OUTPUTS,
+    reference_outputs: Union[
+        AnyPath, AnyData, Callable
+    ] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    fn_add_to_leaderboard: Callable = "evaluate",
+    leaderboard_mode: str = "verified",
+    is_return_instead_of_print: bool = False,
+    **kwargs,
 ):
     """Precompute and save an entire leaderboard for a given dataset / evaluator / set of models generations.
 
@@ -329,7 +369,9 @@ def make_leaderboard(
 
     all_model_outputs = utils.load_or_convert_to_dataframe(all_model_outputs)
     if "generator" not in all_model_outputs.columns:
-        raise ValueError(f"all_model_outputs should have a column 'generator' with the name of the model.")
+        raise ValueError(
+            f"all_model_outputs should have a column 'generator' with the name of the model."
+        )
 
     all_annotations = []
     for model in all_model_outputs["generator"].unique():
@@ -355,25 +397,27 @@ def make_leaderboard(
         return df_leaderboard, all_annotations
     else:
         utils.print_leaderboard(
-            df_leaderboard, leaderboard_mode=None, cols_to_print=["win_rate", "standard_error", "n_total"]
+            df_leaderboard,
+            leaderboard_mode=None,
+            cols_to_print=["win_rate", "standard_error", "n_total"],
         )
 
 
 def analyze_evaluators(
-        annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
-        Annotator=annotators.PairwiseAnnotator,
-        analyzer_kwargs=None,
-        precomputed_leaderboard: Optional[Union[AnyPath, AnyData]] = CUR_DIR
-                                                                     /
-                                                                     "leaderboards/evaluators/evaluators_leaderboard.csv",
-        is_save_leaderboard: bool = False,
-        is_return_instead_of_print: bool = False,
-        is_overwrite_leaderboard: bool = False,
-        max_instances: Optional[int] = None,
-        is_single_annotator: bool = False,
-        leaderboard_mode_to_print: str = "minimal",
-        current_leaderboard_mode: str = "minimal",
-):
+    annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
+    Annotator=annotators.PairwiseAnnotator,
+    analyzer_kwargs=None,
+    precomputed_leaderboard: Optional[Union[AnyPath, AnyData]] = CUR_DIR
+    / "leaderboards/evaluators/evaluators_leaderboard.csv",
+    is_save_leaderboard: bool = False,
+    is_return_instead_of_print: bool = False,
+    is_overwrite_leaderboard: bool = False,
+    max_instances: Optional[int] = None,
+    is_single_annotator: bool = False,
+    leaderboard_mode_to_print: str = "minimal",
+    current_leaderboard_mode: str = "minimal",
+    annotator_name: Optional[str] = None,
+) -> Union[None, tuple[pd.DataFrame, dict[str, pd.DataFrame]]]:
     """Analyze an evaluator and populates the evaluators leaderboard (agreement with human, speed, price,...).
 
     Parameters
@@ -410,29 +454,51 @@ def analyze_evaluators(
 
     current_leaderboard_mode : {"minimal", "verified", "community"}, optional
         The mode of the leaderboard to save all new entries with.
+
+    annotator_name : str, optional
+        The name of the annotator to use in the leaderboard. If None, it's derived from the path to the annotator's
+        config file.
+
+    Returns
+    -------
+    If `is_return_instead_of_print` is True, returns:
+        leaderboard : pd.DataFrame
+            The leaderboard of all annotators.
+
+        all_crossannotations : dict of pd.DataFrame
+            A dictionary with a single element: a dataframe containing all the annotations.
+            The key of the dictionary is the annotator's name.
     """
 
     leaderboard = dict()
     if precomputed_leaderboard is not None:
         try:
-            leaderboard = utils.load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
+            leaderboard = utils.load_or_convert_to_dataframe(
+                precomputed_leaderboard
+            ).to_dict(orient="index")
         except FileNotFoundError:
             logging.warning(
-                f"Could not find precomputed leaderboard at {precomputed_leaderboard}. Starting from " f"scratch."
+                f"Could not find precomputed leaderboard at {precomputed_leaderboard}. Starting from "
+                f"scratch."
             )
 
     analyzer_kwargs = analyzer_kwargs or {}
 
     all_crossannotations = dict()
     if annotators_config is not None:
-        key = annotators_config.replace("/", "_").replace("_configs.yaml", "")
+        if annotator_name is None:
+            key = str(annotators_config).replace("/", "_").replace("_configs.yaml", "")
+        else:
+            key = annotator_name
         if key not in leaderboard or is_overwrite_leaderboard:
             analyzer = analyze.Analyzer(**analyzer_kwargs)
 
             if key == "humans":
                 df_crossannotations = analyzer.df_gold_crossannotations
             elif key == "longest":
-                df_crossannotations = analyze._get_longest_predictor(analyzer.df_gold_crossannotations)
+                df_crossannotations = analyze._get_longest_predictor(
+                    analyzer.df_gold_crossannotations
+                )
             else:
                 df_crossannotations = analyze.get_crossannotations(
                     analyzer=analyzer,
@@ -442,7 +508,9 @@ def analyze_evaluators(
                     is_single_annotator=is_single_annotator,
                 )
 
-            leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
+            leaderboard[key] = analyze.get_metrics_evaluator(
+                analyzer, df_crossannotations, evaluator_name=key
+            )
             leaderboard[key]["mode"] = current_leaderboard_mode
             all_crossannotations[key] = df_crossannotations
 
@@ -451,7 +519,10 @@ def analyze_evaluators(
     )
 
     df_leaderboard = df_leaderboard[
-        utils.prioritize_elements(list(df_leaderboard.columns), constants.EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE)
+        utils.prioritize_elements(
+            list(df_leaderboard.columns),
+            constants.EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE,
+        )
     ]
 
     if is_save_leaderboard:
@@ -461,7 +532,9 @@ def analyze_evaluators(
         return df_leaderboard, all_crossannotations
     else:
         utils.print_leaderboard(
-            df_leaderboard, leaderboard_mode_to_print, cols_to_print=constants.EVALUATORS_LEADERBOARD_COLS_TO_PRINT
+            df_leaderboard,
+            leaderboard_mode_to_print,
+            cols_to_print=constants.EVALUATORS_LEADERBOARD_COLS_TO_PRINT,
         )
 
 
