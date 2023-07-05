@@ -3311,35 +3311,35 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"The sentence you are given might be too wordy, complicated, or unclear. Rewrite the sentence and make your writing clearer by keeping it concise. Whenever possible, break complex sentences into multiple sentences and eliminate unnecessary words.",
+    "instruction":"The sentence you are given might be too wordy, complicated, or unclear. Rewrite the sentence and make your writing clearer by keeping it concise. Whenever possible, break complex sentences into multiple sentences and eliminate unnecessary words.\n\nIf you have any questions about my rate or if you find it necessary to increase or decrease the scope for this project, please let me know.",
     "output":"If you have any questions about my rate or need to adjust the project scope, please inform me.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Analyze the word choice, phrasing, punctuation, and capitalization in the given email. How may the writer of this email sound to the reader? These tones include Disheartening, Accusatory, Worried, Curious, Surprised, Disapproving, Unassuming, Formal, Assertive, Confident, Appreciative, Concerned, Sad, Informal, Regretful, Encouraging, Egocentric, Joyful, Optimistic, and Excited.",
+    "instruction":"Analyze the word choice, phrasing, punctuation, and capitalization in the given email. How may the writer of this email sound to the reader? These tones include Disheartening, Accusatory, Worried, Curious, Surprised, Disapproving, Unassuming, Formal, Assertive, Confident, Appreciative, Concerned, Sad, Informal, Regretful, Encouraging, Egocentric, Joyful, Optimistic, and Excited.\n\nHi Jen, \nI hope you're well. Can we catch up today? I'd appreciate your input on my presentation for tomorrow's meeting. I'd especially love it if you could double-check the sales numbers with me. There's a coffee in it for you!",
     "output":"The writer of this email sounds friendly and appreciative. There is no indication of any negative tones such as disapproving or accusatory. The writer is curious and concerned about the presentation and seeks input from the reader. The writer is also optimistic and excited about the meeting and offers a coffee as a gesture of appreciation.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Rewrite the given text and correct grammar, spelling, and punctuation errors.",
+    "instruction":"Rewrite the given text and correct grammar, spelling, and punctuation errors.\n\nIf you'd told me year ago that today I would finish a marathon, I would of laughed. Your support had a huge affect on me!",
     "output":"If you had told me a year ago that I would finish a marathon today, I would have laughed. Your support had a huge effect on me!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a paper citation, convert it to the requested citation style.",
+    "instruction":"You are given a paper citation, convert it to the requested citation style.\n\nChicago: Vaswani, Ashish, Shazeer, Noam, Parmar, Niki, Uszkoreit, Jakob, Jones, Llion, Gomez, Aidan N., Kaiser, Lukasz, and Illia Polosukhin. \"Attention Is All You Need.\" arXiv, (2017). https:\/\/doi.org\/10.48550\/arXiv.1706.03762.\nMLA:",
     "output":"Vaswani, Ashish et al. \"Attention Is All You Need.\" arXiv, 2017, https:\/\/doi.org\/10.48550\/arXiv.1706.03762. MLA.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Desk jobs require writing a lot of emails, so it isn't surprising we get tired of repeating ourselves. Come up with several synonyms for the given word.",
+    "instruction":"Desk jobs require writing a lot of emails, so it isn't surprising we get tired of repeating ourselves. Come up with several synonyms for the given word.\n\nSincerely",
     "output":"Some synonyms for \"Sincerely\" could be \"Yours truly,\" \"Best regards,\" \"Warmly,\" \"Respectfully,\" or \"Regards.\"",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3353,7 +3353,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"The tone of the email should be changed and rewritten in a more professional manner.",
+    "instruction":"The tone of the email should be changed and rewritten in a more professional manner.\n\nSubject: Asking for Vacation Time\nHi [Employer], \nI hope all is well. I am writing to request a day off on [date]. I have already taken care of my work responsibilities for that day and will be available to answer any questions or concerns you may have. \nThank you for your time, \n[Your name]",
     "output":"Dear [Employer], \nI hope this email finds you well. I am writing to formally request a day off on [date]. I have completed all necessary tasks and will be available to provide any assistance needed prior to my departure. \nThank you for your understanding and consideration. \nSincerely, \n[Your name]",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3388,42 +3388,42 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Discover the most relevant StackOverflow questions for your search term. And output a list of their URLs.",
+    "instruction":"Discover the most relevant StackOverflow questions for your search term. And output a list of their URLs.\n\nremove item in array",
     "output":"Here are some of the most relevant StackOverflow questions for \"remove item in array\":\n- https:\/\/stackoverflow.com\/questions\/5767325\/how-do-i-remove-a-particular-element-from-an-array-in-javascript\n- https:\/\/stackoverflow.com\/questions\/3954438\/how-to-remove-item-from-array-by-value\n- https:\/\/stackoverflow.com\/questions\/5767325\/how-do-i-remove-a-particular-element-from-an-array-in-javascript\n\nCopy and paste the URLs to access the questions.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given an algorithm or a search query about coding. Look for a code snippet related to the search query.",
+    "instruction":"You are given an algorithm or a search query about coding. Look for a code snippet related to the search query.\n\nPython loop",
     "output":"Here's a Python code snippet that demonstrates a simple for loop:\n\n```\nfor i in range(10):\n    print(i)\n```\n\nThis loop will iterate 10 times, printing out the values of `i` from 0 to 9.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are provided with a description of the code, specifications, or prompts. Your help is needed in automating code generation to speed up the development process.",
+    "instruction":"You are provided with a description of the code, specifications, or prompts. Your help is needed in automating code generation to speed up the development process.\n\npython function to determine whether a number is prime.",
     "output":"To automate code generation for determining prime numbers in Python, you can create a function that takes in an input number and returns a Boolean value indicating whether the number is prime or not. You can use a loop to check if the number is divisible by any integer between 2 and the square root of the number. If it is divisible, return False; otherwise, return True. With this function, you can quickly determine if a number is prime and avoid manually coding this logic each time it is needed.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"When you're stuck on a coding problem, the best place to look for help is in the documentation. Read the docs carefully and see if there's a section that covers your specific issue. Often, the answer will be right there in front of you. If not, try searching for key terms related to your problem. Come up with the useful links about the given search term.",
+    "instruction":"When you're stuck on a coding problem, the best place to look for help is in the documentation. Read the docs carefully and see if there's a section that covers your specific issue. Often, the answer will be right there in front of you. If not, try searching for key terms related to your problem. Come up with the useful links about the given search term.\n\nsql find duplicate values",
     "output":"Here are some useful links related to your search for finding duplicate values in SQL:\n- https:\/\/www.sqlshack.com\/how-to-find-duplicates-in-sql-server\/\n- https:\/\/www.w3schools.com\/sql\/sql_distinct.asp\n- https:\/\/www.geeksforgeeks.org\/sql-query-to-find-all-duplicate-records-in-a-table\/",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"We have entered the home supplies budget in the following table. Calculate the last column with the given function and rewrite the completed table.\nNote that, columns in a row are separated using a comma, and rows are separated using a \"|\".",
+    "instruction":"We have entered the home supplies budget in the following table. Calculate the last column with the given function and rewrite the completed table.\nNote that, columns in a row are separated using a comma, and rows are separated using a \"|\".\n\nItem, Qty, Price, Subtotal | mango, 5, 500, ? | apple, 4, 150, ? | oil, 2, 1500, ?  \nFunction: column2 * column 3",
     "output":"Item, Qty, Price, Subtotal \nmango, 5, 500, 2500 \napple, 4, 150, 600 \noil, 2, 1500, 3000",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Please write the Excel function name associated with each description.",
+    "instruction":"Please write the Excel function name associated with each description.\n\n- Returns the number of days between two dates\n- Returns the starting position of a text string within another text string.\n- Returns the number in the middle of the set of given numbers",
     "output":"- DATEDIF\n- FIND\n- MEDIAN",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3451,21 +3451,21 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Find sentences from reliable sources such as the Guardian or Forbes that contain the exact match for the given sentence or phrase. Also, mention the source of each sentence.",
+    "instruction":"Find sentences from reliable sources such as the Guardian or Forbes that contain the exact match for the given sentence or phrase. Also, mention the source of each sentence.\n\nThere are great options",
     "output":"Here are a few sentences from reliable sources containing the exact phrase \"great options\":\n- \"There are great options on the market for environmentally-friendly cleaning products.\" - The Guardian\n- \"Investing in a Roth IRA or a 401(k) are both great options for saving for retirement.\" - Forbes\n- \"When it comes to finding a gym, there are great options available for every budget and fitness level.\" - The Guardian\nPlease note that the exact match for the given sentence may not be available in every source, but these sentences provide examples of the phrase being used in a reliable context.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"During writing, we added an asterisk for the word that did not come to mind. You will need to provide several examples to demonstrate all the words that can be used in the sentence instead of the asterisk.",
+    "instruction":"During writing, we added an asterisk for the word that did not come to mind. You will need to provide several examples to demonstrate all the words that can be used in the sentence instead of the asterisk.\n\nwe * to know",
     "output":"Some possible options to replace the asterisk in \"we * to know\" are: want, need, have, desire, crave, seek, hope, aspire, aim, plan, intend, expect, anticipate.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Think of alternatives and paraphrases for the underlined word.",
+    "instruction":"Think of alternatives and paraphrases for the underlined word.\n\nwhat we have _expected",
     "output":"What we have anticipated, predicted, or foresaw. Alternatively, what we have thought, imagined, or supposed.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3500,77 +3500,77 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"You will be asked to answer the following question as part of the LinkedIn Skill assessments.",
+    "instruction":"You will be asked to answer the following question as part of the LinkedIn Skill assessments.\n\nYou find that your project has a tag and branch both named push-notifications, which causes confusion when trying to print out given reference. How can you specify which branch you want to look at?",
     "output":"To specify which branch you want to look at, you can use the following command: \"git show <branch-name>\". For example, if you want to look at the branch named \"push-notifications\", you would use the command \"git show push-notifications\". This will show the details of the specific branch you are interested in.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Take the title of the product and extract its attributes. The attributes in this case refer to the characteristics of the products, such as their brand and color. Your answer must a list following the format of \"attribute: value\".",
+    "instruction":"Take the title of the product and extract its attributes. The attributes in this case refer to the characteristics of the products, such as their brand and color. Your answer must a list following the format of \"attribute: value\".\n\nSAMSUNG 980 PRO SSD 2TB PCIe NVMe Gen 4 Gaming M.2 Internal Solid State Hard Drive Memory Card, Maximum Speed, Thermal Control, MZ-V8P2T0B",
     "output":"Brand: Samsung\nCapacity: 2TB\nInterface: PCIe NVMe Gen 4\nForm factor: M.2\nFeatures: Maximum speed, thermal control",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You should write a Product Description that will persuade the buyer that the product is beneficial.",
+    "instruction":"You should write a Product Description that will persuade the buyer that the product is beneficial.\n\nFlipslide Game, Electronic Handheld Game | Flip, Slide, and Match the Colors to Beat the Clock - 4 Game Modes - Multiplayer Fun",
     "output":"The Flipslide Game is the perfect electronic handheld game for anyone looking for a fun and challenging experience. With its unique flip, slide, and match gameplay, this game will keep you entertained for hours. Not only is it a great way to pass the time, but it also offers 4 game modes and multiplayer options for added fun. Beat the clock and show off your skills to friends and family. Get your hands on the Flipslide Game today!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"What other Amazon products might interest someone who visited the given product?",
+    "instruction":"What other Amazon products might interest someone who visited the given product?\n\nZeroll Zerolon Hardcoat Anodized Commercial Ice Cream Scoop with Unique Liquid Filled Heat Conductive Handle Easy Release Made in USA, 1.5-Ounce, Black",
     "output":"Customers who viewed the Zeroll Zerolon Hardcoat Anodized Commercial Ice Cream Scoop also looked at the OXO Good Grips Solid Stainless Steel Ice Cream Scoop and the Spring Chef Ice Cream Scoop with Comfortable Handle.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Compare the given item with similar products based on its properties such as price, rating, etc. For product comparison, use a table and separate the columns with \"|\".",
+    "instruction":"Compare the given item with similar products based on its properties such as price, rating, etc. For product comparison, use a table and separate the columns with \"|\".\n\nItem: iBayam Journal Planner Pens Colored Pens Fine Point Markers Fine Tip Drawing Pens Porous Fineliner Pen for Journaling Writing Note Taking Calendar Coloring Art Office Back to School Supplies, 18 Color",
     "output":"| Property | iBayam Journal Planner Pens |\n| --- | --- |\n| Price | $9.99 |\n| Rating | 4.6\/5 stars |\n| Number of Colors | 18 |\n| Tip Size | Fine point |\n| Suitable for | Journaling, writing, note-taking, coloring, art |\n| Ideal for | Office, school, personal use | \n\nTo compare iBayam Journal Planner Pens with similar products, use the table above and fill in the corresponding columns for each product being compared.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a  review based on the given information.",
+    "instruction":"Write a  review based on the given information.\n\n- Product: Persil Discs Laundry Detergent Pacs, Original Scent, High Efficiency (HE) Compatible, Laundry Soap, 62 Count\n- Sentiment: Positive",
     "output":"I'm glad to hear that you had a positive experience with Persil Discs Laundry Detergent Pacs in the original scent. The fact that it is high efficiency compatible and comes in a 62 count makes it even more convenient. Thank you for sharing your positive sentiment.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a short description about the given movie or series.",
+    "instruction":"Write a short description about the given movie or series.\n\nThe Witcher (2019)",
     "output":"\"The Witcher\" is a fantasy series based on the book series of the same name by Andrzej Sapkowski. It follows the adventures of Geralt of Rivia, a monster hunter, as he navigates a world of magic, political intrigue, and complex relationships. The show has gained popularity for its captivating storyline, impressive visuals, and strong performances by its cast.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Think of some series or movies that would be enjoyable for someone who liked the given series.",
+    "instruction":"Think of some series or movies that would be enjoyable for someone who liked the given series.\n\nSquid Game",
     "output":"If you liked Squid Game, you might enjoy the Hunger Games series, Alice in Borderland, Battle Royale, or The Platform.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give examples of popular shows and movies in the genre.",
+    "instruction":"Give examples of popular shows and movies in the genre.\n\nGenre: Crime TV Shows",
     "output":"Some examples of popular crime TV shows include \"Breaking Bad,\" \"Narcos,\" \"The Wire,\" \"Mindhunter,\" \"Ozark,\" \"Peaky Blinders,\" \"True Detective,\" and \"Money Heist.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"In what genres does the given movie or series fall?",
+    "instruction":"In what genres does the given movie or series fall?\n\nManifest",
     "output":"Manifest falls under the genres of mystery, drama, and science fiction.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give a brief description of the given category of movies and shows.",
+    "instruction":"Give a brief description of the given category of movies and shows.\n\nPeriod Dramas",
     "output":"Period dramas are movies or shows that are set in a particular historical period and often aim to accurately depict the social and cultural norms of that time. They often include lavish costumes and sets to transport viewers back in time. Examples include Downton Abbey, Pride and Prejudice, and The Crown.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3591,14 +3591,14 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"What is the output of the given LATEX code?",
+    "instruction":"What is the output of the given LATEX code?\n\n\\documentclass{article}\n\\begin{document}\nFirst document. This is a simple example, with no \nextra parameters or packages included.\n\\end{document}",
     "output":"The given LATEX code will produce a PDF document with the text \"First document. This is a simple example, with no extra parameters or packages included.\" written in it.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You should find a few LATEX templates appropriate for the task at hand and list the links to them.",
+    "instruction":"You should find a few LATEX templates appropriate for the task at hand and list the links to them.\n\nHomework Assignment",
     "output":"Here are a few LATEX templates that could be useful for your homework assignment:\n\n- Overleaf: https:\/\/www.overleaf.com\/gallery\/tagged\/homework\n- ShareLaTeX: https:\/\/www.sharelatex.com\/templates\/homework\n- LaTeX Templates: https:\/\/www.latextemplates.com\/cat\/assignments",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3612,21 +3612,21 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Choose Spotify playlists that match the given mood. Provide a link to these playlists for easy access.",
+    "instruction":"Choose Spotify playlists that match the given mood. Provide a link to these playlists for easy access.\n\nFeeling Good",
     "output":"Here are some Spotify playlists that match the mood \"Feeling Good\":\n- \"Good Vibes\" - https:\/\/open.spotify.com\/playlist\/37i9dQZF1DWZeKCadgRdKQ\n- \"Happy Hits!\" - https:\/\/open.spotify.com\/playlist\/37i9dQZF1DXdPec7aLTmlC\n- \"Mood Booster\" - https:\/\/open.spotify.com\/playlist\/37i9dQZF1DWZeKCadgRdKQ\nEnjoy!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Curate a Spotify playlist based on the vibe. Publish this playlist as a song list.",
+    "instruction":"Curate a Spotify playlist based on the vibe. Publish this playlist as a song list.\n\nVibe: coding on weekend",
     "output":"Here is your Spotify playlist for coding on the weekend: \"Coding Beats\". The playlist features instrumental electronic and lo-fi hip hop tracks to help you focus. You can find the playlist under your account and share it with others as a song list. Happy coding!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"How would you describe the meaning of this lyrics? Describe some of the metaphors.",
+    "instruction":"How would you describe the meaning of this lyrics? Describe some of the metaphors.\n\nMy lover\u2019s got humor\nShe\u2019s the giggle at a funeral\nKnows everybody\u2019s disapproval\nI should\u2019ve worshipped her sooner",
     "output":"The lyrics describe the speaker's admiration for their lover's unique sense of humor, even in dark situations like a funeral. The metaphor of \"the giggle at a funeral\" represents the lover's ability to find joy in unexpected places. The line \"knows everybody's disapproval\" suggests that their relationship is frowned upon by others, but the speaker regrets not appreciating their lover's qualities sooner.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3647,182 +3647,182 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"You should take the time to read the situation and problem carefully and give the best advice you can.",
+    "instruction":"You should take the time to read the situation and problem carefully and give the best advice you can.\n\nI'm roadtripping down New Zealand with a friend and he is driving me insane. He hasn't enjoyed all the tours we've been on and doesn't want to chat about ANYTHING. We're a week into our trip and this is the quietest I've ever been when hanging out with another person as he rebuffs all my attempts at conversation. He wears his airpods in the car and around the accommodation - not that I've kept trying to talk to him. Honestly, he is bringing some seriously bad vibes to everything and it's ruining my trip.\nWe don't have anything booked in yet for the South Island, so I'm planning to ditch him in Wellington at the ferry. Probably book my own car in Picton and just relax alone for the rest of the trip. (Just thinking about it is such sharp relief that it makes me feel emotional. I'll pay whatever price I have to just to get away from him.)\nObviously telling him he is ruining my trip with his negative energy isn't the best way to approach this.\nAny advice for the best approach so we can split amicably? Or at least not have an argument that ends with very hurt feelings?",
     "output":"It's important to communicate your feelings to your friend, but in a gentle and respectful way. Instead of accusing him of ruining the trip, try expressing how you feel and ask him how he's feeling. Maybe there's something going on with him that you don't know about. If he's not interested in the same activities as you, suggest doing some things separately and then reconvening. If all else fails, be honest about needing some alone time and propose the idea of splitting up for the remainder of the trip. Try to approach the situation calmly and with empathy to avoid hurt feelings and maintain a positive relationship.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a description that provides a set of facts or a scenario. It is up to you to craft a story from these facts and scenarios. The missing pieces must be filled in with imaginative but logical information.",
+    "instruction":"You are given a description that provides a set of facts or a scenario. It is up to you to craft a story from these facts and scenarios. The missing pieces must be filled in with imaginative but logical information.\n\nTen European football teams \u2013 the Netherlands, England, Belgium, Denmark, France, Germany, Norway, Sweden, Switzerland and Wales \u2013 will participate in a season-long \u201cOneLove\u201d campaign promoting inclusion and opposing discrimination.",
     "output":"The \"OneLove\" campaign was set to be the biggest football initiative of the year, with 10 European teams coming together to spread a message of acceptance and unity. As each team took to the field, fans saw more than just a game; they saw players from different countries and backgrounds coming together to fight against discrimination. The campaign was a huge success, with thousands of fans joining in the movement and supporting their team's message. In the end, the campaign left a lasting impact on the football community and beyond, inspiring people to come together and celebrate their differences.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Based on the given query, suggest some related search queries.",
+    "instruction":"Based on the given query, suggest some related search queries.\n\nlearning french",
     "output":"Some related search queries could be \"best apps to learn French\", \"French language courses near me\", \"common French phrases for beginners\", \"French grammar rules\", or \"French language exchange programs\".",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Please suggest a few papers to consider based on the search term given. The names of the papers should be listed.",
+    "instruction":"Please suggest a few papers to consider based on the search term given. The names of the papers should be listed.\n\nTopic: scaling law + machine learning",
     "output":"Here are a few papers to consider based on your search term: \n\n1. \"Scaling Laws for Large Artificial Neural Networks Trained with Hebbian Learning\" by T. S. Grinis and A. S. Tolias\n2. \"Scaling Laws for Machine Learning on Critical Infrastructure Networks\" by S. Kandula, et al.\n3. \"Scaling Laws for Convolutional Neural Networks\" by A. Krizhevsky, et al.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Prepare an email signature template for the given person or company.",
+    "instruction":"Prepare an email signature template for the given person or company.\n\na graduate student of computer science",
     "output":"Dear [Name],\n\nBest regards,\n[Your Name]\nGraduate Student of Computer Science\n\n[Optional: Add contact information such as phone number, email, and website]",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"React properly to reviews from your customers. In your responses, you can highlight your business' policies and customer service.",
+    "instruction":"React properly to reviews from your customers. In your responses, you can highlight your business' policies and customer service.\n\nAnother repeat visit and no disappointment from us. Great place for breakfast or brunch - and you won't need to eat again for awhile. The restaurant is close to the Tenderloin so be aware of your surroundings.\nWe enjoyed the Succotash Omelet (at least my wife enjoyed it), the Pulled Pork Benedict and the Hangtown Fry. Portions are large and pricing is fair. I wish we could have managed a Beignet Flight!\nDefinitely a spot to seek out. It can be crowed at times so be patient. Well worth any wait.",
     "output":"Thank you for your repeat visit, we're thrilled to hear you enjoyed our breakfast and brunch offerings. We pride ourselves on offering generous portions at fair prices. We appreciate your patience during busy times and hope you'll come back to try our Beignet Flight soon. Thank you for your review and we hope to see you again soon!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a good Twitter Bio. Try to cover all the provided main points in your generated bio.",
+    "instruction":"Write a good Twitter Bio. Try to cover all the provided main points in your generated bio.\n\nName: Jane\nMain points:\n- Architect\n- Interested in Tech\nWritten in first person\nUse casual tone",
     "output":"Hi, I'm Jane! I'm an architect with a passion for all things tech. When I'm not designing buildings, I'm exploring the latest gadgets and software. Let's geek out together! #architecture #techlover",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"We need to write a thematic tweet to share company news and facts. Please take a careful look at the facts and details provided and create a tweet based on them.",
+    "instruction":"We need to write a thematic tweet to share company news and facts. Please take a careful look at the facts and details provided and create a tweet based on them.\n\n- news: Applications for summer internships are open now\n- Start with a thematic tie-in to Halloween",
     "output":"\"Trick or treat, summer interns can't be beat! \ud83c\udf83\ud83d\udc7b Applications for our summer internship program are now open. Don't miss your chance to gain valuable experience and join our team. #Halloween #InternshipOpportunity\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"A job description is a document that clearly states the requirements, duties, responsibilities, and skills required to perform a specific role. You need to write a job description based on the given information. You should describe responsibilities and duties in your job description in a logical order. Remember that potential employees often get their first impression of your company from your job description. So, the job description should convey the attractiveness of your company.",
+    "instruction":"A job description is a document that clearly states the requirements, duties, responsibilities, and skills required to perform a specific role. You need to write a job description based on the given information. You should describe responsibilities and duties in your job description in a logical order. Remember that potential employees often get their first impression of your company from your job description. So, the job description should convey the attractiveness of your company.\n\nCompany: [Company name]\nJob: Software Engineer\nJob Responsibilities:\nReceive and perform code reviews with other engineers.\nWrite unit, integration, and end-to-end tests to verify functionality using automated testing frameworks such as Pytest.\nWork collaboratively with fellow software engineers to build features requested by business stakeholders.\nParticipate in Agile teams to develop, test, and debug complex data processing pipelines and data analysis applications using big data processing systems such as Apache Spark.\nDiagnose, debug, and perform root cause analysis of issues and defects.\nSkills and experience that will lead to success:\nExperience with a modern software programming language. We use Python, and Pyspark extensively.\nExperience with cloud systems like AWS or Azure\nExperience writing SQL queries \nStrong written and verbal communication skills\nEagerness to work in a highly-collaborative environment\nSome visualization experience such as Tableau or PowerBI is helpful",
     "output":"We're looking for a Software Engineer to join our team at [Company name]. As a Software Engineer, you'll be responsible for collaborating with other engineers to build requested features, performing code reviews, and writing unit, integration, and end-to-end tests to verify functionality. You'll work with big data processing systems such as Apache Spark, diagnose and debug issues, and perform root cause analysis of defects. We require experience with Python and Pyspark, cloud systems like AWS or Azure, writing SQL queries, and strong communication skills. Being eager to work in a highly-collaborative environment and having some visualization experience such as Tableau or PowerBI is helpful. Come join our team and build amazing applications with us!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Considering the reason for the rejection, write a polite rejection letter for rejecting a candidate.",
+    "instruction":"Considering the reason for the rejection, write a polite rejection letter for rejecting a candidate.\n\nReason: You came in second",
     "output":"Thank you for your interest in our company and for taking the time to interview with us. We were impressed with your qualifications and experience. However, we regret to inform you that we have decided to move forward with another candidate who better fits our current needs. We appreciate your time and effort and wish you the best of luck in your job search.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"We've already decided on the title and topic for our blog post. I would appreciate it if you wrote an introduction paragraph to attract the readers' attention.",
+    "instruction":"We've already decided on the title and topic for our blog post. I would appreciate it if you wrote an introduction paragraph to attract the readers' attention.\n\nBlog title: Healthy Apple Muffins\nBlog Topic: recipe and tips for cooking a good apple muffin",
     "output":"\"Are you looking for a delicious and healthy treat for breakfast or snack time? Look no further than our recipe for Healthy Apple Muffins! Packed with fresh apples and wholesome ingredients, these muffins are the perfect way to satisfy your sweet tooth while still nourishing your body. Here are some tips for cooking the perfect batch of apple muffins that everyone will love.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Design an outline for a blog post based on the given information and list the sections accordingly.",
+    "instruction":"Design an outline for a blog post based on the given information and list the sections accordingly.\n\nThis blog post is going to about making a list of last-minute gift ideas. Also, the tone of the post is going to be relaxed and casual.",
     "output":"Title: 10 Last-Minute Gift Ideas That Will Save Your Holidays\n\nIntroduction: Briefly discuss the stress of last-minute shopping and how this post will provide easy solutions.\n\nSection 1: Gifts for the Homebody - Include cozy blankets, candles, and a good book.\n\nSection 2: Gifts for the Foodie - Include a gift card to a popular restaurant, a gourmet food basket, and a cookbook.\n\nSection 3: Gifts for the Techie - Include a portable phone charger, wireless earbuds, and a streaming device.\n\nSection 4: Gifts for the Fashionista - Include a stylish scarf, a trendy accessory, and a subscription to a fashion magazine.\n\nSection 5: Gifts for the Outdoorsy Type - Include a hiking book, a camping mug, and a portable speaker for outdoor activities.\n\nConclusion: Recap the different gift ideas and emphasize the convenience of these last-minute options.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a section for a blog post and try to cover all of the provided information about this section in your text.",
+    "instruction":"Write a section for a blog post and try to cover all of the provided information about this section in your text.\n\nBlog Topic: 7 Fall Fashion Trends Worth Taking on Your Trip\nSection Title: Trusty Jeans\nMain point of the section: jeans can be worn all year and look good with everything .",
     "output":"Jeans are a staple in every wardrobe, and for good reason. Not only are they versatile, but they can also be worn year-round. When packing for your fall trip, make sure to include a trusty pair of jeans. They can be dressed up or down, and look great with everything from cozy sweaters to chic blouses. Plus, they're perfect for layering under jackets and scarves. Don't underestimate the power of a good pair of jeans on your travels this fall.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a detailed caption for an Instagram post about a discount. A proper caption should explain the product, offer the discount, and tell the user how to claim it.",
+    "instruction":"Create a detailed caption for an Instagram post about a discount. A proper caption should explain the product, offer the discount, and tell the user how to claim it.\n\nProduct: Golang course\nProduct description: teaching the foundational skills for building cloud services, web applications, DevOps tools, and backend development\nDiscount: 50%\nHow to claim: Use the coupon code: GOLANG",
     "output":"Learn the foundational skills for building cloud services, web apps, and more with our Golang course! Get 50% off when you use coupon code GOLANG at checkout. Don't miss out on this amazing deal! Claim your discount now and start your journey towards becoming a skilled backend developer. #Golang #discount #backenddevelopment",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a captivating Instagram caption based on the provided details. Try to think of as many captions as you can.",
+    "instruction":"Create a captivating Instagram caption based on the provided details. Try to think of as many captions as you can.\n\nI am sharing images of the first snow of the year taken from a window in an office",
     "output":"\"Snowflakes falling, work can wait. \u2744\ufe0f\u2603\ufe0f #FirstSnow #WinterWonderland\" \n\n\"Let it snow, let it snow, let it snow! \u2744\ufe0f\u2603\ufe0f #FirstSnow #SnowDay\"\n\n\"Who needs a winter wonderland when you have this view from the office? \u2744\ufe0f\u2603\ufe0f #FirstSnow #OfficeView\"\n\n\"Snow way I'm leaving this cozy office! \u2744\ufe0f\u2603\ufe0f #FirstSnow #OfficeVibes\"\n\n\"When life gives you snow, take pictures! \u2744\ufe0f\u2603\ufe0f #FirstSnow #WinterScenes\" \n\n\"Chilling in the office with a hot cup of cocoa and a snowy view. \u2744\ufe0f\u2603\ufe0f #FirstSnow #CozyVibes\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a topic for an Instagram post. Help the post reach a broader audience by suggesting hashtags related to the post.",
+    "instruction":"You are given a topic for an Instagram post. Help the post reach a broader audience by suggesting hashtags related to the post.\n\nAnother episode of women in science is out now",
     "output":"Here are some suggested hashtags for your Instagram post: #womeninscience #womeninstem #womeninSTEM #womeninscientists #womeninhistory #womenempowerment #womenleaders #womenwholead #womeninresearch #womeninspiration #womenininnovation #womeninacademia #womeninmedicine.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Use appropriate emojis to convey the meaning in the given text.",
+    "instruction":"Use appropriate emojis to convey the meaning in the given text.\n\nCute cat\nplayful\nSoft",
     "output":"\ud83d\udc31\ud83d\ude0d\ud83c\udf89\ud83e\udd17\ud83d\udc3e\ud83d\udc08\ud83d\udc95",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"The topic of a YouTube post has been described and based on the information, you need to write a hook for starting the post. A catchy hook will keep your readers interested so they keep reading. It would be great if you could come up with as many hooks as you can.",
+    "instruction":"The topic of a YouTube post has been described and based on the information, you need to write a hook for starting the post. A catchy hook will keep your readers interested so they keep reading. It would be great if you could come up with as many hooks as you can.\n\nA video showing how to make a tasty cup of coffee",
     "output":"1. \"Are you tired of spending too much money on fancy coffee? Learn how to make your own delicious cup at home!\"\n2. \"Start your day off on the right foot with the perfect cup of coffee - made by you!\"\n3. \"The secret to a great cup of coffee? It's all in the method. Follow along and become a coffee connoisseur!\"\n4. \"Coffee lovers, unite! This video will show you how to make the best cup of coffee you've ever tasted.\"\n5. \"Skip the coffee shop and become your own barista with this step-by-step guide to the perfect cup of coffee.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Using the provided topic as a starting point, brainstorm ideas for videos that can be made about it on YouTube.",
+    "instruction":"Using the provided topic as a starting point, brainstorm ideas for videos that can be made about it on YouTube.\n\nIn spite of the fact that procrastination feels bad to you, why do you do it?",
     "output":"You could create a video exploring the psychology of procrastination and why it's a common behavior. Alternatively, you could make a video featuring tips and strategies for overcoming procrastination. Another idea is to interview people with different perspectives on procrastination and create a documentary-style video.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You should choose a YouTube video title based on the video's content. A video's title tells viewers what to expect from it. It should be direct, honest, and clear. The title of the video needs to capture the attention of viewers, so do not use an unclear or ambiguous one.",
+    "instruction":"You should choose a YouTube video title based on the video's content. A video's title tells viewers what to expect from it. It should be direct, honest, and clear. The title of the video needs to capture the attention of viewers, so do not use an unclear or ambiguous one.\n\nA research study has been conducted to determine if exercise really can \"boost\" your metabolism.",
     "output":"\"Can Exercise Really Boost Your Metabolism? New Research Study Reveals Surprising Results\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Choosing a name for your product or business YouTube channel is an important part of the process. Based on the description of the product or business, you should come up with some interesting names. Take some time to brainstorm your ideas.",
+    "instruction":"Choosing a name for your product or business YouTube channel is an important part of the process. Based on the description of the product or business, you should come up with some interesting names. Take some time to brainstorm your ideas.\n\nHere you will find videos and content that will help students prepare for the application process to graduate schools as well as how to apply to graduate schools",
     "output":"For a YouTube channel that helps students prepare for graduate school, some interesting names could be \"Graduate Gateway\", \"Postgrad Prep\", \"Higher Ed Hacks\", \"Grad School Guide\", \"Mastering Admissions\", or \"Gradbound\". Brainstorming various options can help you come up with a unique and memorable name that aligns with your channel's focus and target audience.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Find the answer that best describes the underlined SAT word. Select the correct option and explain the meaning of the underlined word.",
+    "instruction":"Find the answer that best describes the underlined SAT word. Select the correct option and explain the meaning of the underlined word.\n\nDespite the _cacophony, the student tried to study. \nA. Loud sounds\nB. Difficult subject\nC. Late hour\nD. Low lighting",
     "output":"The correct option is A. Cacophony means a harsh, unpleasant mixture of loud sounds. In this sentence, despite the loud and unpleasant noise, the student tried to study.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Find synonyms for the given word. You need to write down how the provided synonyms differ from the original word in terms of meaning, usage, etc.",
+    "instruction":"Find synonyms for the given word. You need to write down how the provided synonyms differ from the original word in terms of meaning, usage, etc.\n\nadversity",
     "output":"Some synonyms for \"adversity\" are hardship, difficulty, challenge, and trouble. Hardship and difficulty imply a sense of struggle or difficulty in overcoming something, while challenge suggests a task or obstacle that requires effort to overcome. Trouble can refer to a broader range of problems or issues, and may not necessarily imply adversity.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Discuss the origins and history of the word that has been given to you.",
+    "instruction":"Discuss the origins and history of the word that has been given to you.\n\noblique",
     "output":"The word \"oblique\" comes from the Latin word \"obliquus,\" which means \"slanting\" or \"sideways.\" It has been used in English since the 15th century to describe something that is not straight or direct. In geometry, an oblique angle is one that is not a right angle. In linguistics, an oblique case refers to a noun or pronoun that is not in the nominative or subjective case. Overall, the word \"oblique\" has a long and varied history of usage across multiple fields.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give the provided brand a motto to use as a part of its marketing strategies.",
+    "instruction":"Give the provided brand a motto to use as a part of its marketing strategies.\n\nThe Ice cream shop is a small, quaint shop located in the heart of the historic district. They offer a variety of ice cream flavors, as well as Italian ice, gelato, and sorbet. The shop has a few tables and chairs, but most of their business is to-go. They offer a loyalty program where you can get a free scoop of ice cream after 10 purchases.",
     "output":"\"Scoops of happiness in every cone! - The perfect reward for your loyalty.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"A confirmation email should be written appropriately for the situation.",
+    "instruction":"A confirmation email should be written appropriately for the situation.\n\nA meeting has been scheduled, and the sender expects the other to review the slides.",
     "output":"Dear [Recipient],\n\nI am writing to confirm our meeting on [Date] at [Time]. As discussed, we will be reviewing the slides for [Project\/Topic]. Please make sure to review them beforehand so that we can make the most of our time together.\n\nLooking forward to seeing you then.\n\nBest regards,\n[Sender]",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3843,7 +3843,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"It would be helpful if you could suggest an acronym for the repository.",
+    "instruction":"It would be helpful if you could suggest an acronym for the repository.\n\nA python framework for creating, editing, and invoking Noisy Intermediate Scale Quantum (NISQ) circuits.",
     "output":"How about \"PENQ\" which stands for Python Editing NISQ Quantum? Or \"PINE\" for Python INvoke NISQ Editor?",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3864,49 +3864,49 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"The movie tagline is the film's advertising slogan, usually printed on posters prior to the official release. It is a short description or comment on a movie to capture the essence of the movie, and ultimately make you watch the movie. Here is an example:",
+    "instruction":"The movie tagline is the film's advertising slogan, usually printed on posters prior to the official release. It is a short description or comment on a movie to capture the essence of the movie, and ultimately make you watch the movie. Here is an example:\n\nMovie: Joker (2019)",
     "output":"\"Put on a happy face.\" This is the tagline for the movie Joker (2019). It captures the twisted and dark nature of the film, and hints at the iconic villain's infamous smile.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given some reviews for a movie. Each video might have mentioned some negative or positive points about the movie. Read them carefully and extract the positive and negative points mentioned in all of the reviews. Then, make a list of these points and summarize them as positive points and negative points.",
+    "instruction":"You are given some reviews for a movie. Each video might have mentioned some negative or positive points about the movie. Read them carefully and extract the positive and negative points mentioned in all of the reviews. Then, make a list of these points and summarize them as positive points and negative points.\n\nReview 1: I'm not sure if it's just the fact that Ed Norton really grates on me in this film, but I never really bought into the idea of Fight Club being some kind of cultural phenomenon. Yes it's an innovative story, told via a strong script, engaging characters and intense cinematography. But is it really worthy of such high praise? Personally, I find it starts to fall apart halfway through and actually becomes quite tedious towards the end. Everything just becomes a little bit childish and contrived as the story loses touch with its base elements and the rage against the machine vibe takes over. I have huge respect for the way this film was made but, much like The Matrix, I feel like people attach way more importance to this movie than it deserves.\nReview 2: The film tells the story of men who cannot adapt to the social order in today's world, under the leadership of Tyler Durden, to discover their natural instinct, masculinity, and to escape from their unhappy lives.\nReview 3: Despite a good theme, great acting and important messages that this movie convey in an unorthodox way, I think it fails to connect the audience with the storyline and leaves him in a world of confusion. Although, majority of reviews find this movie entertaining and interesting, yet I would choose to be a minority that believes that this movie is extremely overrated.\nReview 4: Is creating chaos, explosions and membership in a militant sect the way to get rid of material shackles ?! The visual effects are fascinating and the story is compelling until the second half. Unfortunately, it doesn't end well.",
     "output":"Positive points: innovative story, strong script, engaging characters, intense cinematography, great acting, important messages, compelling visual effects.\n\nNegative points: falls apart halfway through, becomes tedious towards the end, childish and contrived, fails to connect with the audience, leaves the audience confused, extremely overrated, doesn't end well.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give a brief summary of the movie or series' plot.",
+    "instruction":"Give a brief summary of the movie or series' plot.\n\nBreaking Bad (TV Series 2008\u20132013)",
     "output":"Breaking Bad is a critically acclaimed TV series that follows the life of a high school chemistry teacher, Walter White, after he is diagnosed with terminal cancer. To secure his family's financial future, he teams up with his former student Jesse Pinkman to produce and sell methamphetamine. As they navigate the dangerous world of drug trafficking, they encounter various challenges and obstacles that test their loyalty and morality.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Decide whether children can watch the given movie. Mention what makes it inappropriate if you think they can't.",
+    "instruction":"Decide whether children can watch the given movie. Mention what makes it inappropriate if you think they can't.\n\nThe Dark Knight (2008)",
     "output":"The Dark Knight (2008) is rated PG-13 and may not be suitable for young children due to intense action and violence. Parents may want to preview the movie before allowing their children to watch it.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a short analysis of the cinematography in the movie.",
+    "instruction":"Write a short analysis of the cinematography in the movie.\n\nDead Poets Society",
     "output":"The cinematography in Dead Poets Society is noteworthy for its use of unconventional camera angles and shots. The film often employs low angles to emphasize the power dynamics between characters, as well as close-ups to highlight their emotional states. Additionally, the use of natural lighting and outdoor settings adds to the overall warmth and intimacy of the film.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Please let me know your thoughts on the given place and why you think it deserves to be visited.",
+    "instruction":"Please let me know your thoughts on the given place and why you think it deserves to be visited.\n\nBarcelona, Spain",
     "output":"Barcelona is a must-visit destination for its unique blend of history, art, and culture. The city boasts impressive architecture, including Gaudi's famous structures, and world-class museums. The beaches and parks are also worth exploring. Plus, the food scene is one of the best in the world. Overall, Barcelona offers something for everyone, making it a top destination in Spain.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Consider the best time of year to visit the given city, and provide your reasons for choosing that time.",
+    "instruction":"Consider the best time of year to visit the given city, and provide your reasons for choosing that time.\n\nSydney, Australia",
     "output":"The best time to visit Sydney is from September to November or from March to May. During these months, the weather is mild and pleasant, and there are fewer crowds compared to the peak summer season. Additionally, you can catch the famous Sydney festivals like the Vivid Sydney Festival or the Royal Easter Show, which are held during these months.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3920,7 +3920,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Make a list of the top places in the U.S. to visit at the given time.",
+    "instruction":"Make a list of the top places in the U.S. to visit at the given time.\n\nNovember",
     "output":"Some top places to visit in the United States during November include New York City for the Macy's Thanksgiving Day Parade, New England for the fall foliage, and Savannah, Georgia for its quaint charm and mild weather. Other options to consider include national parks such as Yosemite and Zion, as well as cities like New Orleans and San Francisco.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3934,35 +3934,35 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Answer the following question.",
+    "instruction":"Answer the following question.\n\nHow do I compare strings in Java?\nI've been using the == operator in my program to compare all my strings so far. However, I ran into a bug, changed one of them into .equals() instead, and it fixed the bug.\nIs == bad? When should it and should it not be used? What's the difference?",
     "output":"In Java, the == operator compares the memory addresses of two objects, while the .equals() method compares the contents of the objects. Therefore, it's generally better to use .equals() when comparing strings. However, == can be used when comparing string literals or when checking if two references point to the same object. It's important to understand the difference and use the appropriate method based on the situation.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a question and two possible answers. The task is to evaluate each answer and determine if it is correct. If incorrect, explain why.",
+    "instruction":"You are given a question and two possible answers. The task is to evaluate each answer and determine if it is correct. If incorrect, explain why.\n\nIs there a way of reading one single character from the user input? For instance, they press one key at the terminal and it is returned (sort of like getch()). I know there's a function in Windows for it, but I'd like something that is cross-platform.\nAnswer 1: Here's a link to the ActiveState Recipes site that says how you can read a single character in Windows, Linux and OSX :\nhttps:\/\/code.activestate.com\/recipes\/134892\/\nAnswer 2: if you just want to hold the screen so you can see the result on the terminal just write `input()` at the end of the code and it will hold the screen",
     "output":"Answer 1 provides a cross-platform solution for reading a single character from user input. Answer 2 does not address the question and instead suggests a way to hold the screen.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given two questions. Check if they are duplicates.",
+    "instruction":"You are given two questions. Check if they are duplicates.\n\nQuestion1: I am trying to understand the advantages of multiprocessing over threading. I know that multiprocessing gets around the Global Interpreter Lock, but what other advantages are there, and can threading not do the same thing?\nQuestion2: I am learning how to use the threading and the multiprocessing modules in Python to run certain operations in parallel and speed up my code.\nI am finding this hard (maybe because I don't have any theoretical background about it) to understand what the difference is between a threading.Thread() object and a multiprocessing.Process() one.\nAlso, it is not entirely clear to me how to instantiate a queue of jobs and having only 4 (for example) of them running in parallel, while the other wait for resources to free before being executed.\nI find the examples in the documentation clear, but not very exhaustive; as soon as I try to complicate things a bit, I receive a lot of weird errors (like a method that can't be pickled, and so on).\nSo, when should I use the threading and multiprocessing modules?\nCan you link me to some resources that explain the concepts behind these two modules and how to use them properly for complex tasks?",
     "output":"Question1 and Question2 are not duplicates. The first question asks about the advantages of multiprocessing over threading, while the second one asks for resources to understand the differences between threading and multiprocessing, and how to use them. For resources on these topics, you can check out the official Python documentation on threading and multiprocessing, as well as online tutorials and guides. As for when to use each module, it depends on the task at hand and the specific requirements, such as the level of concurrency needed and the type of data being processed.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Design a programming problem related to the subject that has been given to you. Use some examples and constraints to improve your question.",
+    "instruction":"Design a programming problem related to the subject that has been given to you. Use some examples and constraints to improve your question.\n\nDynamic Programming",
     "output":"Design a programming problem that involves finding the optimal solution to a problem by breaking it down into smaller subproblems and storing the solutions to these subproblems to avoid redundant calculations. Some examples could include finding the maximum sum of a subarray, the longest increasing subsequence, or the minimum cost path in a grid. Make sure to include specific constraints to make the problem more challenging, such as limited time or memory constraints.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a Java solution to the following problem.",
+    "instruction":"Provide a Java solution to the following problem.\n\nGiven an integer n, return true if it is a power of three. Otherwise, return false.\nAn integer n is a power of three, if there exists an integer x such that n == 3^x.\n\nExample 1:\nIn: n = 27\nOut: true\nExplanation: 27 = 3^3\n\nExample 2:\nIn: n = 0\nOut: false\nExplanation: There is no x where 3^x = 0.\n\nExample 3:\nIn: n = -1\nOut: false\nExplanation: There is no x where 3x = (-1).\n \nConstraints:\n-231 <= n <= 231 - 1\nFollow up: Could you solve it without loops\/recursion?",
     "output":"Here is a Java solution to determine if an integer n is a power of three: \n\n```\npublic boolean isPowerOfThree(int n) {\n    if (n <= 0) {\n        return false;\n    }\n    while (n % 3 == 0) {\n        n \/= 3;\n    }\n    return n == 1;\n}\n```\n\nThis solution uses a loop to divide the input integer by 3 until it is no longer divisible. If the result is 1, then the input is a power of three and the method returns true. Otherwise, the input is not a power of three and the method returns false. If the input integer is negative, or zero, the method returns false.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -3976,91 +3976,91 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"You will need to guide this person through the scenario they have described for the interview.",
+    "instruction":"You will need to guide this person through the scenario they have described for the interview.\n\nFinally! After a while of shooting in the dark and frantically fiddling with sample inputs on the whiteboard, you've came up with an algorithm for solving the coding question your interviewer gave you.\nWhew. Such a relief to have a clear path forward. To not be flailing anymore.\nNow you're cruising, getting ready to code up your solution.\nWhen suddenly, your interviewer throws you a curve ball.\n\"What if we thought of the problem this way?\"\nYou feel a tension we've all felt during the coding interview:\n\"Try to listen to what they're saying...but don't lose your train of thought...ugh, I can't do both!\"",
     "output":"Take a deep breath and stay calm. Listen carefully to what the interviewer is saying and try to understand their perspective. Take notes if necessary. Once they have finished, repeat back what you understood to ensure you've got it right. Then, take a moment to evaluate if their approach is better and adjust your solution accordingly. Don't worry if it takes a little extra time, it's better to ensure you're both on the same page.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a programming problem and its implementation. Analyze the problem and implementation and explain the algorithm and approach used to solve the problem.",
+    "instruction":"You are given a programming problem and its implementation. Analyze the problem and implementation and explain the algorithm and approach used to solve the problem.\n\nTable: Person\n| Column Name | Type     |\n| personId          | int         |\n| lastName         | varchar |\n| firstName         | varchar |\npersonId is the primary key column for this table.\nThis table contains information about the ID of some persons and their first and last names.\nTable: Address\n| Column Name | Type     |\n| addressId        | int         |\n| personId          | int         |\n| city                   | varchar|\n| state                | varchar |\naddressId is the primary key column for this table.\nEach row of this table contains information about the city and state of one person with ID = PersonId.\nWrite an SQL query to report the first name, last name, city, and state of each person in the Person table. If the address of a personId is not present in the Address table, report null instead.\nReturn the result table in any order.\nImplementation:\nselect FirstName, LastName, City, State\nfrom Person left join Address\non Person.PersonId = Address.PersonId\n;",
     "output":"The given query uses a left join to combine data from the Person and Address tables on the personId key. It selects the first name, last name, city, and state columns from the resulting table. If there is no matching address for a person in the Address table, null is returned. The query returns the result table in any order.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"The given article should be checked for any scientific errors and corrected if necessary.",
+    "instruction":"The given article should be checked for any scientific errors and corrected if necessary.\n\nZinc is an essential mineral that is required for good health. It is involved in many biochemical processes in the body and is necessary for the proper functioning of the immune system. Excess zink is not harmful as it is excreted in the urine.",
     "output":"The input statement contains a scientific error. The correct information is that excess zinc can be harmful as it can lead to toxic effects in the body. Please ensure that this information is corrected in the article.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Summarize the article you have been given in a brief manner.",
+    "instruction":"Summarize the article you have been given in a brief manner.\n\nMathematics and art are related in a variety of ways. Mathematics has itself been described as an art motivated by beauty. Mathematics can be discerned in arts such as music, dance, painting, architecture, sculpture, and textiles. This article focuses, however, on mathematics in the visual arts.\nMathematics and art have a long historical relationship. Artists have used mathematics since the 4th century BC when the Greek sculptor Polykleitos wrote his Canon, prescribing proportions conjectured to have been based on the ratio 1:\u221a2 for the ideal male nude. Persistent popular claims have been made for the use of the golden ratio in ancient art and architecture, without reliable evidence. In the Italian Renaissance, Luca Pacioli wrote the influential treatise De divina proportione (1509), illustrated with woodcuts by Leonardo da Vinci, on the use of the golden ratio in art. Another Italian painter, Piero della Francesca, developed Euclid's ideas on perspective in treatises such as De Prospectiva Pingendi, and in his paintings. The engraver Albrecht D\u00fcrer made many references to mathematics in his work Melencolia I. In modern times, the graphic artist M. C. Escher made intensive use of tessellation and hyperbolic geometry, with the help of the mathematician H. S. M. Coxeter, while the De Stijl movement led by Theo van Doesburg and Piet Mondrian explicitly embraced geometrical forms. Mathematics has inspired textile arts such as quilting, knitting, cross-stitch, crochet, embroidery, weaving, Turkish and other carpet-making, as well as kilim. In Islamic art, symmetries are evident in forms as varied as Persian girih and Moroccan zellige tilework, Mughal jali pierced stone screens, and widespread muqarnas vaulting.",
     "output":"The article discusses the historical relationship between mathematics and art, with a focus on mathematics in the visual arts. Polykleitos, Piero della Francesca, and Albrecht D\u00fcrer are a few examples of artists who used mathematics in their work. The article also mentions modern artists, like M.C. Escher and the De Stijl movement, who embraced geometrical forms. Additionally, mathematics has inspired various textile arts and can be seen in Islamic art forms such as Persian girih and Moroccan zellige tilework.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Improve the article using your knowledge of the topic in order to make it more informative.",
+    "instruction":"Improve the article using your knowledge of the topic in order to make it more informative.\n\nThe \"fair trade\" movement, also known as the \"trade justice\" movement, promotes the use of labour, environmental and social standards for the production of commodities, particularly those exported from the Third and Second Worlds to the First World. Such ideas have also sparked a debate on whether trade itself should be codified as a human right.",
     "output":"Consider adding specific examples of Fair Trade practices and their impact on the communities that produce the commodities. Also, explore the arguments for and against codifying trade as a human right, citing relevant sources. This will provide a thorough and informative analysis of the Fair Trade movement and its implications.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Make the article available in a second language by translating it into it.",
+    "instruction":"Make the article available in a second language by translating it into it.\n\nDentistry, also known as dental medicine and oral medicine, is the branch of medicine focused on the teeth, gums, and mouth. It consists of the study, diagnosis, prevention, management, and treatment of diseases, disorders, and conditions of the mouth, most commonly focused on dentition (the development and arrangement of teeth) as well as the oral mucosa. Dentistry may also encompass other aspects of the craniofacial complex including the temporomandibular joint. The practitioner is called a dentist.\nTranslate to French:",
     "output":"Rendez l'article disponible dans une deuxi\u00e8me langue en le traduisant en fran\u00e7ais. La dentisterie, \u00e9galement connue sous le nom de m\u00e9decine dentaire et de m\u00e9decine buccale, est la branche de la m\u00e9decine ax\u00e9e sur les dents, les gencives et la bouche. Elle consiste en l'\u00e9tude, le diagnostic, la pr\u00e9vention, la gestion et le traitement des maladies, des troubles et des affections de la bouche, le plus souvent centr\u00e9e sur la dentition (le d\u00e9veloppement et l'arrangement des dents) ainsi que la muqueuse buccale. La dentisterie peut \u00e9galement englober d'autres aspects du complexe cr\u00e2nio-facial, y compris l'articulation temporo-mandibulaire. Le praticien est appel\u00e9 dentiste.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"An evaluation of the article's quality should be carried out. In order to do so, you should review the quality of the writing and the explanation of the topic.",
+    "instruction":"An evaluation of the article's quality should be carried out. In order to do so, you should review the quality of the writing and the explanation of the topic.\n\nThe 20th century saw a revolution in music listening as the radio gained popularity worldwide and new media and technologies were developed to record, edit and distribute music. Music performances became increasingly visual with the broadcast and recording of performances.\n20th-century music brought new freedom and wide experimentation with new musical styles and forms that challenged the accepted rules of music of earlier periods. The invention of musical amplification and electronic instruments, especially the synthesizer, in the mid-20th century revolutionized classical and popular music, and accelerated the development of new forms of music.",
     "output":"After reviewing the input, the article's quality seems to be good. The writing is clear and concise, and the explanation of the topic is informative and well-researched. It effectively covers the major developments in music during the 20th century, including the rise of the radio and new technologies, and the experimentation with new styles and forms. The article also recognizes the impact of electronic instruments and amplification on classical and popular music. Overall, the article is of high quality and provides a detailed overview of 20th-century music.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Please answer the following question based on the information provided in the article.",
+    "instruction":"Please answer the following question based on the information provided in the article.\n\nDevelopment studies is an interdisciplinary branch of social science. Development studies is offered as a specialized master's degree in a number of reputed universities around the world. It has grown in popularity as a subject of study since the early 1990s, and has been most widely taught and researched in developing countries and countries with a colonial history, such as the UK, where the discipline originated.  Students of development studies often choose careers in international organisations such as the United Nations, World Bank, non-governmental organisations (NGOs), media and journalism houses, private sector development consultancy firms, corporate social responsibility (CSR) bodies and research centers.\nWhat are some popular careers for students of development studies?",
     "output":"Popular careers for students of development studies include working for international organizations such as the United Nations and World Bank, non-governmental organizations (NGOs), media and journalism houses, private sector development consultancy firms, corporate social responsibility (CSR) bodies, and research centers.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Design a syllabus for the given course. Students should be given a list of the chapters with brief explanations of each chapter's purpose.",
+    "instruction":"Design a syllabus for the given course. Students should be given a list of the chapters with brief explanations of each chapter's purpose.\n\nProgramming for Everybody (Getting Started with Python)",
     "output":"Here is a syllabus for Programming for Everybody (Getting Started with Python):\n1. Introduction to Python and Programming\n2. Variables, Expressions, and Statements\n3. Conditional Execution\n4. Functions\n5. Loops and Iterations\n6. Strings\n7. Files\n8. Lists\n9. Dictionaries\n10. Tuples\nEach chapter will cover specific topics that build upon each other and provide students with a strong foundation in Python programming.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"List the personality traits that are required to be successful in the given job.",
+    "instruction":"List the personality traits that are required to be successful in the given job.\n\nSocial Media Marketer",
     "output":"To be a successful Social Media Marketer, one needs to have strong communication skills, creativity, adaptability, analytical thinking, attention to detail, a passion for digital media, customer service orientation, and the ability to work well under pressure and meet deadlines.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Please list the courses that someone interested in the first course might like.",
+    "instruction":"Please list the courses that someone interested in the first course might like.\n\nBitcoin and Cryptocurrency Technologies",
     "output":"If someone is interested in Bitcoin and Cryptocurrency Technologies, they might also like courses such as Blockchain Basics, Introduction to Ethereum, Cryptography, and Digital Currencies.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Come up with the courses that one is supposed to take in order to be an expert in a given field.",
+    "instruction":"Come up with the courses that one is supposed to take in order to be an expert in a given field.\n\nGraphic Design",
     "output":"Some courses to take to become an expert in Graphic Design include: \n- Design Fundamentals\n- Adobe Creative Suite \n- Typography \n- Color Theory \n- Web Design \n- User Experience Design \n- Branding \n- Editorial Design \n- Packaging Design \n- Motion Graphics \n- Design History \n- Portfolio Development \n- Professional Practice and Ethics.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a daily itinerary based on the given information.",
+    "instruction":"Create a daily itinerary based on the given information.\n\nOur family is looking for a 9-day Morocco trip that has light to moderate activity levels.",
     "output":"Day 1: Arrival in Casablanca, transfer to Rabat\nDay 2: Explore Rabat's medina, Kasbah des Oudaias, and Hassan Tower\nDay 3: Visit the ancient Roman ruins of Volubilis, then continue to Fes\nDay 4: Guided tour of Fes medina, tanneries, and souks\nDay 5: Drive to the Erg Chebbi dunes, camel trek to desert camp\nDay 6: Sunrise over the dunes, drive to Todra Gorge for hiking\nDay 7: Hike in Dades Gorge, continue to Ouarzazate\nDay 8: Visit UNESCO World Heritage site of Ait Benhaddou, continue to Marrakech\nDay 9: Explore Marrakech's medina, Bahia Palace, and Jardin Majorelle.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4081,42 +4081,42 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Think of an idea to help you win a challenge given to you. Write the steps you need to take to develop the idea as well.",
+    "instruction":"Think of an idea to help you win a challenge given to you. Write the steps you need to take to develop the idea as well.\n\nWhat can you make by recycling and repurposing some old, previously used materials? We want to see it!\nProjects must incorporate some kind of used materials - take that old used thing, and turn it into something new and different!\nE-waste is a huge problem. What can you make using old electronics and other salvageable electronic materials? \nWe have a special judges prize for our favorite Instructable that incorporates or is related to reusing e-waste.\nBe smart and be safe; note that potentially deadly projects (like Lichtenberg\/fractal wood burning machines) will not be allowed to be published or submitted to this contest.",
     "output":"To develop an idea for repurposing old materials, first identify what you have available. Consider using old electronics to make a unique piece of art or functional item. Brainstorm ideas, sketch out designs, and research techniques for working with the materials. As you create your project, be sure to prioritize safety and avoid any potentially dangerous techniques. Emphasize the uniqueness and sustainability of your creation to increase your chances of winning the judges' prize.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"There are many creative projects we can build at home that are related to the given theme, so let's list some of them.",
+    "instruction":"There are many creative projects we can build at home that are related to the given theme, so let's list some of them.\n\nTheme: Circuits",
     "output":"Some creative projects related to circuits that can be built at home include: creating a light-up greeting card with LED lights, building a burglar alarm with a buzzer and a switch, making an automatic night light with a light sensor and LED lights, constructing a simple FM radio with a tuner circuit, or creating a DIY electronic dice with LEDs and a microcontroller.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Make a list of the materials that will be required to build the given tool.",
+    "instruction":"Make a list of the materials that will be required to build the given tool.\n\nCoffee Darkness Meter",
     "output":"To build a Coffee Darkness Meter, you will need the following materials: a light sensor, a microcontroller, an LCD display, a power supply, wires, resistors, and a casing to hold all the components together.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a detailed explanation of the steps that are required in order to construct the given project.",
+    "instruction":"Provide a detailed explanation of the steps that are required in order to construct the given project.\n\nSteam Engine Using an Empty Beer Can",
     "output":"1. Clean an empty beer can thoroughly and remove any labels or residue. \n2. Cut a small hole in the center of the can's top using a can opener. \n3. Cut another hole in the side of the can, near the bottom, using a sharp knife. \n4. Insert a copper tube through the side hole and bend it so that one end is inside the can and the other end is pointing outward. \n5. Attach a small fan blade to the end of the copper tube inside the can. \n6. Fill the can with water to just below the copper tube. \n7. Place the can on a heat source, such as a stove or hot plate, and allow the water to boil. \n8. The steam generated by the boiling water will cause the fan blade to spin, producing a simple steam engine.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Estimate the cost of supplies required to create the given project and calculate the total cost.",
+    "instruction":"Estimate the cost of supplies required to create the given project and calculate the total cost.\n\nDIY Water Chiller\nRequired items are: Ice-maker, Icebox\/cooler, Temperature regulator, Aquarium pump x2, 12V power supply",
     "output":"To estimate the cost of supplies for the DIY Water Chiller project, you will need to research the cost of each required item. Once you have found the individual costs, add them together to find the total cost of supplies. Be sure to also factor in any additional costs such as shipping or taxes.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Answer the following literature question as accurately as possible based on your knowledge of literature for high school students.",
+    "instruction":"Answer the following literature question as accurately as possible based on your knowledge of literature for high school students.\n\nWhat does the green light symbolize at the end of the book?",
     "output":"The green light in the book is a symbol of hope and the future. It represents Gatsby's dreams and aspirations, particularly his desire to be with Daisy. The light is a reminder of the unattainable nature of the American Dream, which Gatsby sought to achieve through his wealth and status.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4137,7 +4137,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Make a list of outdoor activities that are suitable for the given weather condition.",
+    "instruction":"Make a list of outdoor activities that are suitable for the given weather condition.\n\nTemperature: 57 F, Showers",
     "output":"Some outdoor activities that are suitable for a temperature of 57 F and showers include hiking with appropriate rain gear, birdwatching from a sheltered area, or visiting an outdoor museum with covered exhibits.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4151,14 +4151,14 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"In relation to the given weather scenario, give some tips on how to adjust the travel plans with it.",
+    "instruction":"In relation to the given weather scenario, give some tips on how to adjust the travel plans with it.\n\na sudden temperature change",
     "output":"If there's a sudden temperature change, it's important to adjust travel plans accordingly. Dress in layers, bring appropriate gear for cold or hot weather, and plan for delays due to weather-related transportation issues. Additionally, consider indoor activities or alternate modes of transportation to avoid exposure to extreme temperatures.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a to-do list based on the given information.",
+    "instruction":"Write a to-do list based on the given information.\n\nDaily tasks in the pharmacy",
     "output":"1. Check inventory and order necessary supplies.\n2. Fill prescriptions accurately and in a timely manner.\n3. Assist patients with their medication questions and needs.\n4. Clean and organize the pharmacy, including the dispensing area and shelves.\n5. Monitor and maintain proper storage and handling of medications.\n6. Communicate with healthcare providers and insurance companies as needed.\n7. Stay up-to-date on new medications and pharmacy regulations.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4179,14 +4179,14 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Answer the following question.",
+    "instruction":"Answer the following question.\n\nHow do you say \"good evening\" in French.",
     "output":"\"Good evening\" in French is \"bonsoir.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"What sound does this make?",
+    "instruction":"What sound does this make?\n\n\u597d",
     "output":"I'm sorry, but I cannot provide an accurate response as the input is written in Chinese characters and does not represent a sound. Please provide a written representation of the sound in question.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4200,7 +4200,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"This is a test for the reading ability of French. Read the given story carefully, and then answer the question in the end.",
+    "instruction":"This is a test for the reading ability of French. Read the given story carefully, and then answer the question in the end.\n\nLucie est \u00e0 la maison avec sa petite-fille, Lin.\nLucie: Oh, non! Nous n'avons pas de pain!\nLin: Ah! Tu vas au supermarch\u00e9?\nLucie: Oui, je veux une baguette pour mon sandwich.\nDo Lin and Lucie have a lot of bread?",
     "output":"No, Lin and Lucie do not have a lot of bread. They do not have any bread and need to go to the supermarket to buy a baguette for Lucie's sandwich.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4214,7 +4214,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a cooking hack for improving the flavor of the given food.",
+    "instruction":"Provide a cooking hack for improving the flavor of the given food.\n\npopcorn",
     "output":"Try adding a sprinkle of nutritional yeast or drizzling melted butter mixed with your favorite herbs and spices over your freshly popped popcorn for an extra burst of flavor.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4228,7 +4228,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Describe how to prepare the given food in your own words. Note down the ingredients you will need and the steps you will take to prepare them.",
+    "instruction":"Describe how to prepare the given food in your own words. Note down the ingredients you will need and the steps you will take to prepare them.\n\nChewy Chocolate Chip Cookies",
     "output":"To prepare chewy chocolate chip cookies, you will need butter, brown sugar, white sugar, eggs, vanilla extract, flour, baking soda, salt, and chocolate chips. First, cream the butter and both sugars together until light and fluffy. Then, add the eggs and vanilla extract and mix well. In a separate bowl, mix the flour, baking soda, and salt. Gradually add the dry mixture to the wet mixture until just combined. Stir in the chocolate chips. Chill the dough for at least an hour. Preheat the oven to 375\u00b0F. Scoop the dough onto a baking sheet and bake for 10-12 minutes or until golden brown.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4249,7 +4249,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Solve the given Sudoku puzzle.",
+    "instruction":"Solve the given Sudoku puzzle.\n\nThe Sudoku puzzle is:\n|1|  |5|  |  |  |  |8|  |\n|  |  |  |  |  |3|  |6|4|\n|8|3|4|6|7|  |9|  |  |\n|2|9|1|  |  |8|3|7|6|\n|  |  |6|  |  |9|8|1|  |\n|  |  |  |  |  |2|  |  |  |\n|  |2|  |  |9|7|6|  |  |\n|5|4|  |  |  |  |  |9|8|\n|6|1|  |  |  |5|4|3|7|",
     "output":"The solution to the given Sudoku puzzle is:\n|1|7|5|4|3|6|2|8|9|\n|9|2|7|8|1|3|5|6|4|\n|8|3|4|6|7|2|9|5|1|\n|2|9|1|5|4|8|3|7|6|\n|4|5|6|7|2|9|8|1|3|\n|7|8|3|1|6|2|9|4|5|\n|3|2|8|5|9|7|6|4|1|\n|5|4|9|3|8|1|7|2|6|\n|6|1|2|9|4|5|4|3|7|",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4263,287 +4263,287 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Choose the best books from the given genre.",
+    "instruction":"Choose the best books from the given genre.\n\nCrime & Mystery",
     "output":"Some popular books in the Crime & Mystery genre include \"The Girl with the Dragon Tattoo\" by Stieg Larsson, \"Gone Girl\" by Gillian Flynn, and \"The Da Vinci Code\" by Dan Brown. It ultimately depends on personal preference, but these are highly acclaimed and widely read books in the genre.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give a brief description of the book that you are given.",
+    "instruction":"Give a brief description of the book that you are given.\n\nMatilda",
     "output":"Matilda is a children's novel written by Roald Dahl. It tells the story of a young girl named Matilda, who has a passion for reading and has extraordinary powers. The book explores themes of empowerment, education, and the importance of standing up against injustice.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"In the event that a person enjoyed the book that was given, please suggest other books that they might also like.",
+    "instruction":"In the event that a person enjoyed the book that was given, please suggest other books that they might also like.\n\nThe Great Gatsby",
     "output":"If you enjoyed The Great Gatsby, you might also like The Catcher in the Rye by J.D. Salinger, To Kill a Mockingbird by Harper Lee, or The Sun Also Rises by Ernest Hemingway.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Indicate the genre of the book to which it belongs.",
+    "instruction":"Indicate the genre of the book to which it belongs.\n\nLove in the Time of Cholera",
     "output":"The book Love in the Time of Cholera belongs to the romance genre.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Solve this equation.",
+    "instruction":"Solve this equation.\n\nx^3 - 4x^2 + 6x - 24 = 0",
     "output":"We can factor out (x-4) from the equation to get (x-4)(x^2+6)=0. So, the solutions are x=4, x=sqrt(-6), and x=-sqrt(-6). However, since sqrt(-6) is not a real number, the only real solution is x=4.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Prove the given statement using your information.",
+    "instruction":"Prove the given statement using your information.\n\n\"If x is a positive integer or a solution to x+3>4, then x>0 and x>12.\"",
     "output":"To prove the statement, we can use proof by contradiction. Assume x is not greater than 12. Then x is either not positive or not greater than the solution of x+3>4, both of which contradict the initial assumption. Therefore, x must be greater than 12 and positive, which satisfies the given condition.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Based on the facts that have been provided, prove the following statement.",
+    "instruction":"Based on the facts that have been provided, prove the following statement.\n\nStatement: \"For every integer k, k^2 + 2k + 1 \u2265 0\"\nFact: The square of any real number is non-negative.",
     "output":"To prove the statement \"For every integer k, k^2 + 2k + 1 \u2265 0,\" we can use the fact that the square of any real number is non-negative. We can rewrite the left side of the statement as (k+1)^2, which is the square of the real number k+1. Since the square of any real number is non-negative, we know that (k+1)^2 \u2265 0, which means that k^2 + 2k + 1 \u2265 0 for every integer k. Therefore, the statement is proven.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Verify the correctness of the given statement.",
+    "instruction":"Verify the correctness of the given statement.\n\n\"For all integers j and k, if j and k are odd, then jk is odd.\"",
     "output":"The given statement is correct. A product of two odd numbers will always result in an odd number.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a formula for computing the nth term in the given sequence",
+    "instruction":"Provide a formula for computing the nth term in the given sequence\n\n5, 14, 23, 32, 41, ...",
     "output":"The nth term of the given sequence can be computed using the formula: \n\na(n) = 9n - 4 \n\nwhere n is the position of the term in the sequence. Therefore, for the input sequence 5, 14, 23, 32, 41, ... the 7th term would be: \n\na(7) = 9(7) - 4 = 59",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a table listing all games that meet the specified criteria in the National Football League. Use the season, local time, game, and score as columns of the table.",
+    "instruction":"Create a table listing all games that meet the specified criteria in the National Football League. Use the season, local time, game, and score as columns of the table.\n\nRavens home games in 2011",
     "output":"Here is a table listing all Ravens home games in 2011, including the season, local time, game, and score:\n\n| Season | Local Time | Game | Score |\n|--------|------------|------|-------|\n| 2011   | 1:00 PM    | Ravens vs. Steelers  | Ravens 35, Steelers 7 |\n| 2011   | 1:00 PM    | Ravens vs. Cardinals | Ravens 30, Cardinals 27 |\n| 2011   | 8:30 PM    | Ravens vs. Jets      | Ravens 34, Jets 17    |\n| 2011   | 1:00 PM    | Ravens vs. Bengals   | Ravens 31, Bengals 24 |",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Using a table, compare the career overviews of the given players in Major League Baseball. Use \"|\" for separating the columns in the table.",
+    "instruction":"Using a table, compare the career overviews of the given players in Major League Baseball. Use \"|\" for separating the columns in the table.\n\nDerek Jeter, Albert Pujols",
     "output":"| Player | Years Played | Batting Average | Home Runs | Runs Batted In |\n| --- | --- | --- | --- | --- |\n| Derek Jeter | 1995-2014 | .310 | 260 | 1311 |\n| Albert Pujols | 2001-Present | .299 | 662 | 2118 |",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You will be tested on your knowledge of classic witticisms and aphorisms by completing the given aphorism. Write the original quote as the answer.",
+    "instruction":"You will be tested on your knowledge of classic witticisms and aphorisms by completing the given aphorism. Write the original quote as the answer.\n\ntwo things are infinite",
     "output":"\"The only two things that are infinite, are the universe and human stupidity. And I'm not sure about the former.\" - Albert Einstein",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"A list of all movies that meet the criteria given should be compiled.",
+    "instruction":"A list of all movies that meet the criteria given should be compiled.\n\nmovies directed by Spike Lee by release date",
     "output":"Here is a list of movies directed by Spike Lee sorted by release date: [insert list here].",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Using a given amount, determine an appropriate tip.",
+    "instruction":"Using a given amount, determine an appropriate tip.\n\n14% tip on $47.50",
     "output":"The tip would be $6.65.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Identify all words that match the pattern given.",
+    "instruction":"Identify all words that match the pattern given.\n\nH_AR_",
     "output":"The matching words for the pattern H_AR_ are: HARRY, HARDSHIP, HARLOT, HARVEST, HARKEN, HARASS.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Come up with words that rhyme with the given word.",
+    "instruction":"Come up with words that rhyme with the given word.\n\ninstruct",
     "output":"Some words that rhyme with \"instruct\" are \"duct,\" \"construct,\" \"abduct,\" \"conduct,\" \"induct,\" and \"obstruct.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Look for poems that mention the given object or character. The names of the poems and their poets should be written.",
+    "instruction":"Look for poems that mention the given object or character. The names of the poems and their poets should be written.\n\nsanta claus",
     "output":"\"Santa Claus Blues\" by Dr. John and \"The Christmas Alphabet\" by Angela Shelf Medearis both mention Santa Claus.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Respond to the last text in the chat using the correct emojis to convey your feelings.",
+    "instruction":"Respond to the last text in the chat using the correct emojis to convey your feelings.\n\n+ Hey, how did your exams go?\n- They were alright. I'm just glad they're over.\n+ Yeah, I know how you feel. I'm just glad I don't have to worry about them anymore.",
     "output":"\ud83d\ude0c\ud83d\ude4f\ud83d\udc4d",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"For answering the chat, think of a funny response you can use.",
+    "instruction":"For answering the chat, think of a funny response you can use.\n\n+ how are you?",
     "output":"\"I'm like a dictionary, I'm doing well, but I could really use some more interesting words in my life. How about you?\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"The last message in the chat is a partial response. You should complete and rewrite it.",
+    "instruction":"The last message in the chat is a partial response. You should complete and rewrite it.\n\n+ What are going to do now?\n- I don't know. I had to give up my dream of being a mathematician.\n+ Why",
     "output":"You can rewrite the last message as: \"I'm not sure what my next steps will be. I had to give up my dream of being a mathematician because it wasn't financially feasible for me at this time.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Change the response to have a more empathic tone in the chat.",
+    "instruction":"Change the response to have a more empathic tone in the chat.\n\n+ How are you doing?\n- Fine, I had a bunch of problems today.\n+ What kind of problems?",
     "output":"I'm sorry to hear that you had a bunch of problems today. Would you like to talk about what happened and how you're feeling?",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Currently, there is a chat in which people are arranging a meeting in the future. Retrieve the meeting information from the conversation.",
+    "instruction":"Currently, there is a chat in which people are arranging a meeting in the future. Retrieve the meeting information from the conversation.\n\nPerson 1: Hey, when are you free? I'd like to meet up.\nPerson 2: I'm free tomorrow afternoon.\nPerson 1: Great, what time?\nPerson 2: How about 3 pm?\nPerson 1: I have another meeting at that time. what about 5 pm?\nPerson 2: That works. Where should we meet?\nPerson 1: How about the coffee shop on Main Street?\nPerson 2: Sounds good. I've heard they have great coffee there. See you tomorrow!",
     "output":"Meeting information retrieved: \nDate: Tomorrow\nTime: 5 pm\nLocation: Coffee shop on Main Street.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"The given text must be classified as offensive or not offensive.",
+    "instruction":"The given text must be classified as offensive or not offensive.\n\nYou acted really crazy last night.",
     "output":"The given text can be classified as potentially offensive.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give a brief summary of the intention of the dialogue that just happened.",
+    "instruction":"Give a brief summary of the intention of the dialogue that just happened.\n\nCustomer: Hi there, I'm looking for a new phone.\nAI: Hi! What type of phone are you looking for?\nCustomer: I'm not sure. Maybe something with a good camera?\nAI: We have a few phones with great cameras. Would you like to see some options?\nCustomer: Yeah, that would be great.",
     "output":"The customer is looking for a new phone and specifically mentioned wanting one with a good camera. The AI offered to show some options and the customer agreed.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Describe the content of the article in a brief manner.",
+    "instruction":"Describe the content of the article in a brief manner.\n\nA study published earlier this year by Zee and her team examined the role of light in sleep for healthy adults in their 20s. Sleeping for only one night with a dim light, such as a TV set with the sound off, raised the blood sugar and heart rate of the young people during the sleep lab experiment. An elevated heart rate at night has been shown in prior studies to be a risk factor for future heart disease and early death, while higher blood sugar levels are a sign of insulin resistance, which can ultimately lead to type 2 diabetes.",
     "output":"The article discusses a recent study by Zee and her team, which explores the impact of light on the sleep of healthy adults in their 20s. The study found that sleeping with dim light - such as a TV set with the sound off - can lead to elevated heart rates and blood sugar levels. These effects can increase the risk of future heart disease, early death, and insulin resistance, which can ultimately lead to type 2 diabetes.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Correct the transcription of an excerpt containing errors.",
+    "instruction":"Correct the transcription of an excerpt containing errors.\n\nI got got charged interest on ly credit card but I paid my pull balance one day due date. I not missed a pavement year yet. Man you reverse the interest charge?",
     "output":"There are a few errors in the transcription. Here is the corrected text: \"I got charged interest on my credit card, but I paid my full balance on the due date. I have not missed a payment yet. Can you reverse the interest charge?\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Take a look at the contract and extract the parties of the agreement from it.",
+    "instruction":"Take a look at the contract and extract the parties of the agreement from it.\n\nAs of the 13th day of December 2021, this Music Recording Agreement (\"Agreement\") is made between Good Kid, a Toronto-based musical group (\"Artist\"), and Universal Music Group, a record label with license number 545345 (\"Record Label\"). The Artist and the Recording Label may be referred to in this Agreement individually as \"Parties\" and collectively as \"Parties.\" Work under this Agreement will begin on March 15, 2022, and will last for the duration of the Agreement.",
     "output":"The parties of the agreement are Good Kid, referred to as the \"Artist,\" and Universal Music Group, referred to as the \"Record Label.\" They may also be collectively referred to as the \"Parties.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"On the basis of the subject of the email, determine whether the email should be treated as spam or not.",
+    "instruction":"On the basis of the subject of the email, determine whether the email should be treated as spam or not.\n\nDermatologists don't like her!",
     "output":"Without additional information, it is difficult to definitively determine if this email should be treated as spam or not. However, the subject line suggests that it may be clickbait or an advertisement, which could potentially classify it as spam. It is recommended to review the email content before making a final determination.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Classify the tweet into one of the following three categories: event, demo, or news. Event is a happening, often social or public, that people attend or are aware of. Demo is a  public showing or presentation of something, typically to promote or advertise it. And, news is information about recent events or happenings, especially as reported by news media.",
+    "instruction":"Classify the tweet into one of the following three categories: event, demo, or news. Event is a happening, often social or public, that people attend or are aware of. Demo is a  public showing or presentation of something, typically to promote or advertise it. And, news is information about recent events or happenings, especially as reported by news media.\n\nUsing this tutorial, you can analyze and classify a user\u2019s review as either positive or negative using sentiment analysis features in an existing Next.js app. We show you how to leverage language AI into your applications. Check it out \u2193",
     "output":"The tweet would be classified as a demo since it is describing a tutorial for a feature in an existing app, with the purpose of promoting and advertising it.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give the news title a category. Pick a category from the list of News & Buzz, Travel, Style, Arts & Culture, Politics, Tech, and Science & Health.",
+    "instruction":"Give the news title a category. Pick a category from the list of News & Buzz, Travel, Style, Arts & Culture, Politics, Tech, and Science & Health.\n\nThe #Banksy Exhibit in Cambridge, MA is absolutely terrific.",
     "output":"Arts & Culture.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Classify the questions in the FAQ into Finding policy details, Change account settings, Filing a claim and viewing status, or Cancelling coverage.",
+    "instruction":"Classify the questions in the FAQ into Finding policy details, Change account settings, Filing a claim and viewing status, or Cancelling coverage.\n\nCould you deposit money into my account rather than mailing me a physical cheque?",
     "output":"This input does not relate to any of the categories provided. Please provide a question from the FAQ for classification.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Choose an appealing title for your post.",
+    "instruction":"Choose an appealing title for your post.\n\nThe typical avocado is over 300 calories from the oil in it. That\u2019s the amount of calories in a large candy bar. If you get enough exercise to eat a large candy bar every day without gaining weight, it wouldn\u2019t be a problem to eat an avocado every day. Other wise you should probably eat them sparingly.",
     "output":"\"Avocado Calories: How Much is Too Much?\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give some examples of what people usually say in the given social situation.",
+    "instruction":"Give some examples of what people usually say in the given social situation.\n\nwhen someone arrives safely",
     "output":"\"Thank goodness you made it!\" or \"I'm so relieved you're here safe and sound!\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You will be required to write a few questions from the given company's interview section.",
+    "instruction":"You will be required to write a few questions from the given company's interview section.\n\nKohl's",
     "output":"What inspired you to apply for a job at Kohl's? What do you know about the company culture and values? Can you describe a situation where you had to deal with a difficult customer and how you handled it? How do you prioritize tasks and manage your time effectively in a fast-paced retail environment? How do you stay up-to-date with new trends and products in the retail industry?",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Based on the information provided, you need to estimate the average summary for the given job.",
+    "instruction":"Based on the information provided, you need to estimate the average summary for the given job.\n\nData entry clerk in United States",
     "output":"Based on national data, the average salary for a data entry clerk in the United States is approximately $31,000 per year. However, this may vary depending on location, experience, and industry.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Describe the responsibilities of the given job.",
+    "instruction":"Describe the responsibilities of the given job.\n\nSecurity Officer",
     "output":"A security officer is responsible for maintaining a safe and secure environment by patrolling and monitoring premises, controlling access to restricted areas, and responding to security incidents. They are also responsible for enforcing rules and regulations, conducting investigations, and reporting any suspicious activities to the appropriate authorities. Additionally, they may be responsible for monitoring security cameras, managing access control systems, and providing assistance to visitors and employees.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a list of the skills that may help you find the job.",
+    "instruction":"Provide a list of the skills that may help you find the job.\n\nCrew Members",
     "output":"For crew member jobs, skills such as teamwork, communication, customer service, time management, attention to detail, and physical stamina may be helpful in finding a job.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Schedule the meetings based on the given informqation.",
+    "instruction":"Schedule the meetings based on the given informqation.\n\nPerson1: available from 9-11 am, meeting duration: 30 min \nPerson2: available from 1-3 pm, meeting duration: 90 min\nPerson3: available from 2-3:30 pm, meeting duration: 60 min",
     "output":"Schedule the meetings as follows: \n- Person1 at 9 am for 30 min \n- Person2 at 1 pm for 90 min \n- Person3 at 2 pm for 60 min",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Find the directions between the given locations.",
+    "instruction":"Find the directions between the given locations.\n\nFrom: Rowan Avenue Elementary School, 600 S Rowan Ave, Los Angeles, CA 90023, United States\nTo: Calvary Cemetery and Mortuary, 4201 Whittier Blvd, Los Angeles, CA 90023, United States",
     "output":"To find directions between Rowan Avenue Elementary School and Calvary Cemetery and Mortuary, use a map app like Google Maps or Waze. Enter the starting location and destination, and the app should provide turn-by-turn directions for driving, walking, or public transit.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Give a brief explanation of the requested part of the paper.",
+    "instruction":"Give a brief explanation of the requested part of the paper.\n\nPaper: The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\nExplain: The dominant sequence transduction models",
     "output":"The dominant sequence transduction models are complex neural networks, including an encoder and decoder, with an attention mechanism connecting them. The Transformer is a new network architecture based solely on attention mechanisms, which improves the quality of machine translation tasks over existing models. It is also more parallelizable and requires significantly less time to train. The Transformer achieves superior BLEU scores on both the WMT 2014 English-to-German and English-to-French translation tasks. Additionally, it generalizes well to other tasks, such as English constituency parsing, with both large and limited training data.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Answer the question about the paper after reading it carefully.",
+    "instruction":"Answer the question about the paper after reading it carefully.\n\nTo evaluate if the Transformer can generalize to other tasks we performed experiments on English constituency parsing. This task presents specific challenges: the output is subject to strong structural constraints and is significantly longer than the input. Furthermore, RNN sequence-to-sequence models have not been able to attain state-of-the-art results in small-data regimes.\nQuestion: What is English constituency parsing?",
     "output":"English constituency parsing is a task that involves analyzing the structure of a sentence and identifying its grammatical components, such as noun phrases and verb phrases. It is a challenging task due to the strong structural constraints and the length of the output compared to the input.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4557,56 +4557,56 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Convert the given HTML into Markdown format.",
+    "instruction":"Convert the given HTML into Markdown format.\n\n<code>Use `code` in your Markdown file.<\/code>",
     "output":"To convert the given HTML into Markdown format, you can use the following code:\n```\nUse `code` in your Markdown file.\n```",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Extract the method that has been used in the research from the abstract of the paper. Give the exact sentences from the abstract that discuss the method.",
+    "instruction":"Extract the method that has been used in the research from the abstract of the paper. Give the exact sentences from the abstract that discuss the method.\n\nWe present a state-of-the-art speech recognition system developed using end-to-end deep learning. Our architecture is significantly simpler than traditional speech systems, which rely on laboriously engineered processing pipelines; these traditional systems also tend to perform poorly when used in noisy environments. In contrast, our system does not need hand-designed components to model background noise, reverberation, or speaker variation, but instead directly learns a function that is robust to such effects. We do not need a phoneme dictionary, nor even the concept of a \"phoneme.\" Key to our approach is a well-optimized RNN training system that uses multiple GPUs, as well as a set of novel data synthesis techniques that allow us to efficiently obtain a large amount of varied data for training. Our system, called Deep Speech, outperforms previously published results on the widely studied Switchboard Hub5'00, achieving 16.0% error on the full test set. Deep Speech also handles challenging noisy environments better than widely used, state-of-the-art commercial speech systems.Collapse",
     "output":"The method used in the research is end-to-end deep learning. The following sentence from the abstract discusses the method: \"We present a state-of-the-art speech recognition system developed using end-to-end deep learning.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You need to come up with the names of some of the papers that relate to the paper you are given.",
+    "instruction":"You need to come up with the names of some of the papers that relate to the paper you are given.\n\nRoMQA: A Benchmark for Robust, Multi-evidence, Multi-answer Question Answering",
     "output":"Some papers related to RoMQA could be \"Improving Robustness in Multi-evidence Question Answering\", \"Multi-answer Question Answering: A Survey\", or \"Enhancing Performance in Multi-evidence QA with Pre-training\".",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a short, concise summary of the paper based on its abstract.",
+    "instruction":"Create a short, concise summary of the paper based on its abstract.\n\nFew-shot learning (FSL) is one of the key future steps in machine learning and raises a lot of attention. In this paper, we focus on the FSL problem of dialogue understanding, which contains two closely related tasks: intent detection and slot filling. Dialogue understanding has been proven to benefit a lot from jointly learning the two sub-tasks. However, such joint learning becomes challenging in the few-shot scenarios: on the one hand, the sparsity of samples greatly magnifies the difficulty of modeling the connection between the two tasks; on the other hand, how to jointly learn multiple tasks in the few-shot setting is still less investigated. In response to this, we introduce FewJoint, the first FSL benchmark for joint dialogue understanding. FewJoint provides a new corpus with 59 different dialogue domains from real industrial API and a code platform to ease FSL experiment set-up, which are expected to advance the research of this field. Further, we find that insufficient performance of the few-shot setting often leads to noisy sharing between two sub-task and disturbs joint learning. To tackle this, we guide slot with explicit intent information and propose a novel trust gating mechanism that blocks low-confidence intent information to ensure high quality sharing. Besides, we introduce a Reptile-based meta-learning strategy to achieve better generalization in unseen few-shot domains. In the experiments, the proposed method brings significant improvements on two datasets and achieve new state-of-the-art performance.",
     "output":"The paper focuses on the problem of dialogue understanding in few-shot learning (FSL), specifically intent detection and slot filling. The authors introduce FewJoint, the first FSL benchmark for joint dialogue understanding, which includes a new corpus and code platform. The authors propose a trust gating mechanism to ensure high-quality sharing between the sub-tasks, and a Reptile-based meta-learning strategy for better generalization in unseen few-shot domains. The proposed method achieves new state-of-the-art performance on two datasets.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You will need to compose the ABC notation for a given song.",
+    "instruction":"You will need to compose the ABC notation for a given song.\n\nThe South Wind",
     "output":"Here's the ABC notation for \"The South Wind\":\n\n```\nX:1\nT: The South Wind\nM:4\/4\nL:1\/8\nK:D\nF2AF E2DE | F2AF E2DE | FGAB AFDF | E2E2 E2DE |\nF2AF E2DE | F2AF E2DE | FGAB AFDF | E2E2 E2DE |\nF2AF E2DE | F2AF E2DE | FGAB AFDF | E2E2 E2DE |\nF2AF E2DE | F2AF E2DE | FGAB AFDF | E2E2 E2DE |\n```\n\nNote: This is just one possible version of the ABC notation for this song. The notation may vary depending on the version of the song you are using.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Categorize the given magazine based on its content into one of the categories: Politics, Entertainment News, Tech News, Business News, Parenting & Kids, Health & Healing, Cooking, Food & Wine, and Arts & Literature,",
+    "instruction":"Categorize the given magazine based on its content into one of the categories: Politics, Entertainment News, Tech News, Business News, Parenting & Kids, Health & Healing, Cooking, Food & Wine, and Arts & Literature,\n\nInc.",
     "output":"Without knowing the specific content of the magazine, it is difficult to accurately categorize it. However, based on the name \"Inc.\", it is likely a business-focused magazine. Therefore, it would be appropriate to categorize it as Business News.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Decide if the given email belongs to the Promotions or Social category.",
+    "instruction":"Decide if the given email belongs to the Promotions or Social category.\n\nSubject: You have an invitation\nEmail: Hi, I'd like to join your LinkedIn network.",
     "output":"Based on the given input, the email is categorized as belonging to the Social category.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"The story of a movie has been described using many emojis. You need to guess the name of the movie based on the emojis.",
+    "instruction":"The story of a movie has been described using many emojis. You need to guess the name of the movie based on the emojis.\n\n\ud83e\uddd9\u200d\u2642\ufe0f\ud83d\udeaa\ud83d\udcda\ud83e\udd85\u26a1",
     "output":"The movie is \"Harry Potter and the Philosopher's Stone\".",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4620,189 +4620,189 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Change the first person to the third person in the given sentence. The meaning should be kept, but you can paraphrase it or expand it in order to have a better pose.",
+    "instruction":"Change the first person to the third person in the given sentence. The meaning should be kept, but you can paraphrase it or expand it in order to have a better pose.\n\nWe were recently able to increase the amount of stock we hold with the same supplier thereby reducing our risk.",
     "output":"The company was able to increase the amount of stock held with the same supplier, resulting in a decreased risk.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You should capitalize the sentence according to the guide.",
+    "instruction":"You should capitalize the sentence according to the guide.\n\nGuide: Every other letter alternates between lower case and upper case.\nSentence: A giant spider blocks your path.",
     "output":"a gIaNt sPiDeR bLoCkS yOuR pAtH.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create alliterations by finding synonyms for words in the given sentence.",
+    "instruction":"Create alliterations by finding synonyms for words in the given sentence.\n\nDavid wears a hat everyday.",
     "output":"David dons a cap daily, delighting in his dapper display.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Convert the given description to a bash command.",
+    "instruction":"Convert the given description to a bash command.\n\nread the first 10 lines from f",
     "output":"head -n 10 f",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Please prepare a table containing a summary of the information of the participants at the conference.",
+    "instruction":"Please prepare a table containing a summary of the information of the participants at the conference.\n\nThe conference was called to discuss how to improve the quality of education in schools. The main speaker was Professor Crew Purdie (cpurdie@email.com), who spoke about the importance of setting high standards for students and teachers. He said that schools should be places where students can learn and be challenged. Other speakers included Teacher Oliver Malachi (oliver@email.com) and Parent Kolby Reese (kolbyreese82@email.com). The teacher talked about the need for teachers to be well-prepared and to have high expectations for their students. The parent spoke about the need for parents to be involved in their children's education. There was also a discussion about the importance of funding for schools.",
     "output":"Here is a table summarizing the information of the participants at the conference on improving education:\n\n| Name             | Email              | Role       | Topic\/Opinion                                               |\n|------------------|--------------------|------------|--------------------------------------------------------------|\n| Professor Crew Purdie | cpurdie@email.com | Main speaker | Importance of setting high standards for students and teachers |\n| Teacher Oliver Malachi | oliver@email.com | Speaker    | Need for well-prepared teachers with high expectations        |\n| Parent Kolby Reese    | kolbyreese82@email.com | Speaker  | Importance of parental involvement in children's education  |\n\nAdditional topics discussed included the importance of funding for schools.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"List the concepts that should be learned before approaching the given complex concept.",
+    "instruction":"List the concepts that should be learned before approaching the given complex concept.\n\nDeep Learning",
     "output":"Before approaching Deep Learning, it's important to have a good understanding of neural networks, linear algebra, probability theory, calculus, and programming.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Given a sentence that may be ambiguous, rewrite the sentence using less ambiguous words.",
+    "instruction":"Given a sentence that may be ambiguous, rewrite the sentence using less ambiguous words.\n\nThe chicken is ready to eat.",
     "output":"The cooked chicken is prepared for consumption.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Assess the sentiment of the given tweet and categorize it as Positive, Negative, or Neutral.",
+    "instruction":"Assess the sentiment of the given tweet and categorize it as Positive, Negative, or Neutral.\n\n\"This is the best cheat-sheet paper that I've found in a LONG time.\"",
     "output":"Positive",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a Python command and are required to convert it into Ruby.",
+    "instruction":"You are given a Python command and are required to convert it into Ruby.\n\nprint(\"Hello World!\")",
     "output":"puts \"Hello World!\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a sentence in first-order logic. Translate it into natural language.",
+    "instruction":"You are given a sentence in first-order logic. Translate it into natural language.\n\n\u2203x\u2200y(soldier(x)\u2192general(x,y))",
     "output":"There exists a soldier who, for all y, is a general if they are a soldier.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a search query and a document. Classify whether the document is relevant to the search query or not relevant.",
+    "instruction":"You are given a search query and a document. Classify whether the document is relevant to the search query or not relevant.\n\nSearch: why sky is blue\nDocument: The Short Answer: Sunlight reaches Earth's atmosphere and is scattered in all directions by all the gases and particles in the air. Blue light is scattered more than the other colors because it travels as shorter, smaller waves. This is why we see a blue sky most of the time.",
     "output":"The document is relevant to the search query \"why sky is blue\" as it provides an explanation of the phenomenon through the scattering of blue light by gases and particles in the atmosphere.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a list of subtopics for the given topic.",
+    "instruction":"Create a list of subtopics for the given topic.\n\nMusic theory",
     "output":"1. Rhythm\n2. Melody\n3. Harmony\n4. Scales and modes\n5. Chord progressions\n6. Notation\n7. Key signatures\n8. Time signatures\n9. Cadences\n10. Intervals\n11. Chord inversions\n12. Musical form\n13. Counterpoint\n14. Orchestration\n15. Analysis",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Summarize the movie in a snarky way. Try to explain the movie in just one sentence.",
+    "instruction":"Summarize the movie in a snarky way. Try to explain the movie in just one sentence.\n\nThe Shining",
     "output":"A family's winter vacation takes a dark turn as the patriarch's writer's block leads to murderous insanity, all while his psychic son communicates with creepy ghosts.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Enter the words that satisfy the given condition.",
+    "instruction":"Enter the words that satisfy the given condition.\n\n5 Countries that Start with S",
     "output":"1. Spain\n2. Sweden\n3. Switzerland\n4. Syria\n5. Singapore",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a name for the dish given the ingredients and instructions.",
+    "instruction":"Provide a name for the dish given the ingredients and instructions.\n\nINGREDIENTS:\n2 (5 oz) cans Bumble Bee\u00ae Solid White Albacore Tuna, drained\n1 avocado\n2 Tbsp Sriracha\n1 Tbsp Dijon mustard\n2 to 3 Tbsp celery, chopped\n2 Tbsp red onion, chopped\n2 green onions, chopped\n1 Tbsp fresh cilantro, chopped\nSalt and pepper, to taste\n2 heaping cups leafy green lettuce\n1 cup matchstick carrots\n4 (10 inch) whole wheat tortillas\nINSTRUCTIONS:\nIn a medium bowl, mash together tuna and avocado until combined. Add in the rest of the ingredients through the salt and pepper, mixing well.\nTo assemble, top each tortilla with a 1\/2 cup leafy greens, 1\/4 cup matchstick carrots and divide the tuna mixture evenly among the wraps. Tightly roll up the tortilla, slice and enjoy!",
     "output":"Spicy Tuna and Avocado Wraps.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Summarize a meeting from the given list of bullet points. Be sure to convert shorthand into a first-hand account.",
+    "instruction":"Summarize a meeting from the given list of bullet points. Be sure to convert shorthand into a first-hand account.\n\nRose: Analyze data and presents findings\nJohn: propose new idea\nJane: appointed to head project\nTom: need more time to fix software bug",
     "output":"During the meeting, Rose analyzed the data and presented her findings. John proposed a new idea. Jane was appointed to head the project. Tom expressed that he needed more time to fix a software bug.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"List a few popular songs from the given album.",
+    "instruction":"List a few popular songs from the given album.\n\nBack To Black",
     "output":"Some popular songs from the album \"Back To Black\" are \"Rehab\", \"Back To Black\", and \"You Know I'm No Good\".",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Invent a new word based on a description of the word.",
+    "instruction":"Invent a new word based on a description of the word.\n\nThe feeling of knowing, while you are still in the moment, that something occurring will be remembered forever.",
     "output":"How about \"Eternavue\"? It combines \"eternal\" and \"preview\" to convey the idea of a fleeting moment that will be remembered forever.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Given a programming language and the name of a function, write a command to show how to use the function.",
+    "instruction":"Given a programming language and the name of a function, write a command to show how to use the function.\n\nLanguage: Python\nFunction: input",
     "output":"To use the input function in Python, simply call the function followed by parentheses. You can include a prompt message inside the parentheses to display to the user. For example, `user_input = input(\"Enter your name: \")`. This will prompt the user to enter their name and store the input in the variable `user_input`.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide a pleasant compliment based on the quality you have been given.",
+    "instruction":"Provide a pleasant compliment based on the quality you have been given.\n\nTruthfulness",
     "output":"Your truthfulness is truly commendable and sets you apart as a person of integrity. Keep up the great work!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Create a brief resume introduction using the following information.",
+    "instruction":"Create a brief resume introduction using the following information.\n\nname: Mark\nnationality: Italian\nlanguage: English\nattributes: creative, goal-oriented, motivated\nskills: software engineering, content marketing",
     "output":"Hi, I'm Mark, an Italian creative and goal-oriented software engineer and content marketer. I'm motivated to create innovative and effective solutions that meet project goals. Fluent in English, I'm excited to bring my skills to your team.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Make a list of adjectives that can be used to describe the given brand.",
+    "instruction":"Make a list of adjectives that can be used to describe the given brand.\n\na creative tech startup",
     "output":"Innovative, modern, dynamic, edgy, daring, cutting-edge, trailblazing, disruptive, visionary, progressive, imaginative, inventive, original.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Someone gives you some information about where they want to go and what they enjoy seeing and doing. Describe a proper road trip for them and find the best stops and sctivities in the way.",
+    "instruction":"Someone gives you some information about where they want to go and what they enjoy seeing and doing. Describe a proper road trip for them and find the best stops and sctivities in the way.\n\nI'm looking for a west coast road trip. My goal is to start near San Diego and travel to Los Angeles.",
     "output":"Great choice! Starting in San Diego, you can begin by exploring the historic Gaslamp Quarter or the stunning Balboa Park. Next, make your way up the coast, stopping to take in the views at La Jolla Cove and Torrey Pines State Reserve. As you approach Los Angeles, consider spending some time in Laguna Beach or Newport Beach. Once you arrive in LA, make sure to visit the Hollywood Walk of Fame, Universal Studios, and the famous beaches of Santa Monica and Venice.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Regex is a set of characters that define a search pattern. This kind of pattern is usually used by string-searching algorithms to find or replace strings or to validate inputs. Convert the natural english text to regex.",
+    "instruction":"Regex is a set of characters that define a search pattern. This kind of pattern is usually used by string-searching algorithms to find or replace strings or to validate inputs. Convert the natural english text to regex.\n\nMatch a valid ip address",
     "output":"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write an engaging and well-written property listing description for selling a house. Address of the house and some of the details are given to you. Fill in the information gap with hallucinations if needed.",
+    "instruction":"Write an engaging and well-written property listing description for selling a house. Address of the house and some of the details are given to you. Fill in the information gap with hallucinations if needed.\n\nProperty Address: 412 Monterey Ave, Capitola, CA 95010\nParking: 3 cars + a finished single car garage\nDetails:\n- open floorplan\n- window with views to park\/mountains\n- Kitchen with shaker cabinetry and white Calcatta quartz counters",
     "output":"Welcome to your dream home on 412 Monterey Ave in Capitola! This stunning property boasts an open floorplan that blends seamlessly with the breathtaking views of the park and mountains from the windows. The kitchen is a chef's delight with shaker cabinetry, white Calcatta quartz counters, and top-of-the-line stainless steel appliances. With ample parking for three cars plus a finished single-car garage, this home is perfect for entertaining family and friends. Don't miss out on the opportunity to make this your forever home!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Given a real estate listing description, extract the information and details of the property from the text. The details consist of address, basic house attributes, etc.",
+    "instruction":"Given a real estate listing description, extract the information and details of the property from the text. The details consist of address, basic house attributes, etc.\n\nWALK TO THE BEACH FROM CAPITOLA KNOLLS! Single-level upstairs condo with your own large private deck overlooking nature. Adorable home that is move-in ready and waiting for you to put your own personal touches on. Gorgeous and well-maintained landscaped park-like setting with lush green grasses with a community pool and spa to enjoy. Desirable location...walk to Capitola Village, Gayle's Bakery, restaurants, shopping, schools or jump on Hwy 1 right around the corner.",
     "output":"Address: N\/A (not provided in the text)\nBasic house attributes: Single-level upstairs condo with a large private deck, move-in ready, well-maintained landscaped park-like setting, community pool and spa. Desirable location, walking distance to Capitola Village, Gayle's Bakery, restaurants, shopping, schools, and easy access to Hwy 1.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Review the property description and tell us what is good and what is bad about it and list its key takeaways.",
+    "instruction":"Review the property description and tell us what is good and what is bad about it and list its key takeaways.\n\nThere's real magic in combining inherently compelling Victorian architecture with a modern aesthetic. Add in an extraordinary multi-level garden & the result is the undeniable elegance of 444 29th St. The front of the home is light-filled w\/ a seamless connection between living, dining & kitchen. Newly updated kitchen w\/ quartz counters & upgraded appliances. A lg dining rm has a bay of windows &, when paired w\/ the adjacent living rm, provides an ideal space to entertain. 2 lg bdrms on this level are at the rear. Both w\/ lg closets & walk out to the garden. Stylishly remodeled full bath on this level. 3rd bdrm\/2nd full bath are located on the ground floor - perfect as a guest rm, home office, fitness area, etc. The enormous garden occupies an extra deep lot & is beautifully landscaped & terraced. Laundry\/storage rm, 1-car garage pkg, Tesla solar panels. Prime, flat part of Noe Valley - short walk to all that Noe has to offer. Steps from the J-Church & convenient to shuttles\/freeways.",
     "output":"Good: Victorian architecture combined with modern aesthetic, multiple levels of garden, light-filled living space, newly updated kitchen with quartz counters and upgraded appliances, stylishly remodeled full bath, prime location in Noe Valley.\n\nBad: No major drawbacks mentioned in the property description.\n\nKey takeaways: Elegant Victorian architecture with modern updates, spacious living and dining area, large bedrooms with garden access, versatile ground floor space, beautiful and expansive multi-level garden, convenient location with access to transportation and amenities.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4816,7 +4816,7 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Suggest some product bundles that are often purchased with a given product.",
+    "instruction":"Suggest some product bundles that are often purchased with a given product.\n\nMacBook Air",
     "output":"The following product bundles are often purchased with a MacBook Air:\n- AppleCare+ for MacBook Air\n- Thunderbolt 3 to USB Adapter\n- AirPods Pro\n- Magic Mouse 2\n- USB-C to SD Card Reader\n- USB SuperDrive.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4830,112 +4830,112 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"As part of software engineering, user stories describe what the user wants the system to do, while acceptance criteria describe the conditions a specific user story must meet. Create basic acceptance criteria based on the given user story.",
+    "instruction":"As part of software engineering, user stories describe what the user wants the system to do, while acceptance criteria describe the conditions a specific user story must meet. Create basic acceptance criteria based on the given user story.\n\nUser story: As a user, I want to use a search field to type a city, name, or street, so that I could find matching hotel options.",
     "output":"Acceptance criteria for the given user story could include:\n\n- The search field should accept input for city, name, or street.\n- The search should return results that match the input provided.\n- The search results should display relevant information about each hotel option, such as name and location.\n- The search should work accurately and efficiently, without any errors or delays.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"A user story is an informal, general explanation of a software feature written from the perspective of the end user or customer. Write a user story for a given software.",
+    "instruction":"A user story is an informal, general explanation of a software feature written from the perspective of the end user or customer. Write a user story for a given software.\n\nGmail",
     "output":"As a user, I want to be able to easily compose and send emails, view and organize my inbox, and search for specific messages in Gmail. Additionally, I would like to be able to customize my inbox settings and manage my contacts effectively through the software.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write a Jira ticket for the given task.",
+    "instruction":"Write a Jira ticket for the given task.\n\nNew Employee onboarding",
     "output":"Title: Onboard new employee\nDescription: Create a Jira ticket to onboard a new employee. Include necessary steps such as setting up accounts, providing equipment, and scheduling orientation. Assign the ticket to the appropriate team member and set a due date.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Paraphrase the given text in an academic style.",
+    "instruction":"Paraphrase the given text in an academic style.\n\nLots of papers have been published on this topic.",
     "output":"Numerous scholarly articles have been disseminated concerning this subject matter.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Make a list of the pros and cons of the given decision.",
+    "instruction":"Make a list of the pros and cons of the given decision.\n\nImplementing a Remote Working Policy",
     "output":"Pros:\n1. Increased flexibility for employees.\n2. Reduced commuting time and cost.\n3. Greater autonomy and trust in employees.\n4. Ability to hire talent from anywhere in the world.\n5. Improved work-life balance.\n\nCons:\n1. Lack of face-to-face interaction and collaboration.\n2. Difficulty in monitoring employee productivity.\n3. Possible negative impact on team culture.\n4. Dependence on technology and potential technical issues.\n5. Potential for isolation and reduced social interaction.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Include important study notes and key points that someone should know about the given subject.",
+    "instruction":"Include important study notes and key points that someone should know about the given subject.\n\nhistory of the USA",
     "output":"The history of the USA is a vast subject, but some important notes and key points include the American Revolution, the Civil War, the Great Depression, and the Civil Rights Movement. It's also essential to note the impact of significant figures such as George Washington, Abraham Lincoln, and Martin Luther King Jr. Additionally, the country's foreign policies and involvement in global conflicts, such as World War I and II, shaped its history.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Based on the given keywords, write a review of a restaurant.",
+    "instruction":"Based on the given keywords, write a review of a restaurant.\n\nName: Pizzeria\ngood prices, quiet place, tasty, nice staff",
     "output":"Pizzeria is a great spot for those looking for good prices and a quiet place to enjoy a delicious meal. The food is tasty and the staff is incredibly nice, making for a pleasant dining experience. Highly recommend!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Convert natural language into a list of turn-by-turn directions.",
+    "instruction":"Convert natural language into a list of turn-by-turn directions.\n\nGo west on I-10 until you hit the 101 then take it north. You will eventually see the Hollywood sign.",
     "output":"1. Head west on I-10\n2. Take exit for the 101 and head north\n3. Keep driving until you see the Hollywood sign",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide an ESRB rating for the following game.",
+    "instruction":"Provide an ESRB rating for the following game.\n\nThis is an action-adventure game in which players help Kratos and his son on a dangerous quest. Players explore various realms and engage in frenetic hand-to-hand combat against human-like raiders and fantastical creatures (e.g., centaurs, trolls, dragons). Players use axes and chained blades to battle enemies, often resulting in large blood-splatter effects and dismemberment. Players can perform finishing attacks that depict close-up impalement via bladed and hand-held weapons; repeated axe strikes to a creature's neck results in decapitation. The words \u201cf**k\u201d and \u201csh*t\u201d are heard in the game.",
     "output":"The ESRB rating for this game would likely be \"M\" for Mature. The game features intense violence with blood and gore, as well as strong language. It is not suitable for children under 17 years old.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"A color description has been provided. Find the CSS code associated with that color.",
+    "instruction":"A color description has been provided. Find the CSS code associated with that color.\n\nA light red color with a medium light shade of pink",
     "output":"The CSS code for a light red color with a medium light shade of pink is likely to be `#FFC0CB`. This is the hexadecimal code for the color known as \"pink\" in CSS, which has a light red hue and a medium light saturation.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Identify and fix bugs in the given code and rewrite it",
+    "instruction":"Identify and fix bugs in the given code and rewrite it\n\nfor i in range(10)\n    print(Answer is:)\n    print(i)",
     "output":"To fix the code, add a colon at the end of the first line. Then, indent the two print statements. Finally, change \"Answer is:\" to \"Answer is \" (with a space at the end) for proper formatting. Here's the corrected code: \n\n```\nfor i in range(10):\n    print(\"Answer is \", i)\n``` \n\nThis code will print \"Answer is\" followed by each number from 0 to 9.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Make a list of common phrases for the given section of the paper.",
+    "instruction":"Make a list of common phrases for the given section of the paper.\n\nIntroduction",
     "output":"Some common phrases for the introduction section of a paper include: \"In this paper, we will...\", \"The purpose of this paper is to...\", \"This study aims to...\", \"The following sections will...\", \"In previous research, it has been found that...\", \"This topic is important because...\", \"The research question\/problem addressed in this paper is...\", \"The structure of this paper is as follows...\".",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"We have described a scene from a movie that we have seen in the past. Find out what movie it is.",
+    "instruction":"We have described a scene from a movie that we have seen in the past. Find out what movie it is.\n\nA choice has to be made between picking the red pill or the blue pill",
     "output":"The scene you are referring to is from the movie \"The Matrix\".",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Take the product description and write a creative ad for it.",
+    "instruction":"Take the product description and write a creative ad for it.\n\nDocument Cameras allow teachers to display documents, books, or other materials for their students to see.",
     "output":"Introducing the ultimate tool for interactive teaching! Our Document Cameras make it easy for teachers to showcase any material to their students, be it books, documents, or even experiments. With its crystal-clear display and easy-to-use features, it's the perfect addition to any classroom. Bring your lessons to life and engage your students like never before with our Document Cameras.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Translate the natural language description into a Google Sheets formula.",
+    "instruction":"Translate the natural language description into a Google Sheets formula.\n\nif C7 is equal to \"U.S.A.\" or \"Canada\" or \"Europe\" or \"The Americas\"",
     "output":"=IF(OR(C7=\"U.S.A.\", C7=\"Canada\", C7=\"Europe\", C7=\"The Americas\"), [value if true], [value if false])",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"You are given a tweet and you should decide whether it's offensive or not.",
+    "instruction":"You are given a tweet and you should decide whether it's offensive or not.\n\nShe has certainly taken some heat for being such an....well idiot.",
     "output":"The tweet appears to be offensive as it contains derogatory language towards a person.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -4949,98 +4949,98 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Predict how many stars the author will give to the restaurant from a Yelp review.",
+    "instruction":"Predict how many stars the author will give to the restaurant from a Yelp review.\n\nThe reviews were great, but honestly i felt it was just ok. Seemed like a typical tourist spot were the food was mediocre. The service was ok, not great, but not the worst.\nThe bread was very good. I ordered the muscle fries. They had a sweet Vidalia onion flavor. No need for fries bc they were soggy wo much flavor. My boyfriend ordered a pesto chicken pasta and it was again mediocre.",
     "output":"Based on the review, it is likely that the author will give the restaurant a rating of 2-3 stars.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Categorize the Business into one of the Restaurants, Home Services, Auto Services and Miscellaneous based on its Specialties.",
+    "instruction":"Categorize the Business into one of the Restaurants, Home Services, Auto Services and Miscellaneous based on its Specialties.\n\nCall us at 650-636-4884 or visit our website to receive a quote. This shop specializes in New Tires and General Auto Repair. We carry all tires in-house and have a wide range to fit any budget or car specifics. If you are unsure what tires you need there are experts on hand and available to help you pick the best tire for your needs. We also carry commercial vehicle tires and can serve a wide array of fleets.",
     "output":"Based on the specialties of the business mentioned, it falls under the category of Auto Services.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Notify me of any suggestions you may have for making the text more grammatically correct.",
+    "instruction":"Notify me of any suggestions you may have for making the text more grammatically correct.\n\nThis is the second time I've been here, and the vibes, and the food were exquisite.",
     "output":"Consider revising the sentence to: \"The vibes and food were exquisite. This is my second visit here.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Using the ingredients that are available, create a dinner recipe.",
+    "instruction":"Using the ingredients that are available, create a dinner recipe.\n\nKale + almond butter + apple cider vinegar + agave nectar + tamari",
     "output":"Try this simple recipe: Kale Salad with Almond Butter Dressing. Mix almond butter, apple cider vinegar, agave nectar, and tamari until smooth. Massage dressing into kale leaves until tender. Enjoy!",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Categorize the given product into one of Electronics, Computers, Smart Home, or Arts & Crafts departments.",
+    "instruction":"Categorize the given product into one of Electronics, Computers, Smart Home, or Arts & Crafts departments.\n\nGoogle Nest Learning Thermostat",
     "output":"The given product, Google Nest Learning Thermostat, should be categorized into the Smart Home department.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Provide instructions for the given exercise.",
+    "instruction":"Provide instructions for the given exercise.\n\nLeg Raises",
     "output":"Lie flat on your back with your legs straight and your arms at your sides. Slowly lift your legs up towards the ceiling, keeping them straight, until they are perpendicular to the ground. Hold for a few seconds, then slowly lower your legs back down to the starting position. Repeat for desired number of reps. This exercise targets your lower abs and hip flexors.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Rewrite the text and correct the spelling errors.",
+    "instruction":"Rewrite the text and correct the spelling errors.\n\nIt solves problems comon and uniqe to every team.",
     "output":"The corrected sentence is: \"It solves common and unique problems for every team.\"",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write down antonyms for the given word.",
+    "instruction":"Write down antonyms for the given word.\n\nlaureating",
     "output":"I'm sorry, \"laureating\" is not a commonly used word in the English language. Could you please provide another word for me to give you antonyms for?",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Write the HTML syntax for the required action.",
+    "instruction":"Write the HTML syntax for the required action.\n\nadding an image to the page",
     "output":"To add an image to the page, use the following HTML syntax: \n```<img src=\"image-url-here\" alt=\"description-of-image\">``` \nReplace \"image-url-here\" with the URL or file path of the image and \"description-of-image\" with a brief description of the image for accessibility purposes.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Identify the programming language used to write the given code.",
+    "instruction":"Identify the programming language used to write the given code.\n\nif (20 > 18) {\n  printf(\"20 is greater than 18\");\n}",
     "output":"The code appears to be written in C programming language.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Decide which part of speech the underlined word belongs to.",
+    "instruction":"Decide which part of speech the underlined word belongs to.\n\nschool will _keep through the winter",
     "output":"The underlined word \"keep\" is a verb.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Define what the underlined word means for kids.",
+    "instruction":"Define what the underlined word means for kids.\n\n_keep a promise",
     "output":"Keeping a promise means doing what you said you would do. It's important for kids to keep their promises so that others can trust them and count on them.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Expand the given sentence and give it more details and depth.",
+    "instruction":"Expand the given sentence and give it more details and depth.\n\nIt changed my life.",
     "output":"Can you provide more information on what specifically changed your life? Was it a particular event, person, or experience? How did it change your life - did it alter your perspective, behavior, or circumstances? By providing additional details, we can gain a better understanding of the impact and significance of this life-changing moment.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Extract the address of the property from the \"About this space\" section of Airbnb.",
+    "instruction":"Extract the address of the property from the \"About this space\" section of Airbnb.\n\nTucked in the foothills of the quaint historic mining town of Grass Valley, CA this funky and spacious chalet invites you to experience the great outdoors with family, friends and pets. Enjoy the hot tub, basketball court, treehouse, kids rooms, bbq, fire-pit, outdoor theater, and more. One hour from Tahoe and 10 minutes to town, you\u2019re never short of things to explore.",
     "output":"The address of the property is not provided in the \"About this space\" section of the Airbnb listing. You may need to check the location details or contact the host for the specific address.",
     "generator":"example",
     "dataset":"selfinstruct",
@@ -5061,14 +5061,14 @@
     "datasplit":"eval"
   },
   {
-    "instruction":"Write what the pronunciation of the given word sounds like. Follow the \"Google pronunciation dictionary\" scheme for phonetic spelling.",
+    "instruction":"Write what the pronunciation of the given word sounds like. Follow the \"Google pronunciation dictionary\" scheme for phonetic spelling.\n\ninterpretations",
     "output":"The pronunciation of \"interpretations\" according to the Google pronunciation dictionary is: in-tur-pri-tey-shuns.",
     "generator":"example",
     "dataset":"selfinstruct",
     "datasplit":"eval"
   },
   {
-    "instruction":"Explain the meaning of the given phrase in simple terms. Use an example if possible. It would be helpful if you could give an example.",
+    "instruction":"Explain the meaning of the given phrase in simple terms. Use an example if possible. It would be helpful if you could give an example.\n\n\"With a little give in them\"",
     "output":"The phrase \"with a little give in them\" means that something is flexible or can be bent slightly without breaking. For example, a pair of shoes that are too tight may be more comfortable if they have a little give in them, meaning the material can stretch a bit to fit the foot better.",
     "generator":"example",
     "dataset":"selfinstruct",
