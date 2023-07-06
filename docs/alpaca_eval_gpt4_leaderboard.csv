@@ -17,6 +17,7 @@ Minotaur 13B,66.02484472049689,https://huggingface.co/openaccess-ai-collective/m
 Guanaco 33B,65.96273291925466,https://huggingface.co/timdettmers/guanaco-33b,verified
 Nous Hermes 13B,65.46583850931677,https://huggingface.co/NousResearch/Nous-Hermes-13b,verified
 Vicuna 7B,64.40993788819875,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,verified
+Baize-v2 7B,63.85093167701863,https://huggingface.co/project-baize/baize-v2-7b,community
 LLaMA 33B OASST SFT,54.96894409937888,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,verified
 Guanaco 13B,52.60869565217391,https://huggingface.co/timdettmers/guanaco-13b,verified
 Davinci003,50.0,,minimal
