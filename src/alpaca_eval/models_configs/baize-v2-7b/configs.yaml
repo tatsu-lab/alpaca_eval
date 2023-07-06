@@ -1,5 +1,5 @@
 baize-v2-7b:
-  prompt_template: "baize-v2-7b/prompt.txt"
+  prompt_template: "baize-v2-13b/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
     model_name: "project-baize/baize-v2-7b"
