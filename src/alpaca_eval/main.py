@@ -12,6 +12,8 @@ from .types import AnyData, AnyPath
 CUR_DIR = Path(__file__).parent
 DEFAULT_CONFIGS = "alpaca_eval_gpt4"
 
+__all__ = ["evaluate", "evaluate_from_model", "analyze_evaluators", "make_leaderboard"]
+
 
 def evaluate(
     model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
@@ -29,6 +31,7 @@ def evaluate(
     is_cache_leaderboard: Optional[bool] = None,
     max_instances: Optional[int] = None,
     annotation_kwargs: Optional[dict[str, Any]] = None,
+    Annotator=annotators.PairwiseAnnotator,
     **annotator_kwargs,
 ):
     """Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
@@ -94,6 +97,9 @@ def evaluate(
     annotation_kwargs : dict, optional
         Additional arguments to pass to `PairwiseAnnotator.annotate_head2head`.
 
+    Annotator : class, optional
+        The annotator class to use.
+
     annotator_kwargs :
         Additional arguments to pass to `PairwiseAnnotator`.
     """
@@ -122,7 +128,7 @@ def evaluate(
                 model_outputs = model_outputs[:max_instances]
                 reference_outputs = reference_outputs[:max_instances]
 
-            annotator = annotators.PairwiseAnnotator(annotators_config=annotators_config, **annotator_kwargs)
+            annotator = Annotator(annotators_config=annotators_config, **annotator_kwargs)
             annotations = annotator.annotate_head2head(
                 outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
             )
