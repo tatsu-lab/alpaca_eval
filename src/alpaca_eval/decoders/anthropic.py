@@ -2,14 +2,13 @@ import copy
 import functools
 import logging
 import multiprocessing
-import os
 import random
 import time
 from typing import Optional, Sequence
 
+import anthropic
 import numpy as np
 import tqdm
-import anthropic
 
 from .. import constants, utils
 
@@ -17,10 +16,10 @@ __all__ = ["anthropic_completions"]
 
 
 def anthropic_completions(
-        prompts: Sequence[str],
-        model_name="claude-v1",
-        num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
-        **decoding_kwargs,
+    prompts: Sequence[str],
+    model_name="claude-v1",
+    num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
+    **decoding_kwargs,
 ) -> dict[str, list]:
     """Decode with Anthropic API.
 
@@ -73,55 +72,42 @@ def anthropic_completions(
 
 
 def _anthropic_completion_helper(
-        prompt: str,
-        sleep_time: int = 2,
-        anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
-        max_tokens_to_sample: Optional[int] = 1000,
-        temperature: Optional[float] = 0.7,
-        n_retries: Optional[int] = 3,
-        **kwargs,
+    prompt: str,
+    sleep_time: int = 2,
+    anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
+    max_tokens_to_sample: Optional[int] = 1000,
+    temperature: Optional[float] = 0.7,
+    n_retries: Optional[int] = 3,
+    **kwargs,
 ) -> str:
     anthropic_api_key = random.choice(anthropic_api_keys)
-    client = anthropic.Client(anthropic_api_key)
+    if not utils.check_pkg_atleast_version("anthropic", "0.3.0"):
+        raise ValueError("Anthropic version must be at least 0.3.0. Use `pip install -U anthropic`.")
+
+    client = anthropic.Anthropic(api_key=anthropic_api_key, max_retries=n_retries)
 
     kwargs.update(dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
     while True:
         try:
-            response = client.completion(prompt=prompt, **curr_kwargs)
+            response = client.completions.create(prompt=prompt, **curr_kwargs)
+            completion = response.completion
 
-            if response["completion"] == "":
-                response["completion"] = " "  # annoying doesn't allow empty string
+            if completion == "":
+                completion = " "  # annoying doesn't allow empty string
 
             break
-        except anthropic.api.ApiException as e:
-            logging.warning(f"ApiException: {e}.")
-            if "status code: 429" in str(e):
-                if len(anthropic_api_keys) > 1:
-                    anthropic_api_key = random.choice(anthropic_api_keys)
-                    client = anthropic.Client(anthropic_api_key)
-                    logging.info(f"Switching anthropic API key.")
-                logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
-                time.sleep(sleep_time)
-            elif "exceeds max" in str(e):
-                curr_kwargs["max_tokens_to_sample"] = int(curr_kwargs["max_tokens_to_sample"] * 0.8)
-                if curr_kwargs["max_tokens_to_sample"] == 0:
-                    raise e
-                logging.warning(f"Reducing target length to {curr_kwargs['max_tokens_to_sample']}, Retrying...")
-            else:
-                if n_retries > 0:
-                    logging.warning(f"{e}. \nRetrying...")
-                    n_retries = n_retries - 1
-                else:
-                    raise ValueError(f"Unknown ApiException {e}.")
-        except Exception as e:
-            if n_retries > 0:
-                logging.warning(f"{e}. \nRetrying...")
-                n_retries = n_retries - 1
-            else:
-                raise e
 
-    return response["completion"]
+        except anthropic.RateLimitError as e:
+            logging.warning(f"APIError: {e}.")
+            if len(anthropic_api_keys) > 1:
+                anthropic_api_key = random.choice(anthropic_api_keys)
+                client = anthropic.Anthropic(api_key=anthropic_api_key, max_retries=n_retries)
+                logging.info(f"Switching anthropic API key.")
+            logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
+            time.sleep(sleep_time)
+
+    return completion
 
 
 def _get_price_per_token(model):
@@ -129,7 +115,7 @@ def _get_price_per_token(model):
     # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
     if "claude-v1" in model:
         return (
-                11.02 / 1e6
+            11.02 / 1e6
         )  # that's not completely true because decoding is 32.68 but close enough given that most is context
     else:
         logging.warning(f"Unknown model {model} for computing price per token.")

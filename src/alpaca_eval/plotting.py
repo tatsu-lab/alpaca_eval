@@ -2,22 +2,19 @@
 import logging
 import warnings
 from contextlib import contextmanager
-
-import matplotlib
-import scipy
-from matplotlib.ticker import LogLocator
 from typing import Callable, Optional, Sequence
 
+import matplotlib
+import numpy as np
 import pandas as pd
+import scipy
+import seaborn as sns
 from matplotlib import MatplotlibDeprecationWarning
 from matplotlib import pyplot as plt
-from matplotlib.lines import Line2D
-
 from matplotlib import rc_params_from_file
+from matplotlib.lines import Line2D
+from matplotlib.ticker import LogLocator
 from scipy import stats
-import numpy as np
-from scipy import stats
-import seaborn as sns
 
 from . import constants, metrics
 
@@ -35,19 +32,19 @@ RC_IF_NO_FILE = {
 
 @contextmanager
 def plot_config(
-        style="ticks",
-        context="talk",
-        palette="colorblind",
-        font_scale=1,
-        is_ax_off=False,
-        is_rm_xticks=False,
-        is_rm_yticks=False,
-        rc={"lines.linewidth": 4},
-        is_use_tex=False,
-        set_kwargs=dict(),
-        despine_kwargs=dict(),
-        file_to_default_rc=None,
-        # pretty_renamer=dict(), #TODO
+    style="ticks",
+    context="talk",
+    palette="colorblind",
+    font_scale=1,
+    is_ax_off=False,
+    is_rm_xticks=False,
+    is_rm_yticks=False,
+    rc={"lines.linewidth": 4},
+    is_use_tex=False,
+    set_kwargs=dict(),
+    despine_kwargs=dict(),
+    file_to_default_rc=None,
+    # pretty_renamer=dict(), #TODO
 ):
     """Temporary seaborn and matplotlib figure style / context / limits / ....
 
@@ -110,7 +107,7 @@ def plot_config(
         plt.rcParams.update(desired_rc)
 
         with sns.axes_style(style=style, rc=desired_rc), sns.plotting_context(
-                context=context, font_scale=font_scale, rc=desired_rc
+            context=context, font_scale=font_scale, rc=desired_rc
         ), sns.color_palette(palette):
             yield
             last_fig = plt.gcf()
@@ -142,24 +139,32 @@ def evaluator_renamer(name):
     return name.replace("_basic", "").replace("_", " ").replace("-", " ")
 
 
-def plot_quality_vs_price_and_time(evaluator_leaderboard: pd.DataFrame,
-                                   min_agreement: float = 0.55,
-                                   config_kwargs=None,
-                                   **preprocess_kwargs
-                                   ):
+def plot_quality_vs_price_and_time(
+    evaluator_leaderboard: pd.DataFrame, min_agreement: float = 0.55, config_kwargs=None, **preprocess_kwargs
+):
+    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard, min_agreement=min_agreement, **preprocess_kwargs)
 
-    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard,
-                                               min_agreement=min_agreement,
-                                               **preprocess_kwargs)
-
-    df_melted = df_all.melt(var_name="Variable", value_name="value", id_vars=["Annotator", "Human agreement [%]"],
-                            value_vars=["Price [$/1000 examples]", "Time [seconds/1000 examples]"])
+    df_melted = df_all.melt(
+        var_name="Variable",
+        value_name="value",
+        id_vars=["Annotator", "Human agreement [%]"],
+        value_vars=["Price [$/1000 examples]", "Time [seconds/1000 examples]"],
+    )
 
     config_kwargs = config_kwargs or dict()
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_melted, x="value", col="Variable", y="Human agreement [%]", kind="scatter",
-                        hue="Annotator", facet_kws={'sharex': False, 'sharey': True},
-                        s=300, alpha=0.9, legend='full')
+        g = sns.relplot(
+            data=df_melted,
+            x="value",
+            col="Variable",
+            y="Human agreement [%]",
+            kind="scatter",
+            hue="Annotator",
+            facet_kws={"sharex": False, "sharey": True},
+            s=300,
+            alpha=0.9,
+            legend="full",
+        )
 
         axes = g.axes.flatten()
         g.set_titles("{col_name}")
@@ -181,27 +186,24 @@ def plot_quality_vs_price_and_time(evaluator_leaderboard: pd.DataFrame,
     return g
 
 
-def plot_quality_vs_price(evaluator_leaderboard: pd.DataFrame,
-                          min_agreement: float = 0.55,
-                          config_kwargs=None,
-                          **preprocess_kwargs
-                          ):
-
+def plot_quality_vs_price(
+    evaluator_leaderboard: pd.DataFrame, min_agreement: float = 0.55, config_kwargs=None, **preprocess_kwargs
+):
     config_kwargs = config_kwargs or dict()
-    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard,
-                                               min_agreement=min_agreement,
-                                               **preprocess_kwargs)
+    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard, min_agreement=min_agreement, **preprocess_kwargs)
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_all,
-                        x="Price [$/1000 examples]",
-                        y="Human agreement [%]",
-                        kind="scatter",
-                        hue="Annotator",
-                        s=300,
-                        alpha=0.9,
-                        legend='full',
-                        aspect=1.3)
+        g = sns.relplot(
+            data=df_all,
+            x="Price [$/1000 examples]",
+            y="Human agreement [%]",
+            kind="scatter",
+            hue="Annotator",
+            s=300,
+            alpha=0.9,
+            legend="full",
+            aspect=1.3,
+        )
 
         axes = g.axes.flatten()
 
@@ -218,27 +220,24 @@ def plot_quality_vs_price(evaluator_leaderboard: pd.DataFrame,
     return g
 
 
-def plot_quality_vs_price(evaluator_leaderboard: pd.DataFrame,
-                          min_agreement: float = 0.55,
-                          config_kwargs=None,
-                          **preprocess_kwargs
-                          ):
-
+def plot_quality_vs_price(
+    evaluator_leaderboard: pd.DataFrame, min_agreement: float = 0.55, config_kwargs=None, **preprocess_kwargs
+):
     config_kwargs = config_kwargs or dict()
-    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard,
-                                               min_agreement=min_agreement,
-                                               **preprocess_kwargs)
+    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard, min_agreement=min_agreement, **preprocess_kwargs)
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_all,
-                        x="Price [$/1000 examples]",
-                        y="Human agreement [%]",
-                        kind="scatter",
-                        hue="Annotator",
-                        s=300,
-                        alpha=0.9,
-                        legend='full',
-                        aspect=1.3)
+        g = sns.relplot(
+            data=df_all,
+            x="Price [$/1000 examples]",
+            y="Human agreement [%]",
+            kind="scatter",
+            hue="Annotator",
+            s=300,
+            alpha=0.9,
+            legend="full",
+            aspect=1.3,
+        )
 
         axes = g.axes.flatten()
 
@@ -255,27 +254,24 @@ def plot_quality_vs_price(evaluator_leaderboard: pd.DataFrame,
     return g
 
 
-def plot_quality_vs_time(evaluator_leaderboard: pd.DataFrame,
-                         min_agreement: float = 0.55,
-                         config_kwargs=None,
-                         **preprocess_kwargs
-                         ):
-
+def plot_quality_vs_time(
+    evaluator_leaderboard: pd.DataFrame, min_agreement: float = 0.55, config_kwargs=None, **preprocess_kwargs
+):
     config_kwargs = config_kwargs or dict()
-    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard,
-                                               min_agreement=min_agreement,
-                                               **preprocess_kwargs)
+    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard, min_agreement=min_agreement, **preprocess_kwargs)
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_all,
-                        x="Time [seconds/1000 examples]",
-                        y="Human agreement [%]",
-                        kind="scatter",
-                        hue="Annotator",
-                        s=300,
-                        alpha=0.9,
-                        legend='full',
-                        aspect=1.3)
+        g = sns.relplot(
+            data=df_all,
+            x="Time [seconds/1000 examples]",
+            y="Human agreement [%]",
+            kind="scatter",
+            hue="Annotator",
+            s=300,
+            alpha=0.9,
+            legend="full",
+            aspect=1.3,
+        )
 
         axes = g.axes.flatten()
 
@@ -291,25 +287,31 @@ def plot_quality_vs_time(evaluator_leaderboard: pd.DataFrame,
     return g
 
 
-def plot_bias_vs_variance(evaluator_leaderboard: pd.DataFrame,
-                          min_agreement: float = 0.55,
-                          config_kwargs=dict(is_use_tex=False,
-                                             palette=sns.color_palette(np.array(sns.color_palette("colorblind"))[1:])),
-                          **preprocess_kwargs
-                          ):
-
+def plot_bias_vs_variance(
+    evaluator_leaderboard: pd.DataFrame,
+    min_agreement: float = 0.55,
+    config_kwargs=dict(is_use_tex=False, palette=sns.color_palette(np.array(sns.color_palette("colorblind"))[1:])),
+    **preprocess_kwargs,
+):
     config_kwargs = config_kwargs or dict()
-    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard,
-                                               min_agreement=min_agreement,
-                                               **preprocess_kwargs)
+    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard, min_agreement=min_agreement, **preprocess_kwargs)
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_all.query("Annotator!='humans'"), x="Variance", y="Bias", kind="scatter",
-                        hue="Annotator", s=300, alpha=0.9, legend='full', aspect=1.3)
+        g = sns.relplot(
+            data=df_all.query("Annotator!='humans'"),
+            x="Variance",
+            y="Bias",
+            kind="scatter",
+            hue="Annotator",
+            s=300,
+            alpha=0.9,
+            legend="full",
+            aspect=1.3,
+        )
 
         axes = g.axes.flatten()
         g.set_titles("")
-        plt.axvline(x=df_all.query("Annotator=='humans'")["Variance"].iloc[0], linestyle='--')
+        plt.axvline(x=df_all.query("Annotator=='humans'")["Variance"].iloc[0], linestyle="--")
 
         axes[0].xaxis.set_major_locator(plt.MaxNLocator(5))
         axes[0].yaxis.set_major_locator(plt.MaxNLocator(5))
@@ -320,33 +322,45 @@ def plot_bias_vs_variance(evaluator_leaderboard: pd.DataFrame,
     return g
 
 
-def plot_all_properties(evaluator_leaderboard: pd.DataFrame,
-                        properties_to_rm: Sequence[str] = ("# parsed",),
-                        min_agreement: float = 0.55,
-                        config_kwargs=dict(is_use_tex=False,
-                                           palette=sns.color_palette(np.array(sns.color_palette("colorblind"))[1:])),
-                        annotators_to_rm: Sequence[str] = ('longest',),
-                        **preprocess_kwargs
-                        ):
-
+def plot_all_properties(
+    evaluator_leaderboard: pd.DataFrame,
+    properties_to_rm: Sequence[str] = ("# parsed",),
+    min_agreement: float = 0.55,
+    config_kwargs=dict(is_use_tex=False, palette=sns.color_palette(np.array(sns.color_palette("colorblind"))[1:])),
+    annotators_to_rm: Sequence[str] = ("longest",),
+    **preprocess_kwargs,
+):
     properties_to_rm = list(properties_to_rm)
     config_kwargs = config_kwargs or dict()
     annotators_to_keep = [c for c in evaluator_leaderboard.index if c not in annotators_to_rm]
-    df_all = _preprocess_evaluator_leaderboard(evaluator_leaderboard.drop(columns=properties_to_rm),
-                                               min_agreement=min_agreement,
-                                               annotators_to_keep=annotators_to_keep,
-                                               **preprocess_kwargs)
+    df_all = _preprocess_evaluator_leaderboard(
+        evaluator_leaderboard.drop(columns=properties_to_rm),
+        min_agreement=min_agreement,
+        annotators_to_keep=annotators_to_keep,
+        **preprocess_kwargs,
+    )
 
     df_all["jitter"] = np.random.uniform(-0.5, 0.5, len(df_all))
     df_melted = df_all.melt(var_name="Variable", value_name="value", id_vars=["Annotator", "jitter"])
 
     with plot_config(**config_kwargs):
-        g = sns.relplot(data=df_melted.query("Annotator!='humans'"),
-                        x="value", y="jitter", kind="scatter", row="Variable", hue='Annotator',
-                        facet_kws={'sharex': False, 'sharey': True}, s=300, color='grey', alpha=0.9, legend="full",
-                        aspect=2.5, height=2.5)
+        g = sns.relplot(
+            data=df_melted.query("Annotator!='humans'"),
+            x="value",
+            y="jitter",
+            kind="scatter",
+            row="Variable",
+            hue="Annotator",
+            facet_kws={"sharex": False, "sharey": True},
+            s=300,
+            color="grey",
+            alpha=0.9,
+            legend="full",
+            aspect=2.5,
+            height=2.5,
+        )
 
-        g.set(ylim=[-0.75, 0.75], xlabel='')
+        g.set(ylim=[-0.75, 0.75], xlabel="")
         plt.tight_layout()
 
         axes = g.axes.flatten()
@@ -366,17 +380,20 @@ def plot_all_properties(evaluator_leaderboard: pd.DataFrame,
     return g
 
 
-def plot_winrate_correlations(human_leaderboard, auto_leaderboard,
-                              models_to_keep=constants.HUMAN_ANNOTATED_MODELS_TO_KEEP,
-                              config_kwargs=dict(rc={'lines.linewidth': 2}),
-                              ):
+def plot_winrate_correlations(
+    human_leaderboard,
+    auto_leaderboard,
+    models_to_keep=constants.HUMAN_ANNOTATED_MODELS_TO_KEEP,
+    config_kwargs=dict(rc={"lines.linewidth": 2}),
+):
     models_to_keep = list(models_to_keep)
-    df = pd.merge(human_leaderboard["win_rate"],
-                  auto_leaderboard["win_rate"],
-                  suffixes=["_human", "_auto"],
-                  left_index=True,
-                  right_index=True
-                  )
+    df = pd.merge(
+        human_leaderboard["win_rate"],
+        auto_leaderboard["win_rate"],
+        suffixes=["_human", "_auto"],
+        left_index=True,
+        right_index=True,
+    )
     df = df.loc[models_to_keep]
 
     df = df.rename(columns=dict(win_rate_human="Human Win Rate", win_rate_auto="Auto Win Rate"))
@@ -391,8 +408,8 @@ def plot_winrate_correlations(human_leaderboard, auto_leaderboard,
             s = scipy.stats.spearmanr(data["Human Win Rate"], data["Auto Win Rate"]).statistic
             r, _ = scipy.stats.pearsonr(data["Human Win Rate"], data["Auto Win Rate"])
             ax = plt.gca()
-            ax.text(.05, .92, r'Spearman corr: {:.2f}'.format(s), transform=ax.transAxes, fontsize=14)
-            ax.text(.05, .84, 'Pearson corr: {:.2f}'.format(r), transform=ax.transAxes, fontsize=14)
+            ax.text(0.05, 0.92, r"Spearman corr: {:.2f}".format(s), transform=ax.transAxes, fontsize=14)
+            ax.text(0.05, 0.84, "Pearson corr: {:.2f}".format(r), transform=ax.transAxes, fontsize=14)
 
         g.map_dataframe(annotate)
 
@@ -411,7 +428,6 @@ def save_fig(fig, filename, dpi=300, is_tight=True):
         fig = fig.get_figure()
 
     if isinstance(fig, matplotlib.figure.Figure):
-
         plt_kwargs = {}
         if is_tight:
             plt_kwargs["bbox_inches"] = "tight"
@@ -426,16 +442,17 @@ def plot_paired_ttests(df):
     df_ttest = _get_ttest_df(df)
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 15))
     with plot_config(font_scale=0.4):
-        g = sns.heatmap(df_ttest.astype(float),
-                        annot=True,
-                        fmt=".2f",
-                        cbar=False,
-                        square=True,
-                        xticklabels=False,
-                        ax=ax,
-                        mask=np.triu(np.ones_like(df_ttest, dtype=bool)),
-                        cmap=sns.color_palette("rocket", as_cmap=True)
-                        )
+        g = sns.heatmap(
+            df_ttest.astype(float),
+            annot=True,
+            fmt=".2f",
+            cbar=False,
+            square=True,
+            xticklabels=False,
+            ax=ax,
+            mask=np.triu(np.ones_like(df_ttest, dtype=bool)),
+            cmap=sns.color_palette("rocket", as_cmap=True),
+        )
         g.set(xlabel="", ylabel="")
     plt.show()
     return g
@@ -461,8 +478,16 @@ def plot_paired_ttests_per_dataset(df, is_print_values=False, is_add_alpaca_eval
     with plot_config(font_scale=0.5):
         for i, (key, curr_df) in enumerate(all_pvalues.items()):
             ax = axes[i // 3][i % 3]
-            g = sns.heatmap(curr_df, annot=True, fmt=".2f", cbar=False, square=True, xticklabels=False, ax=ax,
-                            mask=np.triu(np.ones_like(curr_df, dtype=bool)))
+            g = sns.heatmap(
+                curr_df,
+                annot=True,
+                fmt=".2f",
+                cbar=False,
+                square=True,
+                xticklabels=False,
+                ax=ax,
+                mask=np.triu(np.ones_like(curr_df, dtype=bool)),
+            )
             ax.set_title(key + f" n={min_dataset_size}", fontsize=20)
             g.set(xlabel="", ylabel="")
 
@@ -479,35 +504,37 @@ def plot_paired_ttests_per_dataset(df, is_print_values=False, is_add_alpaca_eval
 
 def plot_paired_ttests_pvalues(df):
     df_ttest = _get_ttest_df(df)
-    all_sub_ttest_df = {n: _get_ttest_df(df, n_samples=n, random_state=123, sorted_idx=list(df_ttest.index))
-                        for n in range(50, len(df["instruction"].unique()), 50)}
+    all_sub_ttest_df = {
+        n: _get_ttest_df(df, n_samples=n, random_state=123, sorted_idx=list(df_ttest.index))
+        for n in range(50, len(df["instruction"].unique()), 50)
+    }
 
-    df_describe = pd.DataFrame({"mean": {k: v.mean(axis=None) for k, v in all_sub_ttest_df.items()},
-                                "90% quantile": {k: v.stack().quantile(q=0.9) for k, v in all_sub_ttest_df.items()},
-                                "max": {k: v.max(axis=None) for k, v in all_sub_ttest_df.items()},
-                                })
+    df_describe = pd.DataFrame(
+        {
+            "mean": {k: v.mean(axis=None) for k, v in all_sub_ttest_df.items()},
+            "90% quantile": {k: v.stack().quantile(q=0.9) for k, v in all_sub_ttest_df.items()},
+            "max": {k: v.max(axis=None) for k, v in all_sub_ttest_df.items()},
+        }
+    )
 
-    melted = df_describe.melt(ignore_index=False,
-                              value_name="p-value",
-                              var_name="aggregator").reset_index(names="# samples")
+    melted = df_describe.melt(ignore_index=False, value_name="p-value", var_name="aggregator").reset_index(
+        names="# samples"
+    )
 
-    with plot_config(rc={'lines.linewidth': 4, "axes.grid": False}):
-        ax = sns.lineplot(melted,
-                          x="# samples",
-                          y="p-value",
-                          hue="aggregator")
+    with plot_config(rc={"lines.linewidth": 4, "axes.grid": False}):
+        ax = sns.lineplot(melted, x="# samples", y="p-value", hue="aggregator")
 
-        ax.axhline(y=0.05, color='black', linestyle='--', linewidth=2, alpha=0.5)
+        ax.axhline(y=0.05, color="black", linestyle="--", linewidth=2, alpha=0.5)
 
         # Get the handles and labels from the existing line plot legend
         handles, labels = ax.get_legend_handles_labels()
 
         # Create a new legend element for the horizontal line
-        legend_elements = [Line2D([0], [0], color='black', linestyle='--', label='0.05')]
+        legend_elements = [Line2D([0], [0], color="black", linestyle="--", label="0.05")]
 
         # Combine the handles, labels, and new legend element
         all_handles = handles + legend_elements
-        all_labels = labels + ['0.05']
+        all_labels = labels + ["0.05"]
 
         # Plot the combined legend
         ax.legend(handles=all_handles, labels=all_labels)
@@ -517,8 +544,10 @@ def plot_paired_ttests_pvalues(df):
 
 def plot_paired_ttest_nsamples(df):
     df_ttest = _get_ttest_df(df)
-    all_sub_ttest_df = {n: _get_ttest_df(df, n_samples=n, random_state=123, sorted_idx=list(df_ttest.index))
-                        for n in range(50, len(df["instruction"].unique()), 50)}
+    all_sub_ttest_df = {
+        n: _get_ttest_df(df, n_samples=n, random_state=123, sorted_idx=list(df_ttest.index))
+        for n in range(50, len(df["instruction"].unique()), 50)
+    }
 
     arr_min_samples = np.minimum.reduce([np.where(v < 0.05, k, float("inf")) for k, v in all_sub_ttest_df.items()])
     arr_min_samples[np.isinf(arr_min_samples)] = np.nan
@@ -526,19 +555,26 @@ def plot_paired_ttest_nsamples(df):
 
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 15))
     with plot_config(font_scale=0.55):
-        sns.heatmap(df_min_samples.isnull(), cbar=False, color='black', alpha=0.5,
-                    mask=~df_min_samples.isnull() | np.triu(np.ones_like(df_ttest, dtype=bool), k=0))
-        g = sns.heatmap(df_min_samples,
-                        annot=True,
-                        fmt=".0f",
-                        cbar=False,
-                        square=True,
-                        xticklabels=False,
-                        ax=ax,
-                        vmin=0,
-                        vmax=1000,
-                        cmap=sns.color_palette("rocket_r", as_cmap=True),
-                        mask=np.triu(np.ones_like(df_ttest, dtype=bool)))
+        sns.heatmap(
+            df_min_samples.isnull(),
+            cbar=False,
+            color="black",
+            alpha=0.5,
+            mask=~df_min_samples.isnull() | np.triu(np.ones_like(df_ttest, dtype=bool), k=0),
+        )
+        g = sns.heatmap(
+            df_min_samples,
+            annot=True,
+            fmt=".0f",
+            cbar=False,
+            square=True,
+            xticklabels=False,
+            ax=ax,
+            vmin=0,
+            vmax=1000,
+            cmap=sns.color_palette("rocket_r", as_cmap=True),
+            mask=np.triu(np.ones_like(df_ttest, dtype=bool)),
+        )
 
         g.set(xlabel="", ylabel="")
 
@@ -548,13 +584,13 @@ def plot_paired_ttest_nsamples(df):
 
 
 ##########
-def _preprocess_evaluator_leaderboard(evaluator_leaderboard: pd.DataFrame,
-                                      min_agreement: float = 0.55,
-                                      annotators_to_keep: Sequence[str] = constants.VERIFIED_EVALUATORS,
-                                      evaluator_renamer: Optional[Callable] = evaluator_renamer,
-                                      is_human_at_top: bool = True,
-                                      ) -> pd.DataFrame:
-
+def _preprocess_evaluator_leaderboard(
+    evaluator_leaderboard: pd.DataFrame,
+    min_agreement: float = 0.55,
+    annotators_to_keep: Sequence[str] = constants.VERIFIED_EVALUATORS,
+    evaluator_renamer: Optional[Callable] = evaluator_renamer,
+    is_human_at_top: bool = True,
+) -> pd.DataFrame:
     df_all = evaluator_leaderboard.copy()
     annotators_to_keep = [evaluator_renamer(a) for a in annotators_to_keep]
 
@@ -598,8 +634,11 @@ def _get_ttest_df(df, n_samples=None, random_state=123, sorted_idx=None):
         df_pivoted = df_pivoted.sample(n=n_samples, random_state=random_state)
     # win_rate = metrics.pairwise_to_winrate(df["preference"])['win_rate']
     if sorted_idx is None:
-        sorted_idx = list(df.groupby("generator_2")["preference"].apply(lambda x: metrics.pairwise_to_winrate(x)[
-            'win_rate']).sort_values(ascending=False).index)
-    return _pairwise_ttest(df_pivoted[sorted_idx].replace({0: 1,
-                                                           1: 0})).astype(float)  # draw is 0 but to test order it
+        sorted_idx = list(
+            df.groupby("generator_2")["preference"]
+            .apply(lambda x: metrics.pairwise_to_winrate(x)["win_rate"])
+            .sort_values(ascending=False)
+            .index
+        )
+    return _pairwise_ttest(df_pivoted[sorted_idx].replace({0: 1, 1: 0})).astype(float)  # draw is 0 but to test order it
     # should be in the middle

@@ -3,20 +3,17 @@ from typing import Optional, Sequence
 
 import numpy as np
 import torch
-from datasets import Dataset
-from tqdm import tqdm, trange
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-)
 import transformers
+from datasets import Dataset
 from peft import PeftModel
-from .. import utils, constants
-
 from torch.utils.data import Dataset
-from tqdm import tqdm
+from tqdm import tqdm, trange
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from .. import constants, utils
 
 __all__ = ["huggingface_local_completions"]
+
 
 class ListDataset(Dataset):
     def __init__(self, original_list):
@@ -30,15 +27,15 @@ class ListDataset(Dataset):
 
 
 def huggingface_local_completions(
-        prompts: Sequence[str],
-        model_name: str,
-        do_sample: bool = False,
-        batch_size: int = 1,
-        model_kwargs=None,
-        cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
-        is_fast_tokenizer: bool = True,
-        adapters_name: Optional[str] = None,
-        **kwargs,
+    prompts: Sequence[str],
+    model_name: str,
+    do_sample: bool = False,
+    batch_size: int = 1,
+    model_kwargs=None,
+    cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+    is_fast_tokenizer: bool = True,
+    adapters_name: Optional[str] = None,
+    **kwargs,
 ) -> dict[str, list]:
     """Decode locally using huggingface transformers pipeline.
 
@@ -68,7 +65,7 @@ def huggingface_local_completions(
     model_kwargs = model_kwargs or {}
     if "device_map" not in model_kwargs:
         model_kwargs["device_map"] = "auto"
-    if isinstance(model_kwargs["torch_dtype"], str):
+    if "torch_dtype" in model_kwargs and isinstance(model_kwargs["torch_dtype"], str):
         model_kwargs["torch_dtype"] = getattr(torch, model_kwargs["torch_dtype"])
 
     n_examples = len(prompts)
@@ -86,10 +83,14 @@ def huggingface_local_completions(
     torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = True
 
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name, cache_dir=cache_dir, padding_side="left", use_fast=is_fast_tokenizer, **model_kwargs
+        model_name,
+        cache_dir=cache_dir,
+        padding_side="left",
+        use_fast=is_fast_tokenizer,
+        **model_kwargs,
     )
     model = AutoModelForCausalLM.from_pretrained(model_name, cache_dir=cache_dir, **model_kwargs).eval()
-    
+
     if adapters_name:
         logging.info(f"Merging adapter from {adapters_name}.")
         model = PeftModel.from_pretrained(model, adapters_name)
@@ -110,7 +111,7 @@ def huggingface_local_completions(
         # save also index to reorder the completions
         original_order, prompts = zip(*sorted(enumerate(prompts), key=lambda x: len(x[1])))
         prompts = list(prompts)
-    
+
     if not tokenizer.pad_token_id:
         # set padding token if not set
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -118,20 +119,31 @@ def huggingface_local_completions(
 
     default_kwargs = dict(
         do_sample=do_sample,
-        model_kwargs=model_kwargs,
+        model_kwargs={k: v for k, v in model_kwargs.items() if k != "trust_remote_code"},
         batch_size=batch_size,
     )
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
-    pipeline = transformers.pipeline(task="text-generation", model=model, tokenizer=tokenizer, **default_kwargs)
+    pipeline = transformers.pipeline(
+        task="text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        **default_kwargs,
+        trust_remote_code=model_kwargs.get("trust_remote_code", False),
+    )
 
     ## compute and log the time for completions
     prompts_dataset = ListDataset(prompts)
     completions = []
-    
+
     with utils.Timer() as t:
-        
-        for out in tqdm(pipeline(prompts_dataset, return_full_text=False, pad_token_id=tokenizer.pad_token_id)):
+        for out in tqdm(
+            pipeline(
+                prompts_dataset,
+                return_full_text=False,
+                pad_token_id=tokenizer.pad_token_id,
+            )
+        ):
             completions.append(out[0]["generated_text"])
 
     logging.info(f"Time for {n_examples} completions: {t}")

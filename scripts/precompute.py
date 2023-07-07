@@ -1,13 +1,16 @@
-from alpaca_eval import utils, metrics, annotators, constants, analyze, main as alpaca_main
 import fire
+
+from alpaca_eval import analyze, annotators, constants
+from alpaca_eval import main as alpaca_main
+from alpaca_eval import metrics, utils
 
 
 def precompute_on_all_human_leaderboard(
-        annotators_config="gpt4",
-        Annotator=annotators.PairwiseAnnotator,
-        all_data=constants.ALPACAFARM_GOLD_ANNOTATIONS,
-        analyzer_kwargs=None,
-        **annotator_kwargs
+    annotators_config="gpt4",
+    Annotator=annotators.PairwiseAnnotator,
+    all_data=constants.ALPACAFARM_GOLD_ANNOTATIONS,
+    analyzer_kwargs=None,
+    **annotator_kwargs
 ):
     """Precompute all instructions on the eval leaderboard that has been annotated by humans."""
     analyzer_kwargs = analyzer_kwargs or {}
@@ -18,10 +21,10 @@ def precompute_on_all_human_leaderboard(
 
 
 def precompute_evaluator_leaderboard(
-        annotators_configs_to_analyze="MINIMAL_EVALUATORS",
-        annotators_configs_to_benchmark="VERIFIED_EVALUATORS",
-        max_instances=None,
-        **kwargs
+    annotators_configs_to_analyze="MINIMAL_EVALUATORS",
+    annotators_configs_to_benchmark="VERIFIED_EVALUATORS",
+    max_instances=None,
+    **kwargs
 ):
     """Precompute evaluator's leaderboard for important API models."""
     if isinstance(annotators_configs_to_analyze, str):

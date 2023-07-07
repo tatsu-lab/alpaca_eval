@@ -3,9 +3,9 @@ import copy
 import glob
 import itertools
 import logging
-import random
 import os
 import pathlib
+import random
 import re
 import sys
 import time
@@ -16,6 +16,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 import datasets
 import numpy as np
 import pandas as pd
+import pkg_resources
 import yaml
 
 from . import constants
@@ -47,9 +48,7 @@ def random_seeded_choice(seed: Union[int, str, float], choices, **kwargs):
     return random.Random(seed).choices(choices, k=1, **kwargs)[0]
 
 
-def shuffle_pairwise_preferences(
-    df: pd.DataFrame, arr_is_shuffle: Sequence[int]
-) -> pd.DataFrame:
+def shuffle_pairwise_preferences(df: pd.DataFrame, arr_is_shuffle: Sequence[int]) -> pd.DataFrame:
     """Shuffle the outputs of a pairwise preference dataframe.
 
     Examples
@@ -67,9 +66,7 @@ def shuffle_pairwise_preferences(
     df["output_2"] = np.where(arr_is_shuffle, col_1, col_2)
 
     if "preference" in df.columns:
-        df["preference"] = np.where(
-            arr_is_shuffle, 3 - df["preference"], df["preference"]
-        )
+        df["preference"] = np.where(arr_is_shuffle, 3 - df["preference"], df["preference"])
 
     return df
 
@@ -98,9 +95,7 @@ def random_derangement(arr, max_loop=10, seed=None):
             return arr[shuffled]
 
     # if no luck then computes all possibilities
-    deranged_order = list(
-        set([s for s in itertools.permutations(idcs) if is_derangement(s, idcs)])
-    )
+    deranged_order = list(set([s for s in itertools.permutations(idcs) if is_derangement(s, idcs)]))
     return arr[list(rng.choice(deranged_order))]
 
 
@@ -163,9 +158,7 @@ def make_prompts(
     n_occurrences = Counter(text_to_format)
 
     if not all([n == batch_size for n in n_occurrences.values()]):
-        raise ValueError(
-            f"All placeholders should be repeated batch_size={batch_size} times but {n_occurrences}."
-        )
+        raise ValueError(f"All placeholders should be repeated batch_size={batch_size} times but {n_occurrences}.")
 
     # padding if you don't have enough examples
     n_to_pad = (batch_size - len(df)) % batch_size
@@ -181,9 +174,7 @@ def make_prompts(
         for j in range(batch_size):
             for to_format in n_occurrences.keys():
                 # replace only first occurrence (that's why we don't use .format)
-                current_prompt = current_prompt.replace(
-                    "{" + to_format + "}", str(df_out.iloc[i + j][to_format]), 1
-                )
+                current_prompt = current_prompt.replace("{" + to_format + "}", str(df_out.iloc[i + j][to_format]), 1)
         prompts.append(current_prompt)
 
     return prompts, df_out
@@ -236,9 +227,7 @@ def convert_ordinal_to_binary_preference(
         is_df = False
         preferences = pd.DataFrame.from_records(preferences)
 
-    preferences[binary_preference_key] = (
-        preferences[ordinal_preference_key].round().astype(int) - 1
-    ) // 2 + 1
+    preferences[binary_preference_key] = (preferences[ordinal_preference_key].round().astype(int) - 1) // 2 + 1
 
     if not is_df:
         preferences = preferences.to_dict(orient="records")
@@ -266,6 +255,11 @@ def check_imports(modules: Sequence[str], to_use: str = "this fnction"):
         if module not in sys.modules:
             error = f"You need {modules} to use {to_use}. Try `pip install {' '.join(modules)}`."
             raise ImportError(error)
+
+
+def check_pkg_atleast_version(package, atleast_version):
+    curr_version = pkg_resources.get_distribution(package).version
+    return pkg_resources.parse_version(curr_version) > pkg_resources.parse_version(atleast_version)
 
 
 def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs):
@@ -322,9 +316,7 @@ def silent():
     """Context manager to remove all outputs and warnings."""
     import IPython
 
-    with open(os.devnull, "w") as f, contextlib.redirect_stdout(
-        f
-    ), DisableLogger(), IPython.utils.io.capture_output():
+    with open(os.devnull, "w") as f, contextlib.redirect_stdout(f), DisableLogger(), IPython.utils.io.capture_output():
         yield
 
 
@@ -348,7 +340,15 @@ def contains_list(text):
     # Alphabetic lists with '.' or ')'
     alpha_list_pattern = r"(\s*[a-zA-Z]\.|\s*[a-zA-Z]\))\s*(\w+)"
 
-    patterns = [bullet_point_pattern, number_list_pattern, alpha_list_pattern]
+    # List items starting with a dash '-'
+    dash_list_pattern = r"(\s*-\s*)(\w+)"
+
+    patterns = [
+        bullet_point_pattern,
+        number_list_pattern,
+        alpha_list_pattern,
+        dash_list_pattern,
+    ]
 
     for pattern in patterns:
         if re.search(pattern, text):
@@ -383,9 +383,7 @@ def load_configs(configs: Union[AnyPath, dict], relative_to: Optional[AnyPath] =
     return configs
 
 
-def get_precomputed_leaderboard(
-    precomputed_leaderboard, reference_outputs, annotators_config
-):
+def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, annotators_config):
     if precomputed_leaderboard == "auto":
         try:
             precomputed_leaderboard = constants.PRECOMPUTED_LEADERBOARDS[
@@ -399,20 +397,14 @@ def get_precomputed_leaderboard(
                         f" {reference_outputs} and {annotators_config}"
                     )
             except:
-                logging.warning(
-                    f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard"
-                )
+                logging.warning(f"precomputed_leaderboard = 'auto'. But we have found no corresponding leaderboard")
             precomputed_leaderboard = None
 
     if precomputed_leaderboard is not None:
         try:
-            leaderboard = load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(
-                orient="index"
-            )
+            leaderboard = load_or_convert_to_dataframe(precomputed_leaderboard).to_dict(orient="index")
         except FileNotFoundError:
-            logging.warning(
-                f"precomputed_leaderboard = {precomputed_leaderboard} not found => computing from scratch."
-            )
+            logging.warning(f"precomputed_leaderboard = {precomputed_leaderboard} not found => computing from scratch.")
             leaderboard = dict()
     else:
         leaderboard = dict()
@@ -436,18 +428,14 @@ def get_output_path(output_path, model_outputs, name):
         output_path.mkdir(exist_ok=True, parents=True)
 
 
-def print_leaderboard(
-    df_leaderboard, leaderboard_mode, cols_to_print, current_name=None
-):
+def print_leaderboard(df_leaderboard, leaderboard_mode, cols_to_print, current_name=None):
     cols_to_print = list(cols_to_print)
 
     if leaderboard_mode is not None:
         if "mode" in df_leaderboard.columns:
             # select all modes that come before
             current_idx = constants.ORDERED_LEADERBOARD_MODES.index(leaderboard_mode)
-            df_leaderboard["mode_idx"] = df_leaderboard["mode"].apply(
-                constants.ORDERED_LEADERBOARD_MODES.index
-            )
+            df_leaderboard["mode_idx"] = df_leaderboard["mode"].apply(constants.ORDERED_LEADERBOARD_MODES.index)
 
             is_smaller_mode = df_leaderboard["mode_idx"] <= current_idx
             is_selected = is_smaller_mode | (df_leaderboard["mode"].isnull())
