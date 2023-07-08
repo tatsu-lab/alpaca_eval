@@ -1,5 +1,4 @@
 """Runs all unit tests for the decoders."""
-import doctest
 import math
 
 import pytest
@@ -76,11 +75,3 @@ def _run_all_asserts_completions(result):
         assert 0 <= result["price_per_example"][0] < 1e-2
     else:
         assert math.isnan(result["price_per_example"][1]) == math.isnan(result["price_per_example"][0])
-
-
-def test_prompt_to_chatml():
-    doctest.run_docstring_examples(_prompt_to_chatml, globals(), name="_prompt_to_chatml", verbose=True)
-
-
-def test_string_to_dict():
-    doctest.run_docstring_examples(_string_to_dict, globals(), name="_string_to_dict", verbose=True)

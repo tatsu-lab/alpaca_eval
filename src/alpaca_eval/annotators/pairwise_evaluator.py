@@ -532,7 +532,7 @@ class PairwiseAnnotator:
             path = Path(path)
             if path.exists():
                 logging.info(f"Loading all annotations from {path}.")
-                self.df_annotations = pd.read_json(path)
+                self.df_annotations = pd.read_json(path, dtype={k: str for k in self.all_keys})
 
     def _merge_annotations(self, df_to_annotate: pd.DataFrame, df_partially_annotated: pd.DataFrame) -> pd.DataFrame:
         """Merge (partial) annotations with the original df to keep the same order and avoid duplicates annotations."""
@@ -541,12 +541,21 @@ class PairwiseAnnotator:
 
         other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_partially_annotated.columns]
 
-        df_to_annotate = df_to_annotate.merge(
-            df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep],
+        kwargrs = dict(
             on=self.all_keys,
             how="left",
             suffixes=("_old", "_new"),
         )
+        try:
+            df_to_annotate = df_to_annotate.merge(
+                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargrs
+            )
+        except ValueError:
+            # can have merging issues if columns have different dtypes
+            df_partially_annotated = df_partially_annotated.astype({k: str for k in self.all_keys})
+            df_to_annotate = df_to_annotate.astype({k: str for k in self.all_keys}).merge(
+                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargrs
+            )
 
         # if columns were in both dataframes, try to merge them
         for c in other_keys_to_keep + ["preference"]:

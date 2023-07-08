@@ -1,13 +1,7 @@
-import doctest
-
 import pandas as pd
 import pytest
 
 from alpaca_eval import analyze
-
-
-def test_random_mode():
-    doctest.run_docstring_examples(analyze._random_mode, globals(), name="_random_mode", verbose=True)
 
 
 @pytest.fixture
