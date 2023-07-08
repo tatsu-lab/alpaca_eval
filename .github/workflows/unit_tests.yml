@@ -1,0 +1,35 @@
+name: alpaca_eval unit tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: "ubuntu-20.04"
+    strategy:
+      matrix:
+        python-version: [ "3.10" ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[all]
+      - name: Run pytest
+        run: |
+          pytest -v tests/ --ignore=tests/integration_tests
+      - name: Run doctest
+        run: |
+          pytest --doctest-modules --ignore=src/alpaca_eval/decoders src/alpaca_eval/
