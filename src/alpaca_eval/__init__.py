@@ -1,2 +1,6 @@
 __version__ = "0.1.7"
-from .main import *
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from .main import *  # noqa
