@@ -22,5 +22,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[all]
       - name: Run pytest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MAX_CONCURRENCY: ${{ secrets.ANTHROPIC_MAX_CONCURRENCY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          CRFM_API_KEY: ${{ secrets.CRFM_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_ORGANIZATION_IDS: ${{ secrets.OPENAI_ORGANIZATION_IDS }}
         run: |
           pytest -v tests/ --ignore=tests/integration_tests
