@@ -122,7 +122,7 @@ class Analyzer:
         >>> # accuracy above is 3/4 because for the first 3 comparison you get 2 * 100% and 1 * 50%. I.e. you get 50%
         >>> # when the second index is 3.  And for the last comparison the first index is always 3 so you get 3*50%
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
-        >>>                                   n_majority_vote_1=1,  n_majority_vote_2=3)
+        ...                                   n_majority_vote_1=1,  n_majority_vote_2=3)
         accuracy          0.875
         sem_samples       0.125
         counts            2.000
@@ -420,13 +420,14 @@ def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropn
     Example
     -------
     >>> import pandas as pd
-    >>> random_mode(pd.Series([1.0,2.0,1.0]))
+    >>> from alpaca_eval.analyze import _random_mode
+    >>> _random_mode(pd.Series([1.0,2.0,1.0]))
     1.0
-    >>> random_mode(pd.Series([1.0,2.0])) in [1.0, 2.0]
+    >>> _random_mode(pd.Series([1.0,2.0])) in [1.0, 2.0]
     True
-    >>> random_mode(pd.Series([1.0,2.0,-1.0]), favorite_mode=-1.0)
+    >>> _random_mode(pd.Series([1.0,2.0,-1.0]), favorite_mode=-1.0)
     -1.0
-    >>> random_mode(pd.Series([1.0,2.0,2.0,-1.0]), favorite_mode=-1.0)
+    >>> _random_mode(pd.Series([1.0,2.0,2.0,-1.0]), favorite_mode=-1.0)
     2.0
     """
     out = pd.Series.mode(s)

@@ -31,7 +31,7 @@ def openai_completions(
     batch_size: Optional[int] = None,
     **decoding_kwargs,
 ) -> dict[str, list]:
-    """Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
+    r"""Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
     tokens to favor.
 
     Parameters
@@ -63,15 +63,15 @@ def openai_completions(
     Example
     -------
     >>> prompts = ["Respond with one digit: 1+1=", "Respond with one digit: 2+2="]
-    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_avoid=["2"," 2"])
+    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_avoid=["2"," 2"])['completions']
     ['\n\nAnswer: \n\nTwo (or, alternatively, the number "two" or the numeral "two").', '\n\n4']
-    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_favor=["2"])
+    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_favor=["2"])['completions']
     ['2\n\n2', '\n\n4']
-    >>> openai_completions(prompts, model_name="text-davinci-003", tokens_to_avoid=["2 a long sentence that is not a
-    token"])
+    >>> openai_completions(prompts, model_name="text-davinci-003",
+    ... tokens_to_avoid=["2 a long sentence that is not a token"])['completions']
     ['\n\n2', '\n\n4']
     >>> chat_prompt = ["<|im_start|>user\n1+1=<|im_end|>", "<|im_start|>user\nRespond with one digit: 2+2=<|im_end|>"]
-    >>> openai_completions(chat_prompt, "gpt-3.5-turbo", tokens_to_avoid=["2"," 2"])
+    >>> openai_completions(chat_prompt, "gpt-3.5-turbo", tokens_to_avoid=["2"," 2"])['completions']
     ['As an AI language model, I can confirm that 1+1 equals  02 in octal numeral system, 10 in decimal numeral
     system, and  02 in hexadecimal numeral system.', '4']
     """
@@ -300,7 +300,7 @@ def _prompt_to_chatml(prompt: str, start_token: str = "<|im_start|>", end_token:
 
 
 def _string_to_dict(to_convert):
-    """Converts a string with equal signs to dictionary. E.g.
+    r"""Converts a string with equal signs to dictionary. E.g.
     >>> _string_to_dict(" name=user university=stanford")
     {'name': 'user', 'university': 'stanford'}
     """
