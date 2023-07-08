@@ -30,3 +30,6 @@ jobs:
       - name: Run pytest
         run: |
           pytest -v tests/
+      - name: Run doctest
+        run: |
+          pytest --doctest-modules --ignore=src/alpaca_eval/decoders src/alpaca_eval/

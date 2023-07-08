@@ -9,7 +9,7 @@ import pytest
 import yaml
 
 from alpaca_eval import constants, main, utils
-from alpaca_eval.annotators import PairwiseAnnotator, SinglePairwiseAnnotator
+from alpaca_eval.annotators import SinglePairwiseAnnotator
 
 
 @pytest.fixture
@@ -62,7 +62,7 @@ def expected_annotations():
             "output_1": "2",
             "dataset": "test",
             "output_2": "3",
-            "annotator": "alpaca_eval_gpt4",
+            "annotator": "test",
             "preference": 1,
         },
         {
@@ -70,7 +70,7 @@ def expected_annotations():
             "output_1": "4",
             "dataset": "test",
             "output_2": "5",
-            "annotator": "alpaca_eval_gpt4",
+            "annotator": "test",
             "preference": 1,
         },
         {
@@ -78,7 +78,7 @@ def expected_annotations():
             "output_1": "5",
             "dataset": "test",
             "output_2": "6",
-            "annotator": "alpaca_eval_gpt4",
+            "annotator": "test",
             "preference": 1,
         },
     ]
@@ -97,18 +97,24 @@ def _get_mock_annotate(preference=None):
     return mock_function
 
 
+def clean_up():
+    # remove the cache
+    Path(constants.EVALUATORS_CONFIG_DIR / "test/annotations_seed0_configs").unlink(missing_ok=True)
+
+
 def test_evaluate_print(model_outputs, reference_outputs, capsys, expected_annotations):
     mock_function = _get_mock_annotate()
     with patch.object(SinglePairwiseAnnotator, "__call__", mock_function):
-        main.evaluate(model_outputs, reference_outputs, is_avoid_reannotations=False)
+        main.evaluate(model_outputs, reference_outputs, annotators_config="test", is_avoid_reannotations=False)
 
         # Capture the stdout
         captured = capsys.readouterr()
         printed_string = captured.out.strip()
         printed_string = re.sub(r"\s+", " ", printed_string)
 
-        print(printed_string)
         assert printed_string == "win_rate standard_error n_total Current model 0.00 0.00 3"
+
+    clean_up()
 
 
 def test_evaluate_basic(model_outputs, reference_outputs, expected_annotations):
@@ -118,6 +124,7 @@ def test_evaluate_basic(model_outputs, reference_outputs, expected_annotations):
         df_leaderboard, annotations = main.evaluate(
             model_outputs,
             reference_outputs,
+            annotators_config="test",
             is_return_instead_of_print=True,
             is_avoid_reannotations=False,
         )
@@ -129,6 +136,8 @@ def test_evaluate_basic(model_outputs, reference_outputs, expected_annotations):
         assert df_leaderboard.loc[name, "n_total"] == 3
         assert df_leaderboard.loc[name, "mode"] == "community"
 
+    clean_up()
+
 
 def test_evaluate_advanced(model_outputs, reference_outputs, expected_annotations):
     mock_function = _get_mock_annotate()
@@ -138,6 +147,7 @@ def test_evaluate_advanced(model_outputs, reference_outputs, expected_annotation
         df_leaderboard, annotations = main.evaluate(
             model_outputs,
             reference_outputs,
+            annotators_config="test",
             is_return_instead_of_print=True,
             is_avoid_reannotations=False,
             current_leaderboard_mode=current_leaderboard_mode,
@@ -153,6 +163,8 @@ def test_evaluate_advanced(model_outputs, reference_outputs, expected_annotation
         assert df_leaderboard.loc[name, "n_total"] == 2
         assert df_leaderboard.loc[name, "mode"] == current_leaderboard_mode
         assert len(df_leaderboard) > 5  # entire leaderboard, 5 is arbitrary here
+
+    clean_up()
 
 
 def test_analyze_evaluators():

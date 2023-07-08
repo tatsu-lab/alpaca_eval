@@ -6,7 +6,7 @@ from typing import Any
 
 import numpy as np
 
-from . import utils as ann_utils
+from . import utils
 
 
 def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]:
@@ -25,21 +25,21 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
 
     Examples
     --------
-    >>> completion = '\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best
-    output for example 10:\n(a)\n\n### Best output for example 11:\n(a)'
-    >>> regex_parser(completion, {1: r"\n(a)", 2: "\n(b)"})
+    >>> completion = ('\n(b)\n\n### Best output for example 8:\n(a)\n\n### Best output for example 9:\n(b)\n\n### Best'\
+    ...               ' output for example 10:\n(a)\n\n### Best output for example 11:\n(a)')
+    >>> regex_parser(completion, {1: r"\n\(a\)", 2: r"\n\(b\)"})
     [2, 1, 2, 1, 1]
-    >>> regex_parser(' (a)', {1: r" (a)", 2: r" (b)"})
+    >>> regex_parser(' (a)', {1: r" \(a\)", 2: r" \(b\)"})
     [1]
-    >>> completion = '### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both
-    outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than Output
-    (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 5:\r\n{{\r\n"Concise explanation": "Both
-    outputs are incomplete, but Output (b) seems to start with a more relevant source.",\r\n"Output (a) is better
-    than Output (b)": false\r\n}}\r\n\r\n### Preferred output in JSON format for example 6:\r\n{{\r\n"Concise
-    explanation": "Both outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is
-    better than Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 7:\r\n{{\r\n"Concise
-    explanation": "Both outputs are incomplete, but Output (b) seems to start with a more relevant source.",
-    \r\n"Output (a) is better than Output (b)": false\r\n}}'
+    >>> completion = ('### Preferred output in JSON format for example 4:\r\n{{\r\n"Concise explanation": "Both'\
+    ... ' outputs are incorrect, but Output (a) is less confusing and more concise.",\r\n"Output (a) is better than'\
+    ... ' Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON format for example 5:\r\n{{\r\n"Concise'\
+    ... ' explanation": "Both outputs are incomplete, but Output (b) seems to start with a more relevant source."'\
+    ... ',\r\n"Output (a) is better than Output (b)": false\r\n}}\r\n\r\n### Preferred output in JSON format for'\
+    ... ' example 6:\r\n{{\r\n"Concise explanation": "Both outputs are incorrect, but Output (a) is less confusing and'\
+    ... ' more concise.",\r\n"Output (a) is better than Output (b)": true\r\n}}\r\n\r\n### Preferred output in JSON' \
+    ... ' format for example 7:\r\n{{\r\n"Concise explanation": "Both outputs are incomplete, but Output (b) seems to'\
+    ... ' start with a more relevant source.", \r\n"Output (a) is better than Output (b)": false\r\n}}')
     >>> regex_parser(completion, {1: ' true', 2: ' false'})
     [1, 2, 1, 2]
     """
@@ -51,7 +51,7 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
     completion = copy.deepcopy(completion)
     responses = []
     while True:
-        match, key = ann_utils._find_first_match(completion, outputs_to_match)
+        match, key = utils._find_first_match(completion, outputs_to_match)
         if not match:
             break
         responses.append(key)
@@ -63,15 +63,15 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
 # modified from: https://github.com/lm-sys/FastChat/blob/main/fastchat/eval/eval_gpt_review.py#L47
 # does not work with batched completions
 def lmsys_parser(completion: str):
-    """Parse a pair of scores from a single completion and returns which is better.
+    r"""Parse a pair of scores from a single completion and returns which is better.
 
     Examples
     --------
-    >>> lmsys_parser("1, 7 ...")
+    >>> lmsys_parser("1 7\n ...")
     [2]
-    >>> lmsys_parser("7, 1 more text")
+    >>> lmsys_parser("7 1\n more text")
     [1]
-    >>> lmsys_parser("1, 1 ...")
+    >>> lmsys_parser("1 1\n ...")
     [0]
     """
     try:
@@ -95,7 +95,7 @@ def lmsys_parser(completion: str):
 
 
 def ranking_parser(completion):
-    """Parse a completion that contains a list of dictionary and returns the name of the preferred model.
+    r"""Parse a completion that contains a list of dictionary and returns the name of the preferred model.
 
     Examples
     --------
@@ -104,7 +104,7 @@ def ranking_parser(completion):
     >>> ranking_parser("[{'model': 'model_1', 'rank': 2}, {'model': 'model_2', 'rank': 1}]")
     [2]
     >>> ranking_parser("[{'model': 'model_1', 'rank': 3}, {'model': 'model_2', 'rank': 1}]")
-    [np.nan]
+    [nan]
     """
     try:
         if isinstance(completion, str):
