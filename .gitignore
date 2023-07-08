@@ -2,6 +2,8 @@ notebooks/
 .idea
 example/
 .DS_Store
+src/**/*.json
+results
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,8 +1,8 @@
 test:
-  prompt_template: "claude/basic_prompt.txt"
-  fn_completions: "anthropic_completions"
+  prompt_template: "text_davinci_003/basic_prompt.txt"
+  fn_completions: "openai_completions"
   completions_kwargs:
-    model_name: "claude-v1"
+    model_name: "text-davinci-003"
     max_tokens: 50
     temperature: 0
   completion_parser_kwargs:
