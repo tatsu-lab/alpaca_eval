@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'src/alpaca_eval/leaderboards/data_AlpacaEval/**'
+  workflow_dispatch:
 
 jobs:
   format_leaderboard:
@@ -24,5 +25,18 @@ jobs:
       - name: Install dependencies
         run: pip install .
 
-      - name: Run script
+      - name: Update leaderboard
         run: python docs/format_export_leaderboards.py
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Commit and push if changed
+        run: |
+          git diff
+          git diff --quiet || (git add . && git commit -m 'Automated leaderboard update')
+          git push https://${{secrets.GITHUB_TOKEN}}@github.com/tatsu-lab/alpaca_eval.git HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
