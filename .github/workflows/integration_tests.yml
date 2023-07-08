@@ -30,4 +30,4 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_ORGANIZATION_IDS: ${{ secrets.OPENAI_ORGANIZATION_IDS }}
         run: |
-          pytest -v tests/ --ignore=tests/integration_tests
+          pytest -v --slow tests/integration_tests
