@@ -1,7 +1,9 @@
 name,win_rate,link,filter
 GPT-4,95.27950310559004,,minimal
 Claude,88.38509316770187,,minimal
+OpenChat V2-W 13B,87.1268656716418,https://github.com/imoneoi/openchat,community
 ChatGPT,86.08695652173914,,minimal
+OpenChat V2 13B,84.96894409937889,https://github.com/imoneoi/openchat,community
 OpenChat-13B,80.8695652173913,https://github.com/imoneoi/openchat,community
 UltraLM 13B,80.63511830635119,https://github.com/thunlp/UltraChat,community
 OpenChat8192-13B,79.53980099502488,https://github.com/imoneoi/openchat,community
