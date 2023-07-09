@@ -53,11 +53,13 @@ jobs:
           uses: softprops/action-gh-release@v1
           with:
             name: Release v${{ github.event.inputs.version }}
-            tag: v${{ github.event.inputs.version }}
+            tag_name: v${{ github.event.inputs.version }}
             draft: false
             prerelease: false
-            generateReleaseNotes: true
-            makeLatest: true
+            repository: tatsu-lab/alpaca_eval
+            generate_release_notes: true
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         - name: Build and publish
           env:
