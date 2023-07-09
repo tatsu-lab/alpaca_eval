@@ -1,4 +1,4 @@
-name: alpaca_eval CI
+name: alpaca_eval unit tests
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -28,4 +29,7 @@ jobs:
           pip install -e .[all]
       - name: Run pytest
         run: |
-          pytest -v tests/
+          pytest -v tests/ --ignore=tests/integration_tests
+      - name: Run doctest
+        run: |
+          pytest --doctest-modules --ignore=src/alpaca_eval/decoders src/alpaca_eval/

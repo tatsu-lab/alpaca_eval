@@ -54,7 +54,7 @@ def shuffle_pairwise_preferences(df: pd.DataFrame, arr_is_shuffle: Sequence[int]
     Examples
     --------
     >>> df = pd.DataFrame([dict(instruction='2+2', output_1='3', output_2='4', preference=2),
-                           dict(instruction='2+3', output_1='5', output_2='4', preference=1)])
+    ...                    dict(instruction='2+3', output_1='5', output_2='4', preference=1)])
     >>> print(shuffle_pairwise_preferences(df, [True, False]))
         instruction output_1 output_2  preference
     0         2+2        4        3           1
@@ -143,10 +143,11 @@ def make_prompts(
     Example
     -------
     >>> import pandas as pd
+    >>> from alpaca_eval.utils import make_prompts
     >>> df = pd.DataFrame({"instruction": ["solve", "write backwards", "other 1"],
-                           "input": ["1+1", "'abc'", ""]})
+    ...                    "input": ["1+1", "'abc'", ""]})
     >>> make_prompts(df, template="first: {instruction} {input}, second: {instruction} {input}",
-                     batch_size=2, padding_example=dict(instruction="pad", input="pad_in"))[0]
+    ...              batch_size=2, padding_example=dict(instruction="pad", input="pad_in"))[0]
     ["first: solve 1+1, second: write backwards 'abc'",
      'first: other 1 , second: pad pad_in']
     """
@@ -208,13 +209,14 @@ def convert_ordinal_to_binary_preference(
 
     Examples
     --------
+    >>> from alpaca_eval.utils import convert_ordinal_to_binary_preference
     >>> preferences = [dict(output="test A", preference=1),
-                        dict(output="test a", preference=2),
-                        dict(output="test b", preference=3),
-                        dict(output="test B", preference=4),
-                        dict(output="test None", preference=0)]
+    ...                dict(output="test a", preference=2),
+    ...                dict(output="test b", preference=3),
+    ...                dict(output="test B", preference=4),
+    ...                dict(output="test None", preference=0)]
     >>> convert_ordinal_to_binary_preference(preferences, ordinal_preference_key="preference",
-    binary_preference_key="preference")
+    ...     binary_preference_key="preference")
     [{'output': 'test A', 'preference': 1},
      {'output': 'test a', 'preference': 1},
      {'output': 'test b', 'preference': 2},
