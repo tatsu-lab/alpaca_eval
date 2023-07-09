@@ -51,12 +51,13 @@ jobs:
 
         - name: Create Release
           uses: softprops/action-gh-release@v1
-          if: startsWith(github.ref, 'refs/tags/')
           with:
             name: Release v${{ github.event.inputs.version }}
-            tag_name: v${{ github.event.inputs.version }}
+            tag: v${{ github.event.inputs.version }}
             draft: false
             prerelease: false
+            generateReleaseNotes: true
+            makeLatest: true
 
         - name: Build and publish
           env:
