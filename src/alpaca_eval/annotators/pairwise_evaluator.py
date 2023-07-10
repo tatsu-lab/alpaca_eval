@@ -536,19 +536,20 @@ class PairwiseAnnotator:
 
     def _merge_annotations(self, df_to_annotate: pd.DataFrame, df_partially_annotated: pd.DataFrame) -> pd.DataFrame:
         """Merge (partial) annotations with the original df to keep the same order and avoid duplicates annotations."""
+
         if df_partially_annotated is None or df_partially_annotated.empty:
             return df_to_annotate
 
         other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_partially_annotated.columns]
 
-        kwargrs = dict(
+        kwargs = dict(
             on=self.all_keys,
             how="left",
             suffixes=("_old", "_new"),
         )
         try:
             df_to_annotate = df_to_annotate.merge(
-                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargrs
+                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargs
             )
         except ValueError:
             # can have merging issues if columns have different dtypes
