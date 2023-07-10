@@ -11,7 +11,15 @@ with open(os.path.join(here, "src", "alpaca_eval", "__init__.py")) as f:
     else:
         raise RuntimeError("Unable to find `__version__`.")
 
-PACKAGES_DEV = ["pre-commit>=3.2.0", "black>=23.1.0", "isort", "pytest", "pytest-mock", "pytest-skip-slow"]
+PACKAGES_DEV = [
+    "pre-commit>=3.2.0",
+    "black>=23.1.0",
+    "isort",
+    "pytest",
+    "pytest-mock",
+    "pytest-skip-slow",
+    "python-dotenv",
+]
 PACKAGES_ANALYSIS = ["seaborn", "matplotlib", "jupyterlab"]
 PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "scipy", "einops"]
 PACKAGES_ALL_API = ["anthropic>=0.3.0", "huggingface_hub", "cohere"]

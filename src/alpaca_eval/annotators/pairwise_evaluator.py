@@ -2,7 +2,7 @@ import logging
 import os
 from functools import partial
 from pathlib import Path
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Type, Union
 
 import numpy as np
 import pandas as pd
@@ -132,7 +132,7 @@ class PairwiseAnnotator:
         self.annotators = self._initialize_annotators(annotators_config)
         self.caching_path = caching_path
         self.df_annotations = None
-        self.load_()
+        self.reinitialize_cache_()
 
     ### Helper properties to make it easier to inherit from this class ###
     @property
@@ -140,6 +140,10 @@ class PairwiseAnnotator:
         return SinglePairwiseAnnotator
 
     #########################################
+
+    @property
+    def annotator_name(self) -> str:
+        return Path(self.annotators_config).parent.name
 
     def annotate_samples(
         self,
@@ -383,8 +387,7 @@ class PairwiseAnnotator:
         )
 
         if self.is_avoid_reannotations:
-            # merge the old annotations
-            df_to_annotate = self._merge_annotations(df_to_annotate, self.df_annotations)
+            df_to_annotate = self.apply_cached_annotations(df_to_annotate)
 
         # adds random noise => avoids annotating examples that will be noised out.
         if self.p_label_flip:
@@ -413,8 +416,13 @@ class PairwiseAnnotator:
 
         return df_to_annotate
 
+    def apply_cached_annotations(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
+        """annotate examples with cached annotations"""
+        df_to_annotate = self._merge_annotations(df_to_annotate, self.df_annotations)
+        return df_to_annotate
+
     def _initialize_annotators(
-        self, annotators_config: Union[utils.AnyPath, dict[str, dict[str, Any]]]
+        self, annotators_config: Union[utils.AnyPath, dict[str, dict[str, Type["SinglePairwiseAnnotator"]]]]
     ) -> dict[str, Callable]:
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(annotators_config)
@@ -471,14 +479,7 @@ class PairwiseAnnotator:
         all_keys_to_keep = self.all_keys + ["preference"] + other_keys_to_keep
         df_annotated_to_store = df_annotated_to_store[all_keys_to_keep]
 
-        if self.df_annotations is None:
-            df_annotations = df_annotated_to_store
-        else:
-            df_annotations = pd.concat([self.df_annotations, df_annotated_to_store], axis=0, ignore_index=True)
-
-        self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys, keep="last")
-
-        self.save()
+        self.store_annotations_(df_annotated_to_store)
 
         if self.is_store_missing_preferences:
             # put back np.nan
@@ -494,6 +495,17 @@ class PairwiseAnnotator:
         annotated = df_annotated.to_dict(orient="records")
 
         return annotated
+
+    def store_annotations_(self, df_annotated_to_store: pd.DataFrame):
+        """Store annotation in memory and on disk"""
+        if self.df_annotations is None:
+            df_annotations = df_annotated_to_store
+        else:
+            df_annotations = pd.concat([self.df_annotations, df_annotated_to_store], axis=0, ignore_index=True)
+
+        self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys, keep="last")
+
+        self.save()
 
     def save(self, path: Optional[utils.AnyPath] = None):
         """Save the annotations to json."""
@@ -514,6 +526,9 @@ class PairwiseAnnotator:
             [self.df_annotations, curr_df_annotations], axis=0, ignore_index=True
         ).drop_duplicates(subset=self.all_keys, keep="last")
 
+    def reinitialize_cache_(self):
+        self.load_()
+
     def load_(self, path: Optional[utils.AnyPath] = None):
         """Load all the annotations from json."""
         path = path or self.caching_path
@@ -525,25 +540,26 @@ class PairwiseAnnotator:
 
     def _merge_annotations(self, df_to_annotate: pd.DataFrame, df_partially_annotated: pd.DataFrame) -> pd.DataFrame:
         """Merge (partial) annotations with the original df to keep the same order and avoid duplicates annotations."""
+
         if df_partially_annotated is None or df_partially_annotated.empty:
             return df_to_annotate
 
         other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df_partially_annotated.columns]
 
-        kwargrs = dict(
+        kwargs = dict(
             on=self.all_keys,
             how="left",
             suffixes=("_old", "_new"),
         )
         try:
             df_to_annotate = df_to_annotate.merge(
-                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargrs
+                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargs
             )
         except ValueError:
             # can have merging issues if columns have different dtypes
             df_partially_annotated = df_partially_annotated.astype({k: str for k in self.all_keys})
             df_to_annotate = df_to_annotate.astype({k: str for k in self.all_keys}).merge(
-                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargrs
+                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargs
             )
 
         # if columns were in both dataframes, try to merge them
