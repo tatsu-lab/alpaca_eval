@@ -2,7 +2,7 @@ import logging
 import os
 from functools import partial
 from pathlib import Path
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Type, Union
 
 import numpy as np
 import pandas as pd
@@ -140,6 +140,10 @@ class PairwiseAnnotator:
         return SinglePairwiseAnnotator
 
     #########################################
+
+    @property
+    def annotator_name(self) -> str:
+        return Path(self.annotators_config).parent.name
 
     def annotate_samples(
         self,
@@ -418,7 +422,7 @@ class PairwiseAnnotator:
         return df_to_annotate
 
     def _initialize_annotators(
-        self, annotators_config: Union[utils.AnyPath, dict[str, dict[str, Any]]]
+        self, annotators_config: Union[utils.AnyPath, dict[str, dict[str, Type["SinglePairwiseAnnotator"]]]]
     ) -> dict[str, Callable]:
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(annotators_config)
