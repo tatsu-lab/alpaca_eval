@@ -559,7 +559,7 @@ class PairwiseAnnotator:
             # can have merging issues if columns have different dtypes
             df_partially_annotated = df_partially_annotated.astype({k: str for k in self.all_keys})
             df_to_annotate = df_to_annotate.astype({k: str for k in self.all_keys}).merge(
-                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargrs
+                df_partially_annotated[self.all_keys + ["preference"] + other_keys_to_keep], **kwargs
             )
 
         # if columns were in both dataframes, try to merge them
