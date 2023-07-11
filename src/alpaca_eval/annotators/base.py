@@ -151,7 +151,9 @@ class BaseAnnotator(abc.ABC):
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(self.annotators_config)
         return {
-            name: self.SingleAnnotator(seed=self.seed, base_dir=self.base_dir, **annotator_config)
+            name: self.SingleAnnotator(
+                seed=self.seed, base_dir=self.base_dir, annotation_column=self.annotation_key, **annotator_config
+            )
             for name, annotator_config in annotators_config.items()
         }
 

@@ -322,14 +322,11 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         self,
         *args,
         is_randomize_output_order: bool = True,
+        annotation_column: str = "preference",
         **kwargs,
     ):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, annotation_column=annotation_column, **kwargs)
         self.is_randomize_output_order = is_randomize_output_order
-
-    @property
-    def annotation_column(self):
-        return "preference"
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         if self.is_randomize_output_order:
