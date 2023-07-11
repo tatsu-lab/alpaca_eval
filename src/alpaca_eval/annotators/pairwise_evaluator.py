@@ -296,14 +296,13 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
 
         return df_to_annotate
 
-    def _store_annotations_(self, df_annotated: pd.DataFrame):
+    def _filter_annotations_before_storing(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         if "is_noisy_label" in df_annotated.columns:
             # don't store noisy labels
             df_annotated = df_annotated.query("is_noisy_label == False").drop(columns=["is_noisy_label"])
 
-        super()._store_annotations_(df_annotated)
-
-        self.save()
+        df_annotated = super()._filter_annotations_before_storing(df_annotated)
+        return df_annotated
 
 
 class SinglePairwiseAnnotator(SingleAnnotator):

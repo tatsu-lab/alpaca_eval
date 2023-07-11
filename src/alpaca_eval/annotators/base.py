@@ -224,6 +224,7 @@ class BaseAnnotator(abc.ABC):
             df_annotated[self.annotation_key], downcast="integer", errors="ignore"
         )
 
+        df_annotated = self._filter_annotations_before_storing(df_annotated)
         self._store_annotations_(df_annotated)
 
         if self.is_store_missing_annotations:
@@ -241,6 +242,11 @@ class BaseAnnotator(abc.ABC):
 
         return annotated
 
+    def _filter_annotations_before_storing(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
+        """Filter annotations before storing them."""
+        df_annotated = df_annotated[self._get_all_keys_to_keep(df_annotated)]
+        return df_annotated
+
     def _get_all_keys_to_keep(self, df: pd.DataFrame) -> list[str]:
         other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df.columns]
         all_keys_to_keep = self.all_keys + [self.annotation_key] + other_keys_to_keep
@@ -253,7 +259,6 @@ class BaseAnnotator(abc.ABC):
 
     def _store_annotations_(self, df_annotated: pd.DataFrame):
         """Store annotation in memory and on disk"""
-        df_annotated = df_annotated[self._get_all_keys_to_keep(df_annotated)]
 
         if self.df_annotations is None:
             df_annotations = df_annotated
