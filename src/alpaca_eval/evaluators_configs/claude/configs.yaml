@@ -3,7 +3,7 @@ claude:
   fn_completions: "anthropic_completions"
   completions_kwargs:
     model_name: "claude-v1"
-    max_tokens: 50
+    max_tokens_to_sample: 50
     temperature: 0
   completion_parser_kwargs:
     outputs_to_match:
