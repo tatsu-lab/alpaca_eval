@@ -1,14 +1,17 @@
 name,win_rate,link,filter
 GPT-4,95.27950310559004,,minimal
+Vicuna 33B v1.3,88.99253731343283,https://huggingface.co/lmsys/vicuna-33b-v1.3,verified
 Claude,88.38509316770187,,minimal
 OpenChat V2-W 13B,87.1268656716418,https://github.com/imoneoi/openchat,community
 WizardLM 13B V1.1,86.31840796019901,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,community
 ChatGPT,86.08695652173914,,minimal
 OpenChat V2 13B,84.96894409937889,https://github.com/imoneoi/openchat,community
+Vicuna 13B v1.3,82.11180124223603,https://huggingface.co/lmsys/vicuna-13b-v1.3,verified
 OpenChat-13B,80.8695652173913,https://github.com/imoneoi/openchat,community
 UltraLM 13B,80.63511830635119,https://github.com/thunlp/UltraChat,community
 OpenChat8192-13B,79.53980099502488,https://github.com/imoneoi/openchat,community
 OpenCoderPlus-15B,78.69565217391305,https://github.com/imoneoi/openchat,community
+Vicuna 7B v1.3,76.8414481897628,https://huggingface.co/lmsys/vicuna-7b-v1.3,verified
 WizardLM 13B,75.31094527363184,https://huggingface.co/WizardLM/WizardLM-13B-1.0,minimal
 airoboros 65B,73.91304347826086,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,community
 airoboros 33B,73.29192546583852,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,community
