@@ -1,10 +1,13 @@
 name,win_rate,link,filter
 GPT-4,77.01863354037268,,minimal
 Claude,75.83850931677019,,minimal
+Vicuna 33B v1.3,72.36024844720497,https://huggingface.co/lmsys/vicuna-33b-v1.3,verified
 ChatGPT,67.70186335403726,,minimal
+Vicuna 13B v1.3,66.2111801242236,https://huggingface.co/lmsys/vicuna-13b-v1.3,verified
 WizardLM 13B,66.14906832298136,https://huggingface.co/WizardLM/WizardLM-13B-1.0,minimal
 Vicuna 13B,63.22981366459627,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,minimal
 Guanaco 65B,62.60869565217392,https://huggingface.co/timdettmers/guanaco-65b,minimal
+Vicuna 7B v1.3,62.54658385093168,https://huggingface.co/lmsys/vicuna-7b-v1.3,verified
 Nous Hermes 13B,60.86956521739131,https://huggingface.co/NousResearch/Nous-Hermes-13b,verified
 Guanaco 33B,57.88819875776397,https://huggingface.co/timdettmers/guanaco-33b,verified
 Vicuna 7B,57.329192546583855,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,verified

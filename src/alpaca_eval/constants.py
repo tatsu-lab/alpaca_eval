@@ -54,6 +54,9 @@ VERIFIED_MODELS = MINIMAL_MODELS + (
     "pythia-12b-mix-sft",
     "vicuna-7b",
     "wizardlm-13b",
+    "vicuna-7b-v1.3",
+    "vicuna-13b-v1.3",
+    "vicuna-33b-v1.3",
 )
 
 MINIMAL_EVALUATORS = (

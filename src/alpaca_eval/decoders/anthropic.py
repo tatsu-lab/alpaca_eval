@@ -99,13 +99,16 @@ def _anthropic_completion_helper(
             break
 
         except anthropic.RateLimitError as e:
-            logging.warning(f"APIError: {e}.")
+            logging.warning(f"API RateLimitError: {e}.")
             if len(anthropic_api_keys) > 1:
                 anthropic_api_key = random.choice(anthropic_api_keys)
                 client = anthropic.Anthropic(api_key=anthropic_api_key, max_retries=n_retries)
                 logging.info(f"Switching anthropic API key.")
             logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
             time.sleep(sleep_time)
+
+        except anthropic.APITimeoutError as e:
+            logging.warning(f"API TimeoutError: {e}. Retrying request.")
 
     return completion
 
