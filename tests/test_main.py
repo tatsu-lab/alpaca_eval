@@ -111,7 +111,7 @@ def test_evaluate_print(model_outputs, reference_outputs, capsys, expected_annot
         printed_string = captured.out.strip()
         printed_string = re.sub(r"\s+", " ", printed_string)
 
-        assert printed_string == "win_rate standard_error n_total Current model 0.00 0.00 3"
+        assert printed_string == "win_rate standard_error n_total avg_length Current model 0.00 0.00 3 1"
 
     clean_up()
 
