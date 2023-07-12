@@ -177,7 +177,7 @@ def evaluate(
             df_leaderboard,
             leaderboard_mode_to_print,
             current_name=name,
-            cols_to_print=["win_rate", "standard_error", "n_total", "avg_length"],
+            cols_to_print=["win_rate", "standard_error", "n_total", "avg_length"],  #
         )
 
 
