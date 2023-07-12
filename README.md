@@ -13,7 +13,7 @@ Although we improved over prior automatic evaluation pipelines, there are still 
 AlpacaEval provides the following:
 
 - [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
-  evaluation set. **Important:** the leaderboard should only be used for comparing models that generate **answers of similar length**!
+  evaluation set. **Attention**: for a fair comparison only consider models that generate answers of similar length.!
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
   annotations). We evaluate a
   model by
