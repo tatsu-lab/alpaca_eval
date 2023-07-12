@@ -57,6 +57,13 @@ def precompute_evaluator_leaderboard(
         )
 
 
+def update_leaderboard(leaderboard_path, model_outputs="results/{model_name}/model_outputs.json", **kwargs):
+    """Rerun evaluate on each model in the leaderboard. Useful to add a column suc as avg_length."""
+    df_leaderboard = utils.load_or_convert_to_dataframe(leaderboard_path)
+    for model_name in df_leaderboard.index:
+        alpaca_main.evaluate(model_outputs=model_outputs.format(model_name=model_name), **kwargs)
+
+
 def main(task, **kwargs):
     globals()[task](**kwargs)
 
