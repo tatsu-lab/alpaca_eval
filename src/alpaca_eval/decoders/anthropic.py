@@ -116,7 +116,7 @@ def _anthropic_completion_helper(
 def _get_price_per_token(model):
     """Returns the price per token for a given model"""
     # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
-    if "claude-v1" in model:
+    if "claude-v1" in model or "claude-2" in model:
         return (
             11.02 / 1e6
         )  # that's not completely true because decoding is 32.68 but close enough given that most is context
