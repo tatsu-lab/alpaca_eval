@@ -30,6 +30,7 @@ MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
 MINIMAL_MODELS = (
     "gpt4",
     "claude",
+    "claude-2",
     "chatgpt",
     "wizardlm-13b",
     "vicuna-13b",
