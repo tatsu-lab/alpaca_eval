@@ -74,16 +74,24 @@
         th:first-child,
         td:first-child {
             width: 70%;
-            padding-left: 40px;
+            padding-left: 30px;
+            text-align: left;
+        }
+
+        th:not(:first-child),
+        td:not(:first-child) {
+            text-align: right;
+            width: 20%;
+            padding-right: 10px;
         }
 
         th:last-child,
         td:last-child {
-            width: 20%;
+            padding-right: 30px;
         }
 
         th {
-            text-align: left;
+            text-align: right;
             padding-bottom: 15px;
         }
 
@@ -271,9 +279,9 @@
     const table = document.getElementById('leaderboard');
 
     const urls = {
-        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/alpaca_eval_gpt4_leaderboard.csv',
-        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/claude_leaderboard.csv',
-        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/chatgpt_fn_leaderboard.csv'
+        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/alpaca_eval_gpt4_leaderboard.csv',
+        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/claude_leaderboard.csv',
+        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/chatgpt_fn_leaderboard.csv'
     }
 
     let currentUrl = urls['gpt4'];
@@ -287,6 +295,7 @@
             download: true,
             header: true,
             complete: function (results) {
+                console.log(results.data);
                 results.data.forEach(row => {
                     if (row['name'] || row['win_rate'] || row['avg_length']) {
                         let filter = row['filter'];
