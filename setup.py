@@ -33,6 +33,7 @@ setuptools.setup(
     packages=setuptools.find_packages("src"),
     author="The Alpaca Team",
     install_requires=[
+        "python-dotenv",
         "datasets",
         "openai",
         "pandas",
