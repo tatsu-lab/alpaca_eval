@@ -26,7 +26,7 @@ class BaseAnnotator(abc.ABC):
         A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
-        The path is relative to `evaluators_configs/` directory.
+        The path is relative to `base_dir` directory.
         - prompt_template (str): a prompt template or path to it. The template should contain placeholders for keys in
             the example dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
@@ -45,13 +45,10 @@ class BaseAnnotator(abc.ABC):
         Whether to avoid re-annotating examples that have already been annotated by the annotator. This will decrease
         cost but can be slightly slower if there are no annotations that can be reused.
 
-    input_keys : tuple of str, optional
-        Keys use to distinguish inputs.
+    primary_keys : sequence of str, optional
+        Keys use to distinguish the example.
 
-    output_keys : tuple of str, optional
-        Keys use to distinguish outputs.
-
-    other_keys_to_keep : tuple of str, optional
+    other_keys_to_keep : sequence of str, optional
         Other columns to store besides the annotations.
 
     is_store_missing_annotations : bool, optional
@@ -59,28 +56,27 @@ class BaseAnnotator(abc.ABC):
 
     base_dir : Path, optional
         Path to the directory containing the annotators configs. I.e. annotators_config will be relative
-        to this directory.
+        to this directory. If None uses self.DEFAULT_BASE_DIR
     """
+
+    DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
 
     def __init__(
         self,
-        input_keys: Sequence[str],
-        output_keys: Sequence[str],
+        primary_keys: Sequence[str],
         annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
         other_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example"),
         is_store_missing_annotations: bool = True,
-        base_dir: utils.AnyPath = constants.EVALUATORS_CONFIG_DIR,
+        base_dir: Optional[utils.AnyPath] = None,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
-        self.base_dir = Path(base_dir)
+        self.base_dir = Path(base_dir or self.DEFAULT_BASE_DIR)
         self.seed = seed
         self.is_avoid_reannotations = is_avoid_reannotations
-        self.input_keys = list(input_keys)
-        self.output_keys = list(output_keys)
-        self.input_output_keys = self.input_keys + self.output_keys
-        self.all_keys = self.input_keys + self.output_keys + ["annotator"]
+        self.primary_keys = list(primary_keys)
+        self.all_keys = self.primary_keys + ["annotator"]
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.is_store_missing_annotations = is_store_missing_annotations
 
@@ -117,7 +113,7 @@ class BaseAnnotator(abc.ABC):
         Parameters
         ----------
         to_annotate : list of dict or dataframe
-            Examples to annotate. Each dictionary (or row) should contain all of `self.input_output_keys`.
+            Examples to annotate. Each dictionary (or row) should contain all of `self.primary_keys`.
 
         **decoding_kwargs :
             Additional arguments to pass to `fn_completions`.
@@ -125,7 +121,7 @@ class BaseAnnotator(abc.ABC):
         Returns
         -------
         annotated : list of dict
-            The annotated examples. Each dict will contain all of `self.input_output_keys` and `self.annotation_key`.
+            The annotated examples. Each dict will contain all of `self.primary_keys` and `self.annotation_key`.
         """
         if len(to_annotate) == 0:
             return []
@@ -168,7 +164,7 @@ class BaseAnnotator(abc.ABC):
                 df_to_annotate[c] = np.nan
 
         # remove duplicates because you only need to annotate one of them
-        df_to_annotate = df_to_annotate.drop_duplicates(subset=self.input_output_keys)
+        df_to_annotate = df_to_annotate.drop_duplicates(subset=self.primary_keys)
 
         # set the annotater for each example
         df_to_annotate["annotator"] = df_to_annotate.apply(
@@ -232,7 +228,7 @@ class BaseAnnotator(abc.ABC):
             df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(-1, np.nan)
 
         # need to merge with df_to_annotate in case you dropped duplicates
-        on = list(self.input_keys + self.output_keys)
+        on = list(self.primary_keys)
         df_annotated = df_annotated[self._get_all_keys_to_keep(df_to_annotate)]
         df_to_annotate = df_to_annotate[[c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
         # need to remove all other columns before merging if not you will

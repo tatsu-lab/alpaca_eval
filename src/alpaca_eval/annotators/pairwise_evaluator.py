@@ -21,6 +21,12 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         2*p_label_flip of independent coin flip). If None, will not flip the label. In AlpacaFarm we use 0.25
         for training. You can set this later on using `set_noise`.
         
+    input_keys : sequence of str, optional
+        Keys use to distinguish inputs.
+
+    output_keys : sequence of str, optional
+        Keys use to distinguish outputs.
+        
     Notes
     -----
     There are three main functions for annotations depending on how the outputs to compare are given:
@@ -40,7 +46,9 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         p_label_flip: Optional[float] = None,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs, input_keys=input_keys, output_keys=output_keys)
+        self.input_keys = list(input_keys)
+        self.output_keys = list(output_keys)
+        super().__init__(*args, **kwargs, primary_keys=self.input_keys + self.output_keys)
         self.p_label_flip = p_label_flip
 
     @property
@@ -237,7 +245,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         Parameters
         ----------
         to_annotate : list of dict or dataframe
-            Examples to annotate. Each dictionary (or row) should contain all of `self.input_output_keys`.
+            Examples to annotate. Each dictionary (or row) should contain all of `self.primary_keys`.
 
         **decoding_kwargs :
             Additional arguments to pass to `fn_completions`.
@@ -245,7 +253,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         Returns
         -------
         annotated : list of dict
-            The annotated examples. Each dictionary will contain all of `self.input_output_keys` and `"preference"`.
+            The annotated examples. Each dictionary will contain all of `self.primary_keys` and `"preference"`.
             Preference will be 0 if output_1 == output_2, 1 if output_1 is preferred, and 2 if output_2 is preferred.
         """
         # `annotate_pairs` is used for backward compatibility
