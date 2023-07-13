@@ -98,6 +98,11 @@ class BaseAnnotator(abc.ABC):
         """How to refer to the annotations, this will be the key for annotations in the output."""
         return "annotation"
 
+    @property
+    def random_seed_key(self) -> str:
+        """What key / column to seed on for the random generator."""
+        return self.primary_keys
+
     ### Public methods ###
     @property
     def annotator_name(self) -> str:
@@ -170,7 +175,7 @@ class BaseAnnotator(abc.ABC):
         df_to_annotate["annotator"] = df_to_annotate.apply(
             lambda x: utils.random_seeded_choice(
                 # we add "annotator" at the beginning to not use the same seed for all tasks
-                seed="annotator" + x["instruction"] + str(self.seed),
+                seed="annotator" + "".join(x[self.random_seed_key]) + str(self.seed),
                 choices=list(self.annotators.keys()),
             ),
             axis=1,

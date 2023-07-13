@@ -59,6 +59,10 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
     def annotation_key(self) -> str:
         return "preference"
 
+    @property
+    def random_seed_key(self) -> list[str]:
+        return self.input_keys
+
     def annotate_samples(
         self,
         all_outputs: utils.AnyData,
@@ -284,7 +288,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
             noisy_preference = df_to_annotate.apply(
                 # we add "noisy_label" at the beginning to use ~independent seeds between tasks
                 lambda x: utils.random_seeded_choice(  # seed on inputs for reproducibility
-                    seed="noisy_preference" + x["instruction"] + str(self.seed),
+                    seed="noisy_preference" + "".join(x[self.random_seed_key]) + str(self.seed),
                     choices=[np.nan, 1, 2],
                     weights=[1 - p_noise, self.p_label_flip, self.p_label_flip],
                 ),
@@ -341,7 +345,7 @@ class SinglePairwiseAnnotator(SingleAnnotator):
             df_to_annotate["is_switched_outputs"] = df_to_annotate.apply(
                 # we add "is_switched_outputs" at the beginning to not use the same seed for all tasks
                 lambda x: utils.random_seeded_choice(
-                    seed="is_switched_outputs" + x["instruction"] + str(self.seed),
+                    seed="is_switched_outputs" + "".join(x[self.random_seed_key]) + str(self.seed),
                     choices=[False, True],
                 ),
                 axis=1,
