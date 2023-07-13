@@ -375,9 +375,10 @@ class SingleAnnotator:
         `evaluators_configs/`
 
     fn_completion_parser : callable or str
-        Function in `completion_parsers.py` to use for parsing the completions into annotations. For each completion,
-        the number of annotations should be equal to the batch_size if not we set all the annotations in that batch to
-        NaN.
+        Function that maps (parses) the completion to a list of annotations. If a string, it should be a function in
+        `completion_parsers.py` to use for parsing the completions into annotations. For each completion, the number of
+        annotations (lenght of list) should be equal to the batch_size if not we set all the annotations in that batch
+        to NaN.
 
     completion_parser_kwargs : dict
         Kwargs for fn_completion_parser.
@@ -408,7 +409,7 @@ class SingleAnnotator:
     def __init__(
         self,
         prompt_template: utils.AnyPath,
-        fn_completion_parser: Union[Callable, str] = "regex_parser",
+        fn_completion_parser: Optional[Union[Callable, str]] = "regex_parser",
         completion_parser_kwargs: Optional[dict[str, Any]] = None,
         fn_completions: Union[Callable, str] = "openai_completions",
         completions_kwargs: Optional[dict[str, Any]] = None,
@@ -421,10 +422,13 @@ class SingleAnnotator:
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
 
-        if isinstance(fn_completion_parser, str):
-            fn_completion_parser = getattr(completion_parsers, fn_completion_parser)
-        completion_parser_kwargs = completion_parser_kwargs or {}
-        self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
+        if fn_completion_parser is None:
+            fn_completion_parser = lambda x: [x]
+        else:
+            if isinstance(fn_completion_parser, str):
+                fn_completion_parser = self._search_fn_completion_parser(fn_completion_parser)
+            completion_parser_kwargs = completion_parser_kwargs or {}
+            self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
 
         self.fn_completions = get_fn_completions(fn_completions)
         self.completions_kwargs = completions_kwargs or {}
@@ -474,6 +478,10 @@ class SingleAnnotator:
     ######################
 
     ### Private methods ###
+    def _search_fn_completion_parser(self, name: str) -> Callable:
+        """Search for a completion parser by name."""
+        return getattr(completion_parsers, name)
+
     def _get_prompt_template(self, prompt_template: utils.AnyPath):
         return utils.read_or_return(self.base_dir / prompt_template)
 
@@ -510,12 +518,11 @@ class SingleAnnotator:
 
         return df_to_annotate
 
-    def _parse_completions(self, completions: list[str]) -> list[int]:
+    def _parse_completions(self, completions: list[str]) -> list[Any]:
         """Converts the completions into annotations."""
         all_annotations = []
         for completion in completions:
-            # use a regex to match all outputs on a line. Assumes that there is at most one output to match per line
-            batch_annotations = self.fn_completion_parser(completion)
+            batch_annotations = list(self.fn_completion_parser(completion))
             if len(batch_annotations) != self.batch_size:
                 logging.warning(
                     f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"

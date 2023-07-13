@@ -44,7 +44,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         self.p_label_flip = p_label_flip
 
     @property
-    def SingleAnnotator(self) -> SingleAnnotator:
+    def SingleAnnotator(self) -> Type["SingleAnnotator"]:
         return SinglePairwiseAnnotator
 
     @property
