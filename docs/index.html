@@ -38,7 +38,7 @@
 
         #branding {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         #branding h1 {
@@ -74,16 +74,24 @@
         th:first-child,
         td:first-child {
             width: 70%;
-            padding-left: 40px;
+            padding-left: 30px;
+            text-align: left;
+        }
+
+        th:not(:first-child),
+        td:not(:first-child) {
+            text-align: right;
+            width: 20%;
+            padding-right: 10px;
         }
 
         th:last-child,
         td:last-child {
-            width: 20%;
+            padding-right: 30px;
         }
 
         th {
-            text-align: left;
+            text-align: right;
             padding-bottom: 15px;
         }
 
@@ -153,6 +161,11 @@
         </h1>
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
+        <small style="color: #8C1515;"><span style="color: #8C1515;">Attention:</span> for a fair comparison only consider models that generate answers of similar length.</small>
+        <br>
+        <a href="https://github.com/tatsu-lab/alpaca_eval">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="height: 1.5em;/* margin-bottom: 0; */">
+        </a>
     </div>
 
     <div class="toggle-line">
@@ -182,6 +195,7 @@
         <tr>
             <th>Model Name</th>
             <th>Win Rate</th>
+            <th>Length</th>
         </tr>
     </table>
 
@@ -281,8 +295,9 @@
             download: true,
             header: true,
             complete: function (results) {
+                console.log(results.data);
                 results.data.forEach(row => {
-                    if (row['name'] || row['win_rate']) {
+                    if (row['name'] || row['win_rate'] || row['avg_length']) {
                         let filter = row['filter'];
 
                         if ((communityRadio.checked) ||
@@ -292,6 +307,7 @@
                             const tr = document.createElement('tr');
                             const nameTd = document.createElement('td');
                             const winRateTd = document.createElement('td');
+                            const lengthTd = document.createElement('td');
 
                             if (row['link'] && row['link'].trim() !== '') {
                                 const a = document.createElement('a');
@@ -304,9 +320,11 @@
                             }
 
                             winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+                            lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
 
                             tr.appendChild(nameTd);
                             tr.appendChild(winRateTd);
+                            tr.appendChild(lengthTd);
 
                             table.appendChild(tr);
                         }

@@ -138,6 +138,7 @@ def evaluate(
 
             leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
             leaderboard[name]["mode"] = current_leaderboard_mode
+            leaderboard[name]["avg_length"] = int(model_outputs["output"].str.len().mean())
         else:
             logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
 
@@ -176,7 +177,7 @@ def evaluate(
             df_leaderboard,
             leaderboard_mode_to_print,
             current_name=name,
-            cols_to_print=["win_rate", "standard_error", "n_total"],
+            cols_to_print=["win_rate", "standard_error", "n_total", "avg_length"],  #
         )
 
 
