@@ -2,7 +2,7 @@ claude_2:
   prompt_template: "claude/basic_prompt.txt"
   fn_completions: "anthropic_completions"
   completions_kwargs:
-    model_name: "claude_2"
+    model_name: "claude-2"
     max_tokens_to_sample: 50
     temperature: 0
   completion_parser_kwargs:

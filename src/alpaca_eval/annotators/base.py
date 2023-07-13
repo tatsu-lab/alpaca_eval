@@ -99,9 +99,9 @@ class BaseAnnotator(abc.ABC):
         return "annotation"
 
     @property
-    def random_seed_key(self) -> str:
+    def random_seed_key(self) -> list[str]:
         """What key / column to seed on for the random generator."""
-        return self.primary_keys
+        return list(self.primary_keys)
 
     ### Public methods ###
     @property
@@ -192,7 +192,9 @@ class BaseAnnotator(abc.ABC):
         df_annotated = df_to_annotate
         for annotator in self.annotators.keys():
             # only annotate examples that have not been annotated yet
-            curr_idcs = (df_annotated["annotator"] == annotator) & df_annotated[self.annotation_key].isna()
+            curr_idcs = df_annotated["annotator"] == annotator
+            if self.annotation_key in df_annotated.columns:
+                curr_idcs &= df_annotated[self.annotation_key].isna()
 
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
@@ -425,11 +427,10 @@ class SingleAnnotator:
 
         if fn_completion_parser is None:
             fn_completion_parser = lambda x: [x]
-        else:
-            if isinstance(fn_completion_parser, str):
-                fn_completion_parser = self._search_fn_completion_parser(fn_completion_parser)
-            completion_parser_kwargs = completion_parser_kwargs or {}
-            self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
+        elif isinstance(fn_completion_parser, str):
+            fn_completion_parser = self._search_fn_completion_parser(fn_completion_parser)
+        completion_parser_kwargs = completion_parser_kwargs or {}
+        self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
 
         self.fn_completions = get_fn_completions(fn_completions)
         self.completions_kwargs = completions_kwargs or {}
@@ -546,8 +547,6 @@ class SingleAnnotator:
                 f"If you are using chain of thought it might be that max_tokens limit is too low. "
             )
             df_annotated = df_annotated[~arr_is_na]
-
-        assert set(df_annotated[self.annotation_column].unique().tolist()) <= {0, 1, 2}
 
         return df_annotated
 

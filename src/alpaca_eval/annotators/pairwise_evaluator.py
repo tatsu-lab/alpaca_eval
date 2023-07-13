@@ -1,4 +1,5 @@
 import logging
+from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence, Type, Union
 
@@ -53,7 +54,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
 
     @property
     def SingleAnnotator(self) -> Type["SingleAnnotator"]:
-        return SinglePairwiseAnnotator
+        return partial(SinglePairwiseAnnotator, random_seed_column=self.random_seed_key)
 
     @property
     def annotation_key(self) -> str:
@@ -61,7 +62,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
 
     @property
     def random_seed_key(self) -> list[str]:
-        return self.input_keys
+        return list(self.input_keys)
 
     def annotate_samples(
         self,
@@ -326,6 +327,9 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         + """
     is_randomize_output_order : bool
         Whether to randomize output_1, output_2 when formatting.
+        
+    random_seed_key : str
+        The column to use to seed the randomization of output_1, output_2.
     """
     )
 
@@ -334,10 +338,12 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         *args,
         is_randomize_output_order: bool = True,
         annotation_column: str = "preference",
+        random_seed_column: Sequence[str] = ("instruction",),
         **kwargs,
     ):
         super().__init__(*args, annotation_column=annotation_column, **kwargs)
         self.is_randomize_output_order = is_randomize_output_order
+        self.random_seed_column = list(random_seed_column)
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         if self.is_randomize_output_order:
@@ -345,7 +351,7 @@ class SinglePairwiseAnnotator(SingleAnnotator):
             df_to_annotate["is_switched_outputs"] = df_to_annotate.apply(
                 # we add "is_switched_outputs" at the beginning to not use the same seed for all tasks
                 lambda x: utils.random_seeded_choice(
-                    seed="is_switched_outputs" + "".join(x[self.random_seed_key]) + str(self.seed),
+                    seed="is_switched_outputs" + "".join(x[self.random_seed_column]) + str(self.seed),
                     choices=[False, True],
                 ),
                 axis=1,
@@ -358,6 +364,8 @@ class SinglePairwiseAnnotator(SingleAnnotator):
 
     def _postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         df_annotated = super()._postprocess(df_annotated)
+
+        assert set(df_annotated[self.annotation_column].unique().tolist()) <= {0, 1, 2}
 
         if self.is_randomize_output_order:
             # unshuffles output 1 and output 2. For binary preference, unshuffling is equivalent to reshuffling
