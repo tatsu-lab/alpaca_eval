@@ -60,10 +60,18 @@ class BaseAnnotator(abc.ABC):
 
     is_raise_if_missing_primary_keys : bool, optional
         Whether to ensure that the primary keys are in the example dictionary. If True, raises an error.
+
+    tmp_missing_annototation : Any, optional
+        Temporary value to use for missing annotations when `is_store_missing_annotations` is True.
+
+    annotation_type : type, optional
+        Type to use for storing the annotations. If None, uses `self.DEFAULT_ANNOTATION_TYPE`.
     """
 
     DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
     ANNOTATOR_COLUMN = "annotator"
+    TMP_MISSING_ANNOTATION = -1
+    DEFAULT_ANNOTATION_TYPE = int
 
     def __init__(
         self,
@@ -75,6 +83,7 @@ class BaseAnnotator(abc.ABC):
         is_store_missing_annotations: bool = True,
         base_dir: Optional[utils.AnyPath] = None,
         is_raise_if_missing_primary_keys: bool = True,
+        annotation_type: Optional[Type] = None,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
         self.base_dir = Path(base_dir or self.DEFAULT_BASE_DIR)
@@ -85,6 +94,7 @@ class BaseAnnotator(abc.ABC):
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
+        self.annotation_type = annotation_type or self.DEFAULT_ANNOTATION_TYPE
 
         self.annotators_config = self._initialize_annotators_config(annotators_config)
         self.annotators = self._initialize_annotators()
@@ -154,33 +164,41 @@ class BaseAnnotator(abc.ABC):
 
         return annotators_config
 
-    def _initialize_annotators(self) -> dict[str, Type["SingleAnnotator"]]:
+    def _initialize_annotators(self) -> dict[str, "SingleAnnotator"]:
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(self.annotators_config)
+        try:
+            # in case a path is given we make it relative to that path
+            base_dir = self.annotators_config.parents[1]
+        except:
+            base_dir = self.base_dir
+
         return {
             name: self.SingleAnnotator(
-                seed=self.seed, base_dir=self.base_dir, annotation_column=self.annotation_key, **annotator_config
+                seed=self.seed, base_dir=base_dir, annotation_column=self.annotation_key, **annotator_config
             )
             for name, annotator_config in annotators_config.items()
         }
 
-    def _preprocess(self, to_annotate: utils.AnyData) -> pd.DataFrame:
-        """Preprocess the examples to annotate. In particular takes care of filtering unnecessary examples."""
-
-        df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
-
-        missing_primary_keys = [c for c in self.primary_keys if c not in df_to_annotate.columns]
+    def _add_missing_primary_keys_(self, df: pd.DataFrame):
+        missing_primary_keys = [c for c in self.primary_keys if c not in df.columns]
         if self.is_raise_if_missing_primary_keys:
             if len(missing_primary_keys) > 0:
                 raise ValueError(f"Missing primary keys: {missing_primary_keys}")
         else:
             for c in missing_primary_keys:
-                df_to_annotate[c] = None
+                df[c] = None
+
+    def _preprocess(self, to_annotate: utils.AnyData) -> pd.DataFrame:
+        """Preprocess the examples to annotate. In particular takes care of filtering unnecessary examples."""
+
+        df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
+        self._add_missing_primary_keys_(df_to_annotate)
 
         for c in self.other_keys_to_keep + [self.annotation_key]:
             if c in df_to_annotate.columns:
                 logging.warning(f"""{c} column is already in the dataframe. We will overwrite it.""")
-                df_to_annotate[c] = np.nan
+                df_to_annotate[c] = None
 
         # remove duplicates because you only need to annotate one of them
         df_to_annotate = df_to_annotate.drop_duplicates(subset=self.primary_keys)
@@ -227,26 +245,29 @@ class BaseAnnotator(abc.ABC):
         """Convert the dataframe into a list of dictionaries to be returned, and store current anntations."""
 
         df_to_annotate = utils.convert_to_dataframe(to_annotate)
+        self._add_missing_primary_keys_(df_to_annotate)
 
         # select available annotations
         if self.is_store_missing_annotations:
-            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].fillna(-1)
+            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].fillna(self.TMP_MISSING_ANNOTATION)
         else:
-            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(-1, np.nan)
+            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(
+                self.TMP_MISSING_ANNOTATION, None
+            )
 
         df_annotated = df_annotated[~df_annotated[self.annotation_key].isna()].copy()
 
-        # try converting to int now that no nan
-        df_annotated[self.annotation_key] = pd.to_numeric(
-            df_annotated[self.annotation_key], downcast="integer", errors="ignore"
-        )
+        # try converting to int now that no nan. Note this will only do so if possible
+        df_annotated[self.annotation_key] = df_annotated[self.annotation_key].astype(self.annotation_type)
 
         df_annotated = self._filter_annotations_before_storing(df_annotated)
         self._store_annotations_(df_annotated)
 
         if self.is_store_missing_annotations:
-            # put back np.nan
-            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(-1, np.nan)
+            # put back None
+            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(
+                self.TMP_MISSING_ANNOTATION, None
+            )
 
         # need to merge with df_to_annotate in case you dropped duplicates
         on = list(self.primary_keys)
@@ -543,9 +564,9 @@ class SingleAnnotator:
             if len(batch_annotations) != self.batch_size:
                 logging.warning(
                     f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"
-                    f" {self.batch_size}. We are setting all annotations to np.nan."
+                    f" {self.batch_size}. We are setting all annotations to None."
                 )
-                batch_annotations = [np.nan] * self.batch_size
+                batch_annotations = [None] * self.batch_size
             all_annotations += batch_annotations
         return all_annotations
 
