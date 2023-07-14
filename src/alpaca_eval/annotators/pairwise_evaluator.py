@@ -1,25 +1,28 @@
 import logging
+from functools import partial
 from pathlib import Path
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Type, Union
 
 import numpy as np
 import pandas as pd
 
 from .. import utils
-from .base import BaseAnnotatorJSON, SingleAnnotator
+from .base import BaseAnnotator, BaseAnnotatorJSON, SingleAnnotator
 
 __all__ = ["PairwiseAnnotator", "SinglePairwiseAnnotator"]
 
-
-class PairwiseAnnotator(BaseAnnotatorJSON):
-    __doc__ = (
-        BaseAnnotatorJSON.__doc__.replace("Base class", "Class")
-        + """
+PAIRWISE_ADDED_DOCSTRING = """
     
     p_label_flip : float, optional
         Probability of flipping the label (ie adds noise by taking a mixture between predicted label and
         2*p_label_flip of independent coin flip). If None, will not flip the label. In AlpacaFarm we use 0.25
         for training. You can set this later on using `set_noise`.
+        
+    input_keys : sequence of str, optional
+        Keys use to distinguish inputs.
+
+    output_keys : sequence of str, optional
+        Keys use to distinguish outputs.
         
     Notes
     -----
@@ -30,7 +33,10 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         - annotate_head2head: annotate a pair of sequence of outputs, each containing `"output"` which will be merged
             into a single sequence of paired outputs. Useful for evaluation against a reference.
     """
-    )
+
+
+class PairwiseAnnotatorLocal(BaseAnnotator):
+    __doc__ = BaseAnnotator.__doc__.replace("Base class", "Class") + PAIRWISE_ADDED_DOCSTRING
 
     def __init__(
         self,
@@ -40,16 +46,22 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         p_label_flip: Optional[float] = None,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs, input_keys=input_keys, output_keys=output_keys)
+        self.input_keys = list(input_keys)
+        self.output_keys = list(output_keys)
+        super().__init__(*args, **kwargs, primary_keys=self.input_keys + self.output_keys)
         self.p_label_flip = p_label_flip
 
     @property
-    def SingleAnnotator(self) -> SingleAnnotator:
-        return SinglePairwiseAnnotator
+    def SingleAnnotator(self) -> Type["SingleAnnotator"]:
+        return partial(SinglePairwiseAnnotator, random_seed_column=self.random_seed_key)
 
     @property
     def annotation_key(self) -> str:
         return "preference"
+
+    @property
+    def random_seed_key(self) -> list[str]:
+        return list(self.input_keys)
 
     def annotate_samples(
         self,
@@ -237,7 +249,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         Parameters
         ----------
         to_annotate : list of dict or dataframe
-            Examples to annotate. Each dictionary (or row) should contain all of `self.input_output_keys`.
+            Examples to annotate. Each dictionary (or row) should contain all of `self.primary_keys`.
 
         **decoding_kwargs :
             Additional arguments to pass to `fn_completions`.
@@ -245,7 +257,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         Returns
         -------
         annotated : list of dict
-            The annotated examples. Each dictionary will contain all of `self.input_output_keys` and `"preference"`.
+            The annotated examples. Each dictionary will contain all of `self.primary_keys` and `"preference"`.
             Preference will be 0 if output_1 == output_2, 1 if output_1 is preferred, and 2 if output_2 is preferred.
         """
         # `annotate_pairs` is used for backward compatibility
@@ -276,7 +288,7 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
             noisy_preference = df_to_annotate.apply(
                 # we add "noisy_label" at the beginning to use ~independent seeds between tasks
                 lambda x: utils.random_seeded_choice(  # seed on inputs for reproducibility
-                    seed="noisy_preference" + x["instruction"] + str(self.seed),
+                    seed="noisy_preference" + "".join(x[self.random_seed_key]) + str(self.seed),
                     choices=[np.nan, 1, 2],
                     weights=[1 - p_noise, self.p_label_flip, self.p_label_flip],
                 ),
@@ -305,6 +317,11 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         return df_annotated
 
 
+# Note: we separate local and json to make it easier to inherit e.g. for having a database version
+class PairwiseAnnotator(PairwiseAnnotatorLocal, BaseAnnotatorJSON):
+    __doc__ = BaseAnnotatorJSON.__doc__.replace("Base class", "Class") + PAIRWISE_ADDED_DOCSTRING
+
+
 class SinglePairwiseAnnotator(SingleAnnotator):
     __doc__ = (
         SingleAnnotator.__doc__.replace(
@@ -314,6 +331,9 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         + """
     is_randomize_output_order : bool
         Whether to randomize output_1, output_2 when formatting.
+        
+    random_seed_key : str
+        The column to use to seed the randomization of output_1, output_2.
     """
     )
 
@@ -322,10 +342,12 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         *args,
         is_randomize_output_order: bool = True,
         annotation_column: str = "preference",
+        random_seed_column: Sequence[str] = ("instruction",),
         **kwargs,
     ):
         super().__init__(*args, annotation_column=annotation_column, **kwargs)
         self.is_randomize_output_order = is_randomize_output_order
+        self.random_seed_column = list(random_seed_column)
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         if self.is_randomize_output_order:
@@ -333,7 +355,7 @@ class SinglePairwiseAnnotator(SingleAnnotator):
             df_to_annotate["is_switched_outputs"] = df_to_annotate.apply(
                 # we add "is_switched_outputs" at the beginning to not use the same seed for all tasks
                 lambda x: utils.random_seeded_choice(
-                    seed="is_switched_outputs" + x["instruction"] + str(self.seed),
+                    seed="is_switched_outputs" + "".join(x[self.random_seed_column]) + str(self.seed),
                     choices=[False, True],
                 ),
                 axis=1,
@@ -346,6 +368,8 @@ class SinglePairwiseAnnotator(SingleAnnotator):
 
     def _postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         df_annotated = super()._postprocess(df_annotated)
+
+        assert set(df_annotated[self.annotation_column].unique().tolist()) <= {0, 1, 2}
 
         if self.is_randomize_output_order:
             # unshuffles output 1 and output 2. For binary preference, unshuffling is equivalent to reshuffling

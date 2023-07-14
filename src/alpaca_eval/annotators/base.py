@@ -26,7 +26,7 @@ class BaseAnnotator(abc.ABC):
         A dictionary or path to a yaml file containing the configuration for the pool of annotators. If a directory,
         we search for 'configs.yaml' in it. The keys in the first  dictionary should be the annotator's name, and
         the value should be a dictionary of the annotator's configuration which should have the following keys:
-        The path is relative to `evaluators_configs/` directory.
+        The path is relative to `base_dir` directory.
         - prompt_template (str): a prompt template or path to it. The template should contain placeholders for keys in
             the example dictionary, typically {instruction} and {output_1} {output_2}.
         - fn_completions (str): function in `alpaca_farm.decoders` for completions. Needs to accept as first argument
@@ -45,13 +45,10 @@ class BaseAnnotator(abc.ABC):
         Whether to avoid re-annotating examples that have already been annotated by the annotator. This will decrease
         cost but can be slightly slower if there are no annotations that can be reused.
 
-    input_keys : tuple of str, optional
-        Keys use to distinguish inputs.
+    primary_keys : sequence of str, optional
+        Keys use to distinguish the example.
 
-    output_keys : tuple of str, optional
-        Keys use to distinguish outputs.
-
-    other_keys_to_keep : tuple of str, optional
+    other_keys_to_keep : sequence of str, optional
         Other columns to store besides the annotations.
 
     is_store_missing_annotations : bool, optional
@@ -59,30 +56,45 @@ class BaseAnnotator(abc.ABC):
 
     base_dir : Path, optional
         Path to the directory containing the annotators configs. I.e. annotators_config will be relative
-        to this directory.
+        to this directory. If None uses self.DEFAULT_BASE_DIR
+
+    is_raise_if_missing_primary_keys : bool, optional
+        Whether to ensure that the primary keys are in the example dictionary. If True, raises an error.
+
+    tmp_missing_annototation : Any, optional
+        Temporary value to use for missing annotations when `is_store_missing_annotations` is True.
+
+    annotation_type : type, optional
+        Type to use for storing the annotations. If None, uses `self.DEFAULT_ANNOTATION_TYPE`.
     """
+
+    DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
+    ANNOTATOR_COLUMN = "annotator"
+    TMP_MISSING_ANNOTATION = -1
+    DEFAULT_ANNOTATION_TYPE = int
 
     def __init__(
         self,
-        input_keys: Sequence[str],
-        output_keys: Sequence[str],
+        primary_keys: Sequence[str],
         annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
         other_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example"),
         is_store_missing_annotations: bool = True,
-        base_dir: utils.AnyPath = constants.EVALUATORS_CONFIG_DIR,
+        base_dir: Optional[utils.AnyPath] = None,
+        is_raise_if_missing_primary_keys: bool = True,
+        annotation_type: Optional[Type] = None,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
-        self.base_dir = Path(base_dir)
+        self.base_dir = Path(base_dir or self.DEFAULT_BASE_DIR)
         self.seed = seed
         self.is_avoid_reannotations = is_avoid_reannotations
-        self.input_keys = list(input_keys)
-        self.output_keys = list(output_keys)
-        self.input_output_keys = self.input_keys + self.output_keys
-        self.all_keys = self.input_keys + self.output_keys + ["annotator"]
+        self.primary_keys = list(primary_keys)
+        self.all_keys = self.primary_keys + [self.ANNOTATOR_COLUMN]
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.is_store_missing_annotations = is_store_missing_annotations
+        self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
+        self.annotation_type = annotation_type or self.DEFAULT_ANNOTATION_TYPE
 
         self.annotators_config = self._initialize_annotators_config(annotators_config)
         self.annotators = self._initialize_annotators()
@@ -102,6 +114,11 @@ class BaseAnnotator(abc.ABC):
         """How to refer to the annotations, this will be the key for annotations in the output."""
         return "annotation"
 
+    @property
+    def random_seed_key(self) -> list[str]:
+        """What key / column to seed on for the random generator."""
+        return list(self.primary_keys)
+
     ### Public methods ###
     @property
     def annotator_name(self) -> str:
@@ -117,7 +134,7 @@ class BaseAnnotator(abc.ABC):
         Parameters
         ----------
         to_annotate : list of dict or dataframe
-            Examples to annotate. Each dictionary (or row) should contain all of `self.input_output_keys`.
+            Examples to annotate. Each dictionary (or row) should contain all of `self.primary_keys`.
 
         **decoding_kwargs :
             Additional arguments to pass to `fn_completions`.
@@ -125,7 +142,7 @@ class BaseAnnotator(abc.ABC):
         Returns
         -------
         annotated : list of dict
-            The annotated examples. Each dict will contain all of `self.input_output_keys` and `self.annotation_key`.
+            The annotated examples. Each dict will contain all of `self.primary_keys` and `self.annotation_key`.
         """
         if len(to_annotate) == 0:
             return []
@@ -147,34 +164,50 @@ class BaseAnnotator(abc.ABC):
 
         return annotators_config
 
-    def _initialize_annotators(self) -> dict[str, Type["SingleAnnotator"]]:
+    def _initialize_annotators(self) -> dict[str, "SingleAnnotator"]:
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(self.annotators_config)
+        try:
+            # in case a path is given we make it relative to that path
+            base_dir = self.annotators_config.parents[1]
+        except:
+            base_dir = self.base_dir
+
         return {
             name: self.SingleAnnotator(
-                seed=self.seed, base_dir=self.base_dir, annotation_column=self.annotation_key, **annotator_config
+                seed=self.seed, base_dir=base_dir, annotation_column=self.annotation_key, **annotator_config
             )
             for name, annotator_config in annotators_config.items()
         }
+
+    def _add_missing_primary_keys_(self, df: pd.DataFrame):
+        missing_primary_keys = [c for c in self.primary_keys if c not in df.columns]
+        if self.is_raise_if_missing_primary_keys:
+            if len(missing_primary_keys) > 0:
+                raise ValueError(f"Missing primary keys: {missing_primary_keys}")
+        else:
+            for c in missing_primary_keys:
+                df[c] = None
 
     def _preprocess(self, to_annotate: utils.AnyData) -> pd.DataFrame:
         """Preprocess the examples to annotate. In particular takes care of filtering unnecessary examples."""
 
         df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
+        self._add_missing_primary_keys_(df_to_annotate)
 
         for c in self.other_keys_to_keep + [self.annotation_key]:
             if c in df_to_annotate.columns:
                 logging.warning(f"""{c} column is already in the dataframe. We will overwrite it.""")
-                df_to_annotate[c] = np.nan
+                df_to_annotate[c] = None
 
         # remove duplicates because you only need to annotate one of them
-        df_to_annotate = df_to_annotate.drop_duplicates(subset=self.input_output_keys)
+        df_to_annotate = df_to_annotate.drop_duplicates(subset=self.primary_keys)
 
         # set the annotater for each example
-        df_to_annotate["annotator"] = df_to_annotate.apply(
+        df_to_annotate[self.ANNOTATOR_COLUMN] = df_to_annotate.apply(
             lambda x: utils.random_seeded_choice(
                 # we add "annotator" at the beginning to not use the same seed for all tasks
-                seed="annotator" + x["instruction"] + str(self.seed),
+                seed="annotator" + "".join(x[self.random_seed_key]) + str(self.seed),
                 choices=list(self.annotators.keys()),
             ),
             axis=1,
@@ -191,7 +224,9 @@ class BaseAnnotator(abc.ABC):
         df_annotated = df_to_annotate
         for annotator in self.annotators.keys():
             # only annotate examples that have not been annotated yet
-            curr_idcs = (df_annotated["annotator"] == annotator) & df_annotated[self.annotation_key].isna()
+            curr_idcs = df_annotated[self.ANNOTATOR_COLUMN] == annotator
+            if self.annotation_key in df_annotated.columns:
+                curr_idcs &= df_annotated[self.annotation_key].isna()
 
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
@@ -210,29 +245,32 @@ class BaseAnnotator(abc.ABC):
         """Convert the dataframe into a list of dictionaries to be returned, and store current anntations."""
 
         df_to_annotate = utils.convert_to_dataframe(to_annotate)
+        self._add_missing_primary_keys_(df_to_annotate)
 
         # select available annotations
         if self.is_store_missing_annotations:
-            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].fillna(-1)
+            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].fillna(self.TMP_MISSING_ANNOTATION)
         else:
-            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(-1, np.nan)
+            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(
+                self.TMP_MISSING_ANNOTATION, None
+            )
 
         df_annotated = df_annotated[~df_annotated[self.annotation_key].isna()].copy()
 
-        # try converting to int now that no nan
-        df_annotated[self.annotation_key] = pd.to_numeric(
-            df_annotated[self.annotation_key], downcast="integer", errors="ignore"
-        )
+        # try converting to int now that no nan. Note this will only do so if possible
+        df_annotated[self.annotation_key] = df_annotated[self.annotation_key].astype(self.annotation_type)
 
         df_annotated = self._filter_annotations_before_storing(df_annotated)
         self._store_annotations_(df_annotated)
 
         if self.is_store_missing_annotations:
-            # put back np.nan
-            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(-1, np.nan)
+            # put back None
+            df_annotated[self.annotation_key] = df_annotated[self.annotation_key].replace(
+                self.TMP_MISSING_ANNOTATION, None
+            )
 
         # need to merge with df_to_annotate in case you dropped duplicates
-        on = list(self.input_keys + self.output_keys)
+        on = list(self.primary_keys)
         df_annotated = df_annotated[self._get_all_keys_to_keep(df_to_annotate)]
         df_to_annotate = df_to_annotate[[c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
         # need to remove all other columns before merging if not you will
@@ -320,6 +358,7 @@ class BaseAnnotatorJSON(BaseAnnotator):
 
     def save(self, path: Optional[utils.AnyPath] = None):
         """Save all annotations to json."""
+
         path = path or self.caching_path
         if path is not None:
             logging.info(f"Saving all annotations to {path}.")
@@ -375,9 +414,10 @@ class SingleAnnotator:
         `evaluators_configs/`
 
     fn_completion_parser : callable or str
-        Function in `completion_parsers.py` to use for parsing the completions into annotations. For each completion,
-        the number of annotations should be equal to the batch_size if not we set all the annotations in that batch to
-        NaN.
+        Function that maps (parses) the completion to a list of annotations. If a string, it should be a function in
+        `completion_parsers.py` to use for parsing the completions into annotations. For each completion, the number of
+        annotations (lenght of list) should be equal to the batch_size if not we set all the annotations in that batch
+        to NaN.
 
     completion_parser_kwargs : dict
         Kwargs for fn_completion_parser.
@@ -408,7 +448,7 @@ class SingleAnnotator:
     def __init__(
         self,
         prompt_template: utils.AnyPath,
-        fn_completion_parser: Union[Callable, str] = "regex_parser",
+        fn_completion_parser: Optional[Union[Callable, str]] = "regex_parser",
         completion_parser_kwargs: Optional[dict[str, Any]] = None,
         fn_completions: Union[Callable, str] = "openai_completions",
         completions_kwargs: Optional[dict[str, Any]] = None,
@@ -421,8 +461,10 @@ class SingleAnnotator:
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
 
-        if isinstance(fn_completion_parser, str):
-            fn_completion_parser = getattr(completion_parsers, fn_completion_parser)
+        if fn_completion_parser is None:
+            fn_completion_parser = lambda x: [x]
+        elif isinstance(fn_completion_parser, str):
+            fn_completion_parser = self._search_fn_completion_parser(fn_completion_parser)
         completion_parser_kwargs = completion_parser_kwargs or {}
         self.fn_completion_parser = partial(fn_completion_parser, **completion_parser_kwargs)
 
@@ -474,6 +516,10 @@ class SingleAnnotator:
     ######################
 
     ### Private methods ###
+    def _search_fn_completion_parser(self, name: str) -> Callable:
+        """Search for a completion parser by name."""
+        return getattr(completion_parsers, name)
+
     def _get_prompt_template(self, prompt_template: utils.AnyPath):
         return utils.read_or_return(self.base_dir / prompt_template)
 
@@ -510,18 +556,17 @@ class SingleAnnotator:
 
         return df_to_annotate
 
-    def _parse_completions(self, completions: list[str]) -> list[int]:
+    def _parse_completions(self, completions: list[str]) -> list[Any]:
         """Converts the completions into annotations."""
         all_annotations = []
         for completion in completions:
-            # use a regex to match all outputs on a line. Assumes that there is at most one output to match per line
-            batch_annotations = self.fn_completion_parser(completion)
+            batch_annotations = list(self.fn_completion_parser(completion))
             if len(batch_annotations) != self.batch_size:
                 logging.warning(
                     f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"
-                    f" {self.batch_size}. We are setting all annotations to np.nan."
+                    f" {self.batch_size}. We are setting all annotations to None."
                 )
-                batch_annotations = [np.nan] * self.batch_size
+                batch_annotations = [None] * self.batch_size
             all_annotations += batch_annotations
         return all_annotations
 
@@ -538,8 +583,6 @@ class SingleAnnotator:
                 f"If you are using chain of thought it might be that max_tokens limit is too low. "
             )
             df_annotated = df_annotated[~arr_is_na]
-
-        assert set(df_annotated[self.annotation_column].unique().tolist()) <= {0, 1, 2}
 
         return df_annotated
 
