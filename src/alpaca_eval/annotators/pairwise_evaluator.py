@@ -7,15 +7,11 @@ import numpy as np
 import pandas as pd
 
 from .. import utils
-from .base import BaseAnnotatorJSON, SingleAnnotator
+from .base import BaseAnnotator, BaseAnnotatorJSON, SingleAnnotator
 
 __all__ = ["PairwiseAnnotator", "SinglePairwiseAnnotator"]
 
-
-class PairwiseAnnotator(BaseAnnotatorJSON):
-    __doc__ = (
-        BaseAnnotatorJSON.__doc__.replace("Base class", "Class")
-        + """
+PAIRWISE_ADDED_DOCSTRING = """
     
     p_label_flip : float, optional
         Probability of flipping the label (ie adds noise by taking a mixture between predicted label and
@@ -37,7 +33,10 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
         - annotate_head2head: annotate a pair of sequence of outputs, each containing `"output"` which will be merged
             into a single sequence of paired outputs. Useful for evaluation against a reference.
     """
-    )
+
+
+class PairwiseAnnotatorLocal(BaseAnnotator):
+    __doc__ = BaseAnnotator.__doc__.replace("Base class", "Class") + PAIRWISE_ADDED_DOCSTRING
 
     def __init__(
         self,
@@ -316,6 +315,11 @@ class PairwiseAnnotator(BaseAnnotatorJSON):
 
         df_annotated = super()._filter_annotations_before_storing(df_annotated)
         return df_annotated
+
+
+# Note: we separate local and json to make it easier to inherit e.g. for having a database version
+class PairwiseAnnotator(PairwiseAnnotatorLocal, BaseAnnotatorJSON):
+    __doc__ = BaseAnnotatorJSON.__doc__.replace("Base class", "Class") + PAIRWISE_ADDED_DOCSTRING
 
 
 class SinglePairwiseAnnotator(SingleAnnotator):

@@ -57,6 +57,9 @@ class BaseAnnotator(abc.ABC):
     base_dir : Path, optional
         Path to the directory containing the annotators configs. I.e. annotators_config will be relative
         to this directory. If None uses self.DEFAULT_BASE_DIR
+
+    is_raise_if_missing_primary_keys : bool, optional
+        Whether to ensure that the primary keys are in the example dictionary. If True, raises an error.
     """
 
     DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
@@ -71,6 +74,7 @@ class BaseAnnotator(abc.ABC):
         other_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example"),
         is_store_missing_annotations: bool = True,
         base_dir: Optional[utils.AnyPath] = None,
+        is_raise_if_missing_primary_keys: bool = True,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
         self.base_dir = Path(base_dir or self.DEFAULT_BASE_DIR)
@@ -80,6 +84,7 @@ class BaseAnnotator(abc.ABC):
         self.all_keys = self.primary_keys + [self.ANNOTATOR_COLUMN]
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.is_store_missing_annotations = is_store_missing_annotations
+        self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
 
         self.annotators_config = self._initialize_annotators_config(annotators_config)
         self.annotators = self._initialize_annotators()
@@ -163,6 +168,14 @@ class BaseAnnotator(abc.ABC):
         """Preprocess the examples to annotate. In particular takes care of filtering unnecessary examples."""
 
         df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
+
+        missing_primary_keys = [c for c in self.primary_keys if c not in df_to_annotate.columns]
+        if self.is_raise_if_missing_primary_keys:
+            if len(missing_primary_keys) > 0:
+                raise ValueError(f"Missing primary keys: {missing_primary_keys}")
+        else:
+            for c in missing_primary_keys:
+                df_to_annotate[c] = None
 
         for c in self.other_keys_to_keep + [self.annotation_key]:
             if c in df_to_annotate.columns:
@@ -324,6 +337,7 @@ class BaseAnnotatorJSON(BaseAnnotator):
 
     def save(self, path: Optional[utils.AnyPath] = None):
         """Save all annotations to json."""
+
         path = path or self.caching_path
         if path is not None:
             logging.info(f"Saving all annotations to {path}.")
