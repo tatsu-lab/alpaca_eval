@@ -38,7 +38,7 @@
 
         #branding {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         #branding h1 {
@@ -74,21 +74,36 @@
         th:first-child,
         td:first-child {
             width: 70%;
-            padding-left: 40px;
+            padding-left: 30px;
+            text-align: left;
+        }
+
+        th:not(:first-child),
+        td:not(:first-child) {
+            text-align: right;
+            width: 20%;
+            padding-right: 10px;
         }
 
         th:last-child,
         td:last-child {
-            width: 20%;
+            padding-right: 30px;
         }
 
         th {
-            text-align: left;
+            text-align: right;
             padding-bottom: 15px;
         }
 
         td {
             padding-bottom: 10px;
+        }
+
+        #leaderboard tr th:nth-child(3) {
+            color: #999999;  /* or any other color that you want */
+        }
+        #leaderboard tr td:nth-child(3) {
+            color: #999999;  /* or any other color that you want */
         }
 
         table tr:nth-child(even) {
@@ -153,6 +168,13 @@
         </h1>
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
+        <small id="caution" style="color: #8C1515;">
+            <span style="color: #8C1515;">Caution:</span> GPT4/Claude may favor models longer outputs and/or were fine-tuned on GPT4/Claude outputs.
+        </small>
+        <br>
+        <a href="https://github.com/tatsu-lab/alpaca_eval">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="height: 1.5em;/* margin-bottom: 0; */">
+        </a>
     </div>
 
     <div class="toggle-line">
@@ -182,6 +204,7 @@
         <tr>
             <th>Model Name</th>
             <th>Win Rate</th>
+            <th>Length</th>
         </tr>
     </table>
 
@@ -265,9 +288,9 @@
     const table = document.getElementById('leaderboard');
 
     const urls = {
-        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/alpaca_eval_gpt4_leaderboard.csv',
-        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/claude_leaderboard.csv',
-        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/chatgpt_fn_leaderboard.csv'
+        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/alpaca_eval_gpt4_leaderboard.csv',
+        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/claude_leaderboard.csv',
+        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/chatgpt_fn_leaderboard.csv'
     }
 
     let currentUrl = urls['gpt4'];
@@ -281,8 +304,9 @@
             download: true,
             header: true,
             complete: function (results) {
+                console.log(results.data);
                 results.data.forEach(row => {
-                    if (row['name'] || row['win_rate']) {
+                    if (row['name'] || row['win_rate'] || row['avg_length']) {
                         let filter = row['filter'];
 
                         if ((communityRadio.checked) ||
@@ -292,6 +316,7 @@
                             const tr = document.createElement('tr');
                             const nameTd = document.createElement('td');
                             const winRateTd = document.createElement('td');
+                            const lengthTd = document.createElement('td');
 
                             if (row['link'] && row['link'].trim() !== '') {
                                 const a = document.createElement('a');
@@ -304,9 +329,11 @@
                             }
 
                             winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
+                            lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
 
                             tr.appendChild(nameTd);
                             tr.appendChild(winRateTd);
+                            tr.appendChild(lengthTd);
 
                             table.appendChild(tr);
                         }
@@ -316,16 +343,28 @@
         });
     }
 
+    function updateCautionMessage(evaluator) {
+        let cautionText;
+        if (evaluator === 'gpt4') {
+            cautionText = 'GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs.';
+        } else if (evaluator === 'claude') {
+            cautionText = 'Claude may favor models with longer outputs and/or those that were fine-tuned on Claude outputs.';
+        }
+        document.getElementById('caution').innerText = 'Caution: ' + cautionText;
+    }
+
     updateTable(urls['gpt4']);
 
     gpt4Radio.addEventListener('click', function () {
         currentUrl = urls['gpt4'];
         updateTable(currentUrl);
+        updateCautionMessage('gpt4');
     });
 
     claudeRadio.addEventListener('click', function () {
         currentUrl = urls['claude'];
         updateTable(currentUrl);
+        updateCautionMessage('claude');
     });
 
     // chatgptRadio.addEventListener('click', function () {
@@ -344,6 +383,8 @@
     minimalRadio.addEventListener('click', function () {
         updateTable(currentUrl);
     });
+
+    updateCautionMessage('gpt4');
 </script>
 
 

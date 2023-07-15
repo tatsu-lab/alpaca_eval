@@ -1,4 +1,4 @@
-# <a href="https://tatsu-lab.github.io/alpaca_eval/" target="_blank"><img src="https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/AlpacaFarm_small.png" width="35"></a> AlpacaEval : An Automatic Evaluator for Instruction-following Language Models
+# <a href="https://tatsu-lab.github.io/alpaca_eval/" target="_blank"><img src="https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/AlpacaFarm_small.png" width="35"></a> [AlpacaEval](https://tatsu-lab.github.io/alpaca_eval/) : An Automatic Evaluator for Instruction-following Language Models
 
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/LICENSE)
 [![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/alpaca_farm/blob/main/DATA_LICENSE)
@@ -9,17 +9,17 @@ Evaluation of instruction-following models (e.g., ChatGPT) typically requires hu
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
 replicable, and validated against 20K human annotations.
 It is particularly useful for model development.
-Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations).
+Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations) like the preference for longer outputs.
 AlpacaEval provides the following:
 
+- [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
+  evaluation set. **Caution**: Automatic evaluator (e.g. GPT4) may be biased towards models that generate longer outputs and/or that were fine-tuned on the model underlying the evaluator (e.g. GPT4).
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
   annotations). We evaluate a
   model by
   measuring the fraction of times an powerful LLM (e.g. GPT 4 or Claude or ChatGPT) prefers the outputs from that model
   over
   outputs from a reference model. Our evaluators enable caching and output randomization by default.
-- [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
-  evaluation set.
 - [**Toolkit for building automatic evaluators**](#analysis): a simple interface for
   building advanced automatic evaluators (e.g. with caching, batching, or multi-annotators) and analyzing them (quality,
   price, speed, statistical power, bias, variance etc).

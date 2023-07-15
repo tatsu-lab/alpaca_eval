@@ -5,7 +5,7 @@ from alpaca_eval.utils import load_configs, load_or_convert_to_dataframe
 
 for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = load_or_convert_to_dataframe(leaderboard_file)
-    df = df[["win_rate"]]
+    df = df[["win_rate", "avg_length"]]
     df = df.reset_index(names="name")
     df["link"] = ""
     df["filter"] = ""
