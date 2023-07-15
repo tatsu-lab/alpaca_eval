@@ -1,41 +1,41 @@
-name,win_rate,avg_length,link,filter
-GPT-4,95.27950310559004,1365,,minimal
-Claude 2,91.35572139303484,1069,,minimal
-Vicuna 33B v1.3,88.99253731343283,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,verified
-Claude,88.38509316770187,1082,,minimal
-OpenChat V2-W 13B,87.1268656716418,1566,https://github.com/imoneoi/openchat,community
-WizardLM 13B V1.1,86.31840796019901,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,community
-ChatGPT,86.08695652173914,811,,minimal
-OpenChat V2 13B,84.96894409937889,1564,https://github.com/imoneoi/openchat,community
-Vicuna 13B v1.3,82.11180124223603,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,verified
-OpenChat-13B,80.8695652173913,1632,https://github.com/imoneoi/openchat,community
-UltraLM 13B,80.63511830635119,1087,https://github.com/thunlp/UltraChat,community
-OpenChat8192-13B,79.53980099502488,1664,https://github.com/imoneoi/openchat,community
-OpenCoderPlus-15B,78.69565217391305,1628,https://github.com/imoneoi/openchat,community
-Vicuna 7B v1.3,76.8414481897628,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,verified
-WizardLM 13B,75.31094527363184,985,https://huggingface.co/WizardLM/WizardLM-13B-1.0,minimal
-airoboros 65B,73.91304347826086,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,community
-airoboros 33B,73.29192546583852,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,community
-Guanaco 65B,71.80124223602485,1249,https://huggingface.co/timdettmers/guanaco-65b,minimal
-Vicuna 13B,70.43478260869566,1037,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,minimal
-Baize-v2 13B,66.95652173913044,930,https://huggingface.co/project-baize/baize-v2-13b,community
-LLaMA 33B OASST RLHF,66.52173913043478,1079,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,minimal
-Minotaur 13B,66.02484472049689,881,https://huggingface.co/openaccess-ai-collective/minotaur-13b-fixed,community
-Guanaco 33B,65.96273291925466,1311,https://huggingface.co/timdettmers/guanaco-33b,verified
-Nous Hermes 13B,65.46583850931677,844,https://huggingface.co/NousResearch/Nous-Hermes-13b,verified
-Vicuna 7B,64.40993788819875,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,verified
-Baize-v2 7B,63.85093167701863,1127,https://huggingface.co/project-baize/baize-v2-7b,community
-LLaMA 33B OASST SFT,54.96894409937888,748,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,verified
-Guanaco 13B,52.60869565217391,1774,https://huggingface.co/timdettmers/guanaco-13b,verified
-Davinci003,50.0,307,,minimal
-Guanaco 7B,46.58385093167702,1364,https://huggingface.co/timdettmers/guanaco-7b,verified
-Falcon 40B Instruct,45.71428571428572,662,https://huggingface.co/tiiuae/falcon-40b-instruct,minimal
-Alpaca Farm PPO Sim (GPT-4) 7B,44.099378881987576,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,verified
-Pythia 12B SFT,41.86335403726708,913,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,verified
-Alpaca Farm PPO Human 7B,41.24223602484472,803,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,minimal
-Cohere Chat,29.565217391304348,779,,community
-Cohere,28.385093167701864,682,,community
-Alpaca 7B,26.459627329192543,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
-Pythia 12B OASST SFT,25.962732919254663,726,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,verified
-Falcon 7B Instruct,23.60248447204969,478,https://huggingface.co/tiiuae/falcon-7b-instruct,verified
-Davinci001,15.17412935323383,296,,minimal
+name,win_rate,avg_length,link,samples,filter
+GPT-4,95.27950310559004,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
+Claude 2,91.35572139303484,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
+Vicuna 33B v1.3,88.99253731343283,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
+Claude,88.38509316770187,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,minimal
+OpenChat V2-W 13B,87.1268656716418,1566,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
+WizardLM 13B V1.1,86.31840796019901,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
+ChatGPT,86.08695652173914,811,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatgpt/model_outputs.json,minimal
+OpenChat V2 13B,84.96894409937889,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
+Vicuna 13B v1.3,82.11180124223603,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.3/model_outputs.json,verified
+OpenChat-13B,80.8695652173913,1632,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-13b/model_outputs.json,community
+UltraLM 13B,80.63511830635119,1087,https://github.com/thunlp/UltraChat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b/model_outputs.json,community
+OpenChat8192-13B,79.53980099502488,1664,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat8192-13b/model_outputs.json,community
+OpenCoderPlus-15B,78.69565217391305,1628,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/opencoderplus-15b/model_outputs.json,community
+Vicuna 7B v1.3,76.8414481897628,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b-v1.3/model_outputs.json,verified
+WizardLM 13B,75.31094527363184,985,https://huggingface.co/WizardLM/WizardLM-13B-1.0,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b/model_outputs.json,minimal
+airoboros 65B,73.91304347826086,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-65b/model_outputs.json,community
+airoboros 33B,73.29192546583852,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-33b/model_outputs.json,community
+Guanaco 65B,71.80124223602485,1249,https://huggingface.co/timdettmers/guanaco-65b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-65b/model_outputs.json,minimal
+Vicuna 13B,70.43478260869566,1037,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b/model_outputs.json,minimal
+Baize-v2 13B,66.95652173913044,930,https://huggingface.co/project-baize/baize-v2-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baize-v2-13b/model_outputs.json,community
+LLaMA 33B OASST RLHF,66.52173913043478,1079,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-rlhf-llama-33b/model_outputs.json,minimal
+Minotaur 13B,66.02484472049689,881,https://huggingface.co/openaccess-ai-collective/minotaur-13b-fixed,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/minotaur-13b/model_outputs.json,community
+Guanaco 33B,65.96273291925466,1311,https://huggingface.co/timdettmers/guanaco-33b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-33b/model_outputs.json,verified
+Nous Hermes 13B,65.46583850931677,844,https://huggingface.co/NousResearch/Nous-Hermes-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/nous-hermes-13b/model_outputs.json,verified
+Vicuna 7B,64.40993788819875,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b/model_outputs.json,verified
+Baize-v2 7B,63.85093167701863,1127,https://huggingface.co/project-baize/baize-v2-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baize-v2-7b/model_outputs.json,community
+LLaMA 33B OASST SFT,54.96894409937888,748,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-sft-llama-33b/model_outputs.json,verified
+Guanaco 13B,52.60869565217391,1774,https://huggingface.co/timdettmers/guanaco-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-13b/model_outputs.json,verified
+Davinci003,50.0,307,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/text_davinci_003/model_outputs.json,minimal
+Guanaco 7B,46.58385093167702,1364,https://huggingface.co/timdettmers/guanaco-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-7b/model_outputs.json,verified
+Falcon 40B Instruct,45.71428571428572,662,https://huggingface.co/tiiuae/falcon-40b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-40b-instruct/model_outputs.json,minimal
+Alpaca Farm PPO Sim (GPT-4) 7B,44.099378881987576,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-sim-gpt4-20k/model_outputs.json,verified
+Pythia 12B SFT,41.86335403726708,913,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pythia-12b-mix-sft/model_outputs.json,verified
+Alpaca Farm PPO Human 7B,41.24223602484472,803,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-human/model_outputs.json,minimal
+Cohere Chat,29.565217391304348,779,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cohere-chat/model_outputs.json,community
+Cohere,28.385093167701864,682,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cohere/model_outputs.json,community
+Alpaca 7B,26.459627329192543,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-7b/model_outputs.json,minimal
+Pythia 12B OASST SFT,25.962732919254663,726,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-sft-pythia-12b/model_outputs.json,verified
+Falcon 7B Instruct,23.60248447204969,478,https://huggingface.co/tiiuae/falcon-7b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-7b-instruct/model_outputs.json,verified
+Davinci001,15.17412935323383,296,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/text_davinci_001/model_outputs.json,minimal

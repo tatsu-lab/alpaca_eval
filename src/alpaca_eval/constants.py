@@ -26,6 +26,8 @@ DEFAULT_CACHE_DIR = None
 CURRENT_DIR = Path(__file__).parent
 EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
 MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
+BASE_DIR = Path(__file__).parents[2]
+RESULTS_DIR = BASE_DIR / "results"
 
 MINIMAL_MODELS = (
     "gpt4",

@@ -81,12 +81,12 @@
         th:not(:first-child),
         td:not(:first-child) {
             text-align: right;
-            width: 20%;
             padding-right: 10px;
         }
 
         th:last-child,
         td:last-child {
+            width: 15%;
             padding-right: 30px;
         }
 
@@ -288,9 +288,9 @@
     const table = document.getElementById('leaderboard');
 
     const urls = {
-        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/alpaca_eval_gpt4_leaderboard.csv',
-        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/claude_leaderboard.csv',
-        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/chatgpt_fn_leaderboard.csv'
+        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/yann_sample_sheet_to_leaderboard/docs/alpaca_eval_gpt4_leaderboard.csv',
+        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/yann_sample_sheet_to_leaderboard/docs/claude_leaderboard.csv',
+        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/yann_sample_sheet_to_leaderboard/docs/chatgpt_fn_leaderboard.csv'
     }
 
     let currentUrl = urls['gpt4'];
@@ -326,6 +326,15 @@
                                 nameTd.appendChild(a);
                             } else {
                                 nameTd.textContent = row['name'];
+                            }
+
+                            if (row['samples'] && row['samples'].trim() !== '') {
+                                const samplesLink = document.createElement('a');
+                                samplesLink.textContent = " 📄"; // adding a space before emoji to separate from name
+                                samplesLink.href = row['samples'];
+                                samplesLink.target = "_blank";
+                                samplesLink.style.textDecoration = "none";
+                                nameTd.appendChild(samplesLink);
                             }
 
                             winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
