@@ -14,7 +14,7 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = df[["win_rate", "avg_length"]]
     df = df.reset_index(names="name")
     df["link"] = ""
-    df["outputs"] = ""
+    df["samples"] = ""
     df["filter"] = ""
     for idx in range(len(df)):
         informal_name = df.loc[idx, "name"]
