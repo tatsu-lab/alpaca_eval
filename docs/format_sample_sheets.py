@@ -1,9 +1,7 @@
-from pathlib import Path
-
 import pandas as pd
 
-BASE_DIR = Path(__file__).parents[1]
-RESULTS_DIR = BASE_DIR / "results"
+from alpaca_eval.constants import RESULTS_DIR
+
 F_OUTPUTS = "model_outputs.json"
 
 

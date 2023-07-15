@@ -1,29 +1,29 @@
-name,win_rate,avg_length,link,filter
-GPT-4,77.01863354037268,1365,,minimal
-Claude,75.83850931677019,1082,,minimal
-Vicuna 33B v1.3,72.36024844720497,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,verified
-Claude 2,71.98757763975155,1069,,minimal
-ChatGPT,67.70186335403726,811,,minimal
-Vicuna 13B v1.3,66.2111801242236,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,verified
-WizardLM 13B,66.14906832298136,985,https://huggingface.co/WizardLM/WizardLM-13B-1.0,minimal
-Vicuna 13B,63.22981366459627,1037,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,minimal
-Guanaco 65B,62.60869565217392,1249,https://huggingface.co/timdettmers/guanaco-65b,minimal
-Vicuna 7B v1.3,62.54658385093168,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,verified
-Nous Hermes 13B,60.86956521739131,844,https://huggingface.co/NousResearch/Nous-Hermes-13b,verified
-Guanaco 33B,57.88819875776397,1311,https://huggingface.co/timdettmers/guanaco-33b,verified
-Vicuna 7B,57.329192546583855,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,verified
-LLaMA 33B OASST RLHF,57.329192546583855,1079,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,minimal
-Guanaco 13B,53.36239103362392,1774,https://huggingface.co/timdettmers/guanaco-13b,verified
-LLaMA 33B OASST SFT,51.24223602484472,748,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,verified
-Davinci003,50.0,307,,minimal
-Alpaca Farm PPO Sim (GPT-4) 7B,48.19875776397515,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,verified
-Guanaco 7B,47.5776397515528,1364,https://huggingface.co/timdettmers/guanaco-7b,verified
-Falcon 40B Instruct,46.70807453416149,662,https://huggingface.co/tiiuae/falcon-40b-instruct,minimal
-Alpaca Farm PPO Human 7B,46.45962732919255,803,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,minimal
-Pythia 12B SFT,43.22981366459627,913,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,verified
-Pythia 12B OASST SFT,32.79503105590062,726,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,verified
-Cohere Chat,32.79503105590062,779,,community
-Cohere,32.608695652173914,682,,community
-Alpaca 7B,32.298136645962735,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,minimal
-Falcon 7B Instruct,29.565217391304348,478,https://huggingface.co/tiiuae/falcon-7b-instruct,verified
-Davinci001,21.490683229813666,296,,minimal
+name,win_rate,avg_length,link,outputs,filter
+GPT-4,77.01863354037268,1365,,,minimal
+Claude,75.83850931677019,1082,,,minimal
+Vicuna 33B v1.3,72.36024844720497,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,,verified
+Claude 2,71.98757763975155,1069,,,minimal
+ChatGPT,67.70186335403726,811,,,minimal
+Vicuna 13B v1.3,66.2111801242236,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,,verified
+WizardLM 13B,66.14906832298136,985,https://huggingface.co/WizardLM/WizardLM-13B-1.0,,minimal
+Vicuna 13B,63.22981366459627,1037,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,,minimal
+Guanaco 65B,62.60869565217392,1249,https://huggingface.co/timdettmers/guanaco-65b,,minimal
+Vicuna 7B v1.3,62.54658385093168,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,,verified
+Nous Hermes 13B,60.86956521739131,844,https://huggingface.co/NousResearch/Nous-Hermes-13b,,verified
+Guanaco 33B,57.88819875776397,1311,https://huggingface.co/timdettmers/guanaco-33b,,verified
+Vicuna 7B,57.329192546583855,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,,verified
+LLaMA 33B OASST RLHF,57.329192546583855,1079,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,,minimal
+Guanaco 13B,53.36239103362392,1774,https://huggingface.co/timdettmers/guanaco-13b,,verified
+LLaMA 33B OASST SFT,51.24223602484472,748,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,,verified
+Davinci003,50.0,307,,,minimal
+Alpaca Farm PPO Sim (GPT-4) 7B,48.19875776397515,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,,verified
+Guanaco 7B,47.5776397515528,1364,https://huggingface.co/timdettmers/guanaco-7b,,verified
+Falcon 40B Instruct,46.70807453416149,662,https://huggingface.co/tiiuae/falcon-40b-instruct,,minimal
+Alpaca Farm PPO Human 7B,46.45962732919255,803,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,,minimal
+Pythia 12B SFT,43.22981366459627,913,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,,verified
+Pythia 12B OASST SFT,32.79503105590062,726,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,,verified
+Cohere Chat,32.79503105590062,779,,,community
+Cohere,32.608695652173914,682,,,community
+Alpaca 7B,32.298136645962735,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,,minimal
+Falcon 7B Instruct,29.565217391304348,478,https://huggingface.co/tiiuae/falcon-7b-instruct,,verified
+Davinci001,21.490683229813666,296,,,minimal
