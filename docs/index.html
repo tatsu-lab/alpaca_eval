@@ -99,6 +99,13 @@
             padding-bottom: 10px;
         }
 
+        #leaderboard tr th:nth-child(3) {
+            color: #999999;  /* or any other color that you want */
+        }
+        #leaderboard tr td:nth-child(3) {
+            color: #999999;  /* or any other color that you want */
+        }
+
         table tr:nth-child(even) {
             background-color: #E8E8E8;
         }
@@ -161,7 +168,9 @@
         </h1>
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
-        <small style="color: #8C1515;"><span style="color: #8C1515;">Attention:</span> for a fair comparison only consider models that generate answers of similar length.</small>
+        <small id="caution" style="color: #8C1515;">
+            <span style="color: #8C1515;">Caution:</span> GPT4/Claude may favor models longer outputs and/or were fine-tuned on GPT4/Claude outputs.
+        </small>
         <br>
         <a href="https://github.com/tatsu-lab/alpaca_eval">
             <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="height: 1.5em;/* margin-bottom: 0; */">
@@ -279,9 +288,9 @@
     const table = document.getElementById('leaderboard');
 
     const urls = {
-        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/alpaca_eval_gpt4_leaderboard.csv',
-        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/claude_leaderboard.csv',
-        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/chatgpt_fn_leaderboard.csv'
+        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/alpaca_eval_gpt4_leaderboard.csv',
+        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/claude_leaderboard.csv',
+        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/add_length/docs/chatgpt_fn_leaderboard.csv'
     }
 
     let currentUrl = urls['gpt4'];
@@ -334,16 +343,28 @@
         });
     }
 
+    function updateCautionMessage(evaluator) {
+        let cautionText;
+        if (evaluator === 'gpt4') {
+            cautionText = 'GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs.';
+        } else if (evaluator === 'claude') {
+            cautionText = 'Claude may favor models with longer outputs and/or those that were fine-tuned on Claude outputs.';
+        }
+        document.getElementById('caution').innerText = 'Caution: ' + cautionText;
+    }
+
     updateTable(urls['gpt4']);
 
     gpt4Radio.addEventListener('click', function () {
         currentUrl = urls['gpt4'];
         updateTable(currentUrl);
+        updateCautionMessage('gpt4');
     });
 
     claudeRadio.addEventListener('click', function () {
         currentUrl = urls['claude'];
         updateTable(currentUrl);
+        updateCautionMessage('claude');
     });
 
     // chatgptRadio.addEventListener('click', function () {
@@ -362,6 +383,8 @@
     minimalRadio.addEventListener('click', function () {
         updateTable(currentUrl);
     });
+
+    updateCautionMessage('gpt4');
 </script>
 
 
