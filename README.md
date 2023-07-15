@@ -1038,6 +1038,21 @@ file](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/leaderb
 with the
 config, outputs file, and updated leaderboard.
 
+Concretely you should do something like:
+
+1. Fork the repository in github
+2. Clone the forked repository `git clone <URL>`
+3. Make a model config at `src/alpaca_eval/models_configs/<model_name>` and evaluate it `evaluate_from_model --model_configs '<model_name>'`
+4. Add the model configs, output, and leaderboard entry to the forked repository
+```sh
+git add src/alpaca_eval/models_configs/<model_name>
+git add src/alpaca_eval/leaderboards/data_AlpacaEval
+git add results/<model_name>/model_outputs.json
+git commit -m "Add <model_name> to AlpacaEval"
+git push
+``` 
+5. Create a [pull request on AlpacaEval](https://github.com/tatsu-lab/alpaca_eval/pulls)
+
 </details>
 
 <details>

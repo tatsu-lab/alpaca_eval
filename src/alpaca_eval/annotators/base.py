@@ -110,6 +110,11 @@ class BaseAnnotator(abc.ABC):
 
     #######################
     @property
+    def available_fields_to_format(self):
+        """Fields that can be formatted in the prompt template."""
+        return self.all_keys
+
+    @property
     def annotation_key(self) -> str:
         """How to refer to the annotations, this will be the key for annotations in the output."""
         return "annotation"
@@ -231,7 +236,9 @@ class BaseAnnotator(abc.ABC):
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
             # actual annotation
-            curr_annotated = self.annotators[annotator](df_annotated.loc[curr_idcs, self.all_keys], **decoding_kwargs)
+            curr_annotated = self.annotators[annotator](
+                df_annotated.loc[curr_idcs, self.available_fields_to_format], **decoding_kwargs
+            )
 
             df_annotated = self._merge_annotations(df_annotated, curr_annotated)
 
