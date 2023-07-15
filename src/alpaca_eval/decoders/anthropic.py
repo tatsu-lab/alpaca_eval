@@ -37,6 +37,7 @@ def anthropic_completions(
     decoding_kwargs :
         Additional kwargs to pass to `anthropic.Client.completion`.
     """
+
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")

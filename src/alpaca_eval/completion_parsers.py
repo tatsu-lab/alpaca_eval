@@ -62,7 +62,7 @@ def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]
 
 # modified from: https://github.com/lm-sys/FastChat/blob/main/fastchat/eval/eval_gpt_review.py#L47
 # does not work with batched completions
-def lmsys_parser(completion: str):
+def lmsys_parser(completion: str) -> list[Any]:
     r"""Parse a pair of scores from a single completion and returns which is better.
 
     Examples
@@ -94,7 +94,7 @@ def lmsys_parser(completion: str):
         return [np.nan]
 
 
-def ranking_parser(completion):
+def ranking_parser(completion: str) -> list[Any]:
     r"""Parse a completion that contains a list of dictionary and returns the name of the preferred model.
 
     Examples
