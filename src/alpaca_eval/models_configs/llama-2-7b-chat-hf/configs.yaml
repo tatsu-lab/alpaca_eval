@@ -3,7 +3,6 @@ llama-2-7b-chat-hf:
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
     model_name: "meta-llama/Llama-2-7b-chat-hf"
-    requires_chatml: True
     model_kwargs:
       torch_dtype: 'bfloat16'
     max_new_tokens: 2048
