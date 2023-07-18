@@ -9,5 +9,5 @@ chatglm2-6b:
     temperature: 0.7
     top_p: 1.0
     do_sample: True
-  pretty_name: "chatglm2-6b"
+  pretty_name: "ChatGLM2-6B"
   link: "https://huggingface.co/THUDM/chatglm2-6b"
