@@ -28,6 +28,7 @@ Baize-v2 7B,63.85093167701863,1127,https://huggingface.co/project-baize/baize-v2
 LLaMA 33B OASST SFT,54.96894409937888,748,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-sft-llama-33b/model_outputs.json,verified
 Guanaco 13B,52.60869565217391,1774,https://huggingface.co/timdettmers/guanaco-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-13b/model_outputs.json,verified
 Davinci003,50.0,307,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/text_davinci_003/model_outputs.json,minimal
+ChatGLM2-6B,47.12858926342072,1027,https://huggingface.co/THUDM/chatglm2-6b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatglm2-6b/model_outputs.json,community
 Guanaco 7B,46.58385093167702,1364,https://huggingface.co/timdettmers/guanaco-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-7b/model_outputs.json,verified
 Falcon 40B Instruct,45.71428571428572,662,https://huggingface.co/tiiuae/falcon-40b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-40b-instruct/model_outputs.json,minimal
 Alpaca Farm PPO Sim (GPT-4) 7B,44.099378881987576,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-sim-gpt4-20k/model_outputs.json,verified
