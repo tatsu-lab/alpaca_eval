@@ -2,7 +2,7 @@ baichuan-13b-chat:
   prompt_template: "baichuan-13b-chat/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
-    model_name: "./Baichuan-13B-Chat"
+    model_name: "baichuan-inc/Baichuan-13B-Chat"
     model_kwargs:
       torch_dtype: 'float16'
     max_new_tokens: 2048
