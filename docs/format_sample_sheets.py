@@ -1,8 +1,10 @@
+from pathlib import Path
+
 import pandas as pd
 
-from alpaca_eval.constants import RESULTS_DIR
-
 F_OUTPUTS = "model_outputs.json"
+CURRENT_DIR = Path(__file__).parents[1]
+RESULTS_DIR = CURRENT_DIR / "results"
 
 
 df_reference = pd.read_json(RESULTS_DIR / "text_davinci_003" / F_OUTPUTS, orient="records")

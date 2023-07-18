@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'src/alpaca_eval/leaderboards/data_AlpacaEval/**'
+      - 'results/**'
   workflow_dispatch:
 
 jobs:
@@ -26,8 +27,7 @@ jobs:
         run: pip install .
 
       - name: Format sample sheets
-        run:
-          python docs/format_sample_sheets.py
+        run: python docs/format_sample_sheets.py
 
       - name: Update leaderboard
         run: python docs/format_export_leaderboards.py

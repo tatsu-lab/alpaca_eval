@@ -1,13 +1,10 @@
 from pathlib import Path
 
-from alpaca_eval.constants import (
-    MINIMAL_MODELS,
-    MODELS_CONFIG_DIR,
-    PRECOMPUTED_LEADERBOARDS,
-    RESULTS_DIR,
-    VERIFIED_MODELS,
-)
+from alpaca_eval.constants import MINIMAL_MODELS, MODELS_CONFIG_DIR, PRECOMPUTED_LEADERBOARDS, VERIFIED_MODELS
 from alpaca_eval.utils import load_configs, load_or_convert_to_dataframe
+
+CURRENT_DIR = Path(__file__).parents[1]
+RESULTS_DIR = CURRENT_DIR / "results"
 
 for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = load_or_convert_to_dataframe(leaderboard_file)
