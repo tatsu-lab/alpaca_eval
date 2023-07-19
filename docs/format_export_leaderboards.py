@@ -8,11 +8,11 @@ RESULTS_DIR = CURRENT_DIR / "results"
 
 for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = load_or_convert_to_dataframe(leaderboard_file)
-    df = df[["win_rate", "avg_length", "mode"]]
-    df = df.rename(columns={"mode": "filter"})
-    df = df.reset_index(names="name")
     df["link"] = ""
     df["samples"] = ""
+    df = df[["win_rate", "avg_length", "link", "samples", "mode"]]
+    df = df.rename(columns={"mode": "filter"})
+    df = df.reset_index(names="name")
     for idx in range(len(df)):
         informal_name = df.loc[idx, "name"]
         model_config = load_configs(df.loc[idx, "name"], relative_to=MODELS_CONFIG_DIR)[informal_name]
