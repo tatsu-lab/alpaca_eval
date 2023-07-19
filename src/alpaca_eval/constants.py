@@ -28,41 +28,6 @@ EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
 MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
 BASE_DIR = Path(__file__).parents[2]
 
-MINIMAL_MODELS = (
-    "gpt4",
-    "claude",
-    "claude-2",
-    "chatgpt",
-    "llama-2-7b-chat-hf",
-    "llama-2-13b-chat-hf",
-    "wizardlm-13b",
-    "vicuna-13b",
-    "guanaco-65b",
-    "oasst-rlhf-llama-33b",
-    "text_davinci_003",
-    "alpaca-farm-ppo-human",
-    "falcon-40b-instruct",
-    "alpaca-7b",
-    "text_davinci_001",
-)
-VERIFIED_MODELS = MINIMAL_MODELS + (
-    "alpaca-farm-ppo-sim-gpt4-20k",
-    # "cohere", we only ran eval not generations
-    "falcon-7b-instruct",
-    "guanaco-7b",
-    "guanaco-13b",
-    "guanaco-33b",
-    "nous-hermes-13b",
-    "oasst-sft-llama-33b",
-    "oasst-sft-pythia-12b",
-    "pythia-12b-mix-sft",
-    "vicuna-7b",
-    "wizardlm-13b",
-    "vicuna-7b-v1.3",
-    "vicuna-13b-v1.3",
-    "vicuna-33b-v1.3",
-)
-
 MINIMAL_EVALUATORS = (
     "alpaca_eval_gpt4",
     "aviary_gpt4",
