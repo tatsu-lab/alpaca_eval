@@ -33,6 +33,8 @@ MINIMAL_MODELS = (
     "claude",
     "claude-2",
     "chatgpt",
+    "llama-2-7b-chat-hf",
+    "llama-2-13b-chat-hf",
     "wizardlm-13b",
     "vicuna-13b",
     "guanaco-65b",
