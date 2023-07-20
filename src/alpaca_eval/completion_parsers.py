@@ -130,7 +130,7 @@ def json_parser(completion: str, annotation_key: str) -> list[Any]:
     >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true}]')
     >>> json_parser(completion, "is_incorporated")
     [True]
-    >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true},{"is_incorporated": false}]')
+    >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true}, {"is_incorporated": false}]')
     >>> json_parser(completion, "is_incorporated")
     [True, False]
     """
