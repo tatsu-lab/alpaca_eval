@@ -57,5 +57,15 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
 
         return cohere_completions
 
+    elif name == "replicate_completions":
+        try:
+            from .replicate import replicate_completions
+        except ImportError as e:
+            packages = ["replicate"]
+            logging.exception(f"You need {packages} to use replicate_completions. Error:")
+            raise e
+
+        return replicate_completions
+
     else:
         raise ValueError(f"Unknown decoder: {name}")
