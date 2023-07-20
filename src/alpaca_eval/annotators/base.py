@@ -512,10 +512,10 @@ class SingleAnnotator:
 
         completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
-        annotations, completions = self._parse_completions(completions=completions["completions"])
-        df_to_annotate[self.annotation_column] = annotations
+        annotations_to_save, completions_to_save = self._parse_completions(completions=completions["completions"])
+        df_to_annotate[self.annotation_column] = annotations_to_save
         if self.completion_column is not None:
-            df_to_annotate[self.completion_column] = completions
+            df_to_annotate[self.completion_column] = completions_to_save
 
         for k, v in completions.items():
             if k != "completions":

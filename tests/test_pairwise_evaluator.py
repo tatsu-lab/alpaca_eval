@@ -56,22 +56,22 @@ def single_annotator():
 
 def test_single_annotator(single_annotator, df_to_annotate):
     # Create a sample DataFrame for testing
-
-    single_annotator.fn_completions = MagicMock(
-        return_value={"completions": ["Output (a)", "Output (b)", "not parsable"]}
-    )
+    parsable_completions = ["Output (a)", "Output (b)"]
+    completions = parsable_completions + ["not parsable"]  # add an example that can't be parsed
+    single_annotator.fn_completions = MagicMock(return_value={"completions": completions})
+    # set a completion_column => store it
+    single_annotator.completion_column = "completions"
 
     # Call the preprocess method
     df_annotated = single_annotator(df_to_annotate)
 
     assert df_annotated["preference"].tolist() == [1, 2]
     assert df_annotated["instruction"].tolist() == ["2+2", "1+1"]
-    assert df_annotated.columns.tolist() == [
-        "instruction",
-        "output_1",
-        "output_2",
-        "preference",
-    ]
+    assert set(df_annotated.columns.tolist()) == set(
+        ["instruction", "output_1", "output_2", "preference", "completions"]
+    )
+    # check that you also save the completions.
+    assert df_annotated["completions"].tolist() == parsable_completions
 
 
 @pytest.fixture
