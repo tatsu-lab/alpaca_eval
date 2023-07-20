@@ -4,10 +4,9 @@ from typing import Optional, Sequence
 import numpy as np
 import torch
 import transformers
-from datasets import Dataset
 from peft import PeftModel
 from torch.utils.data import Dataset
-from tqdm import tqdm, trange
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from .. import constants, utils
