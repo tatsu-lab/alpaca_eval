@@ -94,7 +94,7 @@ export OPENAI_ORGANIZATION_IDS=<your_organization_id>  # Optional; if not set, t
 alpaca_eval --model_outputs 'example/outputs.json' 
 ```
 
-Important parameters are the following:
+This will print the leaderboard to the console, and save both the leaderboard and the annotations to the same directory as the `model_outputs` file. Important parameters are the following:
 
 - **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary
   should

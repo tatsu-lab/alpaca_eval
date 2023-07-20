@@ -56,7 +56,7 @@ def evaluate(
         The name of the model to add to the leaderboard. If None we check if `generator is in model_outputs` if not
         we use "Current model".
 
-    output_path : bool, optional
+    output_path : path, optional
         Path to the directory where the new leaderboard and the annotations should be stored. If None we don't save.
         If `auto` we use `model_outputs` if it is a path, and otherwise use the directory from which we call the script.
 
