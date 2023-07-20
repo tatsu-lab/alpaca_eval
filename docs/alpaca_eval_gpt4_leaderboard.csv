@@ -6,6 +6,7 @@ Claude,88.38509316770187,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/mai
 OpenChat V2-W 13B,87.1268656716418,1566,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
 WizardLM 13B V1.1,86.31840796019901,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
 ChatGPT,86.08695652173914,811,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatgpt/model_outputs.json,minimal
+LLaMA2 Chat 70B,85.136815920398,1451,https://ai.meta.com/llama/,,minimal
 OpenChat V2 13B,84.96894409937889,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
 Vicuna 13B v1.3,82.11180124223603,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.3/model_outputs.json,verified
 LLaMA2 Chat 13B,81.09452736318407,1513,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-13b-chat-hf/model_outputs.json,minimal
@@ -14,6 +15,7 @@ UltraLM 13B,80.63511830635119,1087,https://github.com/thunlp/UltraChat,https://g
 OpenChat8192-13B,79.53980099502488,1664,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat8192-13b/model_outputs.json,community
 OpenCoderPlus-15B,78.69565217391305,1628,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/opencoderplus-15b/model_outputs.json,community
 Vicuna 7B v1.3,76.8414481897628,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b-v1.3/model_outputs.json,verified
+LLaMA2 Chat 70B Replicate,75.59153175591533,1249,https://ai.meta.com/llama/,,community
 WizardLM 13B,75.31094527363184,985,https://huggingface.co/WizardLM/WizardLM-13B-1.0,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b/model_outputs.json,minimal
 airoboros 65B,73.91304347826086,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-65b/model_outputs.json,community
 airoboros 33B,73.29192546583852,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-33b/model_outputs.json,community
