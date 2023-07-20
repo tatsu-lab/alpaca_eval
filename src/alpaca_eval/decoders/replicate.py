@@ -15,7 +15,7 @@ __all__ = ["replicate_completions"]
 def replicate_completions(
     prompts: Sequence[str],
     model_name: str,
-    num_procs: int = 100,
+    num_procs: int = 16,
     **decoding_kwargs,
 ) -> dict[str, list]:
     r"""Get completions using a model hosted on https://replicate.com/.
