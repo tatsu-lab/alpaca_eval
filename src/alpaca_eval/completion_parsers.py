@@ -1,5 +1,6 @@
 import ast
 import copy
+import json
 import logging
 import re
 from typing import Any
@@ -119,3 +120,15 @@ def ranking_parser(completion: str) -> list[Any]:
     except Exception as e:
         logging.error(f"{e}\nContent: {completion}\n" "You must manually fix the score pair.")
         return [np.nan]
+
+
+def json_parser(completion: str, annotation_key: str) -> list[Any]:
+    """Parse the completion by reading it as a JSON and selecting "annotation_key".
+
+    Examples
+    --------
+    >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true},{"is_incorporated": false}]')
+    >>> json_parser(completion, "is_incorporated")
+    [True, False]
+    """
+    return [d[annotation_key] for d in json.loads(completion.strip())]

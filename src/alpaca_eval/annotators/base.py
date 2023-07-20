@@ -451,12 +451,8 @@ class SingleAnnotator:
     annotation_column : str, optional
         Name of the annotation column in the output dataframe.
 
-    is_parse_explanations : bool, optional
-        Whether the completins has explanations that need to be parsed. If so `fn_completion_parser` should return
-        a tuple of (list(annotations), list(explanations)). The explanations will then be saved at `explanations_column`
-
-    explanations_column : str, optional
-        Name of the explanations column in the output dataframe. Only used if `is_parse_explanations` is True.
+    completion_column : str, optional
+        Which column to store the raw completions in. If None, will not store them.
     """
 
     def __init__(
@@ -471,8 +467,7 @@ class SingleAnnotator:
         batch_size: int = 1,
         base_dir: utils.AnyPath = constants.EVALUATORS_CONFIG_DIR,
         annotation_column: str = "annotation",
-        is_parse_explanations: bool = False,
-        explanation_column: str = "CoT",
+        completion_column: Optional[str] = None,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -490,7 +485,7 @@ class SingleAnnotator:
         self.is_shuffle = is_shuffle
         self.batch_size = batch_size
         self.annotation_column = annotation_column
-        self.explanation_column = explanation_column
+        self.completion_column = completion_column
 
     ### Public methods ###
     def __call__(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
@@ -517,10 +512,10 @@ class SingleAnnotator:
 
         completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
-        annotations, explanations = self._parse_completions(completions=completions["completions"])
+        annotations, completions = self._parse_completions(completions=completions["completions"])
         df_to_annotate[self.annotation_column] = annotations
-        if self.is_parse_explanations:
-            df_to_annotate[self.explanation_column] = explanations
+        if self.completion_column is not None:
+            df_to_annotate[self.completion_column] = completions
 
         for k, v in completions.items():
             if k != "completions":
@@ -580,14 +575,10 @@ class SingleAnnotator:
     def _parse_completions(self, completions: list[str]) -> tuple[list[Any], list[Any]]:
         """Converts the completions into annotations."""
         all_annotations = []
-        all_explanations = []
+        all_completions = []
         for completion in completions:
-            if self.is_parse_explanations:
-                batch_annotations, batch_CoT = self.fn_completion_parser(completion)
-            else:
-                batch_annotations = self.fn_completion_parser(completion)
-                batch_CoT = [None] * self.batch_size
-            batch_annotations, batch_CoT = list(batch_annotations), list(batch_CoT)
+            batch_annotations = self.fn_completion_parser(completion)
+            batch_annotations = list(batch_annotations)
 
             if len(batch_annotations) != self.batch_size:
                 logging.warning(
@@ -596,13 +587,9 @@ class SingleAnnotator:
                 )
                 batch_annotations = [None] * self.batch_size
 
-                if self.is_parse_explanations:
-                    # to explain the issue we store all the completion
-                    batch_CoT = [completion] * self.batch_size
-
             all_annotations += batch_annotations
-            all_explanations += batch_CoT
-        return all_annotations, all_explanations
+            all_completions += [completion] * self.batch_size
+        return all_annotations, all_completions
 
     def _postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         """Postprocess the annotated examples."""
