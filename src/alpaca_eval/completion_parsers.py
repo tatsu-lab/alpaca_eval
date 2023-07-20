@@ -127,8 +127,32 @@ def json_parser(completion: str, annotation_key: str) -> list[Any]:
 
     Examples
     --------
+    >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true}]')
+    >>> json_parser(completion, "is_incorporated")
+    [True]
     >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true},{"is_incorporated": false}]')
     >>> json_parser(completion, "is_incorporated")
     [True, False]
     """
-    return [d[annotation_key] for d in json.loads(completion.strip())]
+    json_loaded = json.loads(completion)
+    if isinstance(json_loaded, dict):
+        return [json_loaded[annotation_key]]
+    return [d[annotation_key] for d in json.loads(completion)]
+
+
+def eval_parser(completion: str) -> list[Any]:
+    """Parse the completion by evaluating it.
+
+    Examples
+    --------
+    >>> eval_parser("True")
+    [True]
+    >>> eval_parser("(True,1,'False')")
+    [(True, 1, 'False')]
+    >>> eval_parser("[True,1,'False']")
+    [True, 1, 'False']
+    """
+    evaluated_completion = ast.literal_eval(completion)
+    if not isinstance(evaluated_completion, list):
+        evaluated_completion = [evaluated_completion]
+    return evaluated_completion
