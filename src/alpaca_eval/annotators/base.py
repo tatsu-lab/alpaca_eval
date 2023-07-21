@@ -577,14 +577,19 @@ class SingleAnnotator:
         all_annotations = []
         all_completions = []
         for completion in completions:
-            batch_annotations = self.fn_completion_parser(completion)
-            batch_annotations = list(batch_annotations)
+            try:
+                batch_annotations = self.fn_completion_parser(completion)
+                batch_annotations = list(batch_annotations)
 
-            if len(batch_annotations) != self.batch_size:
-                logging.warning(
-                    f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"
-                    f" {self.batch_size}. We are setting all annotations to None."
-                )
+                if len(batch_annotations) != self.batch_size:
+                    logging.warning(
+                        f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"
+                        f" {self.batch_size}. We are setting all annotations to None."
+                    )
+                    batch_annotations = [None] * self.batch_size
+
+            except Exception as e:
+                logging.exception(f"Error while parsing completion: '''\n{completion}\n'''")
                 batch_annotations = [None] * self.batch_size
 
             all_annotations += batch_annotations
