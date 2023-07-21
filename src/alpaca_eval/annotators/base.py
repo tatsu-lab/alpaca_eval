@@ -622,7 +622,7 @@ class SingleAnnotator:
                 f"{arr_is_na.sum().item()} samples had no auto annotation. We are filtering them for now. "
                 f"If you are using chain of thought it might be that max_tokens limit is too low. "
             )
-            # df_annotated = df_annotated[~arr_is_na]
+            df_annotated = df_annotated[~arr_is_na]
 
         return df_annotated
 
