@@ -127,13 +127,20 @@ def json_parser(completion: str, annotation_key: str) -> list[Any]:
 
     Examples
     --------
-    >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true}]')
+    >>> completion = '{"short_explanation": "that is why", "is_incorporated": true}'
     >>> json_parser(completion, "is_incorporated")
     [True]
-    >>> completion = ('[{"short_explanation": "that is why", "is_incorporated": true}, {"is_incorporated": false}]')
+    >>> completion = '[{"short_explanation": "that is why", "is_incorporated": true}, {"is_incorporated": false}]'
     >>> json_parser(completion, "is_incorporated")
     [True, False]
+    >>> completion = 'blah ```json\n{"short_explanation": "that is why", "integer": 1}```'
+    >>> json_parser(completion, "integer")
+    [1]
     """
+    # search for a pattern "```json{...}```" and take what is inside the curly brackets
+    if "```json" in completion:
+        completion = re.search(r"```json(.*?)```", completion, re.DOTALL).group(1)
+
     json_loaded = json.loads(completion)
     if isinstance(json_loaded, dict):
         return [json_loaded[annotation_key]]

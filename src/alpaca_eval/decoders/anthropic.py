@@ -43,7 +43,8 @@ def anthropic_completions(
         logging.info("No samples to annotate.")
         return []
     else:
-        logging.info(f"Using `anthropic_completions` on {n_examples} prompts using {model_name}.")
+        to_log = f"Using `anthropic_completions` on {n_examples} prompts using {model_name} and num_procs={num_procs}."
+        logging.info(to_log)
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")

@@ -369,7 +369,9 @@ class SinglePairwiseAnnotator(SingleAnnotator):
     def _postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         df_annotated = super()._postprocess(df_annotated)
 
-        assert set(df_annotated[self.annotation_column].unique().tolist()) <= {0, 1, 2}
+        all_values = df_annotated[self.annotation_column]
+        all_values = all_values[~all_values.isna()]
+        assert set(all_values.unique().tolist()) <= {0, 1, 2, np.nan}
 
         if self.is_randomize_output_order:
             # unshuffles output 1 and output 2. For binary preference, unshuffling is equivalent to reshuffling

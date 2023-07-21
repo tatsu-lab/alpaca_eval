@@ -79,7 +79,11 @@ class BaseAnnotator(abc.ABC):
         annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
-        other_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example"),
+        other_keys_to_keep: Sequence[str] = (
+            "price_per_example",
+            "time_per_example",
+            "raw_completion",
+        ),
         is_store_missing_annotations: bool = True,
         base_dir: Optional[utils.AnyPath] = None,
         is_raise_if_missing_primary_keys: bool = True,
@@ -180,7 +184,10 @@ class BaseAnnotator(abc.ABC):
 
         return {
             name: self.SingleAnnotator(
-                seed=self.seed, base_dir=base_dir, annotation_column=self.annotation_key, **annotator_config
+                seed=self.seed,
+                base_dir=base_dir,
+                annotation_column=self.annotation_key,
+                **annotator_config,
             )
             for name, annotator_config in annotators_config.items()
         }
@@ -237,7 +244,8 @@ class BaseAnnotator(abc.ABC):
 
             # actual annotation
             curr_annotated = self.annotators[annotator](
-                df_annotated.loc[curr_idcs, self.available_fields_to_format], **decoding_kwargs
+                df_annotated.loc[curr_idcs, self.available_fields_to_format],
+                **decoding_kwargs,
             )
 
             df_annotated = self._merge_annotations(df_annotated, curr_annotated)
@@ -278,7 +286,10 @@ class BaseAnnotator(abc.ABC):
 
         # need to merge with df_to_annotate in case you dropped duplicates
         on = list(self.primary_keys)
-        df_annotated = df_annotated[self._get_all_keys_to_keep(df_to_annotate)]
+        # keeps columns from both df_to_annotate and df_annotated that are useful
+        df_annotated = df_annotated[
+            self._get_all_keys_to_keep(list(df_to_annotate.columns) + list(df_annotated.columns))
+        ]
         df_to_annotate = df_to_annotate[[c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
         # need to remove all other columns before merging if not you will
         df_annotated = df_to_annotate.merge(df_annotated, on=on, how="outer")
@@ -289,11 +300,11 @@ class BaseAnnotator(abc.ABC):
 
     def _filter_annotations_before_storing(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         """Filter annotations before storing them."""
-        df_annotated = df_annotated[self._get_all_keys_to_keep(df_annotated)]
+        df_annotated = df_annotated[self._get_all_keys_to_keep(df_annotated.columns)]
         return df_annotated
 
-    def _get_all_keys_to_keep(self, df: pd.DataFrame) -> list[str]:
-        other_keys_to_keep = [c for c in self.other_keys_to_keep if c in df.columns]
+    def _get_all_keys_to_keep(self, current_columns: Sequence) -> list[str]:
+        other_keys_to_keep = [c for c in self.other_keys_to_keep if c in current_columns]
         all_keys_to_keep = self.all_keys + [self.annotation_key] + other_keys_to_keep
         return all_keys_to_keep
 
@@ -327,13 +338,15 @@ class BaseAnnotator(abc.ABC):
         )
         try:
             df_to_annotate = df_to_annotate.merge(
-                df_partially_annotated[self.all_keys + [self.annotation_key] + other_keys_to_keep], **kwargs
+                df_partially_annotated[self.all_keys + [self.annotation_key] + other_keys_to_keep],
+                **kwargs,
             )
         except ValueError:
             # can have merging issues if columns have different dtypes
             df_partially_annotated = df_partially_annotated.astype({k: str for k in self.all_keys})
             df_to_annotate = df_to_annotate.astype({k: str for k in self.all_keys}).merge(
-                df_partially_annotated[self.all_keys + [self.annotation_key] + other_keys_to_keep], **kwargs
+                df_partially_annotated[self.all_keys + [self.annotation_key] + other_keys_to_keep],
+                **kwargs,
             )
 
         # if columns were in both dataframes, try to merge them
@@ -350,7 +363,8 @@ class BaseAnnotator(abc.ABC):
 class BaseAnnotatorJSON(BaseAnnotator):
     __doc__ = (
         BaseAnnotator.__doc__.replace(
-            "Base class for a pool of annotators.", "Base class for a pool of annotators with caching to JSON file."
+            "Base class for a pool of annotators.",
+            "Base class for a pool of annotators with caching to JSON file.",
         )
         + """
     caching_path : Path, optional
@@ -451,8 +465,8 @@ class SingleAnnotator:
     annotation_column : str, optional
         Name of the annotation column in the output dataframe.
 
-    completion_column : str, optional
-        Which column to store the raw completions in. If None, will not store them.
+    is_store_raw_completions : bool, optional
+        Whether to store raw completions at `"raw_completion"` column in the output dataframe.
     """
 
     def __init__(
@@ -467,7 +481,7 @@ class SingleAnnotator:
         batch_size: int = 1,
         base_dir: utils.AnyPath = constants.EVALUATORS_CONFIG_DIR,
         annotation_column: str = "annotation",
-        completion_column: Optional[str] = None,
+        is_store_raw_completions: bool = False,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -485,7 +499,7 @@ class SingleAnnotator:
         self.is_shuffle = is_shuffle
         self.batch_size = batch_size
         self.annotation_column = annotation_column
-        self.completion_column = completion_column
+        self.completion_column = "raw_completion" if is_store_raw_completions else None
 
     ### Public methods ###
     def __call__(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
@@ -577,14 +591,19 @@ class SingleAnnotator:
         all_annotations = []
         all_completions = []
         for completion in completions:
-            batch_annotations = self.fn_completion_parser(completion)
-            batch_annotations = list(batch_annotations)
+            try:
+                batch_annotations = self.fn_completion_parser(completion)
+                batch_annotations = list(batch_annotations)
 
-            if len(batch_annotations) != self.batch_size:
-                logging.warning(
-                    f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"
-                    f" {self.batch_size}. We are setting all annotations to None."
-                )
+                if len(batch_annotations) != self.batch_size:
+                    logging.warning(
+                        f"Found {len(batch_annotations)} annotations in:'''\n{completion}\n''' but expected"
+                        f" {self.batch_size}. We are setting all annotations to None."
+                    )
+                    batch_annotations = [None] * self.batch_size
+
+            except Exception as e:
+                logging.exception(f"Error while parsing completion: '''\n{completion}\n'''")
                 batch_annotations = [None] * self.batch_size
 
             all_annotations += batch_annotations
@@ -603,7 +622,7 @@ class SingleAnnotator:
                 f"{arr_is_na.sum().item()} samples had no auto annotation. We are filtering them for now. "
                 f"If you are using chain of thought it might be that max_tokens limit is too low. "
             )
-            df_annotated = df_annotated[~arr_is_na]
+            # df_annotated = df_annotated[~arr_is_na]
 
         return df_annotated
 
