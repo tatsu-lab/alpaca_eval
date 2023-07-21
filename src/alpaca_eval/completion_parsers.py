@@ -123,7 +123,7 @@ def ranking_parser(completion: str) -> list[Any]:
 
 
 def json_parser(completion: str, annotation_key: str) -> list[Any]:
-    """Parse the completion by reading it as a JSON and selecting "annotation_key".
+    r"""Parse the completion by reading it as a JSON and selecting "annotation_key".
 
     Examples
     --------
