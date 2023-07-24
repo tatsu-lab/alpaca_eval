@@ -323,9 +323,18 @@ class PairwiseAnnotator(PairwiseAnnotatorLocal, BaseAnnotatorJSON):
 
 
 class SinglePairwiseAnnotator(SingleAnnotator):
-    __doc__ = SingleAnnotator.__doc__.replace(
-        "A helper class for a single auto annotator.",
-        "A helper class for a single pairwise auto annotator.",
+    __doc__ = (
+        SingleAnnotator.__doc__.replace(
+            "A helper class for a single auto annotator.",
+            "A helper class for a single pairwise auto annotator.",
+        )
+        + """
+    is_randomize_output_order : bool
+        Whether to randomize output_1, output_2 when formatting.
+        
+    random_seed_key : str
+        The column to use to seed the randomization of output_1, output_2.
+    """
     )
 
     def __init__(
@@ -334,17 +343,17 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         annotation_column: str = "preference",
         random_seed_column: Sequence[str] = ("instruction",),
         processors_to_kwargs: Optional[dict[str, dict]] = None,
+        is_randomize_output_order: bool = True,
         **kwargs,
     ):
-        if processors_to_kwargs is None:
+        processors_to_kwargs = processors_to_kwargs or {}
+        if is_randomize_output_order:
             # swith output columns by default
-            processors_to_kwargs = dict(
-                RandomSwitchTwoColumnsProcessor=dict(
-                    two_columns_to_switch=["output_1", "output_2"],
-                    replace_if_switch_kwargs={"preference": {1: 2, 2: 1}},
-                    random_seed_columns=random_seed_column,
-                    _switch_column="is_switched_outputs",  # backward compatibility
-                )
+            processors_to_kwargs["RandomSwitchTwoColumnsProcessor"] = dict(
+                two_columns_to_switch=["output_1", "output_2"],
+                replace_if_switch_kwargs={"preference": {1: 2, 2: 1}},
+                random_seed_columns=random_seed_column,
+                _switch_column="is_switched_outputs",  # backward compatibility
             )
 
         super().__init__(

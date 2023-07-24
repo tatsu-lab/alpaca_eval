@@ -56,13 +56,13 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
     --------
     >>> df = pd.DataFrame([dict(instruction='2+2', output_1='10', output_2='4', preference=2),
     ...                    dict(instruction='2+3', output_1='5', output_2='7', preference=1)])
-    >>> preprocessor = RandomSwitchTwoColumnsProcessor(two_columns_to_switch=['output_1', 'output_2'],
+    >>> processor = RandomSwitchTwoColumnsProcessor(two_columns_to_switch=['output_1', 'output_2'],
     ...                                                replace_if_switch_kwargs={'preference': {1: 2, 2: 1}})
-    >>> preprocessor.preprocess(df)
+    >>> processor.preprocess(df)
         instruction output_1 output_2  preference is_switch_output_1_output_2
     0         2+2         4       10           1                         True
     1         2+3         5        7           1                        False
-    >>> (preprocessor.postprocess(preprocessor.preprocess(df)) == df).all(axis=None)
+    >>> (processor.postprocess(processor.preprocess(df)) == df).all(axis=None)
     True
     """
 

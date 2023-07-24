@@ -8,9 +8,8 @@ from typing import Any, Callable, Optional, Sequence, Type, Union
 import numpy as np
 import pandas as pd
 
-from .. import completion_parsers, constants, utils
+from .. import completion_parsers, constants, processors, utils
 from ..decoders import get_fn_completions
-from ..processors import BaseProcessor
 
 CURRENT_DIR = Path(__file__).parent
 logging.getLogger().setLevel(logging.INFO)
@@ -564,7 +563,7 @@ class SingleAnnotator:
         """Search for a completion parser by name."""
         return getattr(completion_parsers, name)
 
-    def _search_processor(self, name: str) -> Type["BaseProcessor"]:
+    def _search_processor(self, name: str) -> Type["processors.BaseProcessor"]:
         """Search for a Processor class by name."""
         return getattr(processors, name)
 
