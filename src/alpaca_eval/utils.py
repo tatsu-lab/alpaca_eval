@@ -48,29 +48,6 @@ def random_seeded_choice(seed: Union[int, str, float], choices, **kwargs):
     return random.Random(seed).choices(choices, k=1, **kwargs)[0]
 
 
-def shuffle_pairwise_preferences(df: pd.DataFrame, arr_is_shuffle: Sequence[int]) -> pd.DataFrame:
-    """Shuffle the outputs of a pairwise preference dataframe.
-
-    Examples
-    --------
-    >>> df = pd.DataFrame([dict(instruction='2+2', output_1='3', output_2='4', preference=2),
-    ...                    dict(instruction='2+3', output_1='5', output_2='4', preference=1)])
-    >>> print(shuffle_pairwise_preferences(df, [True, False]))
-        instruction output_1 output_2  preference
-    0         2+2        4        3           1
-    1         2+3        5        4           1
-    """
-    col_1 = df["output_1"].copy()
-    col_2 = df["output_2"].copy()
-    df["output_1"] = np.where(arr_is_shuffle, col_2, col_1)
-    df["output_2"] = np.where(arr_is_shuffle, col_1, col_2)
-
-    if "preference" in df.columns:
-        df["preference"] = np.where(arr_is_shuffle, 3 - df["preference"], df["preference"])
-
-    return df
-
-
 def is_derangement(arr1, arr2):
     """Whether 2 arrays are derangements of one another"""
     return all([a != b for a, b in zip(arr1, arr2)])
@@ -114,9 +91,11 @@ def _find_first_match(text: str, outputs_to_match: dict[str, Any]) -> tuple[Any,
 
 
 def make_prompts(
-    df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
+    df: pd.DataFrame,
+    template: str,
+    batch_size: int = 1,
 ) -> tuple[list[str], pd.DataFrame]:
-    """Helper function to make batch prompts for a single template.
+    r"""Helper function to make batch prompts for a single template.
 
     Parameters
     ----------
@@ -129,9 +108,6 @@ def make_prompts(
     batch_size : int
         Number of examples to batch in a single prompt.
 
-    padding_example : dict
-        Padding example to use if len(df) not divisible by batch_size.
-
     Returns
     -------
     prompts : list[str]
@@ -143,13 +119,10 @@ def make_prompts(
     Example
     -------
     >>> import pandas as pd
-    >>> from alpaca_eval.utils import make_prompts
-    >>> df = pd.DataFrame({"instruction": ["solve", "write backwards", "other 1"],
-    ...                    "input": ["1+1", "'abc'", ""]})
-    >>> make_prompts(df, template="first: {instruction} {input}, second: {instruction} {input}",
-    ...              batch_size=2, padding_example=dict(instruction="pad", input="pad_in"))[0]
-    ["first: solve 1+1, second: write backwards 'abc'",
-     'first: other 1 , second: pad pad_in']
+    >>> df = pd.DataFrame({"instruction": ["solve", "write backwards", "other 1", "pad"],
+    ...                    "input": ["1+1", "'abc'", "", "pad_in"]})
+    >>> make_prompts(df, template="first: {instruction} {input}, second: {instruction} {input}", batch_size=2)[0]
+    ["first: solve 1+1, second: write backwards 'abc'", 'first: other 1 , second: pad pad_in']
     """
 
     if df.empty:
@@ -161,13 +134,13 @@ def make_prompts(
     if not all([n == batch_size for n in n_occurrences.values()]):
         raise ValueError(f"All placeholders should be repeated batch_size={batch_size} times but {n_occurrences}.")
 
-    # padding if you don't have enough examples
-    n_to_pad = (batch_size - len(df)) % batch_size
-    padding = pd.DataFrame([padding_example] * n_to_pad)
-    padding["is_padding"] = True
-    df_out = pd.concat([df, padding], axis=0, ignore_index=True)
-    df_out["is_padding"] = df_out["is_padding"].fillna(False)
+    if len(df) % batch_size > 0:
+        raise ValueError(
+            f"The number of rows should be dividable by the batch_size={batch_size} but got {len(df)}."
+            "You should use PaddingForBatchesProcessor"
+        )
 
+    df_out = df.copy()
     prompts = []
     # ugly for loops, not trivial to vectorize because of the batching
     for i in range(0, len(df_out), batch_size):
@@ -240,7 +213,7 @@ def convert_ordinal_to_binary_preference(
 def convert_to_dataframe(data: AnyData) -> pd.DataFrame:
     """Convert input that AlpacaEval accepts into a dataframe."""
     if isinstance(data, pd.DataFrame):
-        return data
+        return data.copy()
     elif isinstance(data, datasets.Dataset):
         return data.data.to_pandas()
     elif isinstance(data, list):

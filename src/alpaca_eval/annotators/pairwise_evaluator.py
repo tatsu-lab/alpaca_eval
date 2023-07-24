@@ -53,7 +53,7 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
 
     @property
     def SingleAnnotator(self) -> Type["SingleAnnotator"]:
-        return partial(SinglePairwiseAnnotator, random_seed_column=self.random_seed_key)
+        return SinglePairwiseAnnotator
 
     @property
     def annotation_key(self) -> str:
@@ -340,31 +340,26 @@ class SinglePairwiseAnnotator(SingleAnnotator):
     def __init__(
         self,
         *args,
-        is_randomize_output_order: bool = True,
         annotation_column: str = "preference",
         random_seed_column: Sequence[str] = ("instruction",),
+        processors_to_kwargs: Optional[dict[str, dict]] = None,
+        is_randomize_output_order: bool = True,
         **kwargs,
     ):
-        super().__init__(*args, annotation_column=annotation_column, **kwargs)
-        self.is_randomize_output_order = is_randomize_output_order
-        self.random_seed_column = list(random_seed_column)
-
-    def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
-        if self.is_randomize_output_order:
-            # randomize order of output_1, output_2 base on inputs
-            df_to_annotate["is_switched_outputs"] = df_to_annotate.apply(
-                # we add "is_switched_outputs" at the beginning to not use the same seed for all tasks
-                lambda x: utils.random_seeded_choice(
-                    seed="is_switched_outputs" + "".join(x[self.random_seed_column]) + str(self.seed),
-                    choices=[False, True],
-                ),
-                axis=1,
+        processors_to_kwargs = processors_to_kwargs or {}
+        if is_randomize_output_order:
+            # swith output columns by default
+            processors_to_kwargs["RandomSwitchTwoColumnsProcessor"] = dict(
+                two_columns_to_switch=["output_1", "output_2"],
+                replace_if_switch_kwargs={"preference": {1: 2, 2: 1}},
+                random_seed_columns=random_seed_column,
+                _switch_column="is_switched_outputs",  # backward compatibility
             )
-            df_to_annotate = utils.shuffle_pairwise_preferences(df_to_annotate, df_to_annotate["is_switched_outputs"])
 
-        df_to_annotate = super()._preprocess(df_to_annotate)
-
-        return df_to_annotate
+        super().__init__(
+            *args, annotation_column=annotation_column, processors_to_kwargs=processors_to_kwargs, **kwargs
+        )
+        self.random_seed_column = list(random_seed_column)
 
     def _postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         df_annotated = super()._postprocess(df_annotated)
@@ -372,10 +367,5 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         all_values = df_annotated[self.annotation_column]
         all_values = all_values[~all_values.isna()]
         assert set(all_values.unique().tolist()) <= {0, 1, 2, np.nan}
-
-        if self.is_randomize_output_order:
-            # unshuffles output 1 and output 2. For binary preference, unshuffling is equivalent to reshuffling
-            df_annotated = utils.shuffle_pairwise_preferences(df_annotated, df_annotated["is_switched_outputs"])
-            df_annotated = df_annotated.drop(columns=["is_switched_outputs"])
 
         return df_annotated
