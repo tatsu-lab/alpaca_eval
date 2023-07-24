@@ -472,6 +472,9 @@ class SingleAnnotator:
         A dictionary of BaseProcessor objects to apply for preprocessing the  dataframe before making the prompts and
         prostprocessing after anntoations. The key should be the names of the BaseProcessor objectsto use in
         `processors.py` the values are the kwargs for the constructor of the Processor. Order matters.
+
+    is_add_default_processors : bool, optional
+        Whether to add the default processors to the list of processors.
     """
 
     def __init__(
@@ -488,6 +491,7 @@ class SingleAnnotator:
         annotation_column: str = "annotation",
         is_store_raw_completions: bool = False,
         processors_to_kwargs: Optional[dict[str, dict]] = None,
+        is_add_default_processors: bool = True,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -507,8 +511,14 @@ class SingleAnnotator:
         self.annotation_column = annotation_column
         self.completion_column = "raw_completion" if is_store_raw_completions else None
 
+        self.is_add_default_processors = is_add_default_processors
         self.processors = []
         processors_to_kwargs = processors_to_kwargs or {}
+        if batch_size > 1 and self.is_add_default_processors:
+            processors_to_kwargs["PaddingForBatchesProcessor"] = {
+                "batch_size": batch_size,
+                "padding_example": DUMMY_EXAMPLE,
+            }
         for processor, processor_kwargs in processors_to_kwargs.items():
             processor_kwargs["seed"] = self.seed
             Processor = self._search_processor(processor)
@@ -632,9 +642,6 @@ class SingleAnnotator:
 
     def _postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         """Postprocess the annotated examples."""
-
-        # remove padding examples when using batch_size > 1
-        df_annotated = df_annotated.query("is_padding == False").drop(columns=["is_padding"])
 
         arr_is_na = df_annotated[self.annotation_column].isna()
         if arr_is_na.any():

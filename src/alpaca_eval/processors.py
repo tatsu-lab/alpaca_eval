@@ -13,6 +13,8 @@ import pandas as pd
 
 from . import utils
 
+DUMMY_EXAMPLE = dict(instruction="1+1=", output_1="2", input="", output_2="3")
+
 
 class BaseProcessor(abc.ABC):
     """Base class for a processor."""
@@ -141,3 +143,50 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
             df.loc[is_switch_arr, :] = df.loc[is_switch_arr, :].replace(self.replace_if_unswitch_kwargs)
 
         return df
+
+
+class PaddingForBatchesProcessor(BaseProcessor):
+    r"""Pad the dataframe to have a number of examples divisible by `batch_size`.
+
+    Parameters
+    ----------
+    batch_size : int
+        Number of examples to batch in a single prompt.
+
+    padding_example : dict
+        Padding example to use if len(df) not divisible by batch_size.
+
+    kwargs :
+        Additional arguments to pass to `BaseProcessor`. E.g. seed.
+
+    Examples
+    --------
+    >>> df = pd.DataFrame({"instruction": ["solve", "write", "other 1"],
+    ...                    "input": ["1+1", "'abc'", ""]})
+    >>> processor = PaddingForBatchesProcessor(batch_size=2, padding_example=dict(instruction="pad", input="pad_in"))
+    >>> processor.preprocess(df)
+        instruction   input  is_padding
+    0         solve     1+1       False
+    1         write   'abc'       False
+    2       other 1               False
+    3           pad  pad_in        True
+    >>> (processor.postprocess(processor.preprocess(df)) == df).all(axis=None)
+    True
+    """
+
+    def __init__(self, batch_size, padding_example: dict, **kwargs):
+        self.batch_size = batch_size
+        self.padding_example = padding_example
+        super().__init__(**kwargs)
+
+    def preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
+        # padding if you don't have enough examples
+        n_to_pad = (self.batch_size - len(df_to_annotate)) % self.batch_size
+        padding = pd.DataFrame([self.padding_example] * n_to_pad)
+        padding["is_padding"] = True
+        df_out = pd.concat([df_to_annotate, padding], axis=0, ignore_index=True)
+        df_out["is_padding"] = df_out["is_padding"].fillna(False)
+        return df_out
+
+    def postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
+        return df_annotated[~df_annotated["is_padding"]].drop(columns=["is_padding"]).copy()

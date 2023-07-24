@@ -91,9 +91,11 @@ def _find_first_match(text: str, outputs_to_match: dict[str, Any]) -> tuple[Any,
 
 
 def make_prompts(
-    df: pd.DataFrame, template: str, batch_size: int = 1, padding_example=DUMMY_EXAMPLE
+    df: pd.DataFrame,
+    template: str,
+    batch_size: int = 1,
 ) -> tuple[list[str], pd.DataFrame]:
-    """Helper function to make batch prompts for a single template.
+    r"""Helper function to make batch prompts for a single template.
 
     Parameters
     ----------
@@ -106,9 +108,6 @@ def make_prompts(
     batch_size : int
         Number of examples to batch in a single prompt.
 
-    padding_example : dict
-        Padding example to use if len(df) not divisible by batch_size.
-
     Returns
     -------
     prompts : list[str]
@@ -120,13 +119,10 @@ def make_prompts(
     Example
     -------
     >>> import pandas as pd
-    >>> from alpaca_eval.utils import make_prompts
-    >>> df = pd.DataFrame({"instruction": ["solve", "write backwards", "other 1"],
-    ...                    "input": ["1+1", "'abc'", ""]})
-    >>> make_prompts(df, template="first: {instruction} {input}, second: {instruction} {input}",
-    ...              batch_size=2, padding_example=dict(instruction="pad", input="pad_in"))[0]
-    ["first: solve 1+1, second: write backwards 'abc'",
-     'first: other 1 , second: pad pad_in']
+    >>> df = pd.DataFrame({"instruction": ["solve", "write backwards", "other 1", "pad"],
+    ...                    "input": ["1+1", "'abc'", "", "pad_in"]})
+    >>> make_prompts(df, template="first: {instruction} {input}, second: {instruction} {input}", batch_size=2)[0]
+    ["first: solve 1+1, second: write backwards 'abc'", 'first: other 1 , second: pad pad_in']
     """
 
     if df.empty:
@@ -138,13 +134,13 @@ def make_prompts(
     if not all([n == batch_size for n in n_occurrences.values()]):
         raise ValueError(f"All placeholders should be repeated batch_size={batch_size} times but {n_occurrences}.")
 
-    # padding if you don't have enough examples
-    n_to_pad = (batch_size - len(df)) % batch_size
-    padding = pd.DataFrame([padding_example] * n_to_pad)
-    padding["is_padding"] = True
-    df_out = pd.concat([df, padding], axis=0, ignore_index=True)
-    df_out["is_padding"] = df_out["is_padding"].fillna(False)
+    if len(df) % batch_size > 0:
+        raise ValueError(
+            f"The number of rows should be dividable by the batch_size={batch_size} but got {len(df)}."
+            "You should use PaddingForBatchesProcessor"
+        )
 
+    df_out = df.copy()
     prompts = []
     # ugly for loops, not trivial to vectorize because of the batching
     for i in range(0, len(df_out), batch_size):
