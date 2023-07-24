@@ -10,6 +10,7 @@ import pandas as pd
 
 from .. import completion_parsers, constants, utils
 from ..decoders import get_fn_completions
+from ..processors import BaseProcessor
 
 CURRENT_DIR = Path(__file__).parent
 logging.getLogger().setLevel(logging.INFO)
@@ -135,7 +136,7 @@ class BaseAnnotator(abc.ABC):
 
     def __call__(
         self,
-        to_annotate: Union[Sequence[dict[str, Any]], pd.DataFrame],
+        to_annotate: utils.AnyData,
         **decoding_kwargs,
     ) -> list[dict[str, Any]]:
         """Main function for annotating.
@@ -204,7 +205,7 @@ class BaseAnnotator(abc.ABC):
     def _preprocess(self, to_annotate: utils.AnyData) -> pd.DataFrame:
         """Preprocess the examples to annotate. In particular takes care of filtering unnecessary examples."""
 
-        df_to_annotate = utils.convert_to_dataframe(to_annotate).copy()
+        df_to_annotate = utils.convert_to_dataframe(to_annotate)
         self._add_missing_primary_keys_(df_to_annotate)
 
         for c in self.other_keys_to_keep + [self.annotation_key]:
@@ -255,7 +256,7 @@ class BaseAnnotator(abc.ABC):
     def _postprocess_and_store_(
         self,
         df_annotated: pd.DataFrame,
-        to_annotate: Union[Sequence[dict[str, Any]], pd.DataFrame],
+        to_annotate: utils.AnyData,
     ) -> list[dict[str, Any]]:
         """Convert the dataframe into a list of dictionaries to be returned, and store current anntations."""
 
@@ -467,6 +468,11 @@ class SingleAnnotator:
 
     is_store_raw_completions : bool, optional
         Whether to store raw completions at `"raw_completion"` column in the output dataframe.
+
+    processors_to_kwargs : Sequence[dict(str, dict)], optional
+        A dictionary of BaseProcessor objects to apply for preprocessing the  dataframe before making the prompts and
+        prostprocessing after anntoations. The key should be the names of the BaseProcessor objectsto use in
+        `processors.py` the values are the kwargs for the constructor of the Processor. Order matters.
     """
 
     def __init__(
@@ -482,6 +488,7 @@ class SingleAnnotator:
         base_dir: utils.AnyPath = constants.EVALUATORS_CONFIG_DIR,
         annotation_column: str = "annotation",
         is_store_raw_completions: bool = False,
+        processors_to_kwargs: Optional[dict[str, dict]] = None,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -500,6 +507,13 @@ class SingleAnnotator:
         self.batch_size = batch_size
         self.annotation_column = annotation_column
         self.completion_column = "raw_completion" if is_store_raw_completions else None
+
+        self.processors = []
+        processors_to_kwargs = processors_to_kwargs or {}
+        for processor, processor_kwargs in processors_to_kwargs.items():
+            processor_kwargs["seed"] = self.seed
+            Processor = self._search_processor(processor)
+            self.processors += [Processor(**processor_kwargs)]
 
     ### Public methods ###
     def __call__(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
@@ -550,6 +564,10 @@ class SingleAnnotator:
         """Search for a completion parser by name."""
         return getattr(completion_parsers, name)
 
+    def _search_processor(self, name: str) -> Type["BaseProcessor"]:
+        """Search for a Processor class by name."""
+        return getattr(processors, name)
+
     def _get_prompt_template(self, prompt_template: utils.AnyPath):
         return utils.read_or_return(self.base_dir / prompt_template)
 
@@ -580,6 +598,9 @@ class SingleAnnotator:
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the examples before annotating. In particular, takes care of all the randomization."""
+
+        for processor in self.processors:
+            df_to_annotate = processor.preprocess(df_to_annotate)
 
         if self.is_shuffle:
             df_to_annotate = df_to_annotate.sample(frac=1, random_state=self.seed)
@@ -623,6 +644,9 @@ class SingleAnnotator:
                 f"If you are using chain of thought it might be that max_tokens limit is too low. "
             )
             df_annotated = df_annotated[~arr_is_na]
+
+        for processor in self.processors[::-1]:  # postprocess in reverted order => no interactions between processors
+            df_annotated = processor.postprocess(df_annotated)
 
         return df_annotated
 

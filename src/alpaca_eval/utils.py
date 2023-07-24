@@ -48,29 +48,6 @@ def random_seeded_choice(seed: Union[int, str, float], choices, **kwargs):
     return random.Random(seed).choices(choices, k=1, **kwargs)[0]
 
 
-def shuffle_pairwise_preferences(df: pd.DataFrame, arr_is_shuffle: Sequence[int]) -> pd.DataFrame:
-    """Shuffle the outputs of a pairwise preference dataframe.
-
-    Examples
-    --------
-    >>> df = pd.DataFrame([dict(instruction='2+2', output_1='3', output_2='4', preference=2),
-    ...                    dict(instruction='2+3', output_1='5', output_2='4', preference=1)])
-    >>> print(shuffle_pairwise_preferences(df, [True, False]))
-        instruction output_1 output_2  preference
-    0         2+2        4        3           1
-    1         2+3        5        4           1
-    """
-    col_1 = df["output_1"].copy()
-    col_2 = df["output_2"].copy()
-    df["output_1"] = np.where(arr_is_shuffle, col_2, col_1)
-    df["output_2"] = np.where(arr_is_shuffle, col_1, col_2)
-
-    if "preference" in df.columns:
-        df["preference"] = np.where(arr_is_shuffle, 3 - df["preference"], df["preference"])
-
-    return df
-
-
 def is_derangement(arr1, arr2):
     """Whether 2 arrays are derangements of one another"""
     return all([a != b for a, b in zip(arr1, arr2)])
@@ -240,7 +217,7 @@ def convert_ordinal_to_binary_preference(
 def convert_to_dataframe(data: AnyData) -> pd.DataFrame:
     """Convert input that AlpacaEval accepts into a dataframe."""
     if isinstance(data, pd.DataFrame):
-        return data
+        return data.copy()
     elif isinstance(data, datasets.Dataset):
         return data.data.to_pandas()
     elif isinstance(data, list):
