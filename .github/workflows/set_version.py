@@ -9,7 +9,7 @@ def update_version(file_path, new_version):
 
     # Replace the target string
     version_regex = r"__version__ = ['\"]([^'\"]*)['\"]"
-    filedata = re.sub(version_regex, f"__version__ = '{new_version}'", filedata)
+    filedata = re.sub(version_regex, f'__version__ = "{new_version}"', filedata)
 
     # Write the file out again
     with open(file_path, "w") as file:

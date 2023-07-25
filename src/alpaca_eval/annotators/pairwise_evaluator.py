@@ -124,8 +124,8 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
 
         if len(df_to_annotate) != n_pre_drop:
             logging.warning(
-                f"""Filtered rows because of duplicate outputs for the same keys_to_sample_output_2=
-                {keys_to_sample_output_2}. {n_pre_drop} -> {len(df_to_annotate)}"""
+                f"Filtered rows because of duplicate outputs for the same keys_to_sample_output_2="
+                f"{keys_to_sample_output_2}. {n_pre_drop} -> {len(df_to_annotate)}"
             )
 
         # sample an output 2 for each output 1 that are different
@@ -229,10 +229,9 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
 
             if not (len(outputs_1) == len(outputs_2) == len(df_to_annotate)):
                 logging.warning(
-                    f"""The length of outputs before and after merge are not the same. We have len(outputs_1)==
-                    {len(outputs_1)}, len(outputs_2)=={len(outputs_2)}, and len(df_annotated)=={len(df_to_annotate)}. 
-                    This means that there are missing examples or duplicates. We are taking a SQL inner join.
-                    """
+                    f"The length of outputs before and after merge are not the same. We have len(outputs_1)=="
+                    f"{len(outputs_1)}, len(outputs_2)=={len(outputs_2)}, and len(df_annotated)=={len(df_to_annotate)}."
+                    f" This means that there are missing examples or duplicates. We are taking a SQL inner join."
                 )
 
         out = self.__call__(df_to_annotate, **decoding_kwargs)

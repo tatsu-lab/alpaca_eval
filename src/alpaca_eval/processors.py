@@ -92,7 +92,7 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
 
         if random_seed_columns is None:
             random_seed_columns = two_columns_to_switch
-        self.random_seed_columns = list(random_seed_columns)
+        self.random_seed_columns = sorted(list(random_seed_columns))
 
         super().__init__(**kwargs)
 
