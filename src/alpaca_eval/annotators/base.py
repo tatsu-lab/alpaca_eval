@@ -69,7 +69,7 @@ class BaseAnnotator(abc.ABC):
     """
 
     DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
-    annotator_columns = "annotator"
+    annotator_column = "annotator"
     TMP_MISSING_ANNOTATION = -1
     DEFAULT_ANNOTATION_TYPE = int
 
@@ -94,7 +94,7 @@ class BaseAnnotator(abc.ABC):
         self.seed = seed
         self.is_avoid_reannotations = is_avoid_reannotations
         self.primary_keys = list(primary_keys)
-        self.all_keys = self.primary_keys + [self.annotator_columns]
+        self.all_keys = self.primary_keys + [self.annotator_column]
         self.other_keys_to_keep = list(other_keys_to_keep)
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
@@ -216,7 +216,7 @@ class BaseAnnotator(abc.ABC):
         df_to_annotate = df_to_annotate.drop_duplicates(subset=self.primary_keys)
 
         # set the annotater for each example
-        df_to_annotate[self.annotator_columns] = df_to_annotate.apply(
+        df_to_annotate[self.annotator_column] = df_to_annotate.apply(
             lambda x: utils.random_seeded_choice(
                 # we add "annotator" at the beginning to not use the same seed for all tasks
                 seed="annotator" + "".join(x[self.random_seed_key]) + str(self.seed),
@@ -236,7 +236,7 @@ class BaseAnnotator(abc.ABC):
         df_annotated = df_to_annotate
         for annotator in self.annotators.keys():
             # only annotate examples that have not been annotated yet
-            curr_idcs = df_annotated[self.annotator_columns] == annotator
+            curr_idcs = df_annotated[self.annotator_column] == annotator
             if self.annotation_key in df_annotated.columns:
                 curr_idcs &= df_annotated[self.annotation_key].isna()
 
