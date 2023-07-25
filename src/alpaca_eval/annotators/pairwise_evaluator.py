@@ -346,6 +346,7 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         **kwargs,
     ):
         processors_to_kwargs = processors_to_kwargs or {}
+        self.is_randomize_output_order = is_randomize_output_order
         if is_randomize_output_order:
             # swith output columns by default
             processors_to_kwargs["RandomSwitchTwoColumnsProcessor"] = dict(
