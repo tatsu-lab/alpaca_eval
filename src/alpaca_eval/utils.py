@@ -432,3 +432,16 @@ def get_generator_name(name, model_outputs):
         except:
             name = "Current model"
     return name
+
+
+def get_module_attribute(module, func_name):
+    """getattr but only if it's in __all__"""
+    if func_name in module.__all__:
+        return getattr(module, func_name)
+    elif hasattr(module, func_name):
+        raise AttributeError(
+            f"The function {func_name} is not allowed,add it to __all__ if needed."
+            f" Available functions: {module.__all__}"
+        )
+    else:
+        raise AttributeError(f"The function {func_name} does not exist. Available functions: {module.__all__}")
