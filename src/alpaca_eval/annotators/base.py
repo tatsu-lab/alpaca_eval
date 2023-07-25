@@ -209,7 +209,7 @@ class BaseAnnotator(abc.ABC):
 
         for c in self.other_keys_to_keep + [self.annotation_key]:
             if c in df_to_annotate.columns:
-                logging.warning(f"""{c} column is already in the dataframe. We will overwrite it.""")
+                logging.warning(f"{c} column is already in the dataframe. We will overwrite it.")
                 df_to_annotate[c] = None
 
         # remove duplicates because you only need to annotate one of them
