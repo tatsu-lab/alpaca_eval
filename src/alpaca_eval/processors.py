@@ -14,6 +14,7 @@ import pandas as pd
 from . import utils
 
 DUMMY_EXAMPLE = dict(instruction="1+1=", output_1="2", input="", output_2="3")
+__all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor"]
 
 
 class BaseProcessor(abc.ABC):
