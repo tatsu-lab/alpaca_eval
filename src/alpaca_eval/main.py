@@ -190,6 +190,7 @@ def evaluate_from_model(
     max_instances: int = None,
     is_strip_output: bool = True,
     is_load_outputs: bool = True,
+    chunksize: int = 64,
     **kwargs,
 ):
     """Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes
@@ -231,10 +232,16 @@ def evaluate_from_model(
         Whether to try to load outputs from the output path. If True and outputs exist we only generate outputs for
         instructions that don't have outputs yet.
 
+    chunksize : int, optional
+        Number of instances to generate before saving. If None, we save after all generations.
+
     kwargs:
         Other kwargs to `evaluate`
     """
-    evaluation_dataset = utils.load_or_convert_to_dataframe(evaluation_dataset)
+    df_dataset = utils.load_or_convert_to_dataframe(evaluation_dataset)
+
+    if chunksize is not None and not is_load_outputs:
+        logging.info("`is_load_outputs` has to be true to use chunksize. Setting it to True.")
 
     model_configs = utils.load_configs(model_configs, relative_to=constants.MODELS_CONFIG_DIR)
     if reference_model_configs is not None:
@@ -246,10 +253,10 @@ def evaluate_from_model(
         output_path = Path(output_path)
         output_path.mkdir(exist_ok=True, parents=True)
 
-    def get_completions(configs, old_output_path: Optional[Path] = None):
+    def get_completions(configs, df: pd.DataFrame, old_output_path: Optional[Path] = None):
         columns_to_keep = ["dataset", "instruction", "output", "generator"]
-        columns_to_keep = [c for c in columns_to_keep if c in evaluation_dataset.columns]
-        curr_outputs = evaluation_dataset[columns_to_keep].copy()
+        columns_to_keep = [c for c in columns_to_keep if c in df.columns]
+        curr_outputs = df[columns_to_keep].copy()
 
         if old_output_path is not None and old_output_path.exists():
             logging.info(f"Loading outputs from {old_output_path}")
@@ -264,37 +271,46 @@ def evaluate_from_model(
         assert len(configs) == 1
         generator = list(configs.keys())[0]
         configs = list(configs.values())[0]
-        prompts, _ = utils.make_prompts(
-            curr_outputs,
-            template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
-        )
-        fn_completions = decoders.get_fn_completions(configs["fn_completions"])
-        completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])["completions"]
-        if is_strip_output:
-            completions = [c.strip() for c in completions]
-        curr_outputs["output"] = completions
-        curr_outputs["generator"] = generator
+
+        if len(curr_outputs) > 0:
+            prompts, _ = utils.make_prompts(
+                curr_outputs,
+                template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
+            )
+            fn_completions = decoders.get_fn_completions(configs["fn_completions"])
+            completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])["completions"]
+            if is_strip_output:
+                completions = [c.strip() for c in completions]
+            curr_outputs["output"] = completions
+            curr_outputs["generator"] = generator
 
         if old_output_path is not None and old_output_path.exists():
             curr_outputs = pd.concat([cached_outputs, curr_outputs], axis=0)
 
         return curr_outputs
 
-    if is_load_outputs and output_path is not None:
-        model_outputs = get_completions(model_configs, old_output_path=output_path / "model_outputs.json")
-    else:
-        model_outputs = get_completions(model_configs)
+    for df_chunk in utils.dataframe_chunk_generator(df_dataset, chunksize=chunksize):
+        if is_load_outputs and output_path is not None:
+            model_outputs = get_completions(
+                model_configs, df=df_chunk, old_output_path=output_path / "model_outputs.json"
+            )
+        else:
+            model_outputs = get_completions(model_configs, df=df_chunk)
 
-    if reference_model_configs is None:
-        if "output" not in evaluation_dataset.columns:
-            raise ValueError("evaluation_dataset should have a column 'output' containing references outputs")
-        reference_outputs = evaluation_dataset.copy()
-    else:
-        reference_outputs = get_completions(reference_model_configs)  # Note: could also use old_output_path here
+        if reference_model_configs is None:
+            if "output" not in df_chunk.columns:
+                raise ValueError("evaluation_dataset should have a column 'output' containing references outputs")
+            reference_outputs = df_chunk.copy()
+        else:
+            reference_outputs = get_completions(
+                reference_model_configs,
+                df=df_chunk,
+                old_output_path=output_path / "reference_outputs.json",
+            )
 
-    if output_path is not None:
-        model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
-        reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
+        if output_path is not None:
+            model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
+            reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
 
     return evaluate(
         model_outputs=model_outputs,
