@@ -1109,9 +1109,7 @@ Those can broadly be clustered into 3 categories:
 1. **Instructions might not be representative of real-usage**:  the AlpacaEval set contains examples from a variety of
    datasets ([self-instruct](https://github.com/yizhongw/self-instruct),
    [open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test))
-   which might not be representative of real-usage and advanced applications of better models like GPT4. As a
-   result, the gap between the top and the rest of the AlpacaEval leaderboard is likely smaller than it would be on more
-   complex instructions. See for
+   which might not be representative of real-usage and advanced applications of better models like GPT4. This likely makes the best closed models (GPT4 / Claude / ChatGPT / ...) seem more similar to the open models than what they are. Indeed, those closed models seem to be pretrained/finetuned on much more diverse data. See for
    example [this blog](https://medium.com/@marcotcr/exploring-chatgpt-vs-open-source-models-on-slightly-harder-tasks-aa0395c31610)
    for preliminary results on more complex instructions.
    Note, however, that in [AlpacaFarm](https://arxiv.org/abs/2305.14387) we showed that win-rates on our evaluation set
