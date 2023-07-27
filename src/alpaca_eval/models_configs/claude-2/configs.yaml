@@ -3,5 +3,5 @@ claude-2:
   fn_completions: "anthropic_completions"
   completions_kwargs:
     model_name: "claude-2"
-    max_tokens_to_sample: 2048
+    max_tokens_to_sample: 4096
   pretty_name: "Claude 2"

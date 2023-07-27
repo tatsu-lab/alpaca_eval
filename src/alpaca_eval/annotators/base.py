@@ -136,6 +136,7 @@ class BaseAnnotator(abc.ABC):
     def __call__(
         self,
         to_annotate: utils.AnyData,
+        chunksize: Optional[int] = 128,
         **decoding_kwargs,
     ) -> list[dict[str, Any]]:
         """Main function for annotating.
@@ -144,6 +145,9 @@ class BaseAnnotator(abc.ABC):
         ----------
         to_annotate : list of dict or dataframe
             Examples to annotate. Each dictionary (or row) should contain all of `self.primary_keys`.
+
+        chunksize : int, optional
+            The number of rows to annotate at once => ensures that if there is an error, you still get some annotations.
 
         **decoding_kwargs :
             Additional arguments to pass to `fn_completions`.
@@ -156,10 +160,15 @@ class BaseAnnotator(abc.ABC):
         if len(to_annotate) == 0:
             return []
 
-        df_to_annotate = self._preprocess(to_annotate)
-        df_annotated = self._annotate(df_to_annotate, **decoding_kwargs)
-        annotated = self._postprocess_and_store_(df_annotated, to_annotate)
-        return annotated
+        # note: not ideal potentially doing a lot of dataframe copies. But given that they should be small, ~ok
+        df_to_annotate = utils.convert_to_dataframe(to_annotate)
+        all_annotated = []
+        for df_chunk in utils.dataframe_chunk_generator(df_to_annotate, chunksize, tqdm_desc="Annotation chunk"):
+            curr_df_to_annotate = self._preprocess(df_chunk)
+            df_annotated = self._annotate(curr_df_to_annotate, **decoding_kwargs)
+            annotated = self._postprocess_and_store_(df_annotated, df_chunk)
+            all_annotated.extend(annotated)
+        return all_annotated
 
     #######################
 
