@@ -149,7 +149,6 @@ def evaluate(
         utils.prioritize_elements(list(df_leaderboard.columns), ["win_rate", "standard_error"])
     ]
 
-    breakpoint()
     if output_path is not None:
         logging.info(f"Saving all results to {output_path}")
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
