@@ -189,6 +189,7 @@ def evaluate_from_model(
     output_path: AnyPath = "auto",
     max_instances: int = None,
     is_strip_output: bool = True,
+    is_load_outputs: bool = True,
     **kwargs,
 ):
     """Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes
@@ -226,6 +227,10 @@ def evaluate_from_model(
     is_strip_output : bool, optional
         Whether to strip trailing and leading whitespaces from the outputs.
 
+    is_load_outputs : bool, optional
+        Whether to try to load outputs from the output path. If True and outputs exist we only generate outputs for
+        instructions that don't have outputs yet.
+
     kwargs:
         Other kwargs to `evaluate`
     """
@@ -235,10 +240,25 @@ def evaluate_from_model(
     if reference_model_configs is not None:
         reference_model_configs = utils.load_configs(reference_model_configs, relative_to=constants.MODELS_CONFIG_DIR)
 
-    def get_completions(configs):
-        columns_to_keep = ["dataset", "instruction", "output"]
+    if output_path == "auto":
+        output_path = Path("results") / list(model_configs.keys())[0]
+    if output_path is not None:
+        output_path = Path(output_path)
+        output_path.mkdir(exist_ok=True, parents=True)
+
+    def get_completions(configs, old_output_path: Optional[Path] = None):
+        columns_to_keep = ["dataset", "instruction", "output", "generator"]
         columns_to_keep = [c for c in columns_to_keep if c in evaluation_dataset.columns]
-        curr_outputs = evaluation_dataset.copy()[columns_to_keep]
+        curr_outputs = evaluation_dataset[columns_to_keep].copy()
+
+        if old_output_path is not None and old_output_path.exists():
+            logging.info(f"Loading outputs from {old_output_path}")
+            old_outputs = utils.load_or_convert_to_dataframe(old_output_path)
+            # select only rows in curr_outputs that have "instruction" that are not in old_outputs
+            idx_found_old_outputs = curr_outputs["instruction"].isin(old_outputs["instruction"])
+            cached_outputs = curr_outputs[idx_found_old_outputs]
+            curr_outputs = curr_outputs[~idx_found_old_outputs]
+
         if max_instances is not None:
             curr_outputs = curr_outputs.iloc[:max_instances]
         assert len(configs) == 1
@@ -254,22 +274,25 @@ def evaluate_from_model(
             completions = [c.strip() for c in completions]
         curr_outputs["output"] = completions
         curr_outputs["generator"] = generator
+
+        if old_output_path is not None and old_output_path.exists():
+            curr_outputs = pd.concat([cached_outputs, curr_outputs], axis=0)
+
         return curr_outputs
 
-    model_outputs = get_completions(model_configs)
+    if is_load_outputs and output_path is not None:
+        model_outputs = get_completions(model_configs, old_output_path=output_path / "model_outputs.json")
+    else:
+        model_outputs = get_completions(model_configs)
+
     if reference_model_configs is None:
         if "output" not in evaluation_dataset.columns:
             raise ValueError("evaluation_dataset should have a column 'output' containing references outputs")
         reference_outputs = evaluation_dataset.copy()
     else:
-        reference_outputs = get_completions(reference_model_configs)
-
-    if output_path == "auto":
-        output_path = Path("results") / (model_outputs["generator"].iloc[0])
+        reference_outputs = get_completions(reference_model_configs)  # Note: could also use old_output_path here
 
     if output_path is not None:
-        output_path = Path(output_path)
-        output_path.mkdir(exist_ok=True, parents=True)
         model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
         reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
 
