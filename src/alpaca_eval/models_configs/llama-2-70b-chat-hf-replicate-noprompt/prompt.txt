@@ -1,1 +1,1 @@
-{instruction}
+[INST] {instruction} [/INST]
