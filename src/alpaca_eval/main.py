@@ -87,9 +87,9 @@ def evaluate(
         The key by which to sort the leaderboard.
 
     is_cache_leaderboard : bool, optional
-        Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances.
-        A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the previously
-        saved leaderboard at `<output_path>/leaderboard.csv`.
+        Whether to save the result leaderboard to `precomputed_leaderboard`. If None we save only if max_instances
+        not None. A preferred way of adding models to the leaderboard is to set `precomputed_leaderboard` to the
+        previously saved leaderboard at `<output_path>/leaderboard.csv`.
 
     max_instances : int, optional
         The maximum number of instances to annotate. Useful for testing.
@@ -303,7 +303,7 @@ def evaluate_from_model(
         if reference_model_configs is None:
             if "output" not in df_chunk.columns:
                 raise ValueError("evaluation_dataset should have a column 'output' containing references outputs")
-            reference_outputs = df_chunk.copy()
+            reference_outputs = df_dataset.copy()
         else:
             reference_outputs = get_completions(
                 reference_model_configs,

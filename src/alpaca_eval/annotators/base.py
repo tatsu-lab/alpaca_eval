@@ -160,13 +160,15 @@ class BaseAnnotator(abc.ABC):
         if len(to_annotate) == 0:
             return []
 
-        # note: not ideal potentially doing a lot of dataframe copies. But given that they should be small, it's fine
+        # note: not ideal potentially doing a lot of dataframe copies. But given that they should be small, ~ok
         df_to_annotate = utils.convert_to_dataframe(to_annotate)
+        all_annotated = []
         for df_chunk in utils.dataframe_chunk_generator(df_to_annotate, chunksize, tqdm_desc="Annotation chunk"):
-            df_to_annotate = self._preprocess(df_chunk)
-            df_annotated = self._annotate(df_to_annotate, **decoding_kwargs)
+            curr_df_to_annotate = self._preprocess(df_chunk)
+            df_annotated = self._annotate(curr_df_to_annotate, **decoding_kwargs)
             annotated = self._postprocess_and_store_(df_annotated, df_chunk)
-        return annotated
+            all_annotated.extend(annotated)
+        return all_annotated
 
     #######################
 
