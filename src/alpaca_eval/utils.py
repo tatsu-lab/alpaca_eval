@@ -402,6 +402,7 @@ def get_output_path(output_path, model_outputs, name):
     if output_path is not None:
         output_path = Path(output_path)
         output_path.mkdir(exist_ok=True, parents=True)
+    return output_path
 
 
 def print_leaderboard(df_leaderboard, leaderboard_mode, cols_to_print, current_name=None):
