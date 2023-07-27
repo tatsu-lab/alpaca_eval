@@ -290,7 +290,9 @@ def evaluate_from_model(
 
         return curr_outputs
 
-    for df_chunk in utils.dataframe_chunk_generator(df_dataset, chunksize=chunksize):
+    for df_chunk in utils.dataframe_chunk_generator(
+        df_dataset, chunksize=chunksize, tqdm_desc="Chunking for generation"
+    ):
         if is_load_outputs and output_path is not None:
             model_outputs = get_completions(
                 model_configs, df=df_chunk, old_output_path=output_path / "model_outputs.json"
