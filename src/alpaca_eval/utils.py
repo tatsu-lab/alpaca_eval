@@ -17,6 +17,7 @@ import datasets
 import numpy as np
 import pandas as pd
 import pkg_resources
+import tqdm
 import yaml
 
 from . import constants
@@ -445,3 +446,37 @@ def get_module_attribute(module, func_name):
         )
     else:
         raise AttributeError(f"The function {func_name} does not exist. Available functions: {module.__all__}")
+
+
+def dataframe_chunk_generator(df: pd.DataFrame, chunksize: Optional[int] = None, tqdm_desc: Optional[str] = None):
+    """Generator that yields chunks of a dataframe.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The dataframe to split into chunks.
+
+    chunksize : int, optional
+        The size of the chunks. If None, the chunksize will be the length of the dataframe.
+
+    tqdm_desc : bool, optional
+        Description to display in the tqdm progress bar. If None, no progress bar will be displayed.
+    """
+    if chunksize is None:
+        chunksize = max(1, len(df))
+
+    iterator = range(0, len(df), chunksize)
+
+    if tqdm_desc is not None:
+        iterator = tqdm.tqdm(iterator, desc=tqdm_desc)
+
+    n_iter = len(df) // chunksize
+
+    for i in iterator:
+        df_chunk = df.iloc[i : i + chunksize]
+
+        # if many iterations then better to copy the dataframe to avoid memory issues
+        if n_iter > 1:
+            df_chunk = df_chunk.copy()
+
+        yield df_chunk
