@@ -268,7 +268,7 @@ def evaluate_from_model(
             # select only rows in curr_outputs that have "instruction" that are not in old_outputs
             idx_found_old_outputs = curr_outputs["instruction"].isin(old_outputs["instruction"])
             curr_outputs = curr_outputs[~idx_found_old_outputs]
-            assert (cached_outputs["generator"] == generator).all()
+            assert (old_outputs["generator"] == generator).all()
 
         if max_instances is not None:
             curr_outputs = curr_outputs.iloc[:max_instances]
