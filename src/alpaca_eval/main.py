@@ -257,20 +257,21 @@ def evaluate_from_model(
         columns_to_keep = ["dataset", "instruction", "output", "generator"]
         columns_to_keep = [c for c in columns_to_keep if c in df.columns]
         curr_outputs = df[columns_to_keep].copy()
+        is_loading_old_outputs = old_output_path is not None and old_output_path.exists()
+        assert len(configs) == 1
+        generator = list(configs.keys())[0]
+        configs = list(configs.values())[0]
 
-        if old_output_path is not None and old_output_path.exists():
+        if is_loading_old_outputs:
             logging.info(f"Loading outputs from {old_output_path}")
             old_outputs = utils.load_or_convert_to_dataframe(old_output_path)
             # select only rows in curr_outputs that have "instruction" that are not in old_outputs
             idx_found_old_outputs = curr_outputs["instruction"].isin(old_outputs["instruction"])
-            cached_outputs = curr_outputs[idx_found_old_outputs]
             curr_outputs = curr_outputs[~idx_found_old_outputs]
+            assert (cached_outputs["generator"] == generator).all()
 
         if max_instances is not None:
             curr_outputs = curr_outputs.iloc[:max_instances]
-        assert len(configs) == 1
-        generator = list(configs.keys())[0]
-        configs = list(configs.values())[0]
 
         if len(curr_outputs) > 0:
             prompts, _ = utils.make_prompts(
@@ -284,8 +285,8 @@ def evaluate_from_model(
             curr_outputs["output"] = completions
             curr_outputs["generator"] = generator
 
-        if old_output_path is not None and old_output_path.exists():
-            curr_outputs = pd.concat([cached_outputs, curr_outputs], axis=0)
+        if is_loading_old_outputs:
+            curr_outputs = pd.concat([old_outputs, curr_outputs], axis=0)
 
         return curr_outputs
 
