@@ -6,5 +6,5 @@ llama-2-70b-chat-hf:
     max_length: 4096
     temperature: 0.7
     top_p: 1.0
-  pretty_name: "LLaMA2 Chat 70B Replicate No Prompt"
+  pretty_name: "LLaMA2 Chat 70B"
   link: "https://ai.meta.com/llama/"
