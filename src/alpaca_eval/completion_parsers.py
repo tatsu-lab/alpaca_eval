@@ -186,7 +186,7 @@ def replace_parser(completion: str, replacer: dict, default_replacer: Any = "aut
     Examples
     --------
     >>> replace_parser("True", replacer={"True": 1})
-    1
+    [1]
     """
     return [replacer.get(completion, completion if default_replacer == "auto" else default_replacer)]
 
