@@ -26,5 +26,10 @@ alpaca_eval_gpt4_fn:
                     type: "number"
                     description: "Order of preference of the model, 1 has the best output"
         "required": [ "ordered_models" ]
-  fn_completion_parser: "ranking_parser"
+  fn_completion_parser: "pipeline_meta_parser"
+  completion_parser_kwargs:
+      parsers_to_kwargs:
+        json_parser:
+          annotation_key: "ordered_models"
+      "ranking_parser": {}
   batch_size: 1

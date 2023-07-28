@@ -631,6 +631,9 @@ class SingleAnnotator:
         all_completions = []
         for completion in completions:
             try:
+                import pdb
+
+                pdb.set_trace()
                 batch_annotations = self.fn_completion_parser(completion)
                 batch_annotations = list(batch_annotations)
 
