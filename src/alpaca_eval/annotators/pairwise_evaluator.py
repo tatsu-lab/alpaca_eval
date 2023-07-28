@@ -60,7 +60,7 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
         return "preference"
 
     @property
-    def random_seed_key(self) -> list[str]:
+    def random_seed_keys(self) -> list[str]:
         return list(self.input_keys)
 
     def annotate_samples(
@@ -287,7 +287,7 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
             noisy_preference = df_to_annotate.apply(
                 # we add "noisy_label" at the beginning to use ~independent seeds between tasks
                 lambda x: utils.random_seeded_choice(  # seed on inputs for reproducibility
-                    seed="noisy_preference" + "".join(x[self.random_seed_key]) + str(self.seed),
+                    seed="noisy_preference" + "".join(x[self.random_seed_keys]) + str(self.seed),
                     choices=[np.nan, 1, 2],
                     weights=[1 - p_noise, self.p_label_flip, self.p_label_flip],
                 ),
@@ -331,7 +331,7 @@ class SinglePairwiseAnnotator(SingleAnnotator):
     is_randomize_output_order : bool
         Whether to randomize output_1, output_2 when formatting.
         
-    random_seed_key : str
+    random_seed_keys : str
         The column to use to seed the randomization of output_1, output_2.
     """
     )

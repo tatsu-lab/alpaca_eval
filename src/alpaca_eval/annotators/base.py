@@ -106,13 +106,12 @@ class BaseAnnotator(abc.ABC):
 
     ### Abstract methods ###
 
-    @property
-    @abc.abstractmethod
-    def SingleAnnotator(self) -> Type["SingleAnnotator"]:
-        """Class to use for each single annotator."""
-        pass
-
     #######################
+    @property
+    def SingleAnnotator(self) -> Type["SingleAnnotator"]:
+        """Class to use for each annotator."""
+        return SingleAnnotator
+
     @property
     def available_fields_to_format(self):
         """Fields that can be formatted in the prompt template."""
@@ -124,7 +123,7 @@ class BaseAnnotator(abc.ABC):
         return "annotation"
 
     @property
-    def random_seed_key(self) -> list[str]:
+    def random_seed_keys(self) -> list[str]:
         """What key / column to seed on for the random generator."""
         return list(self.primary_keys)
 
@@ -228,7 +227,7 @@ class BaseAnnotator(abc.ABC):
         df_to_annotate[self.annotator_column] = df_to_annotate.apply(
             lambda x: utils.random_seeded_choice(
                 # we add "annotator" at the beginning to not use the same seed for all tasks
-                seed="annotator" + "".join(x[self.random_seed_key]) + str(self.seed),
+                seed="annotator" + "".join(x[self.random_seed_keys]) + str(self.seed),
                 choices=list(self.annotators.keys()),
             ),
             axis=1,
