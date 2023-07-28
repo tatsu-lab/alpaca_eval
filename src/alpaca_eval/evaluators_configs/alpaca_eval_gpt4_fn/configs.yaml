@@ -31,5 +31,5 @@ alpaca_eval_gpt4_fn:
       parsers_to_kwargs:
         json_parser:
           annotation_key: "ordered_models"
-      "ranking_parser": {}
+        ranking_parser: {}
   batch_size: 1

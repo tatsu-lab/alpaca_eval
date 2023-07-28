@@ -222,7 +222,10 @@ def pipeline_meta_parser(
     rest_of_parsers_to_kwargs = dict(zip(all_parsers[1:], all_kwargs[1:]))
     if len(rest_of_parsers_to_kwargs) > 0:
         out = [
-            pipeline_meta_parser(o, rest_of_parsers_to_kwargs, is_squeeze=is_squeeze, _depth=_depth + 1) for o in out
+            pipeline_meta_parser(
+                o, parsers_to_kwargs=rest_of_parsers_to_kwargs, is_squeeze=is_squeeze, _depth=_depth + 1
+            )
+            for o in out
         ]
 
     if is_squeeze and len(out) == 1 and _depth != 0:
