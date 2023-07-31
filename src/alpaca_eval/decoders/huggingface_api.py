@@ -18,7 +18,7 @@ def huggingface_api_completions(
     model_name: str,
     gpu: bool = False,
     do_sample: bool = False,
-    num_procs: int = 8,
+    num_procs: int = 1,
     **kwargs,
 ) -> dict[str, list]:
     """Decode with the API from hugging face hub.
@@ -96,7 +96,7 @@ def inference_helper(prompt: str, inference, params, n_retries=100, waiting_time
             elif "Input validation error" in error and "max_new_tokens" in error:
                 params["max_new_tokens"] = int(params["max_new_tokens"] * 0.8)
                 logging.warning(
-                    f"`max_new_tokens` too large. Reducing target length to {params['max_tokens']}, " f"Retrying..."
+                    f"`max_new_tokens` too large. Reducing target length to {params['max_new_tokens']}, " f"Retrying..."
                 )
                 if params["max_new_tokens"] == 0:
                     raise ValueError(f"Error in inference. Full error: {error}")
