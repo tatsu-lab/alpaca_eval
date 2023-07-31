@@ -242,6 +242,11 @@ def evaluate_from_model(
 
     if chunksize is not None and not is_load_outputs:
         logging.info("`is_load_outputs` has to be true to use chunksize. Setting it to True.")
+        is_load_outputs = True
+
+    if chunksize is not None and max_instances is not None:
+        logging.info("cannot use `chunksize` with max_instances. Setting `chunksize` to None.")
+        chunksize = None
 
     model_configs = utils.load_configs(model_configs, relative_to=constants.MODELS_CONFIG_DIR)
     if reference_model_configs is not None:
