@@ -62,6 +62,7 @@ Details in [limitations](#limitations).
     - [Contributing a model](#contributing-a-model)
     - [Contributing an evaluator](#contributing-an-evaluator)
     - [Contributing an eval set](#contributing-an-eval-set)
+    - [Contributing a completion function](#contributing-a-completion-function)
 6. [Limitations](#limitations)
 7. [Citation](#citation)
 8. [Additional information](#additional-information)
@@ -1096,6 +1097,23 @@ alpaca_eval make_leaderboard \
 ```
 
 Please submit a PR with the eval set json and corresponding leaderboard csv.
+
+</details>
+
+
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Contributing a completion function</h2></summary>
+
+Currently, we allow different completion functions, e.g., `openai`, `anthropic`, `huggingface_local`, `huggingface_hub_api` ... If you want to contribute a new completion function / API with which to perform inference then follow those steps:
+1. add a file <name>.py with a function  `<name>_completions(prompts : Sequence[str], model_name :str, ... )`  in the [decoder folder](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/decoders). This function should take as argument the prompts + kwargs and return the completions. Please look at other completion functions in the directory for templates. E.g. [huggingface_local_completions](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/huggingface_local.py) or [anthropic](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/anthropic.py).
+2. add `<name>_completions` and dependencies in [__init__](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py) . Again you can follow the example of [huggingface_local_completions](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/decoders/__init__.py#L30)
+3. update optional dependencies in [setup.py](https://github.com/tatsu-lab/alpaca_eval/blob/main/setup.py)
+4. add a model you want to evaluate in the [models configs](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/models_configs)
+5. evaluate your model using `alpaca_eval evaluate_from_model --model_configs '<model_configs>'`
+6. (optional) push the results from the previous model on AlpacaEval leaderboard following [those steps](https://github.com/tatsu-lab/alpaca_eval/tree/main#contributing-a-model)
+
+Feel free to start a PR early, we'll be able to provide some help in the process! 
 
 </details>
 
