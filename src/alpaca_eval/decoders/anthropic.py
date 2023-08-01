@@ -35,7 +35,7 @@ def anthropic_completions(
         Number of parallel processes to use for decoding.
 
     decoding_kwargs :
-        Additional kwargs to pass to `anthropic.Client.completion`.
+        Additional kwargs to pass to `anthropic.Anthropic.create`.
     """
 
     n_examples = len(prompts)
