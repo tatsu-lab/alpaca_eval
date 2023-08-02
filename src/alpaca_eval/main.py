@@ -320,6 +320,11 @@ def evaluate_from_model(
             model_outputs.to_json(output_path / "model_outputs.json", orient="records", indent=2)
             reference_outputs.to_json(output_path / "reference_outputs.json", orient="records", indent=2)
 
+    if reference_model_configs is None:
+        # using a default reference outputs => uses the right leaderboard
+        if evaluation_dataset in [constants.ALPACAEVAL_REFERENCE_OUTPUTS]:
+            reference_outputs = evaluation_dataset
+
     return evaluate(
         model_outputs=model_outputs,
         reference_outputs=reference_outputs,
