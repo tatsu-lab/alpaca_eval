@@ -9,5 +9,5 @@ openbuddy-llama-65b-v8:
     temperature: 0.7
     top_p: 1.0
     do_sample: True
-  pretty_name: "OpenBudddy-LLaMA-65B-v8"
+  pretty_name: "OpenBuddy-LLaMA-65B-v8"
   link: "https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16"
