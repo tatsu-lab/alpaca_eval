@@ -8,9 +8,11 @@ WizardLM 13B V1.2,89.1656288916563,1635,https://huggingface.co/WizardLM/WizardLM
 Vicuna 33B v1.3,88.99253731343283,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 Claude,88.38509316770187,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,minimal
 OpenChat V2-W 13B,87.1268656716418,1566,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
+OpenBudddy-LLaMA-65B-v8,86.53366583541147,1162,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
 WizardLM 13B V1.1,86.31840796019901,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
 OpenChat V2 13B,84.96894409937889,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
 Vicuna 13B v1.3,82.11180124223603,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.3/model_outputs.json,verified
+OpenBudddy-LLaMA-30B-v7.1,81.54613466334165,968,https://huggingface.co/OpenBuddy/openbuddy-llama-30b-v7.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-30b-v7.1/model_outputs.json,community
 LLaMA2 Chat 13B,81.09452736318407,1513,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-13b-chat-hf/model_outputs.json,minimal
 OpenChat-13B,80.8695652173913,1632,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-13b/model_outputs.json,community
 UltraLM 13B,80.63511830635119,1087,https://github.com/thunlp/UltraChat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b/model_outputs.json,community
@@ -23,6 +25,7 @@ airoboros 33B,73.29192546583852,1514,https://huggingface.co/jondurbin/airoboros-
 Guanaco 65B,71.80124223602485,1249,https://huggingface.co/timdettmers/guanaco-65b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-65b/model_outputs.json,minimal
 LLaMA2 Chat 7B,71.36645962732919,1479,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-7b-chat-hf/model_outputs.json,minimal
 Vicuna 13B,70.43478260869566,1037,https://huggingface.co/lmsys/vicuna-13b-delta-v1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b/model_outputs.json,minimal
+OpenBuddy-Falcon-7b-v6,70.36114570361146,1152,https://huggingface.co/OpenBuddy/openbuddy-falcon-7b-v6-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-falcon-7b-v6/model_outputs.json,community
 Baize-v2 13B,66.95652173913044,930,https://huggingface.co/project-baize/baize-v2-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baize-v2-13b/model_outputs.json,community
 LLaMA 33B OASST RLHF,66.52173913043478,1079,https://huggingface.co/OpenAssistant/oasst-rlhf-2-llama-30b-7k-steps-xor,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-rlhf-llama-33b/model_outputs.json,minimal
 Minotaur 13B,66.02484472049689,881,https://huggingface.co/openaccess-ai-collective/minotaur-13b-fixed,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/minotaur-13b/model_outputs.json,community
