@@ -10,4 +10,4 @@ openbuddy-falcon-40b-v9:
     top_p: 1.0
     do_sample: True
   pretty_name: "OpenBuddy-Falcon-40b-v9"
-  link: "https://huggingface.co/OpenBuddy/openbuddy-falcon-40b-v9-bf16"
+  link: "https://huggingface.co/OpenBuddyEA"
