@@ -64,7 +64,7 @@ def ALPACAEVAL_REFERENCE_OUTPUTS():
         "tatsu-lab/alpaca_eval",
         "alpaca_eval",
         cache_dir=DEFAULT_CACHE_DIR,
-        use_auth_token=DATASETS_TOKEN,
+        token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["eval"]
     return dataset
@@ -75,7 +75,7 @@ def ALPACAFARM_ALL_OUTPUTS():
         "tatsu-lab/alpaca_eval",
         "alpaca_eval_all_outputs",
         cache_dir=DEFAULT_CACHE_DIR,
-        use_auth_token=DATASETS_TOKEN,
+        token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["eval"]
 
@@ -85,7 +85,7 @@ def ALPACAFARM_GOLD_CROSSANNOTATIONS():
         "tatsu-lab/alpaca_eval",
         "alpaca_farm_human_crossannotations",
         cache_dir=DEFAULT_CACHE_DIR,
-        use_auth_token=DATASETS_TOKEN,
+        token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["validation"].to_pandas()
 
@@ -100,7 +100,7 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
         "tatsu-lab/alpaca_eval",
         "alpaca_farm_human_annotations",
         cache_dir=DEFAULT_CACHE_DIR,
-        use_auth_token=DATASETS_TOKEN,
+        token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["validation"].to_pandas()
 
