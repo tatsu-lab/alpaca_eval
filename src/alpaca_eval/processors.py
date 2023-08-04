@@ -13,7 +13,6 @@ import pandas as pd
 
 from . import utils
 
-DUMMY_EXAMPLE = dict(instruction="1+1=", output_1="2", input="", output_2="3")
 __all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor"]
 
 
@@ -190,4 +189,4 @@ class PaddingForBatchesProcessor(BaseProcessor):
         return df_out
 
     def postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
-        return df_annotated[~df_annotated["is_padding"]].drop(columns=["is_padding"]).copy()
+        return df_annotated[~df_annotated["is_padding"].astype(bool)].drop(columns=["is_padding"]).copy()
