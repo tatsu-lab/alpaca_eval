@@ -522,10 +522,14 @@ class SingleAnnotator:
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
         processors_to_kwargs = processors_to_kwargs or {}
-        if batch_size > 1 and self.is_add_default_processors:
+        if (
+            batch_size > 1
+            and self.is_add_default_processors
+            and "PaddingForBatchesProcessor" not in processors_to_kwargs
+        ):
             processors_to_kwargs["PaddingForBatchesProcessor"] = {
                 "batch_size": batch_size,
-                "padding_example": DUMMY_EXAMPLE,
+                "padding_example": utils.DUMMY_EXAMPLE,
             }
         for processor, processor_kwargs in processors_to_kwargs.items():
             processor_kwargs["seed"] = self.seed
@@ -581,9 +585,13 @@ class SingleAnnotator:
         """Search for a completion parser by name."""
         return utils.get_module_attribute(completion_parsers, name)
 
-    def _search_processor(self, name: str) -> Type["processors.BaseProcessor"]:
+    def _search_processor(self, name: Union[str, Type["processors.BaseProcessor"]]) -> Type["processors.BaseProcessor"]:
         """Search for a Processor class by name."""
-        return utils.get_module_attribute(processors, name)
+        if isinstance(name, str):
+            return utils.get_module_attribute(processors, name)
+        else:
+            assert issubclass(name, processors.BaseProcessor)
+            return name
 
     def _get_prompt_template(self, prompt_template: utils.AnyPath):
         return utils.read_or_return(self.base_dir / prompt_template)
