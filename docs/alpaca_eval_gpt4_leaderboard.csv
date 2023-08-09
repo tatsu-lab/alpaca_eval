@@ -21,6 +21,7 @@ OpenChat8192-13B,79.53980099502488,1664,https://github.com/imoneoi/openchat,http
 OpenCoderPlus-15B,78.69565217391305,1628,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/opencoderplus-15b/model_outputs.json,community
 Vicuna 7B v1.3,76.8414481897628,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b-v1.3/model_outputs.json,verified
 WizardLM 13B,75.31094527363184,985,https://huggingface.co/WizardLM/WizardLM-13B-1.0,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b/model_outputs.json,minimal
+JinaChat,74.12718204488779,676,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/jina-chat/model_outputs.json,community
 airoboros 65B,73.91304347826086,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-65b/model_outputs.json,community
 airoboros 33B,73.29192546583852,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-33b/model_outputs.json,community
 Guanaco 65B,71.80124223602485,1249,https://huggingface.co/timdettmers/guanaco-65b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-65b/model_outputs.json,minimal
