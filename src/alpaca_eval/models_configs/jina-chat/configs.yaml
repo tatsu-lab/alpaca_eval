@@ -1,4 +1,4 @@
-jinachat:
+jina-chat:
   prompt_template: "jina-chat/prompt.txt"
   fn_completions: "jina_chat_completions"
   completions_kwargs: {}

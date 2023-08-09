@@ -72,6 +72,5 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
 
         return jina_chat_completions
 
-
     else:
         raise ValueError(f"Unknown decoder: {name}")
