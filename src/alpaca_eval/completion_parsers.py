@@ -3,7 +3,7 @@ import copy
 import json
 import logging
 import re
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 
@@ -124,7 +124,7 @@ def ranking_parser(completion: str) -> list[Any]:
         return [np.nan]
 
 
-def json_parser(completion: str, annotation_key: str) -> list[Any]:
+def json_parser(completion: str, annotation_key: Optional[str]) -> list[Any]:
     r"""Parse the completion by reading it as a JSON and selecting "annotation_key".
 
     Examples
@@ -145,8 +145,8 @@ def json_parser(completion: str, annotation_key: str) -> list[Any]:
 
     json_loaded = json.loads(completion)
     if isinstance(json_loaded, dict):
-        return [json_loaded[annotation_key]]
-    return [d[annotation_key] for d in json.loads(completion)]
+        return [json_loaded[annotation_key] if annotation_key is not None else json_loaded]
+    return [d[annotation_key] if annotation_key is not None else d for d in json.loads(completion)]
 
 
 def eval_parser(completion: str) -> list[Any]:

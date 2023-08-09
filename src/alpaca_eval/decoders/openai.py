@@ -109,7 +109,7 @@ def openai_completions(
     is_chat = decoding_kwargs.get("requires_chatml", _requires_chatml(model_name))
     if is_chat:
         prompts = [_prompt_to_chatml(prompt) for prompt in prompts]
-        num_procs = num_procs or 4
+        num_procs = num_procs or 2
         batch_size = batch_size or 1
 
         if batch_size > 1:
@@ -219,7 +219,7 @@ def _openai_completion_helper(
                     raise e
             else:
                 if "rate limit" in str(e).lower():
-                    logging.warning("Hit request rate limit; retrying...")
+                    logging.warning(f"Hit request rate limit; retrying...")
                 else:
                     logging.warning(f"Unknown error {e}. \n It's likely a rate limit so we are retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
@@ -230,6 +230,7 @@ def _openai_completion_helper(
                 if openai_api_keys is not None and len(openai_api_keys) > 1:
                     openai.api_key = random.choice([o for o in openai_api_keys if o != openai.api_key])
                     logging.info(f"Switching OAI API key.")
+                logging.info(f"Sleeping {sleep_time} before retrying to call openai API...")
                 time.sleep(sleep_time)  # Annoying rate limit on requests.
     return choices
 

@@ -161,6 +161,10 @@ class BaseAnnotator(abc.ABC):
 
         # note: not ideal potentially doing a lot of dataframe copies. But given that they should be small, ~ok
         df_to_annotate = utils.convert_to_dataframe(to_annotate)
+        # make sure primary keys are strings
+        for c in self.primary_keys:
+            df_to_annotate[c] = df_to_annotate[c].astype(str)
+
         all_annotated = []
         for df_chunk in utils.dataframe_chunk_generator(df_to_annotate, chunksize, tqdm_desc="Annotation chunk"):
             curr_df_to_annotate = self._preprocess(df_chunk)
