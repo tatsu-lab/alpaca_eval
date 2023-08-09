@@ -1,13 +1,15 @@
+import json
 import logging
 import multiprocessing
-from functools import partial
-from typing import Sequence, Optional
-import requests
-import json
 import os
 import time
-from .openai import _prompt_to_chatml
+from functools import partial
+from typing import Optional, Sequence
+
+import requests
+
 from .. import utils
+from .openai import _prompt_to_chatml
 
 __all__ = ["jina_chat_completions"]
 
@@ -27,7 +29,7 @@ def jina_chat_completions(
         Number of parallel processes to use for decoding.
     """
     n_examples = len(prompts)
-    api_key = os.environ.get('JINA_CHAT_API_KEY')
+    api_key = os.environ.get("JINA_CHAT_API_KEY")
 
     if n_examples == 0:
         logging.info("No samples to annotate.")
@@ -56,11 +58,8 @@ def jina_chat_completions(
 
 
 def _get_chat_completion(api_key, prompt):
-    url = 'https://api.chat.jina.ai/v1/chat/completions'
-    headers = {
-        "authorization": f"Bearer {api_key}",
-        "content-type": "application/json"
-    }
+    url = "https://api.chat.jina.ai/v1/chat/completions"
+    headers = {"authorization": f"Bearer {api_key}", "content-type": "application/json"}
     json_payload = {"messages": prompt}
 
     max_retries = 10
@@ -69,8 +68,8 @@ def _get_chat_completion(api_key, prompt):
         try:
             response = requests.post(url, headers=headers, json=json_payload)
             response.raise_for_status()  # Will raise an HTTPError if one occurred.
-            message = response.json()['choices'][0]['message']['content']
-            message_tokens = response.json()['usage']['completion_tokens']
+            message = response.json()["choices"][0]["message"]["content"]
+            message_tokens = response.json()["usage"]["completion_tokens"]
             return message, message_tokens
         except (json.JSONDecodeError, requests.exceptions.HTTPError) as e:
             logging.warning(f"Error occurred: {e}, Attempt {attempt + 1} of {max_retries}")
