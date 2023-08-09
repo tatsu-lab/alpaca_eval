@@ -67,5 +67,11 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
 
         return replicate_completions
 
+    elif name == "jina_chat_completions":
+        from .jinachat import jina_chat_completions
+
+        return jina_chat_completions
+
+
     else:
         raise ValueError(f"Unknown decoder: {name}")
