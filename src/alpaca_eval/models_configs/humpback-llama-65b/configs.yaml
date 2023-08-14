@@ -7,4 +7,4 @@ humpback-llama-65b:
     temperature: 0.7
     top_p: 0.9
   pretty_name: "Humpback LLaMa 65B"
-  link: ""
+  link: "https://arxiv.org/abs/2308.06259"
