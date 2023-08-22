@@ -1,6 +1,8 @@
 """Runs all unit tests for the decoders."""
 import math
+from types import SimpleNamespace
 
+import anthropic.resources
 import pytest
 from openai.openai_object import OpenAIObject
 
@@ -32,9 +34,11 @@ def test_openai_completions(mocker, mock_openai_completion):
 
 
 def test_anthropic_completions(mocker):
+    mock_response = SimpleNamespace(completion=MOCKED_COMPLETION)
+
     mocker.patch(
         "alpaca_eval.decoders.anthropic._anthropic_completion_helper",
-        return_value=MOCKED_COMPLETION,
+        return_value=mock_response,
     )
     result = anthropic_completions(["Prompt 1", "Prompt 2"], num_procs=1)
     _run_all_asserts_completions(result)
