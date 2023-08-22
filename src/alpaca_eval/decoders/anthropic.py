@@ -69,19 +69,18 @@ def anthropic_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
+    completions = [response.completion for response in responses]
+
     # anthropic doesn't return total tokens but 1 token approx 4 chars
     price = [len(prompt) / 4 * _get_price_per_token(model_name) for prompt in prompts]
 
     avg_time = [t.duration / n_examples] * len(completions)
-
-    completions = [response.completion for response in responses]
 
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time, completions_all=responses)
 
 
 def _anthropic_completion_helper(
     args: tuple[str, int],
-    max_tokens_to_sample: int = 2048,
     sleep_time: int = 2,
     anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
     temperature: Optional[float] = 0.7,
@@ -98,7 +97,7 @@ def _anthropic_completion_helper(
 
     client = anthropic.Anthropic(api_key=anthropic_api_key, max_retries=n_retries)
 
-    kwargs.update(dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature))
+    kwargs.update(dict(max_tokens_to_sample=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
     while True:
         try:
