@@ -47,10 +47,10 @@ def anthropic_completions(
         to_log = f"Using `anthropic_completions` on {n_examples} prompts using {model_name} and num_procs={num_procs}."
         logging.info(to_log)
 
-    if isinstance(max_tokens, int):
-        max_tokens = [max_tokens] * n_examples
+    if isinstance(max_tokens_to_sample, int):
+        max_tokens_to_sample = [max_tokens_to_sample] * n_examples
 
-    inputs = zip(prompts, max_tokens)
+    inputs = zip(prompts, max_tokens_to_sample)
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
@@ -90,7 +90,9 @@ def _anthropic_completion_helper(
 ):
     prompt, max_tokens = args
 
-    anthropic_api_key = random.choice(anthropic_api_keys)
+    if anthropic_api_key is not None:
+        anthropic_api_key = random.choice(anthropic_api_keys)
+
     if not utils.check_pkg_atleast_version("anthropic", "0.3.0"):
         raise ValueError("Anthropic version must be at least 0.3.0. Use `pip install -U anthropic`.")
 
