@@ -124,15 +124,12 @@ def openai_completions(
     logging.info(f"Kwargs to completion: {decoding_kwargs}")
     n_batches = int(math.ceil(n_examples / batch_size))
 
-    import pdb
-
-    pdb.set_trace()
     prompt_batches = [prompts[batch_id * batch_size : (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
 
     if isinstance(max_tokens, int):
         max_tokens = [max_tokens] * n_examples
 
-    inputs = zip(prompts, max_tokens)
+    inputs = zip(prompt_batches, max_tokens)
 
     kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
@@ -182,9 +179,6 @@ def _openai_completion_helper(
     temperature: Optional[float] = 0.7,
     **kwargs,
 ):
-    import pdb
-
-    pdb.set_trace()
     prompt_batch, max_tokens = args
 
     # randomly select orgs
