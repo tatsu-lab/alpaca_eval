@@ -182,6 +182,9 @@ def _openai_completion_helper(
     temperature: Optional[float] = 0.7,
     **kwargs,
 ):
+    import pdb
+
+    pdb.set_trace()
     prompt_batch, max_tokens = args
 
     # randomly select orgs
