@@ -56,11 +56,11 @@ def anthropic_completions(
     logging.info(f"Kwargs to completion: {kwargs}")
     with utils.Timer() as t:
         if num_procs == 1:
-            completions = [_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")]
+            responses = [_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(_anthropic_completion_helper, **kwargs)
-                completions = list(
+                responses = list(
                     tqdm.tqdm(
                         p.imap(partial_completion_helper, inputs),
                         desc="prompts",
@@ -74,7 +74,9 @@ def anthropic_completions(
 
     avg_time = [t.duration / n_examples] * len(completions)
 
-    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
+    completions = [response.completion for response in responses]
+
+    return dict(completions=completions, price_per_example=price, time_per_example=avg_time, completions_all=responses)
 
 
 def _anthropic_completion_helper(
@@ -85,7 +87,7 @@ def _anthropic_completion_helper(
     temperature: Optional[float] = 0.7,
     n_retries: Optional[int] = 3,
     **kwargs,
-) -> str:
+):
     prompt, max_tokens = args
 
     anthropic_api_key = random.choice(anthropic_api_keys)
@@ -99,10 +101,9 @@ def _anthropic_completion_helper(
     while True:
         try:
             response = client.completions.create(prompt=prompt, **curr_kwargs)
-            completion = response.completion
 
-            if completion == "":
-                completion = " "  # annoying doesn't allow empty string
+            if response.completion == "":
+                response.completion = " "  # annoying doesn't allow empty string
 
             break
 
@@ -118,7 +119,7 @@ def _anthropic_completion_helper(
         except anthropic.APITimeoutError as e:
             logging.warning(f"API TimeoutError: {e}. Retrying request.")
 
-    return completion
+    return response
 
 
 def _get_price_per_token(model):
