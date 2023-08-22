@@ -91,9 +91,7 @@ def _anthropic_completion_helper(
     prompt, max_tokens = args
 
     anthropic_api_keys = anthropic_api_keys or (constants.ANTHROPIC_API_KEY,)
-
-    if anthropic_api_keys is not None:
-        anthropic_api_key = random.choice(anthropic_api_keys)
+    anthropic_api_key = random.choice(anthropic_api_keys)
 
     if not utils.check_pkg_atleast_version("anthropic", "0.3.0"):
         raise ValueError("Anthropic version must be at least 0.3.0. Use `pip install -U anthropic`.")
