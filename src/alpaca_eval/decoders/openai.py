@@ -185,6 +185,8 @@ def _openai_completion_helper(
     if openai_organization_ids is not None:
         openai.organization = random.choice(openai_organization_ids)
 
+    openai_api_keys = openai_api_keys or constants.OPENAI_API_KEYS
+
     if openai_api_keys is not None:
         openai.api_key = random.choice(openai_api_keys)
 
