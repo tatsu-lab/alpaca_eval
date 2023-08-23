@@ -16,6 +16,7 @@ llmModelName = None
 def vllm_local_completions(
     prompts: Sequence[str],
     model_name: str,
+    max_new_tokens: int,
     do_sample: bool = False,
     batch_size: int = 1,
     model_kwargs=None,
@@ -54,13 +55,13 @@ def vllm_local_completions(
     if 'tp' in model_kwargs:
         tp = model_kwargs['tp']
     if llm is None:
-        print("vllm: loading model", model_name, "tp", tp)
+        logging.info("vllm: loading model: %s, tp=%d", model_name, tp)
         llm = LLM(model=model_name, tokenizer=model_name, tensor_parallel_size=tp)
         llmModelName = model_name
     if model_name != llmModelName:
         assert False, "vllm_local_completions can only be used with a single model"
 
-    sampling_params = SamplingParams(max_tokens=kwargs['max_new_tokens'])
+    sampling_params = SamplingParams(max_tokens=max_new_tokens)
     if 'temperature' in kwargs:
         sampling_params.temperature = kwargs['temperature']
     if 'top_p' in kwargs:
