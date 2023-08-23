@@ -6,7 +6,7 @@ import math
 import multiprocessing
 import random
 import time
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 
 import numpy as np
 import openai
@@ -23,11 +23,12 @@ DEFAULT_OPENAI_API_BASE = openai.api_base
 def openai_completions(
     prompts: Sequence[str],
     model_name: str,
+    max_tokens: Union[int, Sequence[int]] = 2048,
     tokens_to_favor: Optional[Sequence[str]] = None,
     tokens_to_avoid: Optional[Sequence[str]] = None,
     is_skip_multi_tokens_to_avoid: bool = True,
     is_strip: bool = True,
-    num_procs: Optional[int] = None,
+    num_procs: Optional[int] = 1,
     batch_size: Optional[int] = None,
     **decoding_kwargs,
 ) -> dict[str, list]:
@@ -125,29 +126,32 @@ def openai_completions(
 
     prompt_batches = [prompts[batch_id * batch_size : (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
 
+    if isinstance(max_tokens, int):
+        max_tokens = [max_tokens] * n_examples
+
+    inputs = zip(prompt_batches, max_tokens)
+
     kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
 
     with utils.Timer() as t:
         if num_procs == 1:
-            completions = [
-                _openai_completion_helper(prompt_batch, **kwargs)
-                for prompt_batch in tqdm.tqdm(prompt_batches, desc="prompt_batches")
-            ]
+            completions = [_openai_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompt_batches")]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(_openai_completion_helper, **kwargs)
                 completions = list(
                     tqdm.tqdm(
-                        p.imap(partial_completion_helper, prompt_batches),
+                        p.imap(partial_completion_helper, inputs),
                         desc="prompt_batches",
-                        total=len(prompt_batches),
+                        total=len(prompts),
                     )
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
     # flatten the list and select only the text
-    completions_text = [completion.text for completion_batch in completions for completion in completion_batch]
+    completions_all = [completion for completion_batch in completions for completion in completion_batch]
+    completions_text = [completion.text for completion in completions_all]
 
     price = [
         completion["total_tokens"] * _get_price_per_token(model_name)
@@ -156,24 +160,32 @@ def openai_completions(
     ]
     avg_time = [t.duration / n_examples] * len(completions_text)
 
-    return dict(completions=completions_text, price_per_example=price, time_per_example=avg_time)
+    return dict(
+        completions=completions_text,
+        price_per_example=price,
+        time_per_example=avg_time,
+        completions_all=completions_all,
+    )
 
 
 def _openai_completion_helper(
-    prompt_batch: Sequence[str],
+    args: tuple[Sequence[str], int],
     is_chat: bool,
     sleep_time: int = 2,
     openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
     openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
     openai_api_base: Optional[str] = None,
-    max_tokens: Optional[int] = 1000,
     top_p: Optional[float] = 1.0,
     temperature: Optional[float] = 0.7,
     **kwargs,
 ):
+    prompt_batch, max_tokens = args
+
     # randomly select orgs
     if openai_organization_ids is not None:
         openai.organization = random.choice(openai_organization_ids)
+
+    openai_api_keys = openai_api_keys or constants.OPENAI_API_KEYS
 
     if openai_api_keys is not None:
         openai.api_key = random.choice(openai_api_keys)

@@ -4,7 +4,7 @@ import logging
 import multiprocessing
 import random
 import time
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 
 import anthropic
 import numpy as np
@@ -17,6 +17,7 @@ __all__ = ["anthropic_completions"]
 
 def anthropic_completions(
     prompts: Sequence[str],
+    max_tokens_to_sample: Union[int, Sequence[int]] = 2048,
     model_name="claude-v1",
     num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
     **decoding_kwargs,
@@ -46,57 +47,64 @@ def anthropic_completions(
         to_log = f"Using `anthropic_completions` on {n_examples} prompts using {model_name} and num_procs={num_procs}."
         logging.info(to_log)
 
+    if isinstance(max_tokens_to_sample, int):
+        max_tokens_to_sample = [max_tokens_to_sample] * n_examples
+
+    inputs = zip(prompts, max_tokens_to_sample)
+
     kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
     with utils.Timer() as t:
         if num_procs == 1:
-            completions = [
-                _anthropic_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")
-            ]
+            responses = [_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(_anthropic_completion_helper, **kwargs)
-                completions = list(
+                responses = list(
                     tqdm.tqdm(
-                        p.imap(partial_completion_helper, prompts),
+                        p.imap(partial_completion_helper, inputs),
                         desc="prompts",
                         total=len(prompts),
                     )
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
 
+    completions = [response.completion for response in responses]
+
     # anthropic doesn't return total tokens but 1 token approx 4 chars
     price = [len(prompt) / 4 * _get_price_per_token(model_name) for prompt in prompts]
 
     avg_time = [t.duration / n_examples] * len(completions)
 
-    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
+    return dict(completions=completions, price_per_example=price, time_per_example=avg_time, completions_all=responses)
 
 
 def _anthropic_completion_helper(
-    prompt: str,
+    args: tuple[str, int],
     sleep_time: int = 2,
     anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
-    max_tokens_to_sample: Optional[int] = 1000,
     temperature: Optional[float] = 0.7,
     n_retries: Optional[int] = 3,
     **kwargs,
-) -> str:
+):
+    prompt, max_tokens = args
+
+    anthropic_api_keys = anthropic_api_keys or (constants.ANTHROPIC_API_KEY,)
     anthropic_api_key = random.choice(anthropic_api_keys)
+
     if not utils.check_pkg_atleast_version("anthropic", "0.3.0"):
         raise ValueError("Anthropic version must be at least 0.3.0. Use `pip install -U anthropic`.")
 
     client = anthropic.Anthropic(api_key=anthropic_api_key, max_retries=n_retries)
 
-    kwargs.update(dict(max_tokens_to_sample=max_tokens_to_sample, temperature=temperature))
+    kwargs.update(dict(max_tokens_to_sample=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
     while True:
         try:
             response = client.completions.create(prompt=prompt, **curr_kwargs)
-            completion = response.completion
 
-            if completion == "":
-                completion = " "  # annoying doesn't allow empty string
+            if response.completion == "":
+                response.completion = " "  # annoying doesn't allow empty string
 
             break
 
@@ -112,7 +120,7 @@ def _anthropic_completion_helper(
         except anthropic.APITimeoutError as e:
             logging.warning(f"API TimeoutError: {e}. Retrying request.")
 
-    return completion
+    return response
 
 
 def _get_price_per_token(model):
