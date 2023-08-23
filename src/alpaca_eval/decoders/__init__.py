@@ -71,18 +71,16 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
         from .jinachat import jina_chat_completions
 
         return jina_chat_completions
-    
+
     elif name == "vllm_local_completions":
         try:
             from .vllm_local import vllm_local_completions
+
             return vllm_local_completions
         except ImportError as e:
             packages = ["vllm", "ray", "transformers"]
             logging.exception(f"You need {packages} to use vllm_completions. Error:")
             raise e
-
-    
-
 
     else:
         raise ValueError(f"Unknown decoder: {name}")

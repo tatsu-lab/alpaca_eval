@@ -2,7 +2,7 @@ alpaca_eval_gpt4_fn:
   prompt_template: "alpaca_eval_gpt4_fn/alpaca_eval_fn.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
-    model_name: "gpt-4" # TODO: need to update to gpt-4 on the 26th of june
+    model_name: "gpt-4"
     max_tokens: 100
     temperature: 0
     function_call:
