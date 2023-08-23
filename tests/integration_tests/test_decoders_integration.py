@@ -61,3 +61,11 @@ def test_huggingface_local_completions_integration():
     results = huggingface_local_completions(prompts, model_name="hf-internal-testing/tiny-random-gpt2")
     assert len(results["completions"]) == len(prompts)
     # nothing to test because random model
+
+
+@pytest.mark.slow
+def test_vllm_local_completions_integration():
+    from alpaca_eval.decoders.vllm_local import vllm_local_completions
+    prompts = _get_formatted_prompts("text_davinci_003")  # nor formatting
+    results = vllm_local_completions(prompts, model_name="OpenBuddy/openbuddy-openllama-3b-v10-bf16", max_new_tokens=100)
+    assert len(results["completions"]) == len(prompts)
