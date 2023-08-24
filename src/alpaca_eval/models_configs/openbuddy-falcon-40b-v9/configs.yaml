@@ -9,5 +9,5 @@ openbuddy-falcon-40b-v9:
     temperature: 0.7
     top_p: 1.0
     do_sample: True
-  pretty_name: "OpenBuddy-Falcon-40b-v9"
-  link: "https://huggingface.co/OpenBuddyEA"
+  pretty_name: "OpenBuddy-Falcon-40B-v9"
+  link: "https://huggingface.co/OpenBuddy/openbuddy-falcon-40b-v9-bf16"
