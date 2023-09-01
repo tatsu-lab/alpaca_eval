@@ -28,7 +28,7 @@ def openai_completions(
     tokens_to_avoid: Optional[Sequence[str]] = None,
     is_skip_multi_tokens_to_avoid: bool = True,
     is_strip: bool = True,
-    num_procs: Optional[int] = 1,
+    num_procs: Optional[int] = constants.OPENAI_MAX_CONCURRENCY,
     batch_size: Optional[int] = None,
     **decoding_kwargs,
 ) -> dict[str, list]:
@@ -118,10 +118,9 @@ def openai_completions(
             batch_size = 1
 
     else:
-        num_procs = num_procs or 1
+        num_procs = num_procs or 3
         batch_size = batch_size or 10
 
-    logging.info(f"Kwargs to completion: {decoding_kwargs}")
     n_batches = int(math.ceil(n_examples / batch_size))
 
     prompt_batches = [prompts[batch_id * batch_size : (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
@@ -132,11 +131,15 @@ def openai_completions(
     inputs = zip(prompt_batches, max_tokens)
 
     kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
-    logging.info(f"Kwargs to completion: {kwargs}")
+    kwargs_to_log = {k: v for k, v in kwargs.items() if "api_key" not in k}
+    logging.info(f"Kwargs to completion: {kwargs_to_log}. num_procs={num_procs}")
 
     with utils.Timer() as t:
         if num_procs == 1:
-            completions = [_openai_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompt_batches")]
+            completions = [
+                _openai_completion_helper(inp, **kwargs)
+                for inp in tqdm.tqdm(inputs, desc="prompt_batches", total=len(prompts))
+            ]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(_openai_completion_helper, **kwargs)
