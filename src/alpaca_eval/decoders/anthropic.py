@@ -38,6 +38,7 @@ def anthropic_completions(
     decoding_kwargs :
         Additional kwargs to pass to `anthropic.Anthropic.create`.
     """
+    num_procs = num_procs or constants.ANTHROPIC_MAX_CONCURRENCY
 
     n_examples = len(prompts)
     if n_examples == 0:
@@ -53,7 +54,8 @@ def anthropic_completions(
     inputs = zip(prompts, max_tokens_to_sample)
 
     kwargs = dict(model=model_name, **decoding_kwargs)
-    logging.info(f"Kwargs to completion: {kwargs}")
+    kwargs_to_log = {k: v for k, v in kwargs.items() if "api_key" not in k}
+    logging.info(f"Kwargs to completion: {kwargs_to_log}")
     with utils.Timer() as t:
         if num_procs == 1:
             responses = [_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")]

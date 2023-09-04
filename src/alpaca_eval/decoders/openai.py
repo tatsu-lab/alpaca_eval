@@ -76,6 +76,8 @@ def openai_completions(
     ['As an AI language model, I can confirm that 1+1 equals  02 in octal numeral system, 10 in decimal numeral
     system, and  02 in hexadecimal numeral system.', '4']
     """
+    num_procs = num_procs or constants.OPENAI_MAX_CONCURRENCY
+
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")

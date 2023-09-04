@@ -12,7 +12,7 @@ from . import utils
 __all__ = ["regex_parser", "lmsys_parser", "ranking_parser", "json_parser", "eval_parser", "pipeline_meta_parser"]
 
 
-def regex_parser(completion: str, outputs_to_match: dict[str, Any]) -> list[Any]:
+def regex_parser(completion: str, outputs_to_match: dict[Any, Any]) -> list[Any]:
     r"""Parse a single batch of completions, by returning a sequence of keys in the order in which outputs_to_match
     was matched.
 
