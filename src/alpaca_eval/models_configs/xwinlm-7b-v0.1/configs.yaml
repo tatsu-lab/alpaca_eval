@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 xwinlm-7b-v.1:
+=======
+xwinlm-7b-v0.1:
+>>>>>>> 7b45ac9fd4869e4df0e1fc206de17181ec2e72ed
   prompt_template: "xwinlm-7b-v0.1/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
