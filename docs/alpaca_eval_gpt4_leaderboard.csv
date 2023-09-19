@@ -1,6 +1,8 @@
 name,win_rate,avg_length,link,samples,filter
+XwinLM 70b V0.1,95.56803995006244,1775.0,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
 GPT-4,95.27950310559004,1365.0,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 LLaMA2 Chat 70B,92.66169154228857,1790.0,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,minimal
+XwinLM 13b V0.1,91.76029962546816,1894.0,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 Claude 2,91.35572139303484,1069.0,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
 OpenChat V3.1 13B,89.49004975124379,1484.0,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
 ChatGPT,89.36567164179104,827.0,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatgpt/model_outputs.json,minimal
@@ -8,6 +10,7 @@ WizardLM 13B V1.2,89.1656288916563,1635.0,https://huggingface.co/WizardLM/Wizard
 Vicuna 33B v1.3,88.99253731343283,1479.0,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 Claude,88.38509316770187,1082.0,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,minimal
 Humpback LLaMa2 70B,87.93532338308458,1822.0,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama2-70b/model_outputs.json,community
+XwinLM 7b V0.1,87.82771535580525,1894.0,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-7b-v0.1/model_outputs.json,community
 OpenBudddy-LLaMA2-70B-v10.1,87.67123287671232,1077.0,https://huggingface.co/OpenBuddy/openbuddy-llama2-70b-v10.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama2-70b-v10.1/model_outputs.json,community
 OpenChat V2-W 13B,87.1268656716418,1566.0,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
 OpenBuddy-LLaMA-65B-v8,86.53366583541147,1162.0,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
