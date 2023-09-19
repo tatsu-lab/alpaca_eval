@@ -29,7 +29,7 @@ AlpacaEval provides the following:
 - [**AlpacaEval dataset**](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_eval.json): a simplification
   of [AlpacaFarm's](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
   inputs" are merged
-  into one field, and reference outputs are longer. [Details here]((#data-release)).
+  into one field, and reference outputs are longer. [Details here](#data-release).
 
 **When to use AlpacaEval?** Our automatic evaluator is a quick and cheap proxy for human evaluation of simple
 instruction-following tasks.
