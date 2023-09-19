@@ -18,6 +18,7 @@ WizardLM 13B V1.1,86.31840796019901,1525.0,https://huggingface.co/WizardLM/Wizar
 OpenChat V2 13B,84.96894409937889,1564.0,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
 Humpback LLaMa 65B,83.70646766169155,1269.0,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama-65b/model_outputs.json,community
 Vicuna 13B v1.3,82.11180124223603,1132.0,https://huggingface.co/lmsys/vicuna-13b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.3/model_outputs.json,verified
+GPT-3.5,81.7103620474407,1018.0,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt35_turbo_instruct/model_outputs.json,community
 OpenBuddy-LLaMA-30B-v7.1,81.54613466334165,968.0,https://huggingface.co/OpenBuddy/openbuddy-llama-30b-v7.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-30b-v7.1/model_outputs.json,community
 LLaMA2 Chat 13B,81.09452736318407,1513.0,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-13b-chat-hf/model_outputs.json,minimal
 OpenChat-13B,80.8695652173913,1632.0,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-13b/model_outputs.json,community
