@@ -77,7 +77,7 @@ def test_single_annotator(single_annotator, df_to_annotate):
 @pytest.fixture
 def pairwise_annotator(tmp_path):
     return PairwiseAnnotator(
-        annotators_config="text_davinci_003",
+        annotators_config="test",
         caching_path=tmp_path / "cache_{seed}.json",
     )
 
