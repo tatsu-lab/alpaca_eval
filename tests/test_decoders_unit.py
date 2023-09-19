@@ -25,11 +25,14 @@ def mock_openai_completion():
 
 def test_openai_completions(mocker, mock_openai_completion):
     # Patch the _openai_completion_helper function to return the mock completion object
+
     mocker.patch(
         "alpaca_eval.decoders.openai._openai_completion_helper",
         return_value=[mock_openai_completion],
     )
-    result = openai_completions(["Prompt 1", "Prompt 2"], "text-davinci-003", batch_size=1)
+    # use num_procs=1 to avoid issues with pickling
+    result = openai_completions(["Prompt 1", "Prompt 2"], "text-davinci-003", batch_size=1, num_procs=1)
+
     _run_all_asserts_completions(result)
 
 
