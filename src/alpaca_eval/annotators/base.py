@@ -421,7 +421,10 @@ class BaseAnnotatorJSON(BaseAnnotator):
                 caching_path = None
         elif caching_path is not None:
             logging.warning("Saving_path is given but not 'auto', make sure that it's different for different seeds.")
-        self.load_(caching_path)
+
+        if caching_path is not None:
+            self.load_(caching_path)
+
         return caching_path
 
     def _store_annotations_(self, df_annotated_to_store: pd.DataFrame):
