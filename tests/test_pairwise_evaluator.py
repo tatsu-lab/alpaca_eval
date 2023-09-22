@@ -48,7 +48,7 @@ def expected_annotations():
 def single_annotator():
     return SinglePairwiseAnnotator(
         prompt_template="text_davinci_003/basic_prompt.txt",
-        completion_parser_kwargs=dict(outputs_to_match={1: "(?:^|\n) ?Output \(a\)", 2: "(?:^|\n) ?Output \(b\)"}),
+        completion_parser_kwargs=dict(outputs_to_match={1: r"(?:^|\n) ?Output \(a\)", 2: "(?:^|\n) ?Output \(b\)"}),
         is_randomize_output_order=False,
         is_shuffle=False,
     )
