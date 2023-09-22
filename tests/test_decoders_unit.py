@@ -52,7 +52,8 @@ def test_cohere_completions(mocker):
         "alpaca_eval.decoders.cohere._cohere_completion_helper",
         return_value="Mocked completion text",
     )
-    result = cohere_completions(["Prompt 1", "Prompt 2"], num_procs=1)
+    result, num_tokens = cohere_completions(["Prompt 1", "Prompt 2"], num_procs=1)
+    assert isinstance(num_tokens, int)
     _run_all_asserts_completions(result)
 
 
