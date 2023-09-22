@@ -17,21 +17,12 @@ __all__ = ["cohere_completions"]
 
 
 def cohere_completions(
-<<<<<<< Updated upstream
-    prompts: Sequence[str],
-    model_name="command",
-    mode="instruct",
-    num_procs: int = 5,
-    **decoding_kwargs,
-=======
         prompts: Sequence[str],
         model_name="command",
         mode = "instruct",
         num_procs: int = 5,
         staging=False,
-        force_chat_prompt=False,
         **decoding_kwargs,
->>>>>>> Stashed changes
 ) -> dict[str, list]:
     """Decode with Cohere API.
 
@@ -56,7 +47,7 @@ def cohere_completions(
     else:
         logging.info(f"Using `cohere_completions` on {n_examples} prompts using {model_name}.")
 
-    kwargs = dict(model=model_name, mode=mode, force_chat_prompt=force_chat_prompt,staging=staging, **decoding_kwargs)
+    kwargs = dict(model=model_name, mode=mode, staging=staging, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
 
     num_procs= 1
@@ -83,15 +74,6 @@ def cohere_completions(
 
 
 def _cohere_completion_helper(
-<<<<<<< Updated upstream
-    prompt: str,
-    cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
-    max_tokens: Optional[int] = 1000,
-    temperature: Optional[float] = 0.7,
-    max_tries=5,
-    mode="instruct",
-    **kwargs,
-=======
         prompt: str,
         cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
         max_tokens: Optional[int] = 1000,
@@ -99,9 +81,7 @@ def _cohere_completion_helper(
         max_tries = 5,
         mode = "instruct",
         staging=False,
-        force_chat_prompt=False,
         **kwargs,
->>>>>>> Stashed changes
 ) -> str:
     cohere_api_key = random.choice(cohere_api_keys)
     if staging:
@@ -112,8 +92,7 @@ def _cohere_completion_helper(
 
     kwargs.update(dict(max_tokens=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
-    if force_chat_prompt:
-        prompt = f"User: {prompt}\nChatbot:"    
+
     for trynum in range(max_tries):  # retry errors
         try:
             if mode == "instruct":
