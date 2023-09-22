@@ -64,13 +64,11 @@ def cohere_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
     completions, num_tokens = zip(*completions_and_token_counts)
-    # cohere charges $2.5 for every 1000 call to API that is less than 1000 characters. Only counting prompts here
-    price_per_token = 0.000015
-    non_err_num_tokens = [n for n in num_tokens if n] or [0] # give 0 if not available, eg chat
-    price = price_per_token * sum(non_err_num_tokens) / len(non_err_num_tokens)
+    price_per_token = 0.000015 # cohere charges $0.000015 per token.
+    price_per_example = [price_per_token * n for n in num_tokens]
     avg_time = [t.duration / n_examples] * len(completions)
 
-    return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
+    return dict(completions=list(completions), price_per_example=price_per_example, time_per_example=avg_time)
 
 
 def _cohere_completion_helper(
