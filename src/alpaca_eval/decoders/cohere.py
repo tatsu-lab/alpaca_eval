@@ -76,7 +76,7 @@ def _cohere_completion_helper(
     cohere_api_keys: Optional[Sequence[str]] = (constants.COHERE_API_KEY,),
     max_tokens: Optional[int] = 1000,
     temperature: Optional[float] = 0.7,
-    max_tries = 5,
+    max_tries=5,
     mode="instruct",
     **kwargs,
 ) -> Tuple[str,int]:
