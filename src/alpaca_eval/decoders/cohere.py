@@ -19,7 +19,7 @@ __all__ = ["cohere_completions"]
 def cohere_completions(
     prompts: Sequence[str],
     model_name="command",
-    mode = "instruct",
+    mode="instruct",
     num_procs: int = 5,
     **decoding_kwargs,
 ) -> dict[str, list]:
@@ -79,7 +79,7 @@ def _cohere_completion_helper(
     max_tokens: Optional[int] = 1000,
     temperature: Optional[float] = 0.7,
     max_tries = 5,
-    mode = "instruct",
+    mode="instruct",
     **kwargs,
 ) -> Tuple[str,int]:
     cohere_api_key = random.choice(cohere_api_keys)
