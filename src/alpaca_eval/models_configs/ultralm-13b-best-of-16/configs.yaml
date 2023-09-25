@@ -11,5 +11,6 @@ ultralm-13b:
     do_sample: True
     early_stopping: True
   pretty_name: "UltraLM 13B (best-of-16)"
-  link: "https://github.com/thunlp/UltraChat"
-        "https://github.com/thunlp/UltraFeedback"
+  link: 
+    - "https://github.com/thunlp/UltraChat"
+    - "https://github.com/thunlp/UltraFeedback"
