@@ -1,16 +1,9 @@
 ultralm-13b:
   prompt_template: "ultralm-13b-v2.0-best-of-16/prompt.txt"
-  fn_completions: "huggingface_local_completions"
-  completions_kwargs:
-    model_name: "./ultralm-13b-v2.0" # local path
-    model_kwargs:
-      torch_dtype: 'float16'
-    max_new_tokens: 2048
-    temperature: 1
-    top_p: 1.0
-    do_sample: True
-    early_stopping: True
   pretty_name: "UltraLM 13B V2.0 (best-of-16)"
   link: 
     - "https://github.com/thunlp/UltraChat"
     - "https://github.com/thunlp/UltraFeedback"
+    - "https://huggingface.co/openbmb/UltraRM-13b"
+  # Results cannot be directly reproduced with alpaca_eval official `fn_completions` because they require best-of-n sampling.
+  # The reproduction requires generaing 16 completions using vllm at inference time and then using a reward model, UltraRM, to seelct the one with the highest reward.
