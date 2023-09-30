@@ -1,4 +1,4 @@
-ultralm-13b:
+ultralm-13b-v2.0:
   prompt_template: "ultralm-13b-v2.0/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
