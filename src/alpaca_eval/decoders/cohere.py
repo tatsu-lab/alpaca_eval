@@ -19,7 +19,6 @@ __all__ = ["cohere_completions"]
 def cohere_completions(
     prompts: Sequence[str],
     model_name="command",
-    mode="instruct",
     num_procs: int = 5,
     **decoding_kwargs,
 ) -> dict[str, list]:
@@ -46,7 +45,7 @@ def cohere_completions(
     else:
         logging.info(f"Using `cohere_completions` on {n_examples} prompts using {model_name}.")
 
-    kwargs = dict(model=model_name, mode=mode, **decoding_kwargs)
+    kwargs = dict(model=model_name, **decoding_kwargs)
     logging.info(f"Kwargs to completion: {kwargs}")
 
     with utils.Timer() as t:
@@ -77,7 +76,6 @@ def _cohere_completion_helper(
     max_tokens: Optional[int] = 1000,
     temperature: Optional[float] = 0.7,
     max_tries=5,
-    mode="instruct",
     **kwargs,
 ) -> Tuple[str,int]:
     cohere_api_key = random.choice(cohere_api_keys)
@@ -88,16 +86,9 @@ def _cohere_completion_helper(
 
     for trynum in range(max_tries):  # retry errors
         try:
-            if mode == "instruct":
-                response = client.generate(prompt=prompt, return_likelihoods="ALL", **curr_kwargs)
-                text = response[0].text
-                num_tokens = len(response[0].token_likelihoods)
-            elif mode == "chat":
-                response = client.chat(prompt, **curr_kwargs)
-                text = response.text
-                num_tokens = 0 # not implemented for chat
-            else:
-                raise ValueError(f"Invalid mode {mode} for cohere_completions")
+            response = client.generate(prompt=prompt, return_likelihoods="ALL", **curr_kwargs)
+            text = response[0].text
+            num_tokens = len(response[0].token_likelihoods)
 
             if text == "":
                 raise CohereError("Empty string response")

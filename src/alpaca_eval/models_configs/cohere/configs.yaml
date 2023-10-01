@@ -3,6 +3,5 @@ cohere:
   fn_completions: "cohere_completions"
   completions_kwargs:
     model_name: "command-nightly"
-    mode: "instruct"
     max_tokens: 2048
   pretty_name: "Cohere Command"
