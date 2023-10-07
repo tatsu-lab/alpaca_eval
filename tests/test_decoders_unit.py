@@ -50,7 +50,7 @@ def test_anthropic_completions(mocker):
 def test_cohere_completions(mocker):
     mocker.patch(
         "alpaca_eval.decoders.cohere._cohere_completion_helper",
-        return_value="Mocked completion text",
+        return_value=["Mocked completion text",42],
     )
     result = cohere_completions(["Prompt 1", "Prompt 2"], num_procs=1)
     _run_all_asserts_completions(result)

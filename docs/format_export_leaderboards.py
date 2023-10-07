@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from alpaca_eval.constants import MODELS_CONFIG_DIR, PRECOMPUTED_LEADERBOARDS
@@ -15,9 +16,18 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = df.reset_index(names="name")
     for idx in range(len(df)):
         informal_name = df.loc[idx, "name"]
-        model_config = load_configs(df.loc[idx, "name"], relative_to=MODELS_CONFIG_DIR)[informal_name]
+        try:
+            model_config = load_configs(df.loc[idx, "name"], relative_to=MODELS_CONFIG_DIR)[informal_name]
+        except KeyError as e:
+            logging.exception(
+                f"Could not find model config for {informal_name}. This is likely because the name of "
+                f"the annotator does not match the name of the model's directory."
+            )
+            raise e
+
         if "pretty_name" in model_config:
             df.loc[idx, "name"] = model_config["pretty_name"]
+
         if "link" in model_config:
             df.loc[idx, "link"] = model_config["link"]
 

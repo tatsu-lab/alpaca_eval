@@ -129,7 +129,7 @@ def make_prompts(
     if df.empty:
         return [], df
 
-    text_to_format = re.findall("{([^ \s]+?)}", template)
+    text_to_format = re.findall(r"{([^ \s]+?)}", template)
     n_occurrences = Counter(text_to_format)
 
     if not all([n == batch_size for n in n_occurrences.values()]):

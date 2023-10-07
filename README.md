@@ -280,7 +280,8 @@ See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/ev
 evaluators that are available out of the box and their associated metrics.
 
 |                         | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer |
-|:------------------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|---------------------:|
+|:------------------------|--------------------:|------------------------:|-----------------------------:|-----:|---------:|--------------------:|
+| alpaca_eval_gpt4_fn     |                71.0 |                    14.5 |                         5046 | 27.6 |     11.1 |  0.75 |
 | alpaca_eval_gpt4        |                69.2 |                    13.6 |                         1455 | 28.4 |     14.6 |                 0.68 |
 | aviary_gpt4             |                69.1 |                    12.8 |                         1869 | 29.5 |     13.1 |                 0.70 |
 | gpt4                    |                66.9 |                    12.5 |                         1037 | 31.5 |     14.6 |                 0.65 |
@@ -1049,6 +1050,7 @@ Concretely you should do something like:
 git add src/alpaca_eval/models_configs/<model_name>
 git add src/alpaca_eval/leaderboards/data_AlpacaEval
 git add results/<model_name>/model_outputs.json
+git add results/<model_name>/annotations.json
 git commit -m "Add <model_name> to AlpacaEval"
 git push
 ``` 

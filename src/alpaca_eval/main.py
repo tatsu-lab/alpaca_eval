@@ -116,6 +116,7 @@ def evaluate(
     )
     annotations = None
 
+    arg_model_outputs = model_outputs
     if model_outputs is not None:
         model_outputs = utils.load_or_convert_to_dataframe(model_outputs)
         reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
@@ -142,7 +143,7 @@ def evaluate(
         else:
             logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
 
-    output_path = utils.get_output_path(output_path, model_outputs, name)
+    output_path = utils.get_output_path(output_path, arg_model_outputs, name)
 
     df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(by=sort_by, ascending=False)
     df_leaderboard = df_leaderboard[
@@ -153,9 +154,12 @@ def evaluate(
         logging.info(f"Saving all results to {output_path}")
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
         if annotations is not None:
-            utils.convert_to_dataframe(annotations).to_json(
-                output_path / "annotations.json", orient="records", indent=2
-            )
+            if isinstance(annotators_config, str) and "/" not in annotators_config:
+                annotations_name = f"annotation_{annotators_config}.json"
+            else:
+                annotations_name = "annotations.json"
+
+            utils.convert_to_dataframe(annotations).to_json(output_path / annotations_name, orient="records", indent=2)
 
     if is_cache_leaderboard is None:
         is_cache_leaderboard = max_instances is None
