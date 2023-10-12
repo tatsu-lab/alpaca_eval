@@ -30,6 +30,7 @@ OpenChat-13B,80.86956522,1632,https://github.com/imoneoi/openchat,https://github
 OpenBuddy-Falcon-40B-v9,80.69738481,1089,https://huggingface.co/OpenBuddy/openbuddy-falcon-40b-v9-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-falcon-40b-v9/model_outputs.json,community
 UltraLM 13B,80.63511831,1087,https://github.com/thunlp/UltraChat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b/model_outputs.json,community
 OpenChat8192-13B,79.539801,1664,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat8192-13b/model_outputs.json,community
+Evo 7B,79.20298879202988,1774,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-7b/model_outputs.json,community
 OpenCoderPlus-15B,78.69565217,1628,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/opencoderplus-15b/model_outputs.json,community
 OpenBudddy-LLaMA2-13B-v11.1,77.48756219,1057,https://huggingface.co/OpenBuddy/openbuddy-llama2-13b-v11.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama2-13b-v11.1/model_outputs.json,community
 Vicuna 7B v1.3,76.84144819,1110,https://huggingface.co/lmsys/vicuna-7b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b-v1.3/model_outputs.json,verified
