@@ -118,7 +118,7 @@ def huggingface_local_completions(
 
     default_kwargs = dict(
         do_sample=do_sample,
-        model_kwargs={k: v for k, v in model_kwargs.items() if k != "trust_remote_code"},
+        model_kwargs={k: v for k, v in model_kwargs.items() if k not in ["trust_remote_code", "revision"]},
         batch_size=batch_size,
     )
     default_kwargs.update(kwargs)
