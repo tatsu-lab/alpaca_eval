@@ -22,6 +22,7 @@ OpenChat V2 13B,84.9689441,1564,https://github.com/imoneoi/openchat,https://gith
 Humpback LLaMa 65B,83.70646766,1269,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama-65b/model_outputs.json,community
 UltraLM 13B V2.0,83.60248447,1399,https://github.com/thunlp/UltraChat,,community
 Vicuna 13B v1.3,82.11180124,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.3/model_outputs.json,verified
+LLaMA2 Chat 7B Evol70k-NEFT,82.08955223880598,1612,https://github.com/neelsjain/NEFTune,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-chat-7b-evol70k-neft/model_outputs.json,community
 PlatoLM 7B,81.94271482,1344,https://huggingface.co/FreedomIntelligence/PlatoLM-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/platolm-7b/model_outputs.json,community
 GPT-3.5,81.71036205,1018,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt35_turbo_instruct/model_outputs.json,community
 OpenBuddy-LLaMA-30B-v7.1,81.54613466,968,https://huggingface.co/OpenBuddy/openbuddy-llama-30b-v7.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-30b-v7.1/model_outputs.json,community
@@ -49,6 +50,7 @@ Guanaco 33B,65.96273292,1311,https://huggingface.co/timdettmers/guanaco-33b,http
 Nous Hermes 13B,65.46583851,844,https://huggingface.co/NousResearch/Nous-Hermes-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/nous-hermes-13b/model_outputs.json,verified
 Vicuna 7B,64.40993789,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b/model_outputs.json,verified
 Baize-v2 7B,63.85093168,1127,https://huggingface.co/project-baize/baize-v2-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baize-v2-7b/model_outputs.json,community
+Alpaca-7B-NEFT,61.92259675405742,1067,https://github.com/neelsjain/NEFTune,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-7b-neft/model_outputs.json,community
 LLaMA 33B OASST SFT,54.9689441,748,https://huggingface.co/OpenAssistant/oasst-sft-7-llama-30b-xor,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-sft-llama-33b/model_outputs.json,verified
 Guanaco 13B,52.60869565,1774,https://huggingface.co/timdettmers/guanaco-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-13b/model_outputs.json,verified
 Davinci003,50.0,307,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/text_davinci_003/model_outputs.json,minimal

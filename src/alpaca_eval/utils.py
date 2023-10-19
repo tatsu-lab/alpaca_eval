@@ -355,6 +355,7 @@ def load_configs(configs: Union[AnyPath, dict], relative_to: Optional[AnyPath] =
                 configs = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 logging.exception(exc)
+        assert isinstance(configs, dict)
 
     return configs
 

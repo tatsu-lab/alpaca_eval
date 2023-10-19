@@ -1,9 +1,7 @@
 import copy
 import functools
 import logging
-import math
 import multiprocessing
-import os
 import random
 from typing import Optional, Sequence, Tuple
 
@@ -50,7 +48,9 @@ def cohere_completions(
 
     with utils.Timer() as t:
         if num_procs == 1:
-            completions_and_token_counts = [_cohere_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")]
+            completions_and_token_counts = [
+                _cohere_completion_helper(prompt, **kwargs) for prompt in tqdm.tqdm(prompts, desc="prompts")
+            ]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(_cohere_completion_helper, **kwargs)
@@ -63,7 +63,7 @@ def cohere_completions(
                 )
     logging.info(f"Completed {n_examples} examples in {t}.")
     completions, num_tokens = zip(*completions_and_token_counts)
-    price_per_token = 0.000015 # cohere charges $0.000015 per token.
+    price_per_token = 0.000015  # cohere charges $0.000015 per token.
     price_per_example = [price_per_token * n for n in num_tokens]
     avg_time = [t.duration / n_examples] * len(completions)
 
@@ -77,7 +77,7 @@ def _cohere_completion_helper(
     temperature: Optional[float] = 0.7,
     max_tries=5,
     **kwargs,
-) -> Tuple[str,int]:
+) -> Tuple[str, int]:
     cohere_api_key = random.choice(cohere_api_keys)
     client = cohere.Client(cohere_api_key)
 
