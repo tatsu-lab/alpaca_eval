@@ -1,7 +1,7 @@
 ,win_rate,standard_error,n_wins,n_wins_base,n_draws,n_total,mode,avg_length
 xwinlm-70b-v0.1,95.56803995,0.724941926,765,35,1,801,community,1775
 gpt4,95.27950311,0.71628144,761,32,12,805,minimal,1365
-llama-2-70b-chat-hf,92.66169154,0.911762258,743,57,4,804,minimal,1790
+llama-2-70b-chat-,92.66169154,0.911762258,743,57,4,804,minimal,1790
 ultralm-13b-v2.0-best-of-16,92.29813665,0.940299807,743,62,0,805,community,1720
 xwinlm-13b-v0.1,91.76029963,0.968139439,734,65,2,801,community,1894
 ultralm-13b-best-of-16,91.54228856,0.981927769,736,68,0,804,community,1980
