@@ -11,6 +11,7 @@ ChatGPT,89.36567164,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/resu
 WizardLM 13B V1.2,89.16562889,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
 Vicuna 33B v1.3,88.99253731,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 Claude,88.38509317,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,minimal
+CausalLM-14B,88.26086956521739,1391,https://huggingface.co/CausalLM/14B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/causallm-14b/model_outputs.json,community
 Humpback LLaMa2 70B,87.93532338,1822,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama2-70b/model_outputs.json,community
 XwinLM 7b V0.1,87.82771536,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-7b-v0.1/model_outputs.json,community
 OpenBudddy-LLaMA2-70B-v10.1,87.67123288,1077,https://huggingface.co/OpenBuddy/openbuddy-llama2-70b-v10.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama2-70b-v10.1/model_outputs.json,community
