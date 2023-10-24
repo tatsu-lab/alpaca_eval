@@ -10,5 +10,5 @@ guanaco-33b:
     temperature: 0.7
     top_p: 1.0
     do_sample: True
-  pretty_name: "Guanaco 33B"
+  pretty_name: "Guanaco33B"
   link: "https://huggingface.co/timdettmers/guanaco-33b"
