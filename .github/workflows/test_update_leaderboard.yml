@@ -1,0 +1,33 @@
+name: test format leaderboard
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/alpaca_eval/leaderboards/data_AlpacaEval/**'
+      - 'results/**'
+  workflow_dispatch:
+
+jobs:
+  format_leaderboard:
+    runs-on: "ubuntu-20.04"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install .
+
+      - name: Format sample sheets
+        run: python docs/format_sample_sheets.py
+
+      - name: Update leaderboard
+        run: python docs/format_export_leaderboards.py
