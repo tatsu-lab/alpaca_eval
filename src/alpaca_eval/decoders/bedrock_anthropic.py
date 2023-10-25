@@ -39,7 +39,7 @@ def bedrock_anthropic_completions(
         Number of parallel processes to use for decoding.
 
     decoding_kwargs :
-        Additional kwargs to pass to `anthropic.Anthropic.create`.
+        Additional kwargs to pass to Bedrock Anthropic.
     """
     num_procs = num_procs or DEFAULT_NUM_PROCS
 
@@ -95,7 +95,7 @@ def _bedrock_anthropic_completion_helper(
     prompt, max_tokens = args
 
     if not utils.check_pkg_atleast_version("boto3", "1.28.58"):
-        raise ValueError("Anthropic version must be at least 1.28.58 Use `pip install -U boto3`.")
+        raise ValueError("boto3 version must be at least 1.28.58 Use `pip install -U boto3`.")
 
     bedrock = boto3.client(
         service_name='bedrock-runtime',
@@ -130,15 +130,3 @@ def _bedrock_anthropic_completion_helper(
             raise e
 
     return response
-
-
-# def _get_price_per_token(model):
-#     """Returns the price per token for a given model"""
-#     # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
-#     if "claude-v1" in model or "claude-2" in model:
-#         return (
-#             11.02 / 1e6
-#         )  # that's not completely true because decoding is 32.68 but close enough given that most is context
-#     else:
-#         logging.warning(f"Unknown model {model} for computing price per token.")
-#         return np.nan
