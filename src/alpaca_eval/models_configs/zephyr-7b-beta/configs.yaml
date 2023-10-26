@@ -5,7 +5,6 @@ zephyr-7b-beta:
     model_name: "HuggingFaceH4/zephyr-7b-beta"
     model_kwargs:
       torch_dtype: 'bfloat16'
-      revision: v8.2
     max_new_tokens: 2048
     temperature: 0.7
     top_p: 1.0
