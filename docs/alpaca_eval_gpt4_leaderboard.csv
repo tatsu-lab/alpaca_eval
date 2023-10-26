@@ -6,6 +6,7 @@ UltraLM 13B V2.0 (best-of-16),92.29813665,1720,https://huggingface.co/openbmb/Ul
 XwinLM 13b V0.1,91.76029963,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 UltraLM 13B (best-of-16),91.54228856,1980,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-best-of-16/model_outputs.json,community
 Claude 2,91.35572139,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
+Zephyr 7B Beta,90.5977584059776,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
 OpenChat V3.1 13B,89.49004975,1484,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
 ChatGPT,89.36567164,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatgpt/model_outputs.json,minimal
 WizardLM 13B V1.2,89.16562889,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
@@ -18,6 +19,7 @@ OpenBudddy-LLaMA2-70B-v10.1,87.67123288,1077,https://huggingface.co/OpenBuddy/op
 OpenChat V2-W 13B,87.12686567,1566,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
 OpenBuddy-LLaMA-65B-v8,86.53366584,1162,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
 WizardLM 13B V1.1,86.31840796,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
+Zephyr 7B Alpha,85.7587064676617,1302,https://huggingface.co/HuggingFaceH4/zephyr-7b-alpha,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-alpha/model_outputs.json,community
 Cohere Command,85.05603985,1715,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cohere/model_outputs.json,community
 OpenChat V2 13B,84.9689441,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
 Humpback LLaMa 65B,83.70646766,1269,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama-65b/model_outputs.json,community
