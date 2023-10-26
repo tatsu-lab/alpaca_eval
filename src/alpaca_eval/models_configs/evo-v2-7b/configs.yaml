@@ -10,3 +10,4 @@ evo-v2-7b:
     top_p: 0.95
     do_sample: True
   pretty_name: "Evo v2 7B"
+  link: https://evolusion.ai
