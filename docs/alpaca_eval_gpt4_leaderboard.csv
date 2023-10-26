@@ -9,6 +9,7 @@ Claude 2,91.35572139,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/re
 Zephyr 7B Beta,90.5977584059776,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
 OpenChat V3.1 13B,89.49004975,1484,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
 ChatGPT,89.36567164,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatgpt/model_outputs.json,minimal
+Evo v2 7B,89.35242839352429,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 WizardLM 13B V1.2,89.16562889,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
 Vicuna 33B v1.3,88.99253731,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 Claude,88.38509317,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,minimal
