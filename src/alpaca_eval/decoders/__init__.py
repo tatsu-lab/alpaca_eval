@@ -81,7 +81,7 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
             packages = ["vllm", "ray", "transformers"]
             logging.exception(f"You need {packages} to use vllm_completions. Error:")
             raise e
-        
+
     elif name == "bedrock_anthropic_completions":
         try:
             from .bedrock_anthropic import bedrock_anthropic_completions
