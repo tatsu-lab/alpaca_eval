@@ -1,22 +1,23 @@
 import copy
 import functools
+import json
 import logging
 import multiprocessing
 import random
 import time
 from typing import Optional, Sequence, Union
 
-import botocore.exceptions
 import boto3
+import botocore.exceptions
 import numpy as np
 import tqdm
-import json
 
 from .. import utils
 
 __all__ = ["bedrock_anthropic_completions"]
 
 DEFAULT_NUM_PROCS = 3
+
 
 def bedrock_anthropic_completions(
     prompts: Sequence[str],
@@ -61,7 +62,9 @@ def bedrock_anthropic_completions(
     logging.info(f"Kwargs to completion: {kwargs_to_log}")
     with utils.Timer() as t:
         if num_procs == 1:
-            responses = [_bedrock_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")]
+            responses = [
+                _bedrock_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")
+            ]
         else:
             with multiprocessing.Pool(num_procs) as p:
                 partial_completion_helper = functools.partial(_bedrock_anthropic_completion_helper, **kwargs)
@@ -87,7 +90,7 @@ def bedrock_anthropic_completions(
 def _bedrock_anthropic_completion_helper(
     args: tuple[str, int],
     sleep_time: int = 2,
-    region: Optional[str] = 'us-west-2',
+    region: Optional[str] = "us-west-2",
     model_name: str = "anthropic.claude-v1",
     temperature: Optional[float] = 0.7,
     **kwargs,
@@ -97,36 +100,25 @@ def _bedrock_anthropic_completion_helper(
     if not utils.check_pkg_atleast_version("boto3", "1.28.58"):
         raise ValueError("boto3 version must be at least 1.28.58 Use `pip install -U boto3`.")
 
-    bedrock = boto3.client(
-        service_name='bedrock-runtime',
-        region_name=region
-    )
-    accept = 'application/json'
-    contentType = 'application/json'
+    bedrock = boto3.client(service_name="bedrock-runtime", region_name=region)
+    accept = "application/json"
+    contentType = "application/json"
 
     kwargs.update(dict(max_tokens_to_sample=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
     while True:
         try:
-            body = json.dumps(
-                {
-                **{
-                    'prompt':prompt
-                },
-                **curr_kwargs}
-            )
-            response = bedrock.invoke_model(
-                body=body, modelId=model_name, accept=accept, contentType=contentType
-            )
-            response = json.loads(response.get('body').read()).get('completion')
+            body = json.dumps({**{"prompt": prompt}, **curr_kwargs})
+            response = bedrock.invoke_model(body=body, modelId=model_name, accept=accept, contentType=contentType)
+            response = json.loads(response.get("body").read()).get("completion")
             break
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ThrottlingException':
+            if e.response["Error"]["Code"] == "ThrottlingException":
                 logging.warning(f"Hit throttling error: {e}.")
                 logging.warning(f"Rate limit hit. Sleeping for {sleep_time} seconds.")
                 time.sleep(sleep_time)
         except Exception as e:
-            logging.error(f'Hit unknown error : {e}')
+            logging.error(f"Hit unknown error : {e}")
             raise e
 
     return response

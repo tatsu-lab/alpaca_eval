@@ -12,12 +12,13 @@ import numpy as np
 import openai
 import tiktoken
 import tqdm
+from openai import OpenAI
 
 from .. import constants, utils
 
 __all__ = ["openai_completions"]
 
-DEFAULT_OPENAI_API_BASE = openai.api_base
+DEFAULT_OPENAI_API_BASE = openai.base_url
 
 
 def openai_completions(
@@ -156,7 +157,7 @@ def openai_completions(
 
     # flatten the list and select only the text
     completions_all = [completion for completion_batch in completions for completion in completion_batch]
-    completions_text = [completion.text for completion in completions_all]
+    completions_text = [completion["text"] for completion in completions_all]
 
     price = [
         completion["total_tokens"] * _get_price_per_token(model_name)
@@ -185,18 +186,21 @@ def _openai_completion_helper(
     **kwargs,
 ):
     prompt_batch, max_tokens = args
+    client_kwargs = dict()
 
     # randomly select orgs
     if openai_organization_ids is not None:
-        openai.organization = random.choice(openai_organization_ids)
+        client_kwargs["organization"] = random.choice(openai_organization_ids)
 
     openai_api_keys = openai_api_keys or constants.OPENAI_API_KEYS
 
     if openai_api_keys is not None:
-        openai.api_key = random.choice(openai_api_keys)
+        client_kwargs["api_key"] = random.choice(openai_api_keys)
 
     # set api base
-    openai.api_base = openai_api_base if openai_api_base is not None else DEFAULT_OPENAI_API_BASE
+    client_kwargs["base_url"] = base_url = openai_api_base if openai_api_base is not None else DEFAULT_OPENAI_API_BASE
+
+    client = OpenAI(**client_kwargs)
 
     # copy shared_kwargs to avoid modifying it
     kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
@@ -205,28 +209,31 @@ def _openai_completion_helper(
     while True:
         try:
             if is_chat:
-                completion_batch = openai.ChatCompletion.create(messages=prompt_batch[0], **curr_kwargs)
+                completion_batch = client.chat.completions.create(messages=prompt_batch[0], **curr_kwargs)
 
                 choices = completion_batch.choices
-                for choice in choices:
+                for i, choice in enumerate(choices):
+                    # openai now returns pydantic objects => convert to dict to keep all code
+                    # TODO should just rewrite code to use pydantic objects
+                    choices[i] = choice.model_dump()
                     assert choice.message.role == "assistant"
                     if choice.message.content == "":
-                        choice["text"] = " "  # annoying doesn't allow empty string
+                        choices[i]["text"] = " "  # annoying doesn't allow empty string
                     else:
-                        choice["text"] = choice.message.content
+                        choices[i]["text"] = choice.message.content
 
-                    if choice.message.get("function_call"):
+                    if choice.message.function_call:
                         # currently we only use function calls to get a JSON object => return raw text of json
-                        choice["text"] = choice.message.function_call.arguments
+                        choices[i]["text"] = choice.message.function_call.arguments
 
             else:
-                completion_batch = openai.Completion.create(prompt=prompt_batch, **curr_kwargs)
+                completion_batch = client.completions.create(prompt=prompt_batch, **curr_kwargs)
                 choices = completion_batch.choices
 
             for choice in choices:
                 choice["total_tokens"] = completion_batch.usage.total_tokens / len(prompt_batch)
             break
-        except openai.error.OpenAIError as e:
+        except openai.OpenAIError as e:
             logging.warning(f"OpenAIError: {e}.")
             if "Please reduce your prompt" in str(e):
                 kwargs["max_tokens"] = int(kwargs["max_tokens"] * 0.8)
@@ -240,12 +247,14 @@ def _openai_completion_helper(
                 else:
                     logging.warning(f"Unknown error {e}. \n It's likely a rate limit so we are retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
-                    openai.organization = random.choice(
+                    client_kwargs["organization"] = organization = random.choice(
                         [o for o in openai_organization_ids if o != openai.organization]
                     )
+                    client = OpenAI(**client_kwargs)
                     logging.info(f"Switching OAI organization.")
                 if openai_api_keys is not None and len(openai_api_keys) > 1:
-                    openai.api_key = random.choice([o for o in openai_api_keys if o != openai.api_key])
+                    client_kwargs["api_key"] = random.choice([o for o in openai_api_keys if o != openai.api_key])
+                    client = OpenAI(**client_kwargs)
                     logging.info(f"Switching OAI API key.")
                 logging.info(f"Sleeping {sleep_time} before retrying to call openai API...")
                 time.sleep(sleep_time)  # Annoying rate limit on requests.
@@ -323,7 +332,11 @@ def _string_to_dict(to_convert):
 
 def _get_price_per_token(model):
     """Returns the price per token for a given model"""
-    if "gpt-4" in model:
+    if "gpt-4-1106" in model:
+        return (
+            0.01 / 1000
+        )  # that's not completely true because decoding is 0.03 but close enough given that most is context
+    elif "gpt-4" in model:
         return (
             0.03 / 1000
         )  # that's not completely true because decoding is 0.06 but close enough given that most is context
