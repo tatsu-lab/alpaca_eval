@@ -4,11 +4,12 @@ import pytest
 
 from alpaca_eval import constants, utils
 from alpaca_eval.decoders.anthropic import anthropic_completions
+from alpaca_eval.decoders.bedrock_anthropic import bedrock_anthropic_completions
 from alpaca_eval.decoders.cohere import cohere_completions
 from alpaca_eval.decoders.huggingface_api import huggingface_api_completions
 from alpaca_eval.decoders.huggingface_local import huggingface_local_completions
 from alpaca_eval.decoders.openai import openai_completions
-from alpaca_eval.decoders.bedrock_anthropic import bedrock_anthropic_completions
+
 
 def _get_formatted_prompts(model):
     filename = list((constants.MODELS_CONFIG_DIR / model).glob("*.txt"))[0]
@@ -16,6 +17,7 @@ def _get_formatted_prompts(model):
     prompts = ["Respond with a single digit: 1+1=", "Respond with a single digit: 2+2="]
     prompts = [template.format(instruction=prompt) for prompt in prompts]
     return prompts
+
 
 @pytest.mark.slow
 def test_openai_completions_integration():
@@ -71,6 +73,7 @@ def test_vllm_local_completions_integration():
         prompts, model_name="OpenBuddy/openbuddy-openllama-3b-v10-bf16", max_new_tokens=100
     )
     assert len(results["completions"]) == len(prompts)
+
 
 @pytest.mark.slow
 def test_bedrock_anthropic_completions_integration():
