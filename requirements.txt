@@ -1,6 +1,6 @@
 tqdm
 datasets
-openai
+openai>=1.0.0
 pandas
 tiktoken>=0.3.2
 fire
