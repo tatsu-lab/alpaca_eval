@@ -4,4 +4,4 @@ load_dotenv()
 
 from .main import *  # noqa
 
-__version__ = "v0.3.4"
+__version__ = "0.3.5"
