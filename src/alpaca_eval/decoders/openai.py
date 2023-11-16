@@ -241,11 +241,20 @@ def _openai_completion_helper(
                 if kwargs["max_tokens"] == 0:
                     logging.exception("Prompt is already longer than max context length. Error:")
                     raise e
+            elif "Detected an error in the prompt. Please try again with a different prompt." in str(e):
+                logging.warning(
+                    f"We got an obscure error from openAI. It's likely the spam filter so we are "
+                    f"skipping this example."
+                )
+                # TODO: cleaner way to handle this? this batch will get filtered out as there is no completion
+                choices = [dict(text="", total_tokens=0)] * len(prompt_batch)
+                return choices
+
             else:
                 if "rate limit" in str(e).lower():
                     logging.warning(f"Hit request rate limit; retrying...")
                 else:
-                    logging.warning(f"Unknown error {e}. \n It's likely a rate limit so we are retrying...")
+                    logging.warning(f"Unknown error. \n It's likely a rate limit so we are retrying...")
                 if openai_organization_ids is not None and len(openai_organization_ids) > 1:
                     client_kwargs["organization"] = organization = random.choice(
                         [o for o in openai_organization_ids if o != openai.organization]
