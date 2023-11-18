@@ -33,7 +33,7 @@ models above (`cohere`, `guanaco_33b`):
 | alpaca_farm               |                60.0 |                    11.5 |                          820 |      |          |                 0.60 |                0.63 |            0.52 |      648 | verified |
 | chatgpt_fn                |                60.0 |                     1.0 |                          530 | 36.9 |     27.7 |                 0.62 |                0.65 |            0.49 |     2592 | minimal  |
 | chatgpt                   |                57.2 |                     0.8 |                          285 | 39.4 |     34.1 |                 0.59 |                0.56 |            0.49 |     2589 | minimal  |
-| cohere                    |                53.4 |                     3.5 |                          217 |      |          |                 0.50 |                0.51 |            0.47 |      648 | verified |
+| cohere                    |                56.6 |                     6.5 |                          503 |      |          |                 0.63 |                0.65 |            0.46 |      643 | verified |
 
 [//]: # (|                         | Human agreement [%] | Price [$/1000 examples] | Time [seconds/1000 examples] | Bias | Variance | Proba. prefer longer | Proba. prefer lists | Proba. prefer 1 | # parsed | mode     |)
 
