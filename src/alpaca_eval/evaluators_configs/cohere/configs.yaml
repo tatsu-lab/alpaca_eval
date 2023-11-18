@@ -2,7 +2,7 @@ cohere:
   prompt_template: "text_davinci_003/basic_prompt.txt"
   fn_completions: "cohere_completions"
   completions_kwargs:
-    model_name: "command"
+    model_name: "command-nightly"
     max_tokens: 50
   completion_parser_kwargs:
     outputs_to_match:
