@@ -2,6 +2,7 @@ name,win_rate,avg_length,link,samples,filter
 GPT-4 Turbo,97.69900497512438,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_turbo/model_outputs.json,minimal
 XwinLM 70b V0.1,95.56803995,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
 GPT-4,95.27950311,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
+Tulu 2+DPO 70B,95.03105590062113,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,community
 LLaMA2 Chat 70B,92.66169154,1790,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,minimal
 UltraLM 13B V2.0 (best-of-16),92.29813665,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
 XwinLM 13b V0.1,91.76029963,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
@@ -16,6 +17,7 @@ WizardLM 13B V1.2,89.16562889,1635,https://huggingface.co/WizardLM/WizardLM-13B-
 Vicuna 33B v1.3,88.99253731,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 Claude,88.38509317,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,minimal
 CausalLM-14B,88.26086956521739,1391,https://huggingface.co/CausalLM/14B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/causallm-14b/model_outputs.json,community
+Tulu 2+DPO 13B,88.12189054726367,1614,https://huggingface.co/allenai/tulu-2-dpo-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-13b/model_outputs.json,community
 Humpback LLaMa2 70B,87.93532338,1822,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama2-70b/model_outputs.json,community
 XwinLM 7b V0.1,87.82771536,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-7b-v0.1/model_outputs.json,community
 OpenBudddy-LLaMA2-70B-v10.1,87.67123288,1077,https://huggingface.co/OpenBuddy/openbuddy-llama2-70b-v10.1-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama2-70b-v10.1/model_outputs.json,community
@@ -24,6 +26,7 @@ OpenBuddy-LLaMA-65B-v8,86.53366584,1162,https://huggingface.co/OpenBuddy/openbud
 WizardLM 13B V1.1,86.31840796,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
 Zephyr 7B Alpha,85.7587064676617,1302,https://huggingface.co/HuggingFaceH4/zephyr-7b-alpha,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-alpha/model_outputs.json,community
 OpenChat V2 13B,84.9689441,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
+Tulu 2+DPO 7B,84.22360248447205,1663,https://huggingface.co/allenai/tulu-2-dpo-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-7b/model_outputs.json,community
 Humpback LLaMa 65B,83.70646766,1269,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama-65b/model_outputs.json,community
 UltraLM 13B V2.0,83.60248447,1399,https://github.com/thunlp/UltraChat,,community
 Recycled WizardLM 7B V2.0,83.47826086956522,1583,https://github.com/tianyi-lab/Reflection_Tuning,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/recycled-wizardlm-7b-v2.0/model_outputs.json,community
