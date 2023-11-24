@@ -229,6 +229,8 @@ def _openai_completion_helper(
             else:
                 completion_batch = client.completions.create(prompt=prompt_batch, **curr_kwargs)
                 choices = completion_batch.choices
+                for i, choice in enumerate(choices):
+                    choices[i] = choice.model_dump()
 
             for choice in choices:
                 choice["total_tokens"] = completion_batch.usage.total_tokens / len(prompt_batch)
