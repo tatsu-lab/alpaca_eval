@@ -5,7 +5,6 @@ Yi-34B-Chat:
     model_name: "01-ai/Yi-34b-Chat"
     model_kwargs:
       torch_dtype: "bfloat16"
-      trust_remote_code: True
       tp: 4
       tokenizer_mode: "slow"
     max_new_tokens: 3500
