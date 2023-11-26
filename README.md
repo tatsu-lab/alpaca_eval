@@ -632,8 +632,8 @@ for example in eval_set:
 if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can
 directly use `alpaca_eval evaluate_from_model` to also take care of generating outputs.
 
-2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of `text-davinci-003` on
-   AlpacaEval.
+2. Compute the reference outputs `reference_outputs`. By default, we use precomputed outputs of [`text-davinci-003` on
+   AlpacaEval](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
    If you
    want to use a different model or a different dataset follow the same steps as (1.).
 3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4` or `claude` (if you are

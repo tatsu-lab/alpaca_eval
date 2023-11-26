@@ -45,8 +45,9 @@ def evaluate(
         and `output` with optional `input`. If None, we just print the leaderboard.
 
     reference_outputs : path or data, optional
-        The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are the
-        003 outputs on the AlpacaEval set.
+        The outputs of the reference model. Same format as `model_outputs`. If None, the reference outputs are a
+        specific set of Davinci 003 outputs on the AlpacaEval set:
+        https://huggingface.co/datasets/tatsu-lab/alpaca_eval.
 
     annotators_config : path or list of dict, optional
         The path the (or list of dict of) the annotator's config file. For details see the docstring of
