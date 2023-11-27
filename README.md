@@ -1059,9 +1059,7 @@ git push
 <details>
   <summary><h3 tabindex="-1" dir="auto">Getting your model verified</h3></summary>
 
-<div style="display: flex; justify-content: center;">
-<img alt="verified.png" src="figures/verified.png" width="500"/>
-</div>
+<img align="center" alt="verified.png" src="figures/verified.png" width="500"/>
 
 A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources (time/GPU/money) to verify all models. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
 
