@@ -1056,6 +1056,24 @@ git push
 ``` 
 5. Create a [pull request on AlpacaEval](https://github.com/tatsu-lab/alpaca_eval/pulls)
 
+<details>
+  <summary><h3 tabindex="-1" dir="auto">Getting your model verified</h3></summary>
+
+<img alt="verified.png" src="..%2F..%2Fverified.png" width="100"/>
+
+A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources (time/GPU/money) to verify all models. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
+
+1. Contact @yann or @rtaori on Discord, or email us if you have our email, providing a brief rationale for why your model should be verified.
+2. Await our response and approval before proceeding.
+3. Prepare a script to decode from your model that does not require a GPU, typically the same script used for your model contribution. It should run using alpaca_eval evaluate_from_model --model_configs '<your_model_name>' without GPU support.
+4. Generate temporary API keys for running the script and share them with us. Specifically, we need the keys for both decoding your model and for evaluation (e.g., OpenAI or Anthropic key).
+5. We will execute the alpaca_eval evaluate_from_model --model_configs '<your_model_name>', update the results, and inform you so you can revoke the temporary keys.
+
+Note that we will not re-evaluate the same model. Due to sampling variance, the results might slightly differ from your initial ones. We will replace your previous community results with the verified ones. 
+
+
+</details>
+
 </details>
 
 <details>
@@ -1099,6 +1117,7 @@ alpaca_eval make_leaderboard \
 ```
 
 Please submit a PR with the eval set json and corresponding leaderboard csv.
+
 
 </details>
 
