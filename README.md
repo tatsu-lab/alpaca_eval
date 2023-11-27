@@ -1061,15 +1061,15 @@ git push
 
 <img alt="verified.png" src="..%2F..%2Fverified.png" width="100"/>
 
-A verified result in AlpacaEval means that one of the core maintainers decoded the outputs from the model and performed the evaluation. Unfortunately, we (AlpacaEval maintainers) do not have the resources (time/GPU/money) to verify all models. We are sorry for any inconvenience that this causes and appreciate your understanding. If you would really like to get your model verified, please follow the steps below:
+A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources (time/GPU/money) to verify all models. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
 
-1. Message either @yann or @rtaori on discord, or email us if you have our email. Give a brief explanation as for why the model you contributed should be verified.
-2. Wait for our answer and approval before proceeding.
-3. Write a script for decoding from your model without the need for a GPU. In most cases that will be the same script as the one you contributed for your model. I.e. we should be able to run it without GPUs using `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'`. 
-4. Create temporary API keys needed to run the script and send them to us. In particular, we need both the key for decoding your model, and the key for evaluating (e.g. OpenAI or Anthropic key).
-5. We will run the `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'`, update the results, and message you back so that you can delete the temporary keys.
+1. Contact @yann or @rtaori on Discord, or email us if you have our email, providing a brief rationale for why your model should be verified.
+2. Await our response and approval before proceeding.
+3. Prepare a script to decode from your model that does not require a GPU, typically the same script used for your model contribution. It should run using alpaca_eval evaluate_from_model --model_configs '<your_model_name>' without GPU support.
+4. Generate temporary API keys for running the script and share them with us. Specifically, we need the keys for both decoding your model and for evaluation (e.g., OpenAI or Anthropic key).
+5. We will execute the alpaca_eval evaluate_from_model --model_configs '<your_model_name>', update the results, and inform you so you can revoke the temporary keys.
 
-Please note that we will not rerun the evaluation for the same model. Note that due to sampling variance the results might be a little different from the ones you initially got. We will override your previous community results with the verified ones.
+Note that we will not re-evaluate the same model. Due to sampling variance, the results might slightly differ from your initial ones. We will replace your previous community results with the verified ones.
 
 
 </details>
