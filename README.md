@@ -1069,7 +1069,7 @@ A verified result in AlpacaEval indicates that a core maintainer has decoded the
 2. Await our response and approval before proceeding.
 3. Prepare a script to decode from your model that does not require a GPU, typically the same script used for your model contribution. It should run using `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'` without requiring a local GPU.
 4. Generate temporary API keys for running the script and share them with us. Specifically, we need the keys for both decoding your model and for evaluation (e.g., OpenAI or Anthropic key).
-5. We will execute the alpaca_eval `evaluate_from_model --model_configs '<your_model_name>'`, update the results, and inform you so you can revoke the temporary keys.
+5. We will execute `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'`, update the results, and inform you so that you can revoke the temporary keys.
 
 Note that we will not re-evaluate the same model. Due to sampling variance, the results might slightly differ from your initial ones. We will replace your previous community results with the verified ones. 
 
