@@ -632,8 +632,8 @@ for example in eval_set:
 if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can
 directly use `alpaca_eval evaluate_from_model` to also take care of generating outputs.
 
-2. Compute the reference outputs `reference_outputs`. By default, we use the outputs of `text-davinci-003` on
-   AlpacaEval.
+2. Compute the reference outputs `reference_outputs`. By default, we use precomputed outputs of [`text-davinci-003` on
+   AlpacaEval](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
    If you
    want to use a different model or a different dataset follow the same steps as (1.).
 3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4` or `claude` (if you are
@@ -1056,6 +1056,26 @@ git push
 ``` 
 5. Create a [pull request on AlpacaEval](https://github.com/tatsu-lab/alpaca_eval/pulls)
 
+<details>
+  <summary><h3 tabindex="-1" dir="auto">Getting your model verified</h3></summary>
+
+<p align="center">
+<img align="center" alt="verified.png" src="figures/verified.png" width="500"/>
+</p>
+
+A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources (time/GPU/money) to verify all models. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
+
+1. Contact `@yann` or `@rtaori` on Discord, or email us if you have our email, providing a brief rationale for why your model should be verified.
+2. Await our response and approval before proceeding.
+3. Prepare a script to decode from your model that does not require a GPU, typically the same script used for your model contribution. It should run using `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'` without requiring a local GPU.
+4. Generate temporary API keys for running the script and share them with us. Specifically, we need the keys for both decoding your model and for evaluation (e.g., OpenAI or Anthropic key).
+5. We will execute `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'`, update the results, and inform you so that you can revoke the temporary keys.
+
+Note that we will not re-evaluate the same model. Due to sampling variance, the results might slightly differ from your initial ones. We will replace your previous community results with the verified ones. 
+
+
+</details>
+
 </details>
 
 <details>
@@ -1099,6 +1119,7 @@ alpaca_eval make_leaderboard \
 ```
 
 Please submit a PR with the eval set json and corresponding leaderboard csv.
+
 
 </details>
 
