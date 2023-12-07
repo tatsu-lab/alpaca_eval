@@ -4,6 +4,7 @@ import json
 import logging
 import math
 import multiprocessing
+import os
 import random
 import time
 from typing import Optional, Sequence, Union
@@ -110,7 +111,7 @@ def openai_completions(
     if is_strip:
         prompts = [p.strip() for p in prompts]
 
-    is_chat = decoding_kwargs.get("requires_chatml", _requires_chatml(model_name))
+    is_chat = decoding_kwargs.pop("requires_chatml", _requires_chatml(model_name))
     if is_chat:
         prompts = [_prompt_to_chatml(prompt) for prompt in prompts]
         num_procs = num_procs or 2
@@ -179,6 +180,7 @@ def _openai_completion_helper(
     is_chat: bool,
     sleep_time: int = 2,
     openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
+    openai_api_keys_from_env: Optional[Sequence[str]] = None,
     openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
     openai_api_base: Optional[str] = None,
     top_p: Optional[float] = 1.0,
@@ -190,9 +192,14 @@ def _openai_completion_helper(
 
     # randomly select orgs
     if openai_organization_ids is not None:
-        client_kwargs["organization"] = random.choice(openai_organization_ids)
+        org = random.choice(openai_organization_ids)
+        if org is not None:
+            client_kwargs["organization"] = org
 
-    openai_api_keys = openai_api_keys or constants.OPENAI_API_KEYS
+    if openai_api_keys_from_env is None:
+        openai_api_keys = openai_api_keys or constants.OPENAI_API_KEYS
+    else:
+        openai_api_keys = os.environ[openai_api_keys_from_env].split(",")
 
     if openai_api_keys is not None:
         client_kwargs["api_key"] = random.choice(openai_api_keys)

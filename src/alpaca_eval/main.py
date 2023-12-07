@@ -279,6 +279,7 @@ def evaluate_from_model(
             idx_found_old_outputs = curr_outputs["instruction"].isin(old_outputs["instruction"])
             curr_outputs = curr_outputs[~idx_found_old_outputs]
             assert (old_outputs["generator"] == generator).all()
+            logging.info(f"Found {len(old_outputs)}. Only generating {len(curr_outputs)} .")
 
         if max_instances is not None:
             curr_outputs = curr_outputs.iloc[:max_instances]
