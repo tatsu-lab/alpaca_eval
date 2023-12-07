@@ -4,8 +4,8 @@ XwinLM 70b V0.1,95.56803995,1775,https://github.com/Xwin-LM/Xwin-LM,https://gith
 PairRM+Tulu 2+DPO 70B (best-of-16),95.39800995024876,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 GPT-4,95.27950311,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 Tulu 2+DPO 70B,95.03105590062113,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,community
+Yi 34B Chat,94.08468244084682,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,verified
 PairRM+Zephyr 7B Beta (best-of-16),93.40796019900498,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
-Yi 34B Chat,93.22981366459628,2227,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,community
 LLaMA2 Chat 70B,92.66169154,1790,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,minimal
 UltraLM 13B V2.0 (best-of-16),92.29813665,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
 XwinLM 13b V0.1,91.76029963,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
