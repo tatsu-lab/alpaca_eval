@@ -1,0 +1,13 @@
+phi-2:
+  prompt_template: "phi-2/prompt.txt"
+  fn_completions: "vllm_local_completions"
+  completions_kwargs:
+    model_name: "/media/hangyu5/Home/Documents/Hugging-Face/phi-2"
+    model_kwargs:
+      torch_dtype: "float16"
+      tp: 1
+      tokenizer_mode: "auto"
+      trust_remote_code: True
+    max_new_tokens: 2048
+  pretty_name: "Phi 2"
+  link: "https://huggingface.co/microsoft/phi-2"
