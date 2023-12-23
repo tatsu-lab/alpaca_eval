@@ -21,7 +21,6 @@ __all__ = ["openai_completions"]
 
 import os
 DEFAULT_OPENAI_API_BASE = os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else openai.base_url
-print(DEFAULT_OPENAI_API_BASE)
 
 
 def openai_completions(

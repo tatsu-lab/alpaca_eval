@@ -1,2 +1,2 @@
-A instruction given to an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
-Instruction: {instruction}\nAssistant:
+Instruct: {instruction}
+Output:

@@ -67,6 +67,10 @@ def vllm_local_completions(
         sampling_params.stop_token_ids = kwargs["stop_token_ids"]
     if do_sample:
         sampling_params.use_beam_search = True
+    if "length_penalty" in kwargs:
+        sampling_params.length_penalty = kwargs["length_penalty"]
+    if "early_stopping" in kwargs:
+        sampling_params.early_stopping = kwargs["early_stopping"]
     completions = []
     with utils.Timer() as t:
         for i in range(0, len(prompts), batch_size):
