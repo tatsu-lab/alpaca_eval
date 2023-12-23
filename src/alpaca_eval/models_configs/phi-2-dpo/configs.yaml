@@ -1,4 +1,4 @@
-phi-2-sft:
+phi-2-dpo:
   prompt_template: "phi-2-dpo/prompt.txt"
   fn_completions: "huggingface_local_completions"
   completions_kwargs:
