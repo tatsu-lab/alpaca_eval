@@ -47,11 +47,17 @@ def vllm_local_completions(
     tp = 1
     if "tp" in model_kwargs:
         tp = model_kwargs["tp"]
-    tokenizer_mode = model_kwargs["tokenizer_mode"] if "tokenizer_mode" in model_kwargs else "auto"
-    trust_remote_code = model_kwargs["trust_remote_code"] if "trust_remote_code" in model_kwargs else False
+    tokenizer_mode = model_kwargs.get("tokenizer_mode", "auto")
+    trust_remote_code = model_kwargs.get("trust_remote_code", False)
     if llm is None:
         logging.info("vllm: loading model: %s, tp=%d, trust_remote_code=%d", model_name, tp, trust_remote_code)
-        llm = LLM(model=model_name, tokenizer=model_name, tokenizer_mode=tokenizer_mode, tensor_parallel_size=tp, trust_remote_code=trust_remote_code)
+        llm = LLM(
+            model=model_name,
+            tokenizer=model_name,
+            tokenizer_mode=tokenizer_mode,
+            tensor_parallel_size=tp,
+            trust_remote_code=trust_remote_code,
+        )
         llmModelName = model_name
     if model_name != llmModelName:
         assert False, "vllm_local_completions can only be used with a single model"
