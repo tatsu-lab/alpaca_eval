@@ -8,6 +8,7 @@ Yi 34B Chat,94.08468244084682,2123,https://huggingface.co/01-ai/Yi-34B-Chat,http
 PairRM+Zephyr 7B Beta (best-of-16),93.40796019900498,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
 LLaMA2 Chat 70B,92.66169154,1790,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,minimal
 UltraLM 13B V2.0 (best-of-16),92.29813665,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
+LMCocktail-10.7B-v1,92.21668742216688,1203,https://huggingface.co/Yhyu13/LMCocktail-10.7B-v1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/LMCocktail-10.7B-v1/model_outputs.json,community
 XwinLM 13b V0.1,91.76029963,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 UltraLM 13B (best-of-16),91.54228856,1980,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-best-of-16/model_outputs.json,community
 CUT 13B,91.35572139303484,1637,https://github.com/wwxu21/CUT,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cut-13b/model_outputs.json,community
@@ -80,6 +81,7 @@ Falcon 40B Instruct,45.71428571,662,https://huggingface.co/tiiuae/falcon-40b-ins
 Alpaca Farm PPO Sim (GPT-4) 7B,44.09937888,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-sim-gpt4-20k/model_outputs.json,verified
 Pythia 12B SFT,41.86335404,913,https://huggingface.co/OpenAssistant/pythia-12b-sft-v8-7k-steps,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pythia-12b-mix-sft/model_outputs.json,verified
 Alpaca Farm PPO Human 7B,41.24223602,803,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-human/model_outputs.json,minimal
+Phi 2,30.663329161451813,626,https://huggingface.co/microsoft/phi-2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/phi-2/model_outputs.json,community
 Alpaca 7B,26.45962733,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-7b/model_outputs.json,minimal
 Pythia 12B OASST SFT,25.96273292,726,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-sft-pythia-12b/model_outputs.json,verified
 Falcon 7B Instruct,23.60248447,478,https://huggingface.co/tiiuae/falcon-7b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-7b-instruct/model_outputs.json,verified
