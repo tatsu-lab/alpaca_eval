@@ -19,7 +19,8 @@ from .. import constants, utils
 
 __all__ = ["openai_completions"]
 
-DEFAULT_OPENAI_API_BASE = openai.base_url
+import os
+DEFAULT_OPENAI_API_BASE = os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else openai.base_url
 
 
 def openai_completions(

@@ -48,9 +48,10 @@ def vllm_local_completions(
     if "tp" in model_kwargs:
         tp = model_kwargs["tp"]
     tokenizer_mode = model_kwargs["tokenizer_mode"] if "tokenizer_mode" in model_kwargs else "auto"
+    trust_remote_code = model_kwargs["trust_remote_code"] if "trust_remote_code" in model_kwargs else False
     if llm is None:
-        logging.info("vllm: loading model: %s, tp=%d", model_name, tp)
-        llm = LLM(model=model_name, tokenizer=model_name, tokenizer_mode=tokenizer_mode, tensor_parallel_size=tp)
+        logging.info("vllm: loading model: %s, tp=%d, trust_remote_code=%d", model_name, tp, trust_remote_code)
+        llm = LLM(model=model_name, tokenizer=model_name, tokenizer_mode=tokenizer_mode, tensor_parallel_size=tp, trust_remote_code=trust_remote_code)
         llmModelName = model_name
     if model_name != llmModelName:
         assert False, "vllm_local_completions can only be used with a single model"
@@ -66,6 +67,10 @@ def vllm_local_completions(
         sampling_params.stop_token_ids = kwargs["stop_token_ids"]
     if do_sample:
         sampling_params.use_beam_search = True
+    if "length_penalty" in kwargs:
+        sampling_params.length_penalty = kwargs["length_penalty"]
+    if "early_stopping" in kwargs:
+        sampling_params.early_stopping = kwargs["early_stopping"]
     completions = []
     with utils.Timer() as t:
         for i in range(0, len(prompts), batch_size):
