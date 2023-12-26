@@ -69,6 +69,11 @@ class BaseAnnotator(abc.ABC):
 
     annotation_type : type, optional
         Type to use for storing the annotations. If None, uses `self.DEFAULT_ANNOTATION_TYPE`.
+
+    is_reapply_parsing : bool, optional
+        Whether to reapply the parsing of the completions. This is useful if you want to change the parsing without
+        reannotating everything. To be useful you need to have set `is_store_missing_annotations` to True when you
+        first annotated.
     """
 
     DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
@@ -88,6 +93,7 @@ class BaseAnnotator(abc.ABC):
         base_dir: Optional[utils.AnyPath] = None,
         is_raise_if_missing_primary_keys: bool = True,
         annotation_type: Optional[Type] = None,
+        is_reapply_parsing: bool = False,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
         self.base_dir = Path(base_dir or self.DEFAULT_BASE_DIR)
@@ -101,6 +107,7 @@ class BaseAnnotator(abc.ABC):
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
         self.annotation_type = annotation_type or self.DEFAULT_ANNOTATION_TYPE
+        self.is_reapply_parsing = is_reapply_parsing
 
         self.annotators_config = self._initialize_annotators_config(annotators_config)
         self.annotators = self._initialize_annotators()
@@ -332,7 +339,12 @@ class BaseAnnotator(abc.ABC):
             # temorarily remove missing annotations from self.df_annotations
             df_annotations = self.df_annotations.query(f"{self.annotation_key} != {self.TMP_MISSING_ANNOTATION}")
 
-        df_to_annotate = self._merge_annotations(df_to_annotate, df_annotations)
+        kwargs = {}
+        if self.is_reapply_parsing:
+            # if you are reapplying parsing then remove the annotation key from the cached annotations
+            kwargs = dict(annotation_keys=[])
+
+        df_to_annotate = self._merge_annotations(df_to_annotate, df_annotations, **kwargs)
         return df_to_annotate
 
     def _store_annotations_(self, df_annotated: pd.DataFrame):
@@ -345,7 +357,12 @@ class BaseAnnotator(abc.ABC):
 
         self.df_annotations = df_annotations.drop_duplicates(subset=self.all_keys, keep="last")
 
-    def _merge_annotations(self, df_to_annotate: pd.DataFrame, df_partially_annotated: pd.DataFrame) -> pd.DataFrame:
+    def _merge_annotations(
+        self,
+        df_to_annotate: pd.DataFrame,
+        df_partially_annotated: pd.DataFrame,
+        annotation_keys: Optional[Sequence] = None,
+    ) -> pd.DataFrame:
         """Merge (partial) annotations with the original df to keep the same order and avoid duplicates annotations."""
 
         if df_partially_annotated is None or df_partially_annotated.empty:
@@ -358,16 +375,20 @@ class BaseAnnotator(abc.ABC):
             how="left",
             suffixes=("_old", "_new"),
         )
+
+        if annotation_keys is None:
+            annotation_keys = [self.annotation_key]
+
         try:
             df_to_annotate = df_to_annotate.merge(
-                df_partially_annotated[self.all_keys + [self.annotation_key] + other_keys_to_keep],
+                df_partially_annotated[self.all_keys + annotation_keys + other_keys_to_keep],
                 **kwargs,
             )
         except ValueError:
             # can have merging issues if columns have different dtypes
             df_partially_annotated = df_partially_annotated.astype({k: str for k in self.all_keys})
             df_to_annotate = df_to_annotate.astype({k: str for k in self.all_keys}).merge(
-                df_partially_annotated[self.all_keys + [self.annotation_key] + other_keys_to_keep],
+                df_partially_annotated[self.all_keys + annotation_keys + other_keys_to_keep],
                 **kwargs,
             )
 

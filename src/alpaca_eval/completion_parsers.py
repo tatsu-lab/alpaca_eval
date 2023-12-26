@@ -259,9 +259,7 @@ def logprob_parser(
         # if it's not present we say it's probability is 0, which only makes sense if at least one is present
         missing = float("-inf")
         if len(map_tokens_to_logprobs) == 0:
-            logging.warning(
-                f"Cannot find any logprobs from {denominator_tokens + [numerator_token]} in {top_logprobs}."
-            )
+            logging.warning(f"Cannot find any logprobs from {denominator_tokens + [numerator_token]} in {completion}.")
             return np.nan
 
         baseline_logprob = map_tokens_to_logprobs.get(numerator_token, missing)

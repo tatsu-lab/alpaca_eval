@@ -488,6 +488,11 @@ def dataframe_chunk_generator(df: pd.DataFrame, chunksize: Optional[int] = None,
         yield df_chunk
 
 
+def validate_alpacaeval_preference(x: float, is_allow_nan: bool = True) -> bool:
+    """Validate the preference annotation."""
+    return (1 <= x <= 2) or (is_allow_nan and np.isnan(x))
+
+
 def get_all_clients(
     client_config_path: AnyPath,
     model_name: str,

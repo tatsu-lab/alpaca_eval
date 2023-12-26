@@ -427,7 +427,7 @@ def make_leaderboard(
 def analyze_evaluators(
     annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
     Annotator=annotators.PairwiseAnnotator,
-    analyzer_kwargs=None,
+    analyzer_kwargs: Optional[dict] = None,
     precomputed_leaderboard: Optional[Union[AnyPath, AnyData]] = CUR_DIR
     / "leaderboards/evaluators/evaluators_leaderboard.csv",
     is_save_leaderboard: bool = False,
@@ -438,6 +438,7 @@ def analyze_evaluators(
     leaderboard_mode_to_print: str = "minimal",
     current_leaderboard_mode: str = "minimal",
     output_path: Optional[Union[AnyPath, str]] = "auto",
+    **annotator_kwargs,
 ):
     """Analyze an evaluator and populates the evaluators leaderboard (agreement with human, speed, price,...).
 
@@ -478,6 +479,9 @@ def analyze_evaluators(
 
     output_path : path, optional
         Path to save the leaderboard and annotataions. If None, we don't save.
+
+    annotator_kwargs :
+        Additional arguments to pass to `Annotator`.
     """
 
     leaderboard = dict()
@@ -503,12 +507,14 @@ def analyze_evaluators(
             elif key == "longest":
                 df_crossannotations = analyze._get_longest_predictor(analyzer.df_gold_crossannotations)
             else:
+                annotator_kwargs = annotator_kwargs or {}
                 df_crossannotations = analyze.get_crossannotations(
                     analyzer=analyzer,
                     Annotator=Annotator,
                     max_instances=max_instances,
                     annotators_config=annotators_config,
                     is_single_annotator=is_single_annotator,
+                    **annotator_kwargs,
                 )
 
             leaderboard[key] = analyze.get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=key)
