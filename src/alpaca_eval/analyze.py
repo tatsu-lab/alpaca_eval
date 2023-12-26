@@ -5,7 +5,6 @@ import logging
 from itertools import combinations
 from typing import Callable, Optional, Union
 
-import datasets
 import numpy as np
 import pandas as pd
 
@@ -350,18 +349,30 @@ class Analyzer:
 
 
 def get_crossannotations(
-    analyzer, Annotator, max_instances: Optional[int] = None, is_single_annotator: bool = False, **kwargs
+    analyzer,
+    Annotator,
+    max_instances: Optional[int] = None,
+    is_single_annotator: bool = False,
+    is_keep_gold_preference: bool = True,
+    **kwargs,
 ):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
     n_crossannotations = 1 if is_single_annotator else analyzer.n_annotators
     all_annotations = []
     for seed in range(n_crossannotations):
         annotator = Annotator(seed=seed, **kwargs)
-        df_gold_crossannotations = analyzer.df_gold_crossannotations.query(f"index == {seed}")
+
+        df_gold_crossannotations = analyzer.df_gold_crossannotations.query(f"index == {seed}").copy()
         if max_instances is not None:
             df_gold_crossannotations = df_gold_crossannotations.head(max_instances)
+
+        if is_keep_gold_preference:
+            df_gold_crossannotations = df_gold_crossannotations.rename(columns={"preference": "gold_preference"})
+            annotator.other_keys_to_keep += ["gold_preference"]
+
         annotations = annotator.annotate_pairs(df_gold_crossannotations)
         df_annotations = utils.load_or_convert_to_dataframe(annotations)
+
         df_annotations["index"] = seed
         all_annotations.append(df_annotations)
     df = pd.concat(all_annotations, axis=0)

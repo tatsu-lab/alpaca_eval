@@ -388,16 +388,20 @@ def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, anno
     return leaderboard, precomputed_leaderboard
 
 
-def get_output_path(output_path, model_outputs, name):
+def get_output_path(output_path, model_outputs, name, dflt_dir="results"):
     if output_path == "auto":
         if model_outputs is None:
             output_path = None
         else:
             try:
-                output_path = Path(model_outputs).parent
+                if Path(model_outputs).exists():
+                    output_path = Path(model_outputs).parent
             except:
+                pass
+
+            if output_path == "auto":
                 if name is not None:
-                    output_path = Path("results") / name
+                    output_path = Path(dflt_dir) / name
                 else:
                     output_path = "."
     if output_path is not None:

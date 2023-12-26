@@ -437,6 +437,7 @@ def analyze_evaluators(
     is_single_annotator: bool = False,
     leaderboard_mode_to_print: str = "minimal",
     current_leaderboard_mode: str = "minimal",
+    output_path: Optional[Union[AnyPath, str]] = "auto",
 ):
     """Analyze an evaluator and populates the evaluators leaderboard (agreement with human, speed, price,...).
 
@@ -474,6 +475,9 @@ def analyze_evaluators(
 
     current_leaderboard_mode : {"minimal", "verified", "community"}, optional
         The mode of the leaderboard to save all new entries with.
+
+    output_path : path, optional
+        Path to save the leaderboard and annotataions. If None, we don't save.
     """
 
     leaderboard = dict()
@@ -488,6 +492,7 @@ def analyze_evaluators(
     analyzer_kwargs = analyzer_kwargs or {}
 
     all_crossannotations = dict()
+    key = None
     if annotators_config is not None:
         key = annotators_config.replace("/", "_").replace("_configs.yaml", "")
         if key not in leaderboard or is_overwrite_leaderboard:
@@ -520,6 +525,14 @@ def analyze_evaluators(
 
     if is_save_leaderboard:
         df_leaderboard.to_csv(precomputed_leaderboard)
+
+    if key is not None and output_path is not None:
+        output_path = utils.get_output_path(output_path, annotators_config, key, dflt_dir="results_evaluators")
+        logging.info(f"Saving all results to {output_path}")
+        df_leaderboard.to_csv(output_path / "leaderboard.csv")
+        for annotator_name, df_crossannotations in all_crossannotations.items():
+            annotations_name = f"annotation_{annotator_name}.json"
+            df_crossannotations.to_json(output_path / annotations_name, orient="records", indent=2)
 
     if is_return_instead_of_print:
         return df_leaderboard, all_crossannotations

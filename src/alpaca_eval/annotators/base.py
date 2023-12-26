@@ -48,8 +48,11 @@ class BaseAnnotator(abc.ABC):
     primary_keys : sequence of str, optional
         Keys use to distinguish the example.
 
-    other_keys_to_keep : sequence of str, optional
-        Other columns to store besides the annotations.
+    other_output_keys_to_keep : sequence of str, optional
+        Other output columns to store besides the annotations.
+
+    other_input_keys_to_keep : sequence of str, optional
+        Other columns to keep from the input dataframe besides the primary keys.
 
     is_store_missing_annotations : bool, optional
         Whether to store missing annotations. If True it avoids trying to reannotate examples that have errors.
@@ -79,11 +82,8 @@ class BaseAnnotator(abc.ABC):
         annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
-        other_keys_to_keep: Sequence[str] = (
-            "price_per_example",
-            "time_per_example",
-            "raw_completion",
-        ),
+        other_output_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example", "raw_completion"),
+        other_input_keys_to_keep: Sequence[str] = (),
         is_store_missing_annotations: bool = True,
         base_dir: Optional[utils.AnyPath] = None,
         is_raise_if_missing_primary_keys: bool = True,
@@ -95,7 +95,9 @@ class BaseAnnotator(abc.ABC):
         self.is_avoid_reannotations = is_avoid_reannotations
         self.primary_keys = list(primary_keys)
         self.all_keys = self.primary_keys + [self.annotator_column]
-        self.other_keys_to_keep = list(other_keys_to_keep)
+        self.other_output_keys_to_keep = list(other_output_keys_to_keep)
+        self.other_input_keys_to_keep = list(other_input_keys_to_keep)
+        self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
         self.annotation_type = annotation_type or self.DEFAULT_ANNOTATION_TYPE
@@ -219,7 +221,8 @@ class BaseAnnotator(abc.ABC):
         df_to_annotate = utils.convert_to_dataframe(to_annotate)
         self._add_missing_primary_keys_(df_to_annotate)
 
-        for c in self.other_keys_to_keep + [self.annotation_key]:
+        # don't remove output keys to keep
+        for c in self.other_output_keys_to_keep + [self.annotation_key]:
             if c in df_to_annotate.columns:
                 logging.warning(f"{c} column is already in the dataframe. We will overwrite it.")
                 df_to_annotate[c] = None
@@ -322,7 +325,14 @@ class BaseAnnotator(abc.ABC):
 
     def _apply_cached_annotations(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         """annotate examples with cached annotations"""
-        df_to_annotate = self._merge_annotations(df_to_annotate, self.df_annotations)
+
+        if self.is_store_missing_annotations:
+            df_annotations = self.df_annotations
+        else:
+            # temorarily remove missing annotations from self.df_annotations
+            df_annotations = self.df_annotations.query(f"{self.annotation_key} != {self.TMP_MISSING_ANNOTATION}")
+
+        df_to_annotate = self._merge_annotations(df_to_annotate, df_annotations)
         return df_to_annotate
 
     def _store_annotations_(self, df_annotated: pd.DataFrame):
@@ -490,6 +500,9 @@ class SingleAnnotator:
 
     is_add_default_processors : bool, optional
         Whether to add the default processors to the list of processors.
+
+    completion_key : str, optional
+        Key of the output of `fn_completions` to use for parsing the completions into annotations.
     """
 
     def __init__(
@@ -504,9 +517,10 @@ class SingleAnnotator:
         batch_size: int = 1,
         base_dir: utils.AnyPath = constants.EVALUATORS_CONFIG_DIR,
         annotation_column: str = "annotation",
-        is_store_raw_completions: bool = False,
+        is_store_raw_completions: bool = True,
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
+        completion_key: str = "completion",
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -528,6 +542,7 @@ class SingleAnnotator:
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
+        self.completion_key = completion_key
         processors_to_kwargs = processors_to_kwargs or {}
         if (
             batch_size > 1
@@ -568,7 +583,7 @@ class SingleAnnotator:
 
         completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
-        annotations_to_save, completions_to_save = self._parse_completions(completions=completions["completions"])
+        annotations_to_save, completions_to_save = self._parse_completions(completions=completions[self.completion_key])
         df_to_annotate[self.annotation_column] = annotations_to_save
         if self.completion_column is not None:
             df_to_annotate[self.completion_column] = completions_to_save
