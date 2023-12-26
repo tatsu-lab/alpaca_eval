@@ -541,7 +541,7 @@ class SingleAnnotator:
         is_store_raw_completions: bool = True,
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
-        completion_key: str = "completion",
+        completion_key: str = "completions",
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)

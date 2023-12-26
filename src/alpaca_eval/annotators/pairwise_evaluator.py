@@ -378,6 +378,6 @@ class SinglePairwiseAnnotator(SingleAnnotator):
 
         all_values = df_annotated[self.annotation_column]
         all_values = all_values[~all_values.isna()]
-        assert all_values.apply(validate_alpacaeval_preference, is_allow_nan=True).all()
+        assert all_values.apply(utils.validate_alpacaeval_preference, is_allow_nan=True).all()
 
         return df_annotated
