@@ -10,3 +10,4 @@ phi-2-sft:
     top_p: 1.0
     do_sample: True
   pretty_name: "Phi-2 SFT"
+  link: "https://huggingface.co/lxuechen/phi-2-sft"
