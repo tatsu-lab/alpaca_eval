@@ -16,6 +16,7 @@ Claude 2,91.35572139,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/re
 PairRM+Tulu 2+DPO 13B (best-of-16),91.055900621118,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
 Cohere Command,90.62111801242236,1983,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cohere/model_outputs.json,minimal
 Zephyr 7B Beta,90.5977584059776,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
+DEITA 7B v1.0,90.06211180124224,1417,https://github.com/hkust-nlp/deita,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deita-7b-v1.0/model_outputs.json,community
 OpenChat V3.1 13B,89.49004975,1484,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
 ChatGPT,89.36567164,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/chatgpt/model_outputs.json,minimal
 Evo v2 7B,89.35242839352429,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
