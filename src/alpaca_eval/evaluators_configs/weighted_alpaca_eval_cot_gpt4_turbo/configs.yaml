@@ -1,4 +1,4 @@
-alpaca_eval_clf_cot_gpt4_turbo:
+weighted_alpaca_eval_cot_gpt4_turbo:
   prompt_template: "alpaca_eval_clf_cot_gpt4_turbo/alpaca_eval_clf_cot.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
@@ -11,7 +11,7 @@ alpaca_eval_clf_cot_gpt4_turbo:
   completion_parser_kwargs:
     numerator_token: "m"
     denominator_tokens: ["m", "M"]
-    is_binarize: true
+    is_binarize: false
     log_prob_index: -1
   completion_key: "completions_all"
   batch_size: 1

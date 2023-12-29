@@ -2,7 +2,9 @@
 You are a helpful instruction-following assistant.
 <|im_end|>
 <|im_start|>user
-Select the output A or B that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should first contain a concise explanation and then it should end with ONLY: A or B, because we will use `output[-1]` to extract the best output. Here's an example:
+Select the output A or B that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should first contain a concise explanation and then it should end with ONLY the token: `A` or `B` (no dot, no backticks, no new line, no quotes, no 'it depends', no 'both' ...), because we will use `output[-1]` to extract the best output.
+
+Here's an example:
 
 # Example:
 ## Instruction:
@@ -14,12 +16,12 @@ An ophthalmologist is a medical doctor who specializes in the diagnosis and trea
 ## Output B:
 An ophthalmologist is a medical doctor who pokes and prods at your eyes while asking you to read letters from a chart.
 
-## Concise explanation followed be A or B
+## Concise explanation followed by `A` or `B`
 
 ### Concise explanation
 A provides a comprehensive and accurate description of the job of an ophthalmologist. In contrast, B is more of a joke.
 
-### Which is best, A or B?
+### Which is best, `A` or `B`?
 A
 
 # Task:
@@ -28,13 +30,13 @@ Now is the real task.
 ## Instruction:
 {instruction}
 
-## Output A:
+## Output `A`:
 {output_1}
 
-## Output B:
+## Output `B`:
 {output_2}
 
-## Concise explanation followed be A or B
+## Concise explanation followed by `A` or `B`
 
 ### Concise explanation
 <|im_end|>

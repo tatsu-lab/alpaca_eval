@@ -277,7 +277,9 @@ def logprob_parser(
         else:
             out_logprob = baseline_logprob - denominator_logprob  # typecheck doesn't recognize it's a float
             probability = np.exp(out_logprob)
-            out = probability
+            # if you have probability 1 of preferring first then say 1 if 0 say 2
+            # output between 1 and 2 for historical reasons
+            out = 2 - probability
 
         return out
 

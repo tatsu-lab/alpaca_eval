@@ -116,7 +116,7 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
         """When postprocessing, we undo the switch and remove the switch column."""
         df_annotated = df_annotated.copy()
         df_annotated = self._switch_or_unswitch(df_annotated, is_switch=False)
-        df_annotated = df_annotated.drop(columns=[self._switch_column])
+        # df_annotated = df_annotated.drop(columns=[self._switch_column])
         return df_annotated
 
     @property

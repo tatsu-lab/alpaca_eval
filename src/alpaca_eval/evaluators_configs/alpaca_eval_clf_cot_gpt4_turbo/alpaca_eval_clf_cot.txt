@@ -27,15 +27,15 @@ Here are the unordered outputs from the models. Each output is associated with a
 
 ## Task
 
-Evaluate the models based on the quality and relevance of their outputs, and select the model that generated the best output. Answer by first providing a concise explanation and then end your answer by providing the model identifier of the best output. We will use the last character of your output `output[-1]` as the name of the best model, so make sure you finish with the following model identifiers and nothing else (no quotes, no dots, no backticks, no new lines, ...): m or M. For example:
+Evaluate the models based on the quality and relevance of their outputs, and select the model that generated the best output. Answer by first providing a concise explanation and then end your answer by providing the model identifier of the best output. We will use the last character of your output `output[-1]` as the name of the best model, so make sure you finish with the token of the model identifiers and nothing else: `m` or `M` (no quotes, no dots, no backticks, no new lines, ...). For example:
 
 ### Concise explanation
-...
+...some text...
 
 ### Which is best, m or M?
-...
+M
 
 Now is your turn.
 
-## Your answer: concise explanation followed be m or M
+## Your answer: "Concise explanation" followed by "Which is best, m or M?"
 <|im_end|>

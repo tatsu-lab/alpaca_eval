@@ -64,7 +64,7 @@ def test_single_annotator(single_annotator, df_to_annotate):
     single_annotator.completion_column = "completions"
 
     # Call the preprocess method
-    df_annotated = single_annotator(df_to_annotate, is_store_raw_completions=False)
+    df_annotated = single_annotator(df_to_annotate)
 
     assert df_annotated["preference"].tolist() == [1, 2]
     assert df_annotated["instruction"].tolist() == ["2+2", "1+1"]

@@ -18,7 +18,7 @@ def test_agreement_of_annotations(analyzer):
         n_majority_vote_1=1,
         n_majority_vote_2=1,
     )
-    assert agreement["accuracy"] == pytest.approx(0.75)
+    assert agreement["score"] == pytest.approx(0.75)
     assert agreement["sem_samples"] == pytest.approx(0.25)
     assert agreement["counts"] == pytest.approx(2)
     assert agreement["sem_annotators"] == pytest.approx(0.07537783614444091)
@@ -28,7 +28,7 @@ def test_agreement_of_annotations(analyzer):
         n_majority_vote_1=1,
         n_majority_vote_2=3,
     )
-    assert agreement["accuracy"] == pytest.approx(0.875)
+    assert agreement["score"] == pytest.approx(0.875)
     assert agreement["sem_samples"] == pytest.approx(0.125)
     assert agreement["counts"] == pytest.approx(2)
     assert agreement["sem_annotators"] == pytest.approx(0.125)

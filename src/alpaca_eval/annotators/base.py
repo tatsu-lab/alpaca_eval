@@ -67,7 +67,7 @@ class BaseAnnotator(abc.ABC):
     tmp_missing_annototation : Any, optional
         Temporary value to use for missing annotations when `is_store_missing_annotations` is True.
 
-    annotation_type : type, optional
+    annotation_type : type or str, optional
         Type to use for storing the annotations. If None, uses `self.DEFAULT_ANNOTATION_TYPE`.
 
     is_reapply_parsing : bool, optional
@@ -106,6 +106,8 @@ class BaseAnnotator(abc.ABC):
         self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
+        if isinstance(annotation_type, str):
+            annotation_type = ast.literal_eval(annotation_type)
         self.annotation_type = annotation_type or self.DEFAULT_ANNOTATION_TYPE
         self.is_reapply_parsing = is_reapply_parsing
 
@@ -180,6 +182,7 @@ class BaseAnnotator(abc.ABC):
             df_annotated = self._annotate(curr_df_to_annotate, **decoding_kwargs)
             annotated = self._postprocess_and_store_(df_annotated, df_chunk)
             all_annotated.extend(annotated)
+
         return all_annotated
 
     #######################
@@ -255,18 +258,26 @@ class BaseAnnotator(abc.ABC):
     def _annotate(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
         """Annotate the examples."""
 
-        df_annotated = df_to_annotate
+        # drop the output keys that you will be adding
+        df_annotated = df_to_annotate.drop(columns=self.other_output_keys_to_keep, errors="ignore")
         for annotator in self.annotators.keys():
             # only annotate examples that have not been annotated yet
-            curr_idcs = df_annotated[self.annotator_column] == annotator
-            if self.annotation_key in df_annotated.columns:
-                curr_idcs &= df_annotated[self.annotation_key].isna()
+            curr_idcs = df_to_annotate[self.annotator_column] == annotator
+            if self.annotation_key in df_to_annotate.columns:
+                curr_idcs &= df_to_annotate[self.annotation_key].isna()
 
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
             # actual annotation
+            columns_to_annotate = self.available_fields_to_format
+            if self.is_reapply_parsing:
+                # add other_output_keys_to_keep to columns_to_annotate
+                columns_to_annotate = columns_to_annotate + [
+                    c for c in self.other_output_keys_to_keep if c in df_to_annotate.columns
+                ]
+
             curr_annotated = self.annotators[annotator](
-                df_annotated.loc[curr_idcs, self.available_fields_to_format],
+                df_to_annotate.loc[curr_idcs, columns_to_annotate],
                 **decoding_kwargs,
             )
 
@@ -512,7 +523,10 @@ class SingleAnnotator:
         Name of the annotation column in the output dataframe.
 
     is_store_raw_completions : bool, optional
-        Whether to store raw completions at `"raw_completion"` column in the output dataframe.
+        Whether to store raw completions at `"raw_completion"` column in the output dataframe. Note that raw_completion
+        will not be modified by the postprocessors. E.g. if we switch the columns output_1 and output_2 in the prompt
+        then the raw completion will show the switched order, which makes interpretation harder. This should
+        nevertheless not be an issue when using reapply_parsing because of seeding.
 
     processors_to_kwargs : Sequence[dict(str, dict)], optional
         A dictionary of BaseProcessor objects to apply for preprocessing the  dataframe before making the prompts and
@@ -599,23 +613,41 @@ class SingleAnnotator:
 
         df_to_annotate = self._preprocess(df_to_annotate)
 
-        # prompts and completions here will not be the same length as the dataframe due to batching
-        prompts, df_to_annotate = self._make_prompts(df_to_annotate)
+        # the following only reapplies the parsing in case you already stored the raw completions. requires batch_size=1
+        if self.completion_column in df_to_annotate.columns and self.batch_size == 1:
+            # keep only the rows that have not been annotated yet
+            main_df_to_annotate = df_to_annotate
+            idx_not_completed = df_to_annotate[self.completion_column].isna()
+            df_to_annotate = df_to_annotate[idx_not_completed].copy()
 
-        completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
+        if not df_to_annotate.empty:
+            # prompts and completions here will not be the same length as the dataframe due to batching
+            prompts, df_to_annotate = self._make_prompts(df_to_annotate)
+            completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
 
-        annotations_to_save, completions_to_save = self._parse_completions(completions=completions[self.completion_key])
+            for k, v in completions.items():
+                if k != "completions":
+                    if self.batch_size != 1 and (len(df_to_annotate) == len(v) * self.batch_size):
+                        v = [el for el in v for _ in range(self.batch_size)]
+                    df_to_annotate[k] = v
+                    if "per_example" in k:
+                        df_to_annotate[k] = df_to_annotate[k] / self.batch_size
+
+        # the following is only needed if you want to only reapply the parsing
+        if self.completion_column in df_to_annotate.columns:
+            if not df_to_annotate.empty:
+                df_to_annotate[self.completion_column] = completions[self.completion_key]  # only works for bs 1
+            main_df_to_annotate[idx_not_completed] = df_to_annotate  # puts back all the new completions
+            df_to_annotate = main_df_to_annotate
+            completions_to_parse = df_to_annotate[self.completion_column]
+        else:
+            completions_to_parse = completions[self.completion_key]
+
+        # note: reparsing only works if you use the same completion_key
+        annotations_to_save, completions_to_save = self._parse_completions(completions=completions_to_parse)
         df_to_annotate[self.annotation_column] = annotations_to_save
         if self.completion_column is not None:
             df_to_annotate[self.completion_column] = completions_to_save
-
-        for k, v in completions.items():
-            if k != "completions":
-                if len(df_to_annotate[self.annotation_column]) == len(v) * self.batch_size:
-                    v = [el for el in v for _ in range(self.batch_size)]
-                df_to_annotate[k] = v
-                if "per_example" in k:
-                    df_to_annotate[k] = df_to_annotate[k] / self.batch_size
 
         df_annotated = self._postprocess(df_to_annotate)
 
