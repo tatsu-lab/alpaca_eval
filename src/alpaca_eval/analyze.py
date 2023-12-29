@@ -250,7 +250,7 @@ class Analyzer:
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
             df["best_output"] = np.where(df["preference"] < 1.5, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] > 2, df.output_1, df.output_2)
+            df["worse_output"] = np.where(df["preference"] > 1.5, df.output_1, df.output_2)
 
             # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
             df["best_output_length"] = df["best_output"].apply(len)
