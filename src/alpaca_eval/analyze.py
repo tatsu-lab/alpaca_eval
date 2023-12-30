@@ -3,7 +3,6 @@ Main module for analyzing an evaluation benchmark (annotator and data).
 """
 import abc
 import logging
-import statistics
 from dataclasses import dataclass
 from itertools import combinations
 from numbers import Number
@@ -12,7 +11,6 @@ from typing import Callable, Optional, Union
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from sklearn.metrics import accuracy_score, mean_absolute_error, mean_squared_error
 
 from . import constants, utils
 from .types import AnyData, AnyPath
@@ -547,7 +545,7 @@ class ZeroOneScoringRule(BaseScoringRule):
 
     def _score(self, prediction, target):
         """Score a single prediction."""
-        return accuracy_score(target, prediction)
+        return (target == prediction).mean()
 
     def _bayes_estimator(self, predictions):
         """Compute the bayes estimator of the predictions."""
@@ -565,7 +563,7 @@ class AbsoluteScoringRule(BaseScoringRule):
 
     def _score(self, prediction, target):
         """Score a single prediction."""
-        return 1 - mean_absolute_error(target, prediction)
+        return 1 - (target - prediction).abs().mean()
 
     def _bayes_estimator(self, predictions):
         """Compute the median in a backward compatible way."""
@@ -584,7 +582,7 @@ class SquaredScoringRule(BaseScoringRule):
 
     def _score(self, prediction, target):
         """Score a single prediction."""
-        return 1 - mean_squared_error(target, prediction)
+        return 1 - ((target - prediction) ** 2).mean()
 
     def _bayes_estimator(self, predictions):
         """Compute the bayes estimator of the predictions."""
