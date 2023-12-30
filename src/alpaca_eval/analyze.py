@@ -1,18 +1,16 @@
 """
 Main module for analyzing an evaluation benchmark (annotator and data).
 """
-import abc
 import logging
-from dataclasses import dataclass
 from itertools import combinations
-from numbers import Number
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Sequence, Union
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
+from scipy.stats import pearsonr, spearmanr
 
 from . import constants, utils
+from .metrics import SCORING_RULES
 from .types import AnyData, AnyPath
 
 
@@ -63,6 +61,7 @@ class Analyzer:
         self.n_annotators = n_annotators
         self.annotator_kwargs = annotator_kwargs
         self.scoring_rule = SCORING_RULES[scoring_rule]()
+        self.annotation_key = "preference"
 
         df_gold_crossannotations = utils.load_or_convert_to_dataframe(gold_crossannotations)
         # adding a random index to differentiate between the n_annotators
@@ -210,7 +209,7 @@ class Analyzer:
 
         return results
 
-    def estimate_bias(self, annotations: pd.DataFrame):
+    def estimate_bias(self, annotations: pd.DataFrame) -> float:
         """(over)Estimates the bias of the annotations by computing the agreement error between the majority vote of
         the annotations and the gold annotations.
 
@@ -230,7 +229,7 @@ class Analyzer:
         )
         return agreement["error"]
 
-    def estimate_variance(self, annotations: Union[pd.DataFrame, str]):
+    def estimate_variance(self, annotations: Union[pd.DataFrame, str]) -> float:
         """(over)Estimates the variance of the annotations by computing the 1 vs all agreement error.
 
         Parameters
@@ -245,14 +244,88 @@ class Analyzer:
         )
         return agreement["error"]
 
+    def estimate_correlations(
+        self,
+        annotations_1: pd.DataFrame,
+        annotations_2: Union[pd.DataFrame, str] = "gold_crossannotations",
+        groupby: Sequence[str] = ("generator",),
+    ) -> dict[str, float]:
+        """Estimate the correlations between different methods.
+
+        Parameters
+        ----------
+        annotations_1: pd.DataFrame
+            Annotations to estimate the correlations of. For better results, it should have multiple annotations per
+            example.
+
+        annotations_2: pd.DataFrame or "gold_crossannotations" or "gold_annotations"
+            Annotations to compare rankings with. If "gold_crossannotations" or "gold_annotations" we use the
+            corresponding gold annotations.
+
+        groupby: list[str], optional
+            Columns to groupby for computing the ldeaderboard.
+
+        Returns
+        -------
+        correlations: pd.DataFrame
+            Correlations between different methods.
+        """
+
+        annotations_1 = self._get_annotations(annotations_1)
+        is_add_generator = annotations_2 == "gold_crossannotations"
+        annotations_2 = self._get_annotations(annotations_2)
+
+        if is_add_generator:
+            # TODO clean: following is because we don't save generator in HF crossannotation dataset => reconstructs it.
+            # takes only eval set for the leaderboard
+            merge_kwargs = dict(right=self.df_gold_annotations[self.keys + ["generator"]], on=self.keys)
+            annotations_2 = annotations_2.query("datasplit == 'eval'").merge(**merge_kwargs)
+            annotations_1 = annotations_1.query("datasplit == 'eval'").merge(**merge_kwargs)
+            n_per_generator = annotations_2.groupby("generator").size()
+            n_annotated = 100  # we annotated around 140 per generator, there are other generators due to same outputs
+            selected_generators = list(n_per_generator[n_per_generator > n_annotated].index)
+            annotations_2 = annotations_2[annotations_2.generator.isin(selected_generators)]
+            annotations_1 = annotations_1[annotations_1.generator.isin(selected_generators)]
+
+        # 1. get the leaderboard for each annotations, where we groupby the keys and compute the score
+        groupby = list(groupby)
+        leaderboard_1 = (
+            annotations_1.groupby(groupby)[self.annotation_key]
+            .aggregate(self.scoring_rule.generalized_win_rate)
+            .rename("win_rate_1")
+        )
+        leaderboard_2 = (
+            annotations_2.groupby(groupby)[self.annotation_key]
+            .aggregate(self.scoring_rule.generalized_win_rate)
+            .rename("win_rate_2")
+        )
+
+        # 2. get the correlations between both leaderboards
+        df = pd.merge(
+            leaderboard_1,
+            leaderboard_2,
+            left_index=True,
+            right_index=True,
+        )
+        s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
+        r, _ = pearsonr(df["win_rate_2"], df["win_rate_1"])
+
+        print(df.sort_values("win_rate_2", ascending=False))
+
+        return dict(spearman=s, pearson=r)
+
     def get_length_biases(
         self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
     ) -> dict[str, float]:
         """Estimate the biases for longer sentences."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"].between(1, 1.5, inclusive="left"), df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"].between(1.5, 2, inclusive="right"), df.output_1, df.output_2)
+            df["best_output"] = np.where(
+                df[self.annotation_key].between(1, 1.5, inclusive="left"), df.output_1, df.output_2
+            )
+            df["worse_output"] = np.where(
+                df[self.annotation_key].between(1.5, 2, inclusive="right"), df.output_1, df.output_2
+            )
 
             # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
             df["best_output_length"] = df["best_output"].apply(len)
@@ -287,8 +360,12 @@ class Analyzer:
         """Estimate the biases for sentences with lists."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"].between(1, 1.5, inclusive="left"), df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"].between(1.5, 2, inclusive="right"), df.output_1, df.output_2)
+            df["best_output"] = np.where(
+                df[self.annotation_key].between(1, 1.5, inclusive="left"), df.output_1, df.output_2
+            )
+            df["worse_output"] = np.where(
+                df[self.annotation_key].between(1.5, 2, inclusive="right"), df.output_1, df.output_2
+            )
 
             # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
             df["is_best_list"] = df["best_output"].apply(utils.contains_list)
@@ -320,14 +397,14 @@ class Analyzer:
         if "n_annotated" in df.columns:
             df = df.drop(columns="n_annotated")
 
-        df["index"] = df.groupby(self.keys)["preference"].cumcount()
+        df["index"] = df.groupby(self.keys)[self.annotation_key].cumcount()
 
         if is_rm_less_than:
             # remove samples that have more than n_annotators
             df = df[df["index"] < n_annotators]
 
         # select examples that have at least n_annotators
-        counts = df.groupby(self.keys)["preference"].count()
+        counts = df.groupby(self.keys)[self.annotation_key].count()
         counts.name = "n_annotated"
         n_annotators = n_annotators or counts.min()
         counts = counts[counts >= n_annotators].reset_index()
@@ -348,7 +425,7 @@ class Analyzer:
 
     def _get_bayes_estimator(self, annotations, idcs):
         annotations = annotations[annotations["index"].isin(idcs)]
-        return annotations.groupby(self.keys)["preference"].aggregate(self.scoring_rule.bayes_estimator)
+        return annotations.groupby(self.keys)[self.annotation_key].aggregate(self.scoring_rule.bayes_estimator)
 
     def _score_of_single_annotations(
         self,
@@ -358,9 +435,15 @@ class Analyzer:
         merged = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
         out = pd.Series(
             dict(
-                score=self.scoring_rule.score(prediction=merged["preference_1"], target=merged["preference_2"]),
-                error=self.scoring_rule.error(prediction=merged["preference_1"], target=merged["preference_2"]),
-                sem_samples=self.scoring_rule.sem(prediction=merged["preference_1"], target=merged["preference_2"]),
+                score=self.scoring_rule.score(
+                    prediction=merged[f"{self.annotation_key}_1"], target=merged[f"{self.annotation_key}_2"]
+                ),
+                error=self.scoring_rule.error(
+                    prediction=merged[f"{self.annotation_key}_1"], target=merged[f"{self.annotation_key}_2"]
+                ),
+                sem_samples=self.scoring_rule.sem(
+                    prediction=merged[f"{self.annotation_key}_1"], target=merged[f"{self.annotation_key}_2"]
+                ),
                 counts=len(merged),
             )
         )
@@ -421,6 +504,10 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
     all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
 
+    correlations = analyzer.estimate_correlations(df_crossannotations)
+    all_metrics["Spearman corr."] = correlations["spearman"]
+    all_metrics["Pearson corr."] = correlations["pearson"]
+
     if evaluator_name == "humans":
         all_metrics["Bias"] = 0
         all_metrics["Variance"] = analyzer.estimate_variance(df_crossannotations) * 100
@@ -445,40 +532,6 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
 ###############################
 
 
-def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropna=True):
-    """Take the mode of a series, but if there are multiple modes, randomly sample one
-    (with potential restriction to `available_modes` or favoring a specific mode `favorite_mode`).
-
-    Example
-    -------
-    >>> import pandas as pd
-    >>> from alpaca_eval.analyze import _random_mode
-    >>> _random_mode(pd.Series([1.0,2.0,1.0]))
-    1.0
-    >>> _random_mode(pd.Series([1.0,2.0])) in [1.0, 2.0]
-    True
-    >>> _random_mode(pd.Series([1.0,2.0,-1.0]), favorite_mode=-1.0)
-    -1.0
-    >>> _random_mode(pd.Series([1.0,2.0,2.0,-1.0]), favorite_mode=-1.0)
-    2.0
-    """
-    out = pd.Series.mode(s)
-    if is_dropna:
-        out = out.dropna()
-
-    if len(out) > 1:
-        if favorite_mode is not None and favorite_mode in out.values:
-            return favorite_mode
-        if available_modes is not None:
-            out = out[out.isin(available_modes)]
-        out = out.sample(1, random_state=seed)
-
-    if len(out) == 0:
-        return np.nan
-
-    return out.item()
-
-
 def _get_longest_predictor(df_annotations):
     """TUrn the current predictions as the predictions from an annotator that always picks the longest output."""
     curr = df_annotations.copy()
@@ -487,109 +540,3 @@ def _get_longest_predictor(df_annotations):
     curr["time_per_example"] = 0
     curr["price_per_example"] = 0
     return curr
-
-
-@dataclass
-class BaseScoringRule(abc.ABC):
-    """Base class for a scoring rule."""
-
-    @abc.abstractmethod
-    def _score(self, prediction: pd.Series, target: pd.Series) -> float:
-        pass
-
-    @abc.abstractmethod
-    def _bayes_estimator(self, predictions: pd.Series) -> Number:
-        pass
-
-    def score(self, prediction: npt.ArrayLike, target: npt.ArrayLike) -> float:
-        """Score a prediction. Higher is better."""
-        prediction, target = self.preprocess(prediction, target)
-        return self._score(prediction, target)
-
-    def error(self, prediction: npt.ArrayLike, target: npt.ArrayLike) -> float:
-        """Compute the error of the prediction. Lower is better"""
-        return 1 - self.score(prediction, target)
-
-    def sem(self, prediction: npt.ArrayLike, target: npt.ArrayLike) -> float:
-        """Compute the standard error of the error."""
-        return pd.Series([self.score([p], [t]) for p, t in zip(prediction, target)]).sem()
-
-    def bayes_estimator(self, predictions: npt.ArrayLike) -> Number:
-        """Compute the bayes estimator of the predictions."""
-        predictions = self.preprocess_predictions(predictions)
-        return self._bayes_estimator(predictions)
-
-    def preprocess(self, predictions: npt.ArrayLike, targets: npt.ArrayLike) -> tuple[pd.Series, pd.Series]:
-        """Validate the predictions and targets."""
-        predictions = self.preprocess_predictions(predictions)
-        targets = self.preprocess_targets(targets)
-
-        if predictions.shape != targets.shape:
-            raise ValueError(
-                f"predictions and targets should have the same shape. Got {predictions.shape} and {targets.shape}"
-            )
-
-        return predictions, targets
-
-    def preprocess_predictions(self, predictions: npt.ArrayLike) -> pd.Series:
-        """Validate the predictions."""
-        # backward compatibility for 0 -> 1.5
-        return pd.Series(predictions).replace({0: 1.5}).astype(float)
-
-    def preprocess_targets(self, targets: npt.ArrayLike) -> pd.Series:
-        """Validate the targets."""
-        # backward compatibility for 0 -> 1.5
-        return pd.Series(targets).replace({0: 1.5}).astype(float)
-
-
-class ZeroOneScoringRule(BaseScoringRule):
-    """Scoring rule for binary predictions."""
-
-    def _score(self, prediction, target):
-        # accuracy
-        return (target == prediction).mean()
-
-    def _bayes_estimator(self, predictions):
-        # mode
-        return _random_mode(predictions)
-
-    def preprocess_predictions(self, predictions: npt.ArrayLike) -> pd.Series:
-        return pd.Series(predictions).replace({1.5: 0}).round().astype(pd.Int64Dtype())
-
-    def preprocess_targets(self, targets: npt.ArrayLike) -> pd.Series:
-        return pd.Series(targets).replace({1.5: 0}).round().astype(pd.Int64Dtype())
-
-
-class AbsoluteScoringRule(BaseScoringRule):
-    """Absolute loss scoring rule (i.e. MAE)."""
-
-    def _score(self, prediction, target):
-        # 1 - MAE
-        return 1 - (target - prediction).abs().mean()
-
-    def _bayes_estimator(self, predictions):
-        # if all the values are 0.0, 1.0, 2.0, nan, or 1.5 then for backward compatibility we return the random mode
-        # note that this doesn't change the expected value of the estimator, but increases the variance. The new version
-        # is thus better
-        if pd.Series(predictions.unique()).isin([0.0, 1.0, 2.0, np.nan, 1.5]).all():
-            return _random_mode(predictions)
-
-        return predictions.median()
-
-
-class SquaredScoringRule(BaseScoringRule):
-    """Squared loss scoring rule (i.e. MSE)."""
-
-    def _score(self, prediction, target):
-        # 1 - MSE
-        return 1 - ((target - prediction) ** 2).mean()
-
-    def _bayes_estimator(self, predictions):
-        return predictions.mean()
-
-
-SCORING_RULES = {
-    "zero_one": ZeroOneScoringRule,
-    "absolute": AbsoluteScoringRule,
-    "squared": SquaredScoringRule,
-}

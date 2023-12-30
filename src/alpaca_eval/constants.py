@@ -146,13 +146,15 @@ EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = [
     "Human agreement",
     "Price [$/1000 examples]",
     "Time [seconds/1000 examples]",
+    "Spearman corr.",
+    "Pearson corr.",
     "Bias",
     "Variance",
     "Proba. prefer longer",
     "Proba. prefer lists",
     "Proba. prefer 1",
 ]
-EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:6]
+EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
 
 CURRENT_USER = getpass.getuser()
 if CURRENT_USER in ["yanndubs"]:
