@@ -21,7 +21,7 @@ PACKAGES_DEV = [
     "python-dotenv",
 ]
 PACKAGES_ANALYSIS = ["seaborn", "matplotlib", "jupyterlab"]
-PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "scipy", "einops"]
+PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "einops"]
 PACKAGES_ALL_API = ["anthropic>=0.3.3", "huggingface_hub", "cohere", "replicate", "boto3>=1.28.58"]
 PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
 
@@ -32,14 +32,7 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),
     author="The Alpaca Team",
-    install_requires=[
-        "python-dotenv",
-        "datasets",
-        "openai",
-        "pandas",
-        "tiktoken>=0.3.2",
-        "fire",
-    ],
+    install_requires=["python-dotenv", "datasets", "openai", "pandas", "tiktoken>=0.3.2", "fire", "scipy"],
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
         "dev": PACKAGES_DEV,
