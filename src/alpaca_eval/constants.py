@@ -1,5 +1,6 @@
 import getpass
 import os
+from functools import partial
 from pathlib import Path
 
 import datasets
@@ -29,6 +30,10 @@ HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
 DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 ########################
 
+IS_ALPACA_EVAL_2 = os.environ.get("IS_ALPACA_EVAL_2", False)
+ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
+ANNOTATOR_CONFIG_AE2 = "weighted_alpaca_eval_gpt4_turbo"
+DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
 DEFAULT_CACHE_DIR = None
 EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
 MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
@@ -65,15 +70,20 @@ VERIFIED_EVALUATORS = tuple(
 ORDERED_LEADERBOARD_MODES = ["minimal", "verified", "community"]
 
 
-def ALPACAEVAL_REFERENCE_OUTPUTS():
+def get_alpaca_eval_data(dataset="alpaca_eval_gpt4_ref"):
     dataset = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
-        "alpaca_eval",
+        dataset,
         cache_dir=DEFAULT_CACHE_DIR,
         token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
     )["eval"]
     return dataset
+
+
+ALPACAEVAL_REFERENCE_OUTPUTS = (
+    get_alpaca_eval_data if IS_ALPACA_EVAL_2 else partial(get_alpaca_eval_data, dataset="alpaca_eval")
+)
 
 
 def ALPACAFARM_ALL_OUTPUTS():
@@ -154,6 +164,23 @@ EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = [
     "Proba. prefer lists",
     "Proba. prefer 1",
 ]
+
+MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
+    "gpt4_turbo",
+    "gpt4",
+    "tulu-2-dpo-70b",
+    "Yi-34B-Chat",
+    "llama-2-70b-chat-hf",
+    "claude-2",
+    # "cohere",
+    "chatgpt",
+    "vicuna-33b-v1.3",
+    "llama-2-13b-chat-hf",
+    "llama-2-7b-chat-hf",
+    # "alpaca-farm-ppo-sim-gpt4-20k",
+    # "alpaca-7b",
+]
+
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
 
 CURRENT_USER = getpass.getuser()

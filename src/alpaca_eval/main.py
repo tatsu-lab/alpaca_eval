@@ -10,7 +10,6 @@ from . import analyze, annotators, constants, decoders, metrics, utils
 from .types import AnyData, AnyPath
 
 CUR_DIR = Path(__file__).parent
-DEFAULT_CONFIGS = "alpaca_eval_gpt4"
 
 __all__ = ["evaluate", "evaluate_from_model", "analyze_evaluators", "make_leaderboard"]
 
@@ -18,7 +17,7 @@ __all__ = ["evaluate", "evaluate_from_model", "analyze_evaluators", "make_leader
 def evaluate(
     model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
     reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
     name: Optional[str] = None,
     output_path: Optional[Union[AnyPath, str]] = "auto",
     precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
@@ -190,7 +189,7 @@ def evaluate_from_model(
     model_configs: Union[AnyPath, dict],
     reference_model_configs: Optional[Union[AnyPath, dict]] = None,
     evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
-    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
     output_path: AnyPath = "auto",
     max_instances: int = None,
     is_strip_output: bool = True,
@@ -343,7 +342,7 @@ def evaluate_from_model(
 
 def make_leaderboard(
     leaderboard_path: AnyPath,
-    annotators_config: AnyPath = DEFAULT_CONFIGS,
+    annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
     all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
     reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
     fn_add_to_leaderboard: Callable = "evaluate",
@@ -425,7 +424,7 @@ def make_leaderboard(
 
 
 def analyze_evaluators(
-    annotators_config: Optional[AnyPath] = DEFAULT_CONFIGS,
+    annotators_config: Optional[AnyPath] = constants.DEFAULT_ANNOTATOR_CONFIG,
     Annotator=annotators.PairwiseAnnotator,
     analyzer_kwargs: Optional[dict] = None,
     precomputed_leaderboard: Optional[Union[AnyPath, AnyData]] = CUR_DIR
