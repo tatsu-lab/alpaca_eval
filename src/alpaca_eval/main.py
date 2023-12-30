@@ -32,7 +32,6 @@ def evaluate(
     max_instances: Optional[int] = None,
     annotation_kwargs: Optional[dict[str, Any]] = None,
     Annotator=annotators.PairwiseAnnotator,
-    is_weighted_win_rate: bool = False,
     **annotator_kwargs,
 ):
     """Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
@@ -102,15 +101,9 @@ def evaluate(
     Annotator : class, optional
         The annotator class to use.
 
-    is_weighted_win_rate : bool, optional
-        Whether to use the weighted win rate, instead of a binary one.
-
     annotator_kwargs :
         Additional arguments to pass to `PairwiseAnnotator`.
     """
-    if is_weighted_win_rate:
-        annotator_kwargs["annotation_type"] = float
-
     if (
         isinstance(current_leaderboard_mode, str)
         and current_leaderboard_mode not in constants.ORDERED_LEADERBOARD_MODES
@@ -445,7 +438,6 @@ def analyze_evaluators(
     leaderboard_mode_to_print: str = "minimal",
     current_leaderboard_mode: str = "minimal",
     output_path: Optional[Union[AnyPath, str]] = "auto",
-    is_weighted_win_rate: bool = False,
     **annotator_kwargs,
 ):
     """Analyze an evaluator and populates the evaluators leaderboard (agreement with human, speed, price,...).
@@ -488,15 +480,9 @@ def analyze_evaluators(
     output_path : path, optional
         Path to save the leaderboard and annotataions. If None, we don't save.
 
-    is_weighted_win_rate : bool, optional
-        Whether to use the weighted win rate, instead of a binary one.
-
     annotator_kwargs :
         Additional arguments to pass to `Annotator`.
     """
-    if is_weighted_win_rate:
-        annotator_kwargs["annotation_type"] = float
-
     leaderboard = dict()
     if precomputed_leaderboard is not None:
         try:
