@@ -479,33 +479,6 @@ def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropn
     return out.item()
 
 
-def _random_median(s, seed=123, is_dropna=True):
-    """Take the median of a series, but if there are multiple medians, randomly sample one instead of avg.
-
-    Example
-    -------
-    >>> import pandas as pd
-    >>> from alpaca_eval.analyze import _random_median
-    >>> _random_median(pd.Series([1.0,2.0,1.0]))
-    1.0
-    >>> _random_median(pd.Series([1.0,2.0])) in [1.0, 2.0]
-    True
-    """
-
-    s = pd.Series(s)
-
-    if is_dropna:
-        s = s.dropna()
-
-    median_low = statistics.median_low(s)
-    median_high = statistics.median_high(s)
-
-    if median_low == median_high:
-        return median_low
-
-    return pd.Series([median_low, median_high]).sample(1, random_state=seed).item()
-
-
 def _get_longest_predictor(df_annotations):
     """TUrn the current predictions as the predictions from an annotator that always picks the longest output."""
     curr = df_annotations.copy()
@@ -525,7 +498,7 @@ class BaseScoringRule(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def _bayes_estimator(self, predictions: npt.ArrayLike) -> Number:
+    def _bayes_estimator(self, predictions: pd.Series) -> Number:
         pass
 
     def score(self, prediction: npt.ArrayLike, target: npt.ArrayLike) -> float:
@@ -595,8 +568,15 @@ class AbsoluteScoringRule(BaseScoringRule):
         return 1 - mean_absolute_error(target, prediction)
 
     def _bayes_estimator(self, predictions):
-        """Compute the bayes estimator of the predictions."""
-        return _random_median(predictions)
+        """Compute the median in a backward compatible way."""
+
+        # if all the values are 0.0, 1.0, 2.0, nan, or 1.5 then for backward compatibility we return the random mode
+        # note that this doesn't change the expected value of the estimator, but increases the variance. The new version
+        # is thus better
+        if pd.Series(predictions.unique()).isin([0.0, 1.0, 2.0, np.nan, 1.5]).all():
+            return _random_mode(predictions)
+
+        return predictions.median()
 
 
 class SquaredScoringRule(BaseScoringRule):
@@ -608,7 +588,7 @@ class SquaredScoringRule(BaseScoringRule):
 
     def _bayes_estimator(self, predictions):
         """Compute the bayes estimator of the predictions."""
-        return np.mean(predictions)
+        return predictions.mean()
 
 
 SCORING_RULES = {

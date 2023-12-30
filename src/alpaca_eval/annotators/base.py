@@ -79,7 +79,7 @@ class BaseAnnotator(abc.ABC):
     DEFAULT_BASE_DIR = constants.EVALUATORS_CONFIG_DIR
     annotator_column = "annotator"
     TMP_MISSING_ANNOTATION = -1
-    DEFAULT_ANNOTATION_TYPE = int
+    DEFAULT_ANNOTATION_TYPE = float
 
     def __init__(
         self,
