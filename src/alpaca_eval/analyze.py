@@ -129,6 +129,7 @@ class Analyzer:
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
         ...                                   n_majority_vote_1=1,  n_majority_vote_2=1)
         score             0.750000
+        error             0.250000
         sem_samples       0.250000
         counts            2.000000
         sem_annotators    0.075378
@@ -138,6 +139,7 @@ class Analyzer:
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
         ...                                   n_majority_vote_1=1,  n_majority_vote_2=3)
         score             0.875
+        error             0.125
         sem_samples       0.125
         counts            2.000
         sem_annotators    0.125
@@ -544,11 +546,11 @@ class ZeroOneScoringRule(BaseScoringRule):
     """Scoring rule for binary predictions."""
 
     def _score(self, prediction, target):
-        """Score a single prediction."""
+        # accuracy
         return (target == prediction).mean()
 
     def _bayes_estimator(self, predictions):
-        """Compute the bayes estimator of the predictions."""
+        # mode
         return _random_mode(predictions)
 
     def preprocess_predictions(self, predictions: npt.ArrayLike) -> pd.Series:
@@ -562,12 +564,10 @@ class AbsoluteScoringRule(BaseScoringRule):
     """Absolute loss scoring rule (i.e. MAE)."""
 
     def _score(self, prediction, target):
-        """Score a single prediction."""
+        # 1 - MAE
         return 1 - (target - prediction).abs().mean()
 
     def _bayes_estimator(self, predictions):
-        """Compute the median in a backward compatible way."""
-
         # if all the values are 0.0, 1.0, 2.0, nan, or 1.5 then for backward compatibility we return the random mode
         # note that this doesn't change the expected value of the estimator, but increases the variance. The new version
         # is thus better
@@ -581,11 +581,10 @@ class SquaredScoringRule(BaseScoringRule):
     """Squared loss scoring rule (i.e. MSE)."""
 
     def _score(self, prediction, target):
-        """Score a single prediction."""
+        # 1 - MSE
         return 1 - ((target - prediction) ** 2).mean()
 
     def _bayes_estimator(self, predictions):
-        """Compute the bayes estimator of the predictions."""
         return predictions.mean()
 
 

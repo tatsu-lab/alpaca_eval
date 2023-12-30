@@ -59,7 +59,7 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
     >>> df = pd.DataFrame([dict(instruction='2+2', output_1='10', output_2='4', preference=2),
     ...                    dict(instruction='2+3', output_1='5', output_2='7', preference=1)])
     >>> processor = RandomSwitchTwoColumnsProcessor(two_columns_to_switch=['output_1', 'output_2'],
-    ...                                             fn_replace_if_switch = lambda x: x.replace({"preference":{1: 2, 2: 1}})
+    ...                                             fn_replace_if_switch = lambda x: x.replace({"preference":{1: 2, 2: 1}}))
     >>> processor.preprocess(df)
         instruction output_1 output_2  preference is_switch_output_1_output_2
     0         2+2         4       10           1                         True
@@ -116,7 +116,7 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
         """When postprocessing, we undo the switch and remove the switch column."""
         df_annotated = df_annotated.copy()
         df_annotated = self._switch_or_unswitch(df_annotated, is_switch=False)
-        # df_annotated = df_annotated.drop(columns=[self._switch_column])
+        df_annotated = df_annotated.drop(columns=[self._switch_column])
         return df_annotated
 
     @property
