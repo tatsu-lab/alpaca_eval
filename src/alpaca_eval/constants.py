@@ -143,7 +143,7 @@ HUMAN_ANNOTATED_MODELS_TO_KEEP = (
 )
 
 EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = [
-    "Human agreement [%]",
+    "Human agreement",
     "Price [$/1000 examples]",
     "Time [seconds/1000 examples]",
     "Bias",

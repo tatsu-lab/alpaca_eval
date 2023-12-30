@@ -6,7 +6,9 @@ from alpaca_eval import analyze
 
 @pytest.fixture
 def analyzer():
-    return analyze.Analyzer(n_annotators=4, gold_crossannotations=RECORDS, gold_annotations=None)
+    return analyze.Analyzer(
+        n_annotators=4, gold_crossannotations=RECORDS, gold_annotations=None, scoring_rule="zero_one"
+    )
 
 
 def test_agreement_of_annotations(analyzer):

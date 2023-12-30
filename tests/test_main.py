@@ -188,7 +188,7 @@ def test_analyze_evaluators():
             )
             assert evaluator_name in df_leaderboard.index
             assert df_leaderboard.loc[evaluator_name, "mode"] == "community"
-            assert df_leaderboard.loc[evaluator_name, "Human agreement [%]"] < 60
+            assert df_leaderboard.loc[evaluator_name, "Human agreement"] < 60
             assert isinstance(all_crossannotations, dict)
             assert isinstance(all_crossannotations[evaluator_name], pd.DataFrame)
             assert len(all_crossannotations[evaluator_name]) == 100

@@ -32,6 +32,7 @@ def evaluate(
     max_instances: Optional[int] = None,
     annotation_kwargs: Optional[dict[str, Any]] = None,
     Annotator=annotators.PairwiseAnnotator,
+    is_weighted_win_rate: bool = False,
     **annotator_kwargs,
 ):
     """Evaluate a model based on its outputs. This is the default entrypoint if no command is specified.
@@ -534,7 +535,7 @@ def analyze_evaluators(
             all_crossannotations[key] = df_crossannotations
 
     df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(
-        by="Human agreement [%]", ascending=False
+        by="Human agreement", ascending=False
     )
 
     df_leaderboard = df_leaderboard[

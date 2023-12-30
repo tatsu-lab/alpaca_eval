@@ -3,6 +3,7 @@ Main module for analyzing an evaluation benchmark (annotator and data).
 """
 import abc
 import logging
+import statistics
 from dataclasses import dataclass
 from itertools import combinations
 from numbers import Number
@@ -43,7 +44,8 @@ class Analyzer:
         (MAE) and "squared" is the mean squared error (MSE). Both MAE and MSE are equivalent to zero_one for discrete
         predictions as we are performing binary classification. However, they allow for continuous predictions. We
         recommend "absolute" which is more interpretable (0.5 gets half the error) and keep the same "bias" and
-        "variance" definitions as in the discrete case with zero_one loss.
+        "variance" definitions as in the discrete case with zero_one loss. Note that to make the generalization correct
+        we use an integer median by sampling from the two possible medians.
 
     annotator_kwargs : dict
         Arguments that will be passed to all annotators being analyzed.
@@ -249,8 +251,8 @@ class Analyzer:
         """Estimate the biases for longer sentences."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"] < 1.5, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] > 1.5, df.output_1, df.output_2)
+            df["best_output"] = np.where(df["preference"].between(1, 1.5, inclusive="left"), df.output_1, df.output_2)
+            df["worse_output"] = np.where(df["preference"].between(1.5, 2, inclusive="right"), df.output_1, df.output_2)
 
             # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
             df["best_output_length"] = df["best_output"].apply(len)
@@ -285,8 +287,8 @@ class Analyzer:
         """Estimate the biases for sentences with lists."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"] < 1.5, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] > 1.5, df.output_1, df.output_2)
+            df["best_output"] = np.where(df["preference"].between(1, 1.5, inclusive="left"), df.output_1, df.output_2)
+            df["worse_output"] = np.where(df["preference"].between(1.5, 2, inclusive="right"), df.output_1, df.output_2)
 
             # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
             df["is_best_list"] = df["best_output"].apply(utils.contains_list)
@@ -342,8 +344,7 @@ class Analyzer:
             else:
                 raise ValueError(f"Unknown annotations: {annotations}")
 
-        # backward compatibility
-        return annotations.replace({"preference": {0: 1.5}})
+        return annotations
 
     def _get_bayes_estimator(self, annotations, idcs):
         annotations = annotations[annotations["index"].isin(idcs)]
@@ -413,7 +414,7 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     """Gets the metrics for an annotator given its crossannotations."""
 
     all_metrics = dict()
-    all_metrics["Human agreement [%]"] = (
+    all_metrics["Human agreement"] = (
         analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["score"] * 100
     )
 
@@ -476,6 +477,33 @@ def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropn
         return np.nan
 
     return out.item()
+
+
+def _random_median(s, seed=123, is_dropna=True):
+    """Take the median of a series, but if there are multiple medians, randomly sample one instead of avg.
+
+    Example
+    -------
+    >>> import pandas as pd
+    >>> from alpaca_eval.analyze import _random_median
+    >>> _random_median(pd.Series([1.0,2.0,1.0]))
+    1.0
+    >>> _random_median(pd.Series([1.0,2.0])) in [1.0, 2.0]
+    True
+    """
+
+    s = pd.Series(s)
+
+    if is_dropna:
+        s = s.dropna()
+
+    median_low = statistics.median_low(s)
+    median_high = statistics.median_high(s)
+
+    if median_low == median_high:
+        return median_low
+
+    return pd.Series([median_low, median_high]).sample(1, random_state=seed).item()
 
 
 def _get_longest_predictor(df_annotations):
@@ -562,21 +590,17 @@ class ZeroOneScoringRule(BaseScoringRule):
 class AbsoluteScoringRule(BaseScoringRule):
     """Absolute loss scoring rule (i.e. MAE)."""
 
-    prediction_type = float
-
     def _score(self, prediction, target):
         """Score a single prediction."""
         return 1 - mean_absolute_error(target, prediction)
 
     def _bayes_estimator(self, predictions):
         """Compute the bayes estimator of the predictions."""
-        return np.median(predictions)
+        return _random_median(predictions)
 
 
 class SquaredScoringRule(BaseScoringRule):
     """Squared loss scoring rule (i.e. MSE)."""
-
-    prediction_type = float
 
     def _score(self, prediction, target):
         """Score a single prediction."""

@@ -258,13 +258,17 @@ class BaseAnnotator(abc.ABC):
     def _annotate(self, df_to_annotate: pd.DataFrame, **decoding_kwargs) -> pd.DataFrame:
         """Annotate the examples."""
 
-        # drop the output keys that you will be adding
-        df_annotated = df_to_annotate.drop(columns=self.other_output_keys_to_keep, errors="ignore")
+        df_annotated = df_to_annotate.copy()
         for annotator in self.annotators.keys():
             # only annotate examples that have not been annotated yet
             curr_idcs = df_to_annotate[self.annotator_column] == annotator
             if self.annotation_key in df_to_annotate.columns:
                 curr_idcs &= df_to_annotate[self.annotation_key].isna()
+
+            # drop the output keys that you will be adding
+            for k in self.other_output_keys_to_keep:
+                if k in df_to_annotate.columns:
+                    df_annotated.loc[curr_idcs, k] = None
 
             logging.info(f"Annotating {curr_idcs.sum()} examples with {annotator}")
 
