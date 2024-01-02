@@ -131,6 +131,7 @@ PRECOMPUTED_LEADERBOARDS = {
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_1), "chatgpt_fn"): ALPACAEVAL_1_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), ANNOTATOR_CONFIG_AE2): ALPACAEVAL_2_LEADERBOARD_PATHS
     / f"{ANNOTATOR_CONFIG_AE2}_leaderboard.csv",
+    # needs to add the non default config. ie either with or without the logprob
 }
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
