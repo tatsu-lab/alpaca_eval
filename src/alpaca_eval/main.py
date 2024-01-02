@@ -126,6 +126,11 @@ def evaluate(
             logging.info(f"Evaluating the {name} outputs.")
 
             if max_instances is not None:
+                # first we shuffle both outputs with a fix seed => more representative
+                seed = 123
+                model_outputs = model_outputs.sample(frac=1, random_state=seed)
+                reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
+
                 model_outputs = model_outputs[:max_instances]
                 reference_outputs = reference_outputs[:max_instances]
 
