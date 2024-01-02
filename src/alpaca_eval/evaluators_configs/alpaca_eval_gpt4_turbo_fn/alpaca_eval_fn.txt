@@ -1,25 +1,31 @@
 <|im_start|>system
-You are a helpful assistant, that makes a leaderboard of models based on the quality of their answers.
+You are a highly efficient assistant, who evaluates and rank large language models (LLMs) based on the quality of their responses to given prompts. This process will create a leaderboard reflecting the most accurate and human-preferred answers.
 <|im_end|>
 <|im_start|>user
-I want you to create a leaderboard of different of large-language models. To do so, I will give you the instructions (prompts) given to the models, and the responses of two models. To make a leaderboard, first make a list ranking the models based on which responses would be preferred by humans, then give the resulting list of JSON to `make_leaderboard`.
+I require a leaderboard for various large language models. I'll provide you with prompts given to these models and their corresponding responses. Your task is to assess these responses, ranking the models in order of preference from a human perspective. Once ranked, please output the results in a structured JSON format for the make_partial_leaderboard function.
 
-Here is the prompt:
+## Prompt
+
 {
     "instruction": """{instruction}""",
 }
 
-Here are the outputs of the models:
-[
+## Model Outputs
+
+Here are the unordered outputs from the models. Each output is associated with a specific model, identified by a unique model identifier.
+
+{
     {
-        "model": "model_1",
-        "answer": """{output_1}"""
+        "model": "m",
+        "output": """{output_1}"""
     },
     {
-        "model": "model_2",
-        "answer": """{output_2}"""
+        "model": "M",
+        "output": """{output_2}"""
     }
-]
+}
 
-Now make the leaderboard by ranking the models by the quality of their answers, so that the model with rank 1 has the best output.
+## Task
+
+Evaluate and rank the models based on the quality and relevance of their outputs. The ranking should be such that the model with the highest quality output is ranked first.
 <|im_end|>

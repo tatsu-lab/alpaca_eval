@@ -1,4 +1,3 @@
-# TODO: ensure it's JSON with new API
 alpaca_eval_gpt4_turbo_fn:
   prompt_template: "alpaca_eval_gpt4_turbo_fn/alpaca_eval_fn.txt"
   fn_completions: "openai_completions"
@@ -7,16 +6,16 @@ alpaca_eval_gpt4_turbo_fn:
     max_tokens: 100
     temperature: 0
     function_call:
-      name: "make_leaderboard"
+      name: "make_partial_leaderboard"
     functions:
-      - name: "make_leaderboard"
+      - name: "make_partial_leaderboard"
         description: "Make a leaderboard of models given a list of the models ordered by the preference of their outputs."
         parameters:
           type: "object"
           properties:
             ordered_models:
               type: "array"
-              description: "A list of models ordered by the preference of their outputs"
+              description: "A list of models ordered by the preference of their outputs. The first model in the list has the best output."
               items:
                 type: "object"
                 properties:
@@ -32,5 +31,6 @@ alpaca_eval_gpt4_turbo_fn:
       parsers_to_kwargs:
         json_parser:
           annotation_key: "ordered_models"
-        ranking_parser: {}
+        ranking_parser:
+          model_1_name: "m"
   batch_size: 1

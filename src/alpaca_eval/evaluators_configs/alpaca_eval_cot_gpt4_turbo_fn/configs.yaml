@@ -1,9 +1,9 @@
-alpaca_eval_v3_gpt4_turbo_fn:
-  prompt_template: "alpaca_eval_v3_gpt4_turbo_fn/alpaca_eval_fn.txt"
+alpaca_eval_cot_gpt4_turbo_fn:
+  prompt_template: "alpaca_eval_cot_gpt4_turbo_fn/alpaca_eval_fn.txt"
   fn_completions: "openai_completions"
   completions_kwargs:
     model_name: "gpt-4-1106-preview"
-    max_tokens: 100
+    max_tokens: 300
     temperature: 0
     function_call:
       name: "make_partial_leaderboard"
@@ -13,6 +13,9 @@ alpaca_eval_v3_gpt4_turbo_fn:
         parameters:
           type: "object"
           properties:
+            concise_explanation:
+              type: "string"
+              description: "A concise explanation for the ranking of the current models."
             ordered_models:
               type: "array"
               description: "A list of models ordered by the preference of their outputs. The first model in the list has the best output."

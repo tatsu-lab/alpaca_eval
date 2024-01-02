@@ -310,8 +310,6 @@ class Analyzer:
         s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
         r, _ = pearsonr(df["win_rate_2"], df["win_rate_1"])
 
-        print(df.sort_values("win_rate_2", ascending=False))
-
         return dict(spearman=s, pearson=r)
 
     def get_length_biases(
