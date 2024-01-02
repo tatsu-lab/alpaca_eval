@@ -18,6 +18,7 @@ PACKAGES_DEV = [
     "pytest",
     "pytest-mock",
     "pytest-skip-slow",
+    "pytest-env",
     "python-dotenv",
 ]
 PACKAGES_ANALYSIS = ["seaborn", "matplotlib", "jupyterlab"]
