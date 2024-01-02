@@ -7,7 +7,7 @@ import multiprocessing
 import os
 import random
 import time
-from typing import Optional, Sequence, Union
+from typing import Any, Optional, Sequence, Union
 
 import numpy as np
 import openai
@@ -18,9 +18,6 @@ from openai import OpenAI
 from .. import constants, utils
 
 __all__ = ["openai_completions"]
-
-
-DEFAULT_OPENAI_API_BASE = os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else openai.base_url
 
 
 def openai_completions(
@@ -180,35 +177,32 @@ def _openai_completion_helper(
     args: tuple[Sequence[str], int],
     is_chat: bool,
     sleep_time: int = 2,
-    openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
-    openai_api_keys_from_env: Optional[Sequence[str]] = None,
-    openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
-    openai_api_base: Optional[str] = None,
     top_p: Optional[float] = 1.0,
     temperature: Optional[float] = 0.7,
+    client_config_path: utils.AnyPath = constants.OPENAI_CLIENT_CONFIG_PATH,  # see `client_configs/README.md`
+    # following is only for backward compatibility and should be avoided
+    openai_organization_ids: Optional[Sequence[str]] = constants.OPENAI_ORGANIZATION_IDS,
+    openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
+    openai_api_base: Optional[str] = os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else openai.base_url,
+    ############################
     **kwargs,
 ):
     prompt_batch, max_tokens = args
-    client_kwargs = dict()
+    all_clients = utils.get_all_clients(
+        client_config_path,
+        model_name=kwargs["model"],
+        get_backwards_compatible_configs=_get_backwards_compatible_configs,
+        default_client_class="openai.OpenAI",
+        openai_organization_ids=openai_organization_ids,
+        openai_api_keys=openai_api_keys,
+        openai_api_base=openai_api_base,
+    )
 
-    # randomly select orgs
-    if openai_organization_ids is not None:
-        org = random.choice(openai_organization_ids)
-        if org is not None:
-            client_kwargs["organization"] = org
-
-    if openai_api_keys_from_env is None:
-        openai_api_keys = openai_api_keys or constants.OPENAI_API_KEYS
-    else:
-        openai_api_keys = os.environ[openai_api_keys_from_env].split(",")
-
-    if openai_api_keys is not None:
-        client_kwargs["api_key"] = random.choice(openai_api_keys)
-
-    # set api base
-    client_kwargs["base_url"] = base_url = openai_api_base if openai_api_base is not None else DEFAULT_OPENAI_API_BASE
-
-    client = OpenAI(**client_kwargs)
+    # randomly select the client
+    client_idcs = range(len(all_clients))
+    curr_client_idx = random.choice(client_idcs)
+    logging.info(f"Using OAI client number {curr_client_idx} out of {len(client_idcs)}.")
+    client = all_clients[curr_client_idx]
 
     # copy shared_kwargs to avoid modifying it
     kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
@@ -265,16 +259,10 @@ def _openai_completion_helper(
                     logging.warning(f"Hit request rate limit; retrying...")
                 else:
                     logging.warning(f"Unknown error. \n It's likely a rate limit so we are retrying...")
-                if openai_organization_ids is not None and len(openai_organization_ids) > 1:
-                    client_kwargs["organization"] = organization = random.choice(
-                        [o for o in openai_organization_ids if o != openai.organization]
-                    )
-                    client = OpenAI(**client_kwargs)
-                    logging.info(f"Switching OAI organization.")
-                if openai_api_keys is not None and len(openai_api_keys) > 1:
-                    client_kwargs["api_key"] = random.choice([o for o in openai_api_keys if o != openai.api_key])
-                    client = OpenAI(**client_kwargs)
-                    logging.info(f"Switching OAI API key.")
+                if len(all_clients) > 1:
+                    curr_client_idx = random.choice([idx for idx in client_idcs if idx != curr_client_idx])
+                    client = all_clients[curr_client_idx]
+                    logging.info(f"Switching OAI client to client number {curr_client_idx}.")
                 logging.info(f"Sleeping {sleep_time} before retrying to call openai API...")
                 time.sleep(sleep_time)  # Annoying rate limit on requests.
     return choices
@@ -366,3 +354,22 @@ def _get_price_per_token(model):
     else:
         logging.warning(f"Unknown model {model} for computing price per token.")
         return np.nan
+
+
+def _get_backwards_compatible_configs(
+    openai_api_keys=[], openai_organization_ids=[None], openai_api_base=None
+) -> list[dict[str, Any]]:
+    client_configs = []
+    for api_key in openai_api_keys:
+        for org in openai_organization_ids:
+            client_kwargs = dict(api_key=api_key)
+
+            if org is not None:
+                client_kwargs["organization"] = org
+
+            if openai_api_base is not None:
+                client_kwargs["base_url"] = openai_api_base
+
+            client_configs.append(client_kwargs)
+
+    return client_configs
