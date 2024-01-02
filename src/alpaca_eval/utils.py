@@ -482,3 +482,76 @@ def dataframe_chunk_generator(df: pd.DataFrame, chunksize: Optional[int] = None,
             df_chunk = df_chunk.copy()
 
         yield df_chunk
+
+
+def get_all_clients(
+    client_config_path: AnyPath,
+    model_name: str,
+    default_client_class: str,
+    get_backwards_compatible_configs: Callable,
+    **kwargs,
+) -> list:
+    """Returns a list of different kwargs to pass to the client, each element corresponds to one possible client.
+    For more information see `client_configs/README.md`.
+    """
+
+    client_config_path = Path(client_config_path)
+    if client_config_path.is_file():
+        with open(client_config_path) as f:
+            all_client_configs = yaml.safe_load(f)
+
+        client_configs = []
+
+        if model_name in all_client_configs:
+            if "default" in all_client_configs[model_name]:
+                assert "default" in all_client_configs, "default client was asked for but not found"
+                client_configs = client_configs + all_client_configs["default"]
+                # remove "default" from the list of configs for this model
+                all_client_configs[model_name] = [
+                    config for config in all_client_configs[model_name] if config != "default"
+                ]
+
+            client_configs = client_configs + all_client_configs[model_name]
+
+        else:
+            assert (
+                "default" in all_client_configs
+            ), f"default client config is required as there are no model specific configs for {model_name}"
+            client_configs = all_client_configs["default"]
+
+    else:
+        # backward compatibility
+        logging.warning(
+            f"{client_config_path} wasn't found. We are using environment variables to construct the client configs."
+            "This is the old and non-recommended way of doing it. Please see `client_configs/README.md` for the "
+            "recommended way of specifying client configs."
+        )
+        client_configs = get_backwards_compatible_configs(**kwargs)
+
+    all_clients = []
+    for config in client_configs:
+        client_class = config.pop("client_class", default_client_class)
+        ClientClass = import_class(client_class)
+        all_clients.append(ClientClass(**config))
+
+    return all_clients
+
+
+def import_class(full_class_string):
+    """
+    Dynamically import a class from a string.
+
+    Parameters
+    ----------
+    full_class_string:
+        The full class string. E.g., 'openai.OpenAI' return OpenAI
+    """
+    module_name, class_name = full_class_string.rsplit(".", 1)
+
+    # Import the module
+    module = __import__(module_name, fromlist=[class_name])
+
+    # Get the class
+    cls = getattr(module, class_name)
+
+    return cls

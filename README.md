@@ -90,8 +90,7 @@ pip install git+https://github.com/tatsu-lab/alpaca_eval
 Then you can use it as follows:
 
 ```bash
-export OPENAI_API_KEY=<your_api_key>
-export OPENAI_ORGANIZATION_IDS=<your_organization_id>  # Optional; if not set, this will be your default org id.
+export OPENAI_API_KEY=<your_api_key> # for more complex configs, e.g. using Azure or switching clients see client_configs/README.md 
 alpaca_eval --model_outputs 'example/outputs.json' 
 ```
 
@@ -1334,6 +1333,7 @@ For example:
 <details>
   <summary><h2 tabindex="-1" dir="auto">Major updates</h2></summary>
 
+- 2nd January 2024: added Azure API and more general way of setting client configs. See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/client_configs/README.md)
 - 19th June 2023: add leaderboard `chatgpt_fn` that anyone can use (no waiting lists).
 - 19th June 2023: update to
   use [OpenAI's function calling](https://openai.com/blog/function-calling-and-other-api-updates).

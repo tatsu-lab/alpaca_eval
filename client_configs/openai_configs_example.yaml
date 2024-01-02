@@ -1,0 +1,20 @@
+default:
+    - api_key: "<your OpenAI API key here>"
+      organization: "<your 1st organization ID>"
+
+    - api_key: "<your OpenAI API key here>"
+      organization: "<your 2nd organization ID>"
+
+gpt-4-1106-preview: # only when using `model_name: gpt-4-1106-preview`
+    - "default" # this will append all the `default` configs
+
+    - client_class: "openai.AzureOpenAI" # doesn't use the `openai.OpenAI` client class
+      # the following are passed to the `AzureOpenAI` client class
+      azure_deployment: "gpt-4-1106"
+      api_key: "<your Azure OpenAI API key here>"
+      azure_endpoint: "<your Azure OpenAI API base here>"
+      api_version: "2023-07-01-preview"
+
+a_model_on_a_local_server:
+    # don't append defaults as we are not using the openAI server => different keys and organization
+    - api_key: "<some_local_api_key>"

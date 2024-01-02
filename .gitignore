@@ -6,6 +6,7 @@ example/
 src/**/*.json
 results
 ./*.json
+client_configs/*.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
