@@ -30,7 +30,7 @@ HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
 DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 ########################
 
-IS_ALPACA_EVAL_2 = os.environ.get("IS_ALPACA_EVAL_2", False)
+IS_ALPACA_EVAL_2 = os.environ.get("IS_ALPACA_EVAL_2", True)
 ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
 ANNOTATOR_CONFIG_AE2 = "weighted_alpaca_eval_gpt4_turbo"
 DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
@@ -40,7 +40,8 @@ MODELS_CONFIG_DIR = CURRENT_DIR / "models_configs"
 
 
 MINIMAL_EVALUATORS = (
-    "alpaca_eval_gpt4",
+    ANNOTATOR_CONFIG_AE2,
+    ANNOTATOR_CONFIG_AE1,
     "aviary_gpt4",
     "gpt4",
     "claude",
@@ -70,7 +71,7 @@ VERIFIED_EVALUATORS = tuple(
 ORDERED_LEADERBOARD_MODES = ["minimal", "verified", "community"]
 
 
-def get_alpaca_eval_data(dataset="alpaca_eval_gpt4_ref"):
+def get_alpaca_eval_data(dataset="alpaca_eval_gpt4_baseline"):
     dataset = datasets.load_dataset(
         "tatsu-lab/alpaca_eval",
         dataset,
@@ -84,16 +85,6 @@ def get_alpaca_eval_data(dataset="alpaca_eval_gpt4_ref"):
 ALPACAEVAL_REFERENCE_OUTPUTS = (
     get_alpaca_eval_data if IS_ALPACA_EVAL_2 else partial(get_alpaca_eval_data, dataset="alpaca_eval")
 )
-
-
-def ALPACAFARM_ALL_OUTPUTS():
-    return datasets.load_dataset(
-        "tatsu-lab/alpaca_eval",
-        "alpaca_eval_all_outputs",
-        cache_dir=DEFAULT_CACHE_DIR,
-        token=DATASETS_TOKEN,
-        download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
-    )["eval"]
 
 
 def ALPACAFARM_GOLD_CROSSANNOTATIONS():
@@ -126,13 +117,21 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
     return df
 
 
-ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / "leaderboards/data_AlpacaEval"
-PRECOMPUTED_LEADERBOARDS = {
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS / "claude_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "alpaca_eval_gpt4"): ALPACAEVAL_LEADERBOARD_PATHS
-    / "alpaca_eval_gpt4_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS), "chatgpt_fn"): ALPACAEVAL_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
-}
+sffx = "_2" if IS_ALPACA_EVAL_2 else ""
+ALPACAEVAL_LEADERBOARD_PATHS = CURRENT_DIR / f"leaderboards/data_AlpacaEval{sffx}"
+
+if IS_ALPACA_EVAL_2:
+    PRECOMPUTED_LEADERBOARDS = {
+        (str(ALPACAEVAL_REFERENCE_OUTPUTS), ANNOTATOR_CONFIG_AE2): ALPACAEVAL_LEADERBOARD_PATHS
+        / f"{ANNOTATOR_CONFIG_AE2}_leaderboard.csv",
+    }
+else:
+    PRECOMPUTED_LEADERBOARDS = {
+        (str(ALPACAEVAL_REFERENCE_OUTPUTS), "claude"): ALPACAEVAL_LEADERBOARD_PATHS / "claude_leaderboard.csv",
+        (str(ALPACAEVAL_REFERENCE_OUTPUTS), ANNOTATOR_CONFIG_AE1): ALPACAEVAL_LEADERBOARD_PATHS
+        / f"{ANNOTATOR_CONFIG_AE1}_leaderboard.csv",
+        (str(ALPACAEVAL_REFERENCE_OUTPUTS), "chatgpt_fn"): ALPACAEVAL_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
+    }
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
     "GPT-4 300 characters",
@@ -174,9 +173,9 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "claude-2",
     # "cohere",
     "chatgpt",
-    "vicuna-33b-v1.3",
-    "llama-2-13b-chat-hf",
-    "llama-2-7b-chat-hf",
+    # "vicuna-33b-v1.3",
+    # "llama-2-13b-chat-hf",
+    # "llama-2-7b-chat-hf",
     # "alpaca-farm-ppo-sim-gpt4-20k",
     # "alpaca-7b",
 ]
@@ -186,3 +185,16 @@ EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE
 CURRENT_USER = getpass.getuser()
 if CURRENT_USER in ["yanndubs"]:
     DEFAULT_CACHE_DIR = "/juice5/scr5/nlp/crfm/human-feedback/cache"
+
+
+def ALPACAFARM_ALL_OUTPUTS():
+    if IS_ALPACA_EVAL_2:
+        return [f"results/{m}/model_outputs.json" for m in MINIMAL_MODELS_FOR_NEW_LEADERBOARD]
+    else:
+        return datasets.load_dataset(
+            "tatsu-lab/alpaca_eval",
+            "alpaca_eval_all_outputs",
+            cache_dir=DEFAULT_CACHE_DIR,
+            token=DATASETS_TOKEN,
+            download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
+        )["eval"]

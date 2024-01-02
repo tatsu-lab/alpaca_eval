@@ -15,6 +15,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 
 import datasets
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pkg_resources
 import tqdm
@@ -238,10 +239,15 @@ def check_pkg_atleast_version(package, atleast_version):
     return pkg_resources.parse_version(curr_version) > pkg_resources.parse_version(atleast_version)
 
 
-def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs):
+def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable, list, tuple], **kwargs):
     """Load a dataframe from a path or convert the input to a dataframe if it's not a path."""
     if isinstance(df, Callable):
         df = df(**kwargs)
+
+    if isinstance(df, (tuple, list)) and isinstance(df[0], (str, os.PathLike, pathlib.Path)):
+        df = pd.concat(
+            [load_or_convert_to_dataframe(f, **kwargs) for f in df],
+        )
 
     if isinstance(df, (str, os.PathLike, pathlib.Path)):
         df = Path(df)

@@ -151,15 +151,15 @@ def evaluate(
     ]
 
     if output_path is not None:
+        if isinstance(annotators_config, str) and "/" not in annotators_config:
+            output_path = Path(output_path) / annotators_config
+            output_path.mkdir(exist_ok=True, parents=True)
         logging.info(f"Saving all results to {output_path}")
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
         if annotations is not None:
-            if isinstance(annotators_config, str) and "/" not in annotators_config:
-                annotations_name = f"annotation_{annotators_config}.json"
-            else:
-                annotations_name = "annotations.json"
-
-            utils.convert_to_dataframe(annotations).to_json(output_path / annotations_name, orient="records", indent=2)
+            utils.convert_to_dataframe(annotations).to_json(
+                output_path / "annotations.json", orient="records", indent=2
+            )
 
     if is_cache_leaderboard is None:
         is_cache_leaderboard = max_instances is None
@@ -341,7 +341,7 @@ def evaluate_from_model(
 
 
 def make_leaderboard(
-    leaderboard_path: AnyPath,
+    leaderboard_path: Optional[AnyPath] = None,
     annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
     all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
     reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
@@ -391,6 +391,14 @@ def make_leaderboard(
     if isinstance(fn_add_to_leaderboard, str):
         fn_add_to_leaderboard = globals()[fn_add_to_leaderboard]
 
+    if leaderboard_path is None:
+        assert isinstance(annotators_config, str) and "/" not in annotators_config, (
+            "If `leaderboard_path` is None, `annotators_config` should be a string with the name of the annotator "
+            "configuration."
+        )
+        leaderboard_path = Path(constants.ALPACAEVAL_LEADERBOARD_PATHS) / f"{annotators_config}_leaderboard.csv"
+
+    Path(leaderboard_path).parent.mkdir(exist_ok=True, parents=True)
     all_model_outputs = utils.load_or_convert_to_dataframe(all_model_outputs)
     if "generator" not in all_model_outputs.columns:
         raise ValueError(f"all_model_outputs should have a column 'generator' with the name of the model.")
@@ -532,10 +540,13 @@ def analyze_evaluators(
 
     if key is not None and output_path is not None:
         output_path = utils.get_output_path(output_path, annotators_config, key, dflt_dir="results_evaluators")
+        if isinstance(annotators_config, str) and "/" not in annotators_config:
+            output_path = Path(output_path) / annotators_config
+            output_path.mkdir(exist_ok=True, parents=True)
         logging.info(f"Saving all results to {output_path}")
-        df_leaderboard.to_csv(output_path / "leaderboard.csv")
+        df_leaderboard.to_csv(output_path / f"leaderboard.csv")
         for annotator_name, df_crossannotations in all_crossannotations.items():
-            annotations_name = f"annotation_{annotator_name}.json"
+            annotations_name = f"annotation.json"
             df_crossannotations.to_json(output_path / annotations_name, orient="records", indent=2)
 
     if is_return_instead_of_print:
