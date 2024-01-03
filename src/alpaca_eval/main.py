@@ -127,14 +127,9 @@ def evaluate(
 
             if max_instances is not None:
                 # first we shuffle both outputs with a fix seed => more representative
-                if len(model_outputs) != len(reference_outputs):
-                    logging.warning(
-                        "model_outputs and reference_outputs have different lengths, so we cannot shuffle before taking the first max_instances."
-                    )
-                else:
-                    seed = 123
-                    model_outputs = model_outputs.sample(frac=1, random_state=seed)
-                    reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
+                seed = 123
+                model_outputs = model_outputs.sample(frac=1, random_state=seed)
+                reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
 
                 model_outputs = model_outputs[:max_instances]
                 reference_outputs = reference_outputs[:max_instances]

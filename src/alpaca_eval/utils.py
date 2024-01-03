@@ -504,7 +504,6 @@ def get_all_clients(
     model_name: str,
     default_client_class: str,
     get_backwards_compatible_configs: Callable,
-    backward_compatibility_kwargs: dict = {},
     **kwargs,
 ) -> list:
     """Returns a list of different kwargs to pass to the client, each element corresponds to one possible client.
@@ -542,13 +541,13 @@ def get_all_clients(
             "This is the old and non-recommended way of doing it. Please see `client_configs/README.md` for the "
             "recommended way of specifying client configs."
         )
-        client_configs = get_backwards_compatible_configs(**backward_compatibility_kwargs)
+        client_configs = get_backwards_compatible_configs(**kwargs)
 
     all_clients = []
     for config in client_configs:
         client_class = config.pop("client_class", default_client_class)
         ClientClass = import_class(client_class)
-        all_clients.append(ClientClass(**config, **kwargs))
+        all_clients.append(ClientClass(**config))
 
     return all_clients
 

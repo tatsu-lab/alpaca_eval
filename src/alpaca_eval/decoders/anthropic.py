@@ -43,7 +43,7 @@ def anthropic_completions(
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")
-        return dict(completions=[], price_per_example=[], time_per_example=[], completions_all=[])
+        return []
     else:
         to_log = f"Using `anthropic_completions` on {n_examples} prompts using {model_name} and num_procs={num_procs}."
         logging.info(to_log)

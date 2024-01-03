@@ -10,8 +10,6 @@ CURRENT_DIR = Path(__file__).parent
 BASE_DIR = Path(__file__).parents[2]
 
 ### API specific ###
-API_MAX_CONCURRENCY = int(os.environ.get("API_MAX_CONCURRENCY", 5))
-
 OPENAI_MAX_CONCURRENCY = int(os.environ.get("OPENAI_MAX_CONCURRENCY", 5))
 OPENAI_CLIENT_CONFIG_PATH = os.environ.get("OPENAI_CLIENT_CONFIG_PATH", BASE_DIR / "client_configs/openai_configs.yaml")
 # the following is for backward compatibility, the recommended way is to use OPENAI_CLIENT_CONFIG_PATH
@@ -24,9 +22,7 @@ if isinstance(OPENAI_ORGANIZATION_IDS, str):
 #
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", None)
-ANTHROPIC_MAX_CONCURRENCY = int(os.environ.get("ANTHROPIC_MAX_CONCURRENCY", API_MAX_CONCURRENCY))
-
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", None)
+ANTHROPIC_MAX_CONCURRENCY = int(os.environ.get("ANTHROPIC_MAX_CONCURRENCY", 1))
 
 COHERE_API_KEY = os.environ.get("COHERE_API_KEY", None)
 
@@ -37,7 +33,7 @@ DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 
 IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "True"))
 ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
-ANNOTATOR_CONFIG_AE2 = "alpaca_eval_gpt4_turbo_fn"  # "weighted_alpaca_eval_gpt4_turbo"
+ANNOTATOR_CONFIG_AE2 = "weighted_alpaca_eval_gpt4_turbo"
 DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
 DEFAULT_CACHE_DIR = None
 EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
@@ -135,10 +131,6 @@ PRECOMPUTED_LEADERBOARDS = {
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_1), "chatgpt_fn"): ALPACAEVAL_1_LEADERBOARD_PATHS / "chatgpt_fn_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), ANNOTATOR_CONFIG_AE2): ALPACAEVAL_2_LEADERBOARD_PATHS
     / f"{ANNOTATOR_CONFIG_AE2}_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "weighted_alpaca_eval_gpt4_turbo"): ALPACAEVAL_2_LEADERBOARD_PATHS
-    / f"weighted_alpaca_eval_gpt4_turbo_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "alpaca_eval_cot_gpt4_turbo_fn"): ALPACAEVAL_2_LEADERBOARD_PATHS
-    / f"alpaca_eval_cot_gpt4_turbo_fn_leaderboard.csv",
     # needs to add the non default config. ie either with or without the logprob
 }
 
@@ -180,11 +172,8 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "Yi-34B-Chat",
     "llama-2-70b-chat-hf",
     "claude-2",
-    "cohere",
+    # "cohere",
     "chatgpt",
-    "gemini-pro",
-    "Mixtral-8x7B-Instruct-v0.1",
-    "Mistral-7B-Instruct-v0.2"
     # "vicuna-33b-v1.3",
     # "llama-2-13b-chat-hf",
     # "llama-2-7b-chat-hf",
