@@ -169,7 +169,7 @@
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
         <small id="caution" style="color: #8C1515;">
-            <span style="color: #8C1515;">Caution:</span> GPT4/Claude may favor models longer outputs and/or were fine-tuned on GPT4/Claude outputs.
+            <span style="color: #8C1515;">Caution:</span> GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs..
         </small>
         <br>
         <a href="https://github.com/tatsu-lab/alpaca_eval">
@@ -179,25 +179,27 @@
 
     <div class="toggle-line">
 
-        Evaluator:
+        Version:
         <div class="switch-toggle switch-evaluator" style="margin-right: 4em">
-            <input id="gpt4" name="evaluator" type="radio" checked="checked"/>
-            <label for="gpt4" onclick="">GPT-4</label>
-            <input id="claude" name="evaluator" type="radio"/>
-            <label for="claude" onclick="">Claude</label>
-            <!--            <input id="chatgpt" name="evaluator" type="radio"/>-->
-            <!--            <label for="chatgpt" onclick="">ChatGPT</label>-->
+            <input id="alpaca_eval" name="version" type="radio"/>
+            <label for="alpaca_eval" onclick="">AlpacaEval</label>
+            <input id="alpaca_eval_2" name="version" type="radio" checked="checked"/>
+            <label for="alpaca_eval_2" onclick="">AlpacaEval 2.0</label>
         </div>
 
         Filter:
-        <div class="switch-toggle switch-compactness">
-            <input id="community" name="compactness" type="radio" checked="checked"/>
+        <div class="switch-toggle switch-filter">
+            <input id="community" name="filter" type="radio" checked="checked"/>
             <label for="community" onclick="">Community</label>
-            <input id="verified" name="compactness" type="radio"/>
+            <input id="verified" name="filter" type="radio"/>
             <label for="verified" onclick="">Verified</label>
-            <input id="minimal" name="compactness" type="radio"/>
-            <label for="minimal" onclick="">Minimal</label>
+<!--            <input id="minimal" name="compactness" type="radio"/>-->
+<!--            <label for="minimal" onclick="">Minimal</label>-->
         </div>
+
+        <small id="alpaca_eval_info" style="color: #8C1515;">
+            AlpacaEval 2.0 uses ChatGPT4 as auto-annotator and as baseline.
+        </small>
     </div>
 
     <table id="leaderboard">
@@ -224,8 +226,8 @@
             <a href="https://crfm.stanford.edu/2023/05/22/alpaca-farm.html">AlpacaFarm</a>
             evaluation set,
             which tests the ability of models to follow general user instructions.
-            These responses are then compared to reference Davinci003 responses by
-            the provided GPT-4 or Claude or ChatGPT based auto-annotators,
+            These responses are then compared to reference responses (Davinci003 for AlpacaEval, ChatGPT4 for AlpacaEval2) by
+            the provided GPT-4 based auto-annotators,
             which results in the win rates presented above.
             AlpacaEval displays a high agreement rate with ground truth human annotations,
             and leaderboard rankings on AlpacaEval are very correlated with leaderboard rankings
@@ -277,23 +279,23 @@
 </div>
 
 <script>
-    const gpt4Radio = document.getElementById('gpt4');
-    const claudeRadio = document.getElementById('claude');
+    const alpacaEvalRadio = document.getElementById('alpaca_eval');
+    const alpacaEval2Radio = document.getElementById('alpaca_eval_2');
     // const chatgptRadio = document.getElementById('chatgpt');
 
     const communityRadio = document.getElementById('community');
     const verifiedRadio = document.getElementById('verified');
-    const minimalRadio = document.getElementById('minimal');
+    // const minimalRadio = document.getElementById('minimal');
 
     const table = document.getElementById('leaderboard');
 
     const urls = {
-        'gpt4': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/alpaca_eval_gpt4_leaderboard.csv',
-        'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/claude_leaderboard.csv',
-        'chatgpt': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/chatgpt_fn_leaderboard.csv'
+        'alpaca_eval': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/data_AlpacaEval/alpaca_eval_gpt4_leaderboard.csv',
+        'alpaca_eval_2': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/data_AlpacaEval_2/alpaca_eval_gpt4_turbo_fn_leaderboard.csv',
+        // 'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/claude_leaderboard.csv',
     }
 
-    let currentUrl = urls['gpt4'];
+    let currentUrl = urls['alpaca_eval_2'];
 
     function updateTable(url) {
         while (table.rows.length > 1) {
@@ -310,8 +312,7 @@
                         let filter = row['filter'];
 
                         if ((communityRadio.checked) ||
-                            (verifiedRadio.checked && (filter === 'verified' || filter === 'minimal')) ||
-                            (minimalRadio.checked && filter === 'minimal')) {
+                            (verifiedRadio.checked && (filter === 'verified' ))) {
 
                             const tr = document.createElement('tr');
                             const nameTd = document.createElement('td');
@@ -352,34 +353,29 @@
         });
     }
 
-    function updateCautionMessage(evaluator) {
-        let cautionText;
-        if (evaluator === 'gpt4') {
-            cautionText = 'GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs.';
-        } else if (evaluator === 'claude') {
-            cautionText = 'Claude may favor models with longer outputs and/or those that were fine-tuned on Claude outputs.';
+    function updateInfoMessage(version) {
+        let infoText;
+        if (version === 'alpaca_eval') {
+            infoText = 'AlpacaEval uses GPT4 as auto-annotator and Davinci003 as baseline.';
+        } else if (version === 'alpaca_eval_2') {
+            infoText = 'AlpacaEval 2.0 uses ChatGPT4 as auto-annotator and as baseline.';
         }
-        document.getElementById('caution').innerText = 'Caution: ' + cautionText;
+        document.getElementById('alpaca_eval_info').innerText = infoText;
     }
 
-    updateTable(urls['gpt4']);
+    updateTable(urls['alpaca_eval_2']);
 
-    gpt4Radio.addEventListener('click', function () {
-        currentUrl = urls['gpt4'];
+    alpacaEval2Radio.addEventListener('click', function () {
+        currentUrl = urls['alpaca_eval_2'];
         updateTable(currentUrl);
-        updateCautionMessage('gpt4');
+        updateInfoMessage('alpaca_eval_2');
     });
 
-    claudeRadio.addEventListener('click', function () {
-        currentUrl = urls['claude'];
+    alpacaEvalRadio.addEventListener('click', function () {
+        currentUrl = urls['alpaca_eval'];
         updateTable(currentUrl);
-        updateCautionMessage('claude');
+        updateInfoMessage('alpaca_eval');
     });
-
-    // chatgptRadio.addEventListener('click', function () {
-    //     currentUrl = urls['chatgpt'];
-    //     updateTable(currentUrl);
-    // });
 
     communityRadio.addEventListener('click', function () {
         updateTable(currentUrl);
@@ -389,11 +385,11 @@
         updateTable(currentUrl);
     });
 
-    minimalRadio.addEventListener('click', function () {
-        updateTable(currentUrl);
-    });
+    // minimalRadio.addEventListener('click', function () {
+    //     updateTable(currentUrl);
+    // });
 
-    updateCautionMessage('gpt4');
+    updateCautionMessage('alpaca_eval_2');
 </script>
 
 
