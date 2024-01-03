@@ -1137,6 +1137,12 @@ datasets: [self-instruct](https://github.com/yizhongw/self-instruct),
 <details>
   <summary><h2 tabindex="-1" dir="auto">AlpacaEval 2.0</h2></summary>
 
+AlpacaEval 2.0 is a new version of AlpacaEval. Here are the differences:
+- **reference: `gpt4_turbo`**: we upgraded the baseline from `text-davinci-003` to `gpt4_turbo` to make the benchmark more challenging and have a metric that better reflect the current state of the art.
+- **annotator: `alpaca_eval_cot_gpt4_turbo_fn`**: we improved the annotator in quality and price. First, we use the `gpt4_turbo` model for annotating, which is approximately 2x cheaper than `gpt4`. Second, we use Chain of Though reasoning, which improved the performance of the prompt as well as interpretability (you can now understand why a certain output was selected). Third, we changed the prompt to use function calling, which improved its performance and reliability.
+
+By default, AlpacaEval 2.0 will be used from `pip installl alpaca_eval==0.5`. If you wish to use the old configs by default, you can set `IS_ALPACA_EVAL_2=False` in your environment.
+
 </details>
 
 <details>
