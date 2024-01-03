@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
-:tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpacaeval-2.0). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
+:tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpacaeval-20). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
 
 ---
 
@@ -74,7 +74,7 @@ Details in [limitations](#limitations).
 6. [Limitations](#limitations)
 7. [Citation](#citation)
 8. [Additional information](#additional-information)
-    - [AlpacaEval 2.0](#alpacaeval-2.0)
+    - [AlpacaEval 2.0](#alpacaeval-20)
     - [Data Release](#data-release)
     - [Differences with AlpacaFarm](#differences-with-alpacafarm)
     - [Related work](#related-work)
@@ -243,8 +243,8 @@ evaluators that are available out of the box and their associated metrics.
 
 |                               |   Human agreement |   Price [$/1000 examples] |   Time [seconds/1000 examples] |   Spearman corr. |   Pearson corr. |   Bias |   Variance |   Proba. prefer longer |
 |:------------------------------|------------------:|--------------------------:|-------------------------------:|-----------------:|----------------:|-------:|-----------:|-----------------------:|
-| alpaca_eval_cot_gpt4_turbo_fn |              69.8 |                       6.3 |                           1111 |             0.87 |            0.82 |        |            |                   0.67 |
 | alpaca_eval_gpt4              |              69.2 |                      13.6 |                           1455 |             0.97 |            0.93 |   28.4 |       14.6 |                   0.68 |
+| alpaca_eval_cot_gpt4_turbo_fn |              68.6 |                       6.3 |                           1989 |             0.97 |            0.90 |   29.3 |       18.4 |                   0.67 |
 | alpaca_eval_gpt4_turbo_fn     |              68.1 |                       5.5 |                            864 |             0.93 |            0.82 |   30.2 |       15.6 |                   0.65 |
 | gpt4                          |              66.9 |                      12.5 |                           1037 |             0.88 |            0.87 |   31.5 |       14.6 |                   0.65 |
 | alpaca_farm_greedy_gpt4       |              66.4 |                      15.3 |                            878 |             0.85 |            0.75 |   30.2 |       19.3 |                   0.60 |
