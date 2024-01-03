@@ -288,7 +288,6 @@
 <script>
     const alpacaEvalRadio = document.getElementById('alpaca_eval');
     const alpacaEval2Radio = document.getElementById('alpaca_eval_2');
-    // const chatgptRadio = document.getElementById('chatgpt');
 
     const communityRadio = document.getElementById('community');
     const verifiedRadio = document.getElementById('verified');
@@ -319,7 +318,7 @@
                         let filter = row['filter'];
 
                         if ((communityRadio.checked) ||
-                            (verifiedRadio.checked && (filter === 'verified' ))) {
+                            (verifiedRadio.checked && (filter === 'verified' || filter === 'minimal'))) {
 
                             const tr = document.createElement('tr');
                             const nameTd = document.createElement('td');
