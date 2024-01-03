@@ -96,6 +96,6 @@ def _cohere_completion_helper(
             return text, num_tokens
 
         except CohereError as e:
-            print(f"Try #{trynum+1}/{max_tries}: Error running prompt {repr(prompt)}: {e}")
+            logging.info(f"Try #{trynum+1}/{max_tries}: Error running prompt {repr(prompt)}: {e}")
 
     return " ", 0  # placeholder response for errors, doesn't allow empty string

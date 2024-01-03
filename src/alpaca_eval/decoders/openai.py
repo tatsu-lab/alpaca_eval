@@ -30,6 +30,7 @@ def openai_completions(
     is_strip: bool = True,
     num_procs: Optional[int] = constants.OPENAI_MAX_CONCURRENCY,
     batch_size: Optional[int] = None,
+    price_per_token: Optional[float] = None,
     **decoding_kwargs,
 ) -> dict[str, list]:
     r"""Get openai completions for the given prompts. Allows additional parameters such as tokens to avoid and
@@ -57,6 +58,9 @@ def openai_completions(
 
     is_strip : bool, optional
         Whether to strip trailing and leading spaces from the prompts.
+
+    price_per_token : float, optional
+        Price per token for the model. If not provided, we will try to infer it from the model name.
 
     decoding_kwargs :
         Additional kwargs to pass to `openai.Completion` or `openai.ChatCompletion`.
@@ -159,7 +163,7 @@ def openai_completions(
     completions_text = [completion["text"] for completion in completions_all]
 
     price = [
-        completion["total_tokens"] * _get_price_per_token(model_name)
+        completion["total_tokens"] * _get_price_per_token(model_name, price_per_token)
         for completion_batch in completions
         for completion in completion_batch
     ]
@@ -185,17 +189,22 @@ def _openai_completion_helper(
     openai_api_keys: Optional[Sequence[str]] = constants.OPENAI_API_KEYS,
     openai_api_base: Optional[str] = os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else openai.base_url,
     ############################
+    client_kwargs: Optional[dict[str, Any]] = None,
     **kwargs,
 ):
+    client_kwargs = client_kwargs or dict()
     prompt_batch, max_tokens = args
     all_clients = utils.get_all_clients(
         client_config_path,
         model_name=kwargs["model"],
         get_backwards_compatible_configs=_get_backwards_compatible_configs,
         default_client_class="openai.OpenAI",
-        openai_organization_ids=openai_organization_ids,
-        openai_api_keys=openai_api_keys,
-        openai_api_base=openai_api_base,
+        backward_compatibility_kwargs=dict(
+            openai_organization_ids=openai_organization_ids,
+            openai_api_keys=openai_api_keys,
+            openai_api_base=openai_api_base,
+        ),
+        **client_kwargs,
     )
 
     # randomly select the client
@@ -337,9 +346,11 @@ def _string_to_dict(to_convert):
     return {s.split("=", 1)[0]: s.split("=", 1)[1] for s in to_convert.split(" ") if len(s) > 0}
 
 
-def _get_price_per_token(model):
+def _get_price_per_token(model, price_per_token=None):
     """Returns the price per token for a given model"""
-    if "gpt-4-1106" in model:
+    if price_per_token is not None:
+        return float(price_per_token)
+    elif "gpt-4-1106" in model:
         return (
             0.01 / 1000
         )  # that's not completely true because decoding is 0.03 but close enough given that most is context

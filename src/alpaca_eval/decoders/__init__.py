@@ -17,6 +17,16 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
 
         return anthropic_completions
 
+    elif name == "google_completions":
+        try:
+            from .google import google_completions
+        except ImportError as e:
+            packages = ["google.generativeai"]
+            logging.exception(f"You need {packages} to use google_completions. Error:")
+            raise e
+
+        return google_completions
+
     elif name == "openai_completions":
         try:
             from .openai import openai_completions
