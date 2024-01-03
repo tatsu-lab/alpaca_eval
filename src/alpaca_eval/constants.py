@@ -137,9 +137,8 @@ PRECOMPUTED_LEADERBOARDS = {
     / f"{ANNOTATOR_CONFIG_AE2}_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "weighted_alpaca_eval_gpt4_turbo"): ALPACAEVAL_2_LEADERBOARD_PATHS
     / f"weighted_alpaca_eval_gpt4_turbo_leaderboard.csv",
-    (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "alpaca_eval_cot_gpt4_turbo_fn"): ALPACAEVAL_2_LEADERBOARD_PATHS
-    / f"alpaca_eval_cot_gpt4_turbo_fn_leaderboard.csv",
-    # needs to add the non default config. ie either with or without the logprob
+    # (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "alpaca_eval_cot_gpt4_turbo_fn"): ALPACAEVAL_2_LEADERBOARD_PATHS
+    # / f"alpaca_eval_cot_gpt4_turbo_fn_leaderboard.csv",
 }
 
 HUMAN_ANNOTATED_MODELS_TO_KEEP = (
@@ -179,7 +178,7 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "tulu-2-dpo-70b",
     "Yi-34B-Chat",
     "llama-2-70b-chat-hf",
-    "claude-2",
+    "claude-2.1",
     "cohere",
     "chatgpt",
     "gemini-pro",
