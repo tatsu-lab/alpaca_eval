@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Alpaca Eval Leaderboard</title>
+    <title>AlpacaEval Leaderboard</title>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VWV023WWP4"></script>
@@ -168,8 +168,12 @@
         </h1>
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
+<!--        <small id="alpaca_eval_info" style="color: #777;">-->
+<!--            Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo-->
+<!--        </small>-->
+<!--        <br>-->
         <small id="caution" style="color: #8C1515;">
-            <span style="color: #8C1515;">Caution:</span> GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs..
+            Caution: GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs.
         </small>
         <br>
         <a href="https://github.com/tatsu-lab/alpaca_eval">
@@ -197,8 +201,11 @@
 <!--            <label for="minimal" onclick="">Minimal</label>-->
         </div>
 
-        <small id="alpaca_eval_info" style="color: #8C1515;">
-            AlpacaEval 2.0 uses ChatGPT4 as auto-annotator and as baseline.
+    </div>
+
+    <div class="container" style="text-align: center; margin-bottom: 10px; margin-top: -10px;">
+        <small id="alpaca_eval_info" style="color: #777;">
+            Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo
         </small>
     </div>
 
@@ -226,7 +233,7 @@
             <a href="https://crfm.stanford.edu/2023/05/22/alpaca-farm.html">AlpacaFarm</a>
             evaluation set,
             which tests the ability of models to follow general user instructions.
-            These responses are then compared to reference responses (Davinci003 for AlpacaEval, ChatGPT4 for AlpacaEval2) by
+            These responses are then compared to reference responses (Davinci003 for AlpacaEval, GPT-4 Turbo for AlpacaEval 2.0) by
             the provided GPT-4 based auto-annotators,
             which results in the win rates presented above.
             AlpacaEval displays a high agreement rate with ground truth human annotations,
@@ -290,8 +297,8 @@
     const table = document.getElementById('leaderboard');
 
     const urls = {
-        'alpaca_eval': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/data_AlpacaEval/alpaca_eval_gpt4_leaderboard.csv',
-        'alpaca_eval_2': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/data_AlpacaEval_2/alpaca_eval_gpt4_turbo_fn_leaderboard.csv',
+        'alpaca_eval': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/yann/alpaca_eval_2/docs/data_AlpacaEval/alpaca_eval_gpt4_leaderboard.csv',
+        'alpaca_eval_2': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/yann/alpaca_eval_2/docs/data_AlpacaEval_2/alpaca_eval_gpt4_turbo_fn_leaderboard.csv',
         // 'claude': 'https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/docs/claude_leaderboard.csv',
     }
 
@@ -355,12 +362,12 @@
 
     function updateInfoMessage(version) {
         let infoText;
-        if (version === 'alpaca_eval') {
-            infoText = 'AlpacaEval uses GPT4 as auto-annotator and Davinci003 as baseline.';
-        } else if (version === 'alpaca_eval_2') {
-            infoText = 'AlpacaEval 2.0 uses ChatGPT4 as auto-annotator and as baseline.';
+        if (version === 'alpaca_eval_2') {
+            infoText = 'Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo';
+        } else if (version === 'alpaca_eval') {
+            infoText = 'Baseline: Davinci003 &nbsp; | &nbsp; Auto-annotator: GPT-4';
         }
-        document.getElementById('alpaca_eval_info').innerText = infoText;
+        document.getElementById('alpaca_eval_info').innerHTML = infoText;
     }
 
     updateTable(urls['alpaca_eval_2']);
