@@ -339,7 +339,7 @@ def evaluate_from_model(
         # using a default reference outputs => uses the right leaderboard
         if evaluation_dataset in [constants.ALPACAEVAL_REFERENCE_OUTPUTS]:
             reference_outputs = evaluation_dataset
-    return
+
     return evaluate(
         model_outputs=model_outputs,
         reference_outputs=reference_outputs,
