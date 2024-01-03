@@ -51,6 +51,7 @@ def single_annotator():
         completion_parser_kwargs=dict(outputs_to_match={1: r"(?:^|\n) ?Output \(a\)", 2: "(?:^|\n) ?Output \(b\)"}),
         is_randomize_output_order=False,
         is_shuffle=False,
+        is_store_raw_completions=False,
     )
 
 
@@ -67,9 +68,13 @@ def test_single_annotator(single_annotator, df_to_annotate):
 
     assert df_annotated["preference"].tolist() == [1, 2]
     assert df_annotated["instruction"].tolist() == ["2+2", "1+1"]
-    assert set(df_annotated.columns.tolist()) == set(
-        ["instruction", "output_1", "output_2", "preference", "completions"]
-    )
+    assert set(df_annotated.columns.tolist()) == {
+        "instruction",
+        "output_1",
+        "output_2",
+        "preference",
+        "completions",
+    }
     # check that you also save the completions.
     assert df_annotated["completions"].tolist() == parsable_completions
 

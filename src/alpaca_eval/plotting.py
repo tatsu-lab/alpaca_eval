@@ -147,7 +147,7 @@ def plot_quality_vs_price_and_time(
     df_melted = df_all.melt(
         var_name="Variable",
         value_name="value",
-        id_vars=["Annotator", "Human agreement [%]"],
+        id_vars=["Annotator", "Human agreement"],
         value_vars=["Price [$/1000 examples]", "Time [seconds/1000 examples]"],
     )
 
@@ -157,7 +157,7 @@ def plot_quality_vs_price_and_time(
             data=df_melted,
             x="value",
             col="Variable",
-            y="Human agreement [%]",
+            y="Human agreement",
             kind="scatter",
             hue="Annotator",
             facet_kws={"sharex": False, "sharey": True},
@@ -196,7 +196,7 @@ def plot_quality_vs_price(
         g = sns.relplot(
             data=df_all,
             x="Price [$/1000 examples]",
-            y="Human agreement [%]",
+            y="Human agreement",
             kind="scatter",
             hue="Annotator",
             s=300,
@@ -230,7 +230,7 @@ def plot_quality_vs_price(
         g = sns.relplot(
             data=df_all,
             x="Price [$/1000 examples]",
-            y="Human agreement [%]",
+            y="Human agreement",
             kind="scatter",
             hue="Annotator",
             s=300,
@@ -264,7 +264,7 @@ def plot_quality_vs_time(
         g = sns.relplot(
             data=df_all,
             x="Time [seconds/1000 examples]",
-            y="Human agreement [%]",
+            y="Human agreement",
             kind="scatter",
             hue="Annotator",
             s=300,
@@ -383,17 +383,17 @@ def plot_all_properties(
 def plot_winrate_correlations(
     human_leaderboard,
     auto_leaderboard,
-    models_to_keep=constants.HUMAN_ANNOTATED_MODELS_TO_KEEP,
+    models_to_keep: Optional[Sequence[str]] = constants.HUMAN_ANNOTATED_MODELS_TO_KEEP,
     config_kwargs=dict(rc={"lines.linewidth": 2}),
 ):
-    models_to_keep = list(models_to_keep)
     df = pd.merge(
         human_leaderboard["win_rate"],
         auto_leaderboard["win_rate"],
-        suffixes=["_human", "_auto"],
+        suffixes=("_human", "_auto"),
         left_index=True,
         right_index=True,
     )
+    models_to_keep = list(models_to_keep or df.index)
     df = df.loc[models_to_keep]
 
     df = df.rename(columns=dict(win_rate_human="Human Win Rate", win_rate_auto="Auto Win Rate"))
@@ -601,7 +601,7 @@ def _preprocess_evaluator_leaderboard(
     df_all = df_all.query("Annotator.isin(@annotators_to_keep)")
 
     # select only useful
-    df_all = df_all[df_all["Human agreement [%]"] > min_agreement]
+    df_all = df_all[df_all["Human agreement"] > min_agreement]
 
     if is_human_at_top and "humans" in df_all.index:
         # puts humans at the top (easier for colors)

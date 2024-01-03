@@ -3,13 +3,14 @@ Main module for analyzing an evaluation benchmark (annotator and data).
 """
 import logging
 from itertools import combinations
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Sequence, Union
 
-import datasets
 import numpy as np
 import pandas as pd
+from scipy.stats import pearsonr, spearmanr
 
 from . import constants, utils
+from .metrics import SCORING_RULES
 from .types import AnyData, AnyPath
 
 
@@ -33,6 +34,15 @@ class Analyzer:
     n_annotators : int
         Minimum number of annotators for treating as gold annotation.
 
+    scoring_rule : {"zero_one", "absolute", "squared"}, optional
+        Scoring rule to use for computing the agreement. "zero_one" is the classification error, which was used in the
+        first version of AlpacaEval but only makes sense for discrete predictions. "absolute" is the mean absolute error
+        (MAE) and "squared" is the mean squared error (MSE). Both MAE and MSE are equivalent to zero_one for discrete
+        predictions as we are performing binary classification. However, they allow for continuous predictions. We
+        recommend "absolute" which is more interpretable (0.5 gets half the error) and keep the same "bias" and
+        "variance" definitions as in the discrete case with zero_one loss. Note that to make the generalization correct
+        we use an integer median by sampling from the two possible medians.
+
     annotator_kwargs : dict
         Arguments that will be passed to all annotators being analyzed.
     """
@@ -44,11 +54,14 @@ class Analyzer:
         keys=("instruction", "output_1", "output_2"),
         n_annotators: Optional[int] = 4,
         seed: Optional[int] = 0,
+        scoring_rule: str = "absolute",
         **annotator_kwargs,
     ):
         self.keys = list(keys)
         self.n_annotators = n_annotators
         self.annotator_kwargs = annotator_kwargs
+        self.scoring_rule = SCORING_RULES[scoring_rule]()
+        self.annotation_key = "preference"
 
         df_gold_crossannotations = utils.load_or_convert_to_dataframe(gold_crossannotations)
         # adding a random index to differentiate between the n_annotators
@@ -114,16 +127,18 @@ class Analyzer:
         >>> df_crossannotations["preference"] = [1] * 4 + [2,2,2,1]
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
         ...                                   n_majority_vote_1=1,  n_majority_vote_2=1)
-        accuracy          0.750000
+        score             0.750000
+        error             0.250000
         sem_samples       0.250000
         counts            2.000000
         sem_annotators    0.075378
         dtype: float64
-        >>> # accuracy above is 3/4 because for the first 3 comparison you get 2 * 100% and 1 * 50%. I.e. you get 50%
+        >>> # score above is 3/4 because for the first 3 comparison you get 2 * 100% and 1 * 50%. I.e. you get 50%
         >>> # when the second index is 3.  And for the last comparison the first index is always 3 so you get 3*50%
         >>> analyzer.agreement_of_annotations(df_crossannotations, annotations_2=None,
         ...                                   n_majority_vote_1=1,  n_majority_vote_2=3)
-        accuracy          0.875
+        score             0.875
+        error             0.125
         sem_samples       0.125
         counts            2.000
         sem_annotators    0.125
@@ -177,9 +192,9 @@ class Analyzer:
                         results[(idcs_1, idcs_2)] = results[(idcs_2, idcs_1)]
                         continue
 
-                results[(idcs_1, idcs_2)] = self._agreement_of_single_annotations(
-                    df_annotations_1=self._get_mode(annotations_1, idcs_1),
-                    df_annotations_2=self._get_mode(annotations_2, idcs_2),
+                results[(idcs_1, idcs_2)] = self._score_of_single_annotations(
+                    df_annotations_1=self._get_bayes_estimator(annotations_1, idcs_1),
+                    df_annotations_2=self._get_bayes_estimator(annotations_2, idcs_2),
                 )
 
         logging.info(
@@ -188,13 +203,13 @@ class Analyzer:
         )
 
         # maybe better to use from_dict(results, orient='index')
-        sem_annotators = pd.DataFrame(results).T["accuracy"].sem()
+        sem_annotators = pd.DataFrame(results).T["score"].sem()
         results = sum(results.values()) / len(results.values())
         results["sem_annotators"] = sem_annotators
 
         return results
 
-    def estimate_bias(self, annotations: pd.DataFrame):
+    def estimate_bias(self, annotations: pd.DataFrame) -> float:
         """(over)Estimates the bias of the annotations by computing the agreement error between the majority vote of
         the annotations and the gold annotations.
 
@@ -212,9 +227,9 @@ class Analyzer:
             n_majority_vote_1=None,
             n_majority_vote_2=None,
         )
-        return 1 - agreement["accuracy"]
+        return agreement["error"]
 
-    def estimate_variance(self, annotations: Union[pd.DataFrame, str]):
+    def estimate_variance(self, annotations: Union[pd.DataFrame, str]) -> float:
         """(over)Estimates the variance of the annotations by computing the 1 vs all agreement error.
 
         Parameters
@@ -227,7 +242,75 @@ class Analyzer:
         agreement = self.agreement_of_annotations(
             annotations, annotations_2=None, n_majority_vote_1=1, n_majority_vote_2=None
         )
-        return 1 - agreement["accuracy"]
+        return agreement["error"]
+
+    def estimate_correlations(
+        self,
+        annotations_1: pd.DataFrame,
+        annotations_2: Union[pd.DataFrame, str] = "gold_crossannotations",
+        groupby: Sequence[str] = ("generator",),
+    ) -> dict[str, float]:
+        """Estimate the correlations between different methods.
+
+        Parameters
+        ----------
+        annotations_1: pd.DataFrame
+            Annotations to estimate the correlations of. For better results, it should have multiple annotations per
+            example.
+
+        annotations_2: pd.DataFrame or "gold_crossannotations" or "gold_annotations"
+            Annotations to compare rankings with. If "gold_crossannotations" or "gold_annotations" we use the
+            corresponding gold annotations.
+
+        groupby: list[str], optional
+            Columns to groupby for computing the ldeaderboard.
+
+        Returns
+        -------
+        correlations: pd.DataFrame
+            Correlations between different methods.
+        """
+
+        annotations_1 = self._get_annotations(annotations_1)
+        is_add_generator = annotations_2 == "gold_crossannotations"
+        annotations_2 = self._get_annotations(annotations_2)
+
+        if is_add_generator:
+            # TODO clean: following is because we don't save generator in HF crossannotation dataset => reconstructs it.
+            # takes only eval set for the leaderboard
+            merge_kwargs = dict(right=self.df_gold_annotations[self.keys + ["generator"]], on=self.keys)
+            annotations_2 = annotations_2.query("datasplit == 'eval'").merge(**merge_kwargs)
+            annotations_1 = annotations_1.query("datasplit == 'eval'").merge(**merge_kwargs)
+            n_per_generator = annotations_2.groupby("generator").size()
+            n_annotated = 100  # we annotated around 140 per generator, there are other generators due to same outputs
+            selected_generators = list(n_per_generator[n_per_generator > n_annotated].index)
+            annotations_2 = annotations_2[annotations_2.generator.isin(selected_generators)]
+            annotations_1 = annotations_1[annotations_1.generator.isin(selected_generators)]
+
+        # 1. get the leaderboard for each annotations, where we groupby the keys and compute the score
+        groupby = list(groupby)
+        leaderboard_1 = (
+            annotations_1.groupby(groupby)[self.annotation_key]
+            .aggregate(self.scoring_rule.generalized_win_rate)
+            .rename("win_rate_1")
+        )
+        leaderboard_2 = (
+            annotations_2.groupby(groupby)[self.annotation_key]
+            .aggregate(self.scoring_rule.generalized_win_rate)
+            .rename("win_rate_2")
+        )
+
+        # 2. get the correlations between both leaderboards
+        df = pd.merge(
+            leaderboard_1,
+            leaderboard_2,
+            left_index=True,
+            right_index=True,
+        )
+        s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
+        r, _ = pearsonr(df["win_rate_2"], df["win_rate_1"])
+
+        return dict(spearman=s, pearson=r)
 
     def get_length_biases(
         self, annotations: Union[pd.DataFrame, str], significant_delta_length: int = 30
@@ -235,8 +318,12 @@ class Analyzer:
         """Estimate the biases for longer sentences."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+            df["best_output"] = np.where(
+                df[self.annotation_key].between(1, 1.5, inclusive="left"), df.output_1, df.output_2
+            )
+            df["worse_output"] = np.where(
+                df[self.annotation_key].between(1.5, 2, inclusive="right"), df.output_1, df.output_2
+            )
 
             # Step 1: Create new columns indicating the length of `best_output` and `worse_output`
             df["best_output_length"] = df["best_output"].apply(len)
@@ -271,8 +358,12 @@ class Analyzer:
         """Estimate the biases for sentences with lists."""
         try:
             df = annotations.drop_duplicates(subset=self.keys).copy()
-            df["best_output"] = np.where(df["preference"] == 1, df.output_1, df.output_2)
-            df["worse_output"] = np.where(df["preference"] == 2, df.output_1, df.output_2)
+            df["best_output"] = np.where(
+                df[self.annotation_key].between(1, 1.5, inclusive="left"), df.output_1, df.output_2
+            )
+            df["worse_output"] = np.where(
+                df[self.annotation_key].between(1.5, 2, inclusive="right"), df.output_1, df.output_2
+            )
 
             # Step 1: Create new columns indicating whether `best_output` and `worse_output` contain lists
             df["is_best_list"] = df["best_output"].apply(utils.contains_list)
@@ -304,14 +395,14 @@ class Analyzer:
         if "n_annotated" in df.columns:
             df = df.drop(columns="n_annotated")
 
-        df["index"] = df.groupby(self.keys)["preference"].cumcount()
+        df["index"] = df.groupby(self.keys)[self.annotation_key].cumcount()
 
         if is_rm_less_than:
             # remove samples that have more than n_annotators
             df = df[df["index"] < n_annotators]
 
         # select examples that have at least n_annotators
-        counts = df.groupby(self.keys)["preference"].count()
+        counts = df.groupby(self.keys)[self.annotation_key].count()
         counts.name = "n_annotated"
         n_annotators = n_annotators or counts.min()
         counts = counts[counts >= n_annotators].reset_index()
@@ -327,41 +418,61 @@ class Analyzer:
                 annotations = self.df_gold_annotations
             else:
                 raise ValueError(f"Unknown annotations: {annotations}")
+
         return annotations
 
-    def _get_mode(self, annotations, idcs):
+    def _get_bayes_estimator(self, annotations, idcs):
         annotations = annotations[annotations["index"].isin(idcs)]
-        return annotations.groupby(self.keys)["preference"].aggregate(_random_mode)
+        return annotations.groupby(self.keys)[self.annotation_key].aggregate(self.scoring_rule.bayes_estimator)
 
-    def _agreement_of_single_annotations(
+    def _score_of_single_annotations(
         self,
         df_annotations_1: pd.DataFrame,
         df_annotations_2: pd.DataFrame,
     ):
-        out = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
-        out["match"] = (out["preference_1"] == out["preference_2"]).astype(int)
-        return pd.Series(
+        merged = pd.merge(df_annotations_1, df_annotations_2, on=self.keys, suffixes=("_1", "_2"))
+        out = pd.Series(
             dict(
-                accuracy=out["match"].mean(),
-                sem_samples=out["match"].sem(),
-                counts=len(out["match"]),
+                score=self.scoring_rule.score(
+                    prediction=merged[f"{self.annotation_key}_1"], target=merged[f"{self.annotation_key}_2"]
+                ),
+                error=self.scoring_rule.error(
+                    prediction=merged[f"{self.annotation_key}_1"], target=merged[f"{self.annotation_key}_2"]
+                ),
+                sem_samples=self.scoring_rule.sem(
+                    prediction=merged[f"{self.annotation_key}_1"], target=merged[f"{self.annotation_key}_2"]
+                ),
+                counts=len(merged),
             )
         )
+        return out
 
 
 def get_crossannotations(
-    analyzer, Annotator, max_instances: Optional[int] = None, is_single_annotator: bool = False, **kwargs
+    analyzer,
+    Annotator,
+    max_instances: Optional[int] = None,
+    is_single_annotator: bool = False,
+    is_keep_gold_preference: bool = True,
+    **kwargs,
 ):
     """Get cross annotations by `Annotator` corresponding to `analyzer.df_gold_crossannotations`."""
     n_crossannotations = 1 if is_single_annotator else analyzer.n_annotators
     all_annotations = []
     for seed in range(n_crossannotations):
         annotator = Annotator(seed=seed, **kwargs)
-        df_gold_crossannotations = analyzer.df_gold_crossannotations.query(f"index == {seed}")
+
+        df_gold_crossannotations = analyzer.df_gold_crossannotations.query(f"index == {seed}").copy()
         if max_instances is not None:
             df_gold_crossannotations = df_gold_crossannotations.head(max_instances)
+
+        if is_keep_gold_preference:
+            df_gold_crossannotations = df_gold_crossannotations.rename(columns={"preference": "gold_preference"})
+            annotator.other_keys_to_keep += ["gold_preference"]
+
         annotations = annotator.annotate_pairs(df_gold_crossannotations)
         df_annotations = utils.load_or_convert_to_dataframe(annotations)
+
         df_annotations["index"] = seed
         all_annotations.append(df_annotations)
     df = pd.concat(all_annotations, axis=0)
@@ -382,12 +493,18 @@ def get_annotations(analyzer, Annotator, max_instances: Optional[int] = None, **
 
 def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
     """Gets the metrics for an annotator given its crossannotations."""
+
     all_metrics = dict()
-    all_metrics["Human agreement [%]"] = (
-        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["accuracy"] * 100
+    all_metrics["Human agreement"] = (
+        analyzer.agreement_of_annotations(annotations_1=df_crossannotations, n_majority_vote_1=1)["score"] * 100
     )
+
     all_metrics["Price [$/1000 examples]"] = df_crossannotations["price_per_example"].mean() * 1000
     all_metrics["Time [seconds/1000 examples]"] = df_crossannotations["time_per_example"].mean() * 1000
+
+    correlations = analyzer.estimate_correlations(df_crossannotations)
+    all_metrics["Spearman corr."] = correlations["spearman"]
+    all_metrics["Pearson corr."] = correlations["pearson"]
 
     if evaluator_name == "humans":
         all_metrics["Bias"] = 0
@@ -411,40 +528,6 @@ def get_metrics_evaluator(analyzer, df_crossannotations, evaluator_name=None):
 
 
 ###############################
-
-
-def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropna=True):
-    """Take the mode of a series, but if there are multiple modes, randomly sample one
-    (with potential restriction to `available_modes` or favoring a specific mode `favorite_mode`).
-
-    Example
-    -------
-    >>> import pandas as pd
-    >>> from alpaca_eval.analyze import _random_mode
-    >>> _random_mode(pd.Series([1.0,2.0,1.0]))
-    1.0
-    >>> _random_mode(pd.Series([1.0,2.0])) in [1.0, 2.0]
-    True
-    >>> _random_mode(pd.Series([1.0,2.0,-1.0]), favorite_mode=-1.0)
-    -1.0
-    >>> _random_mode(pd.Series([1.0,2.0,2.0,-1.0]), favorite_mode=-1.0)
-    2.0
-    """
-    out = pd.Series.mode(s)
-    if is_dropna:
-        out = out.dropna()
-
-    if len(out) > 1:
-        if favorite_mode is not None and favorite_mode in out.values:
-            return favorite_mode
-        if available_modes is not None:
-            out = out[out.isin(available_modes)]
-        out = out.sample(1, random_state=seed)
-
-    if len(out) == 0:
-        return np.nan
-
-    return out.item()
 
 
 def _get_longest_predictor(df_annotations):

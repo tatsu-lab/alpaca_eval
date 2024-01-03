@@ -188,7 +188,7 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
         -------
         annotated : list of dict
             The annotated examples. Each dictionary will contain all of `keys_to_merge`, `"output_1"`, `"output_2"`, and
-            `"preference"`. Preference will be 0 if output_1 == output_2, 1 if output_1 is preferred, and 2 if output_2
+            `"preference"`. Preference will be 1.5 if output_1 == output_2, 1 if output_1 is preferred, and 2 if output_2
             is preferred.
         """
         if keys_to_merge is None:
@@ -283,6 +283,7 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
         if self.p_label_flip:
             logging.info(f"Adding random noise to the labels p_label_flip={self.p_label_flip}.")
             # if you have 25% change of flipping the label, you have 50% chance of selecting random label
+            # note that the noise is always binary (1 or 2), even when the annotation is a float (e.g. using logprobs)
             p_noise = self.p_label_flip * 2
             noisy_preference = df_to_annotate.apply(
                 # we add "noisy_label" at the beginning to use ~independent seeds between tasks
@@ -303,7 +304,9 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
 
         # 2. deals with equality
         idcs_is_same_outputs = df_to_annotate["output_1"] == df_to_annotate["output_2"]
-        df_to_annotate.loc[idcs_is_same_outputs, self.annotation_key] = 0
+        df_to_annotate.loc[idcs_is_same_outputs, self.annotation_key] = 1.5
+        # for backward compatibility 0 used to mean same output => replace with 1.5
+        df_to_annotate[self.annotation_key] = df_to_annotate[self.annotation_key].replace({0: 1.5})
 
         return df_to_annotate
 
@@ -348,10 +351,19 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         processors_to_kwargs = processors_to_kwargs or {}
         self.is_randomize_output_order = is_randomize_output_order
         if is_randomize_output_order:
+
+            def _fn_replace_if_switch(df: pd.DataFrame) -> pd.DataFrame:
+                # applies to annotation_column (preference) 3-x => 2 becomes 1, 1 becomes 2 and everything in between if flaot
+                if df.empty or self.annotation_column not in df.columns:
+                    return df
+                df = df.copy()
+                df[self.annotation_column] = df[self.annotation_column].apply(lambda x: 3 - x)
+                return df
+
             # swith output columns by default
             processors_to_kwargs["RandomSwitchTwoColumnsProcessor"] = dict(
                 two_columns_to_switch=["output_1", "output_2"],
-                replace_if_switch_kwargs={"preference": {1: 2, 2: 1}},
+                fn_replace_if_switch=_fn_replace_if_switch,
                 random_seed_columns=random_seed_column,
                 _switch_column="is_switched_outputs",  # backward compatibility
             )
@@ -366,6 +378,6 @@ class SinglePairwiseAnnotator(SingleAnnotator):
 
         all_values = df_annotated[self.annotation_column]
         all_values = all_values[~all_values.isna()]
-        assert set(all_values.unique().tolist()) <= {0, 1, 2, np.nan}
+        assert all_values.apply(utils.validate_alpacaeval_preference, is_allow_nan=True).all()
 
         return df_annotated

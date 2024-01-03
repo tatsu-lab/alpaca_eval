@@ -41,12 +41,12 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
     two_columns_to_switch : Sequence[str]
         The two columns to switch.
 
-    replace_if_swtich_kwargs : dict, optional
-        Arguments to pass to `df.replace` to replace some values in the dataframe when there was a switch.
+    fn_replace_if_switch : Optional[Callable[[pd.DataFrame], pd.DataFrame]], optional
+        Function to apply to the dataframe formed of the rows with a switch. By default, does nothing.
 
-    replace_if_unswitch_kwargs : dict, optional
-        Arguments to pass to `df.replace` to replace some values in the dataframe when you are undoing a switch.
-        By default, applies the same as `replace_if_switch_kwargs`.
+    fn_replace_if_unswitch : Optional[Callable[[pd.DataFrame], pd.DataFrame]], optional
+        Function to apply to the dataframe formed of the rows without a switch. By default, applies the same as
+        `fn_replace_if_switch`.
 
     random_seed_columns : Optional[Sequence[str]], optional
         The columns to use to seed the random choice of switching or not. If None, will use `columns_to_switch`.
@@ -59,7 +59,7 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
     >>> df = pd.DataFrame([dict(instruction='2+2', output_1='10', output_2='4', preference=2),
     ...                    dict(instruction='2+3', output_1='5', output_2='7', preference=1)])
     >>> processor = RandomSwitchTwoColumnsProcessor(two_columns_to_switch=['output_1', 'output_2'],
-    ...                                                replace_if_switch_kwargs={'preference': {1: 2, 2: 1}})
+    ...                                             fn_replace_if_switch = lambda x: x.replace({"preference":{1: 2, 2: 1}}))
     >>> processor.preprocess(df)
         instruction output_1 output_2  preference is_switch_output_1_output_2
     0         2+2         4       10           1                         True
@@ -71,8 +71,8 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
     def __init__(
         self,
         two_columns_to_switch: Sequence[str],
-        replace_if_switch_kwargs: dict = None,
-        replace_if_unswitch_kwargs: dict = None,
+        fn_replace_if_switch=None,
+        fn_replace_if_unswitch=None,
         random_seed_columns: Optional[Sequence[str]] = None,
         _switch_column: Optional[str] = None,
         **kwargs,
@@ -82,8 +82,9 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
             raise ValueError(
                 f"two_columns_to_switch should have exactly two different columns but {two_columns_to_switch}"
             )
-        self.replace_if_switch_kwargs = replace_if_switch_kwargs or {}
-        self.replace_if_unswitch_kwargs = replace_if_unswitch_kwargs or self.replace_if_switch_kwargs
+        self.fn_replace_if_switch = fn_replace_if_switch or (lambda x: x)
+        # by default we assume that it's an involutive function
+        self.fn_replace_if_unswitch = fn_replace_if_unswitch or self.fn_replace_if_switch
 
         # `switch_column` used for backward compatibility
         if _switch_column is None:
@@ -136,11 +137,10 @@ class RandomSwitchTwoColumnsProcessor(BaseProcessor):
         df[self.col2] = np.where(is_switch_arr, col1_values, col2_values)
         df[self.col1] = np.where(is_switch_arr, col2_values, col1_values)
 
-        # replace might not be an involution e.g. if using a regex
         if is_switch:
-            df.loc[is_switch_arr, :] = df.loc[is_switch_arr, :].replace(self.replace_if_switch_kwargs)
+            df.loc[is_switch_arr, :] = self.fn_replace_if_switch(df.loc[is_switch_arr, :])
         else:
-            df.loc[is_switch_arr, :] = df.loc[is_switch_arr, :].replace(self.replace_if_unswitch_kwargs)
+            df.loc[is_switch_arr, :] = self.fn_replace_if_unswitch(df.loc[is_switch_arr, :])
 
         return df
 

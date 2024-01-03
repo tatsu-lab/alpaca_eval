@@ -15,6 +15,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 
 import datasets
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pkg_resources
 import tqdm
@@ -238,10 +239,15 @@ def check_pkg_atleast_version(package, atleast_version):
     return pkg_resources.parse_version(curr_version) > pkg_resources.parse_version(atleast_version)
 
 
-def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable], **kwargs):
+def load_or_convert_to_dataframe(df=Union[AnyPath, AnyData, Callable, list, tuple], **kwargs):
     """Load a dataframe from a path or convert the input to a dataframe if it's not a path."""
     if isinstance(df, Callable):
         df = df(**kwargs)
+
+    if isinstance(df, (tuple, list)) and isinstance(df[0], (str, os.PathLike, pathlib.Path)):
+        df = pd.concat(
+            [load_or_convert_to_dataframe(f, **kwargs) for f in df],
+        )
 
     if isinstance(df, (str, os.PathLike, pathlib.Path)):
         df = Path(df)
@@ -388,16 +394,20 @@ def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, anno
     return leaderboard, precomputed_leaderboard
 
 
-def get_output_path(output_path, model_outputs, name):
+def get_output_path(output_path, model_outputs, name, dflt_dir="results"):
     if output_path == "auto":
         if model_outputs is None:
             output_path = None
         else:
             try:
-                output_path = Path(model_outputs).parent
+                if Path(model_outputs).exists():
+                    output_path = Path(model_outputs).parent
             except:
+                pass
+
+            if output_path == "auto":
                 if name is not None:
-                    output_path = Path("results") / name
+                    output_path = Path(dflt_dir) / name
                 else:
                     output_path = "."
     if output_path is not None:
@@ -482,6 +492,11 @@ def dataframe_chunk_generator(df: pd.DataFrame, chunksize: Optional[int] = None,
             df_chunk = df_chunk.copy()
 
         yield df_chunk
+
+
+def validate_alpacaeval_preference(x: float, is_allow_nan: bool = True) -> bool:
+    """Validate the preference annotation."""
+    return (1 <= x <= 2) or (is_allow_nan and np.isnan(x))
 
 
 def get_all_clients(

@@ -3,13 +3,11 @@ import functools
 import json
 import logging
 import multiprocessing
-import random
 import time
 from typing import Optional, Sequence, Union
 
 import boto3
 import botocore.exceptions
-import numpy as np
 import tqdm
 
 from .. import utils
