@@ -5,6 +5,10 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
+:tada: **Update**: AlpacaEval 2.0 is out and is used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpaca_eval_2). To use the old version, set your enviromnent variable `IS_ALPACA_EVAL_2=False`.
+
+---
+
 Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
 time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
 replicable, and validated against 20K human annotations.
@@ -13,11 +17,11 @@ Although we improved over prior automatic evaluation pipelines, there are still 
 AlpacaEval provides the following:
 
 - [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
-  evaluation set. **Caution**: Automatic evaluator (e.g. GPT4) may be biased towards models that generate longer outputs and/or that were fine-tuned on the model underlying the evaluator (e.g. GPT4).
+  evaluation set. **Caution**: Automatic evaluators (e.g. GPT-4) may be biased towards models that generate longer outputs and/or that were fine-tuned on the model underlying the evaluator (e.g. GPT-4).
 - [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
   annotations). We evaluate a
   model by
-  measuring the fraction of times an powerful LLM (e.g. GPT 4 or Claude or ChatGPT) prefers the outputs from that model
+  measuring the fraction of times a powerful LLM (e.g. GPT-4) prefers the outputs from that model
   over
   outputs from a reference model. Our evaluators enable caching and output randomization by default.
 - [**Toolkit for building automatic evaluators**](#analysis): a simple interface for
@@ -27,9 +31,7 @@ AlpacaEval provides the following:
   on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
   evaluation set. 2.5K of these are cross-annotations (4 humans annotating the same 650 examples).
 - [**AlpacaEval dataset**](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_eval.json): a simplification
-  of [AlpacaFarm's](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "
-  inputs" are merged
-  into one field, and reference outputs are longer. [Details here](#data-release).
+  of [AlpacaFarm's](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "inputs" are merged into one field, and reference outputs are longer. [Details here](#data-release).
 
 <details>
   <summary><b>When to use and not use AlpacaEval?</b></summary>
@@ -559,9 +561,7 @@ directly use `alpaca_eval evaluate_from_model` to also take care of generating o
    AlpacaEval](https://huggingface.co/datasets/tatsu-lab/alpaca_eval).
    If you
    want to use a different model or a different dataset follow the same steps as (1.).
-3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4` or `claude` (if you are
-   an
-   academic) or `chatgpt_fn` (if you don't have access to the other two). For options and comparisons
+3. Choose an evaluator specified via `annotators_config`. We recommend using `alpaca_eval_gpt4_turbo_fn`. For other options and comparisons
    see [this table](#evaluators). Depending on the evaluator you might need to
    set the appropriate API_KEY in your environment
    or [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/constants.py#L7).
@@ -570,8 +570,8 @@ Running all together:
 
 ```bash
 alpaca_eval --model_outputs 'example/outputs.json' \
-  --annotators_config 'alpaca_eval_gpt4' \
-  --reference_outputs <path to outputs if not text_davinci_003 on AlpacaEval>
+  --annotators_config 'alpaca_eval_gpt4_turbo_fn' \
+  --reference_outputs <path to outputs if not gpt4_turbo on AlpacaEval>
 ```
 
 If you don't have decoded outputs, you can use `evaluate_from_model` which takes care of decoding (model and reference)
