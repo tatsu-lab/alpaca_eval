@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
-:tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpaca_eval_2). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
+:tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpacaeval-2.0). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
 
 ---
 
@@ -74,6 +74,7 @@ Details in [limitations](#limitations).
 6. [Limitations](#limitations)
 7. [Citation](#citation)
 8. [Additional information](#additional-information)
+    - [AlpacaEval 2.0](#alpacaeval-2.0)
     - [Data Release](#data-release)
     - [Differences with AlpacaFarm](#differences-with-alpacafarm)
     - [Related work](#related-work)
@@ -1132,6 +1133,11 @@ datasets: [self-instruct](https://github.com/yizhongw/self-instruct),
 [open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test).
 
 # More information
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">AlpacaEval 2.0</h2></summary>
+
+</details>
 
 <details>
   <summary><h2 tabindex="-1" dir="auto">Data Release</h2></summary>
