@@ -43,7 +43,7 @@ def anthropic_completions(
     n_examples = len(prompts)
     if n_examples == 0:
         logging.info("No samples to annotate.")
-        return []
+        return dict(completions=[], price_per_example=[], time_per_example=[], completions_all=[])
     else:
         to_log = f"Using `anthropic_completions` on {n_examples} prompts using {model_name} and num_procs={num_procs}."
         logging.info(to_log)
@@ -74,7 +74,7 @@ def anthropic_completions(
     completions = [response.completion for response in responses]
 
     # anthropic doesn't return total tokens but 1 token approx 4 chars
-    price = [len(prompt) / 4 * _get_price_per_token(model_name) for prompt in prompts]
+    price = [(len(p) + len(c)) / 4 * _get_price_per_token(model_name) for p, c in zip(prompts, completions)]
 
     avg_time = [t.duration / n_examples] * len(completions)
 
@@ -127,10 +127,10 @@ def _anthropic_completion_helper(
 
 def _get_price_per_token(model):
     """Returns the price per token for a given model"""
-    # https://cdn2.assets-servd.host/anthropic-website/production/images/model_pricing_may2023.pdf
+    # https://www-files.anthropic.com/production/images/model_pricing_dec2023.pdf
     if "claude-v1" in model or "claude-2" in model:
         return (
-            11.02 / 1e6
+            8 / 1e6
         )  # that's not completely true because decoding is 32.68 but close enough given that most is context
     else:
         logging.warning(f"Unknown model {model} for computing price per token.")

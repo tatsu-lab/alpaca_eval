@@ -23,7 +23,14 @@ PACKAGES_DEV = [
 ]
 PACKAGES_ANALYSIS = ["seaborn", "matplotlib", "jupyterlab"]
 PACKAGES_LOCAL = ["accelerate", "transformers", "bitsandbytes", "xformers", "peft", "optimum", "einops"]
-PACKAGES_ALL_API = ["anthropic>=0.3.3", "huggingface_hub", "cohere", "replicate", "boto3>=1.28.58"]
+PACKAGES_ALL_API = [
+    "anthropic>=0.3.3",
+    "huggingface_hub",
+    "cohere",
+    "replicate",
+    "boto3>=1.28.58",
+    "google-generativeai",
+]
 PACKAGES_ALL = PACKAGES_LOCAL + PACKAGES_ALL_API + PACKAGES_ANALYSIS + PACKAGES_DEV
 
 setuptools.setup(

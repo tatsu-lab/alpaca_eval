@@ -79,6 +79,8 @@ class BaseScoringRule(abc.ABC):
             n_wins=n_wins,
             n_wins_base=n_wins_base,
             n_draws=n_draws,
+            # note that n_draws will happen more often for weighted win rate because you can get 1.5 somewhat often due
+            # to float precision
             n_total=n_total,
         )
 
