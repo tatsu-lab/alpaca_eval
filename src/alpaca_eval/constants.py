@@ -35,7 +35,7 @@ HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
 DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 ########################
 
-IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "True"))
+IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "False"))
 ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
 ANNOTATOR_CONFIG_AE2 = "alpaca_eval_gpt4_turbo_fn"  # "weighted_alpaca_eval_gpt4_turbo"
 DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
