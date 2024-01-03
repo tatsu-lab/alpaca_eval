@@ -8,5 +8,7 @@ Yi-34B-Chat-Verified:
     num_procs: 1
     max_tokens: 3500
     top_p: 0.8
+    client_kwargs:
+      base_url: "http://api.01ww.xyz/v1"
   pretty_name: "Yi 34B Chat"
   link: "https://huggingface.co/01-ai/Yi-34B-Chat"
