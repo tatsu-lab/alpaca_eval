@@ -4222,6 +4222,7 @@
     "instruction":"Take the product description and write a creative ad for it.\n\nDocument Cameras allow teachers to display documents, books, or other materials for their students to see.",
     "output":"Here's a draft ad I came up with:\n\nAttention teachers! Do you struggle to share papers and textbooks with your entire class? Are some students unable to see important materials from the back of the room? Solve these problems with the amazing Document Camera! This revolutionary device displays books, worksheets, science experiments, and more onto a large screen or monitor for all your students to observe clearly. No more straining eyes or craned necks. The Document Camera makes teaching a breeze as you seamlessly present documents and objects to captivate young minds. Your class will be wowed as you magnify math problems, zoom in on fine print, and clearly showcase 3D models. Engage and inspire students as never before with the power of the Document Camera! Call now to bring this magical teaching assistant into your classroom today!",
     "generator":"claude-2.1"
+<<<<<<< HEAD
   },
   {
     "dataset":"selfinstruct",
@@ -4606,5 +4607,7 @@
     "instruction":"How many lightning strikes occur on Earth each day? Try to explain your answer. Your explanation should take the reader through your reasoning step-by-step.",
     "output":"Okay, let me walk through an explanation of how many lightning strikes occur on Earth per day:\n\nTo start, lightning is an electrical discharge that occurs during thunderstorms when there is a buildup of positive and negative charges within clouds and between clouds and the ground. It helps to balance these charges.\n\nNow the question is - how often does this happen? According to sources from the National Weather Service and NASA, there are roughly 44 (\u00b1 5) lightning strikes per second globally. Converting that to strikes per day:\n\n- There are 86,400 seconds in a day (24 hrs x 3,600 seconds\/hr)\n- With 44 lightning strikes per second\n- Multiplying: \n    - 44 strikes\/second \n    - x 86,400 seconds\/day\n    = 3,800,000 lightning strikes per day\n\nSo putting the pieces together step-by-step:\n- Lightning is an electrical discharge that occurs to balance charges during thunderstorms\n- Global lightning strike rate is estimated at 44 strikes per second \n- In a day there are 86,400 seconds \n- So multiplying the strikes\/second by the seconds\/day gives an estimate of 3,800,000 lightning strikes happening globally per day.\n\nI walked through the background on what causes lightning first, then provided the key data on strikes per second, converted that to strikes per day by accounting for the number of seconds in a day, and multiplying to get the final global daily estimate. Let me know if any part needs more explanation!",
     "generator":"claude-2.1"
+=======
+>>>>>>> 674472d (lb)
   }
 ]
