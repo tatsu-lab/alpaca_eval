@@ -185,7 +185,6 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "Mixtral-8x7B-Instruct-v0.1",
     "Mistral-7B-Instruct-v0.2",
     "vicuna-33b-v1.3",
-    "alpaca-farm-ppo-sim-gpt4-20k",
     "alpaca-7b",
 ]
 
