@@ -277,7 +277,7 @@ We perform exactly the same computation for the automatic annotators, so that th
 
 **Price [$/1000 examples]**: this is the average price of every 1000 annotations.
 For humans, it is the price that [we paid Mechanical Turkers](https://arxiv.org/abs/2305.14387) to collect those
-annotations ($18/hour).
+annotations ($21/hour).
 If the price depends on the machine used to compute the annotations (e.g. Guanaco) we leave it empty.
 
 **Time [seconds/1000 examples]**: this is the average time it takes to compute 1000 annotations.
@@ -1156,8 +1156,6 @@ To better understand the auto-annotations, you can check the `raw_annotations["c
     "generator_2":"gpt4",
     "annotator":"alpaca_eval_cot_gpt4_turbo_fn",
     "preference":1.0,
-    "price_per_example":0.01637,
-    "time_per_example":2.6607123762,
     "raw_completion":{
       "concise_explanation":"Model M provided a more detailed and structured response, including bold headings for each category and a wider range of examples. It also included additional categories such as 'Other European Languages' and 'Combination of Languages and Influences', which added depth to the explanation. Model m's response was accurate but less comprehensive and lacked the clear structure found in Model M's output.",
       "ordered_models":[
