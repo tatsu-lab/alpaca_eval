@@ -4210,7 +4210,19 @@
     "preference":1.0,
     "price_per_example":0.00579,
     "time_per_example":2.6716520041,
-    "raw_completion":"{\n  \"concise_explanation\": \"Both models correctly identified that there are two horses in the story. However, model 'M' provided a more comprehensive explanation, including the nature of the sentence as a play on words and a tongue twister, which adds value to the response.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"M\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"m\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Both models correctly identified that there are two horses in the story. However, model 'M' provided a more comprehensive explanation, including the nature of the sentence as a play on words and a tongue twister, which adds value to the response.",
+      "ordered_models":[
+        {
+          "model":"M",
+          "rank":1
+        },
+        {
+          "model":"m",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Over two thousand years, the moon has covered every point on the Earth once. At the most recent time of a moonrise, the moon is going to cover the next point to the north. How far north will it be?",
@@ -9036,7 +9048,19 @@
     "preference":1.0,
     "price_per_example":0.00574,
     "time_per_example":3.0418546295,
-    "raw_completion":"{\n  \"concise_explanation\": \"Both models correctly identified Jay's brother as John. However, model 'M' provided a more detailed explanation, which might be preferred for clarity and understanding, thus ranking it higher.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"M\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"m\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Both models correctly identified Jay's brother as John. However, model 'M' provided a more detailed explanation, which might be preferred for clarity and understanding, thus ranking it higher.",
+      "ordered_models":[
+        {
+          "model":"M",
+          "rank":1
+        },
+        {
+          "model":"m",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"write a eulogy for my 100 year old grandma who was married twice, has over 30 grandkids. she used to foster babies, many of them. she liked humming birds and traveling. she was from south dakota and she helped raised me, her first great grand child",
@@ -15650,7 +15674,19 @@
     "preference":1.0,
     "price_per_example":0.00641,
     "time_per_example":2.6397936551,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model 'm' provided a complete and thoughtful response, explaining the personal and financial reasons for giving up the dream of being a mathematician, while model 'M' only repeated the question without adding any new information.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"m\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"M\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model 'm' provided a complete and thoughtful response, explaining the personal and financial reasons for giving up the dream of being a mathematician, while model 'M' only repeated the question without adding any new information.",
+      "ordered_models":[
+        {
+          "model":"m",
+          "rank":1
+        },
+        {
+          "model":"M",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Change the response to have a more empathic tone in the chat.\n\n+ How are you doing?\n- Fine, I had a bunch of problems today.\n+ What kind of problems?",
@@ -15713,7 +15749,19 @@
     "preference":1.0,
     "price_per_example":0.00571,
     "time_per_example":2.2040942396,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model 'm' provided a nuanced explanation considering the context, which is more informative and helpful. Model 'M' gave a brief and absolute answer without any explanation, which is less useful.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"m\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"M\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model 'm' provided a nuanced explanation considering the context, which is more informative and helpful. Model 'M' gave a brief and absolute answer without any explanation, which is less useful.",
+      "ordered_models":[
+        {
+          "model":"m",
+          "rank":1
+        },
+        {
+          "model":"M",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Give a brief summary of the intention of the dialogue that just happened.\n\nCustomer: Hi there, I'm looking for a new phone.\nAI: Hi! What type of phone are you looking for?\nCustomer: I'm not sure. Maybe something with a good camera?\nAI: We have a few phones with great cameras. Would you like to see some options?\nCustomer: Yeah, that would be great.",
@@ -15776,7 +15824,19 @@
     "preference":2.0,
     "price_per_example":0.00589,
     "time_per_example":1.7669390468,
-    "raw_completion":"{\n  \"concise_explanation\": \"Both models corrected the transcription errors effectively, but Model M provided a more concise and natural-sounding correction by using the contraction 'haven't' instead of 'have not'. This makes the response slightly more human-like and preferable.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"M\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"m\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Both models corrected the transcription errors effectively, but Model M provided a more concise and natural-sounding correction by using the contraction 'haven't' instead of 'have not'. This makes the response slightly more human-like and preferable.",
+      "ordered_models":[
+        {
+          "model":"M",
+          "rank":1
+        },
+        {
+          "model":"m",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Take a look at the contract and extract the parties of the agreement from it.\n\nAs of the 13th day of December 2021, this Music Recording Agreement (\"Agreement\") is made between Good Kid, a Toronto-based musical group (\"Artist\"), and Universal Music Group, a record label with license number 545345 (\"Record Label\"). The Artist and the Recording Label may be referred to in this Agreement individually as \"Parties\" and collectively as \"Parties.\" Work under this Agreement will begin on March 15, 2022, and will last for the duration of the Agreement.",
@@ -15889,7 +15949,19 @@
     "preference":2.0,
     "price_per_example":0.0052,
     "time_per_example":2.6397936551,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model 'm' provided the most relevant category for the question, which is about receiving payments, typically related to policy details. Model 'M' incorrectly categorized the question as related to filing a claim and viewing status.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"m\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"M\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model 'm' provided the most relevant category for the question, which is about receiving payments, typically related to policy details. Model 'M' incorrectly categorized the question as related to filing a claim and viewing status.",
+      "ordered_models":[
+        {
+          "model":"m",
+          "rank":1
+        },
+        {
+          "model":"M",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Choose an appealing title for your post.\n\nThe typical avocado is over 300 calories from the oil in it. That\u2019s the amount of calories in a large candy bar. If you get enough exercise to eat a large candy bar every day without gaining weight, it wouldn\u2019t be a problem to eat an avocado every day. Other wise you should probably eat them sparingly.",
@@ -16177,7 +16249,19 @@
     "preference":2.0,
     "price_per_example":0.00506,
     "time_per_example":1.8799811268,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model M provided a direct and correct conversion from HTML to Markdown, while model m included unnecessary Markdown code block syntax around the correct conversion.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"M\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"m\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model M provided a direct and correct conversion from HTML to Markdown, while model m included unnecessary Markdown code block syntax around the correct conversion.",
+      "ordered_models":[
+        {
+          "model":"M",
+          "rank":1
+        },
+        {
+          "model":"m",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Extract the method that has been used in the research from the abstract of the paper. Give the exact sentences from the abstract that discuss the method.\n\nWe present a state-of-the-art speech recognition system developed using end-to-end deep learning. Our architecture is significantly simpler than traditional speech systems, which rely on laboriously engineered processing pipelines; these traditional systems also tend to perform poorly when used in noisy environments. In contrast, our system does not need hand-designed components to model background noise, reverberation, or speaker variation, but instead directly learns a function that is robust to such effects. We do not need a phoneme dictionary, nor even the concept of a \"phoneme.\" Key to our approach is a well-optimized RNN training system that uses multiple GPUs, as well as a set of novel data synthesis techniques that allow us to efficiently obtain a large amount of varied data for training. Our system, called Deep Speech, outperforms previously published results on the widely studied Switchboard Hub5'00, achieving 16.0% error on the full test set. Deep Speech also handles challenging noisy environments better than widely used, state-of-the-art commercial speech systems.Collapse",
@@ -16315,7 +16399,19 @@
     "preference":1.0,
     "price_per_example":0.00562,
     "time_per_example":1.8799811268,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model M provided a detailed explanation justifying the categorization, which is more informative and human-preferred over the simple one-word response from model m.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"M\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"m\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model M provided a detailed explanation justifying the categorization, which is more informative and human-preferred over the simple one-word response from model m.",
+      "ordered_models":[
+        {
+          "model":"M",
+          "rank":1
+        },
+        {
+          "model":"m",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"The story of a movie has been described using many emojis. You need to guess the name of the movie based on the emojis.\n\n\ud83e\uddd9\u200d\u2642\ufe0f\ud83d\udeaa\ud83d\udcda\ud83e\udd85\u26a1",
@@ -16553,7 +16649,19 @@
     "preference":1.0,
     "price_per_example":0.00547,
     "time_per_example":2.4436983312,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model 'm' provided a detailed explanation of the sentiment, enhancing the quality of the response, while Model 'M' gave a correct but less informative one-word answer.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"m\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"M\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model 'm' provided a detailed explanation of the sentiment, enhancing the quality of the response, while Model 'M' gave a correct but less informative one-word answer.",
+      "ordered_models":[
+        {
+          "model":"m",
+          "rank":1
+        },
+        {
+          "model":"M",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"You are given a Python command and are required to convert it into Ruby.\n\nprint(\"Hello World!\")",
@@ -16616,7 +16724,19 @@
     "preference":1.0,
     "price_per_example":0.00603,
     "time_per_example":1.844173193,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model 'm' provided a detailed explanation justifying the relevance of the document to the search query, while model 'M' simply stated 'Relevant' without any elaboration.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"m\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"M\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model 'm' provided a detailed explanation justifying the relevance of the document to the search query, while model 'M' simply stated 'Relevant' without any elaboration.",
+      "ordered_models":[
+        {
+          "model":"m",
+          "rank":1
+        },
+        {
+          "model":"M",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Create a list of subtopics for the given topic.\n\nMusic theory",
@@ -17679,7 +17799,19 @@
     "preference":2.0,
     "price_per_example":0.00496,
     "time_per_example":2.3061743259,
-    "raw_completion":"{\n  \"concise_explanation\": \"Both models corrected the spelling errors accurately. However, model 'm' rephrased the sentence to make it more fluent, thus providing a slightly better output.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"m\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"M\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Both models corrected the spelling errors accurately. However, model 'm' rephrased the sentence to make it more fluent, thus providing a slightly better output.",
+      "ordered_models":[
+        {
+          "model":"m",
+          "rank":1
+        },
+        {
+          "model":"M",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Write down antonyms for the given word.\n\nlaureating",
@@ -17767,7 +17899,19 @@
     "preference":1.0,
     "price_per_example":0.0054,
     "time_per_example":2.4248619974,
-    "raw_completion":"{\n  \"concise_explanation\": \"Model M provided a more detailed explanation, including the function of the word 'keep' in the context of the sentence, which is more informative and helpful for understanding. Model m gave a correct but less detailed response.\",\n  \"ordered_models\": [\n    {\n      \"model\": \"M\",\n      \"rank\": 1\n    },\n    {\n      \"model\": \"m\",\n      \"rank\": 2\n    }\n  ]\n}"
+    "raw_completion":{
+      "concise_explanation":"Model M provided a more detailed explanation, including the function of the word 'keep' in the context of the sentence, which is more informative and helpful for understanding. Model m gave a correct but less detailed response.",
+      "ordered_models":[
+        {
+          "model":"M",
+          "rank":1
+        },
+        {
+          "model":"m",
+          "rank":2
+        }
+      ]
+    }
   },
   {
     "instruction":"Define what the underlined word means for kids.\n\n_keep a promise",
