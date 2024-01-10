@@ -2,6 +2,7 @@ from typing import Optional
 
 import fire
 import pandas as pd
+from scipy.stats import pearsonr, spearmanr
 
 from alpaca_eval import analyze, annotators, constants
 from alpaca_eval import main as alpaca_main
@@ -68,14 +69,34 @@ def update_leaderboard(leaderboard_path, model_outputs="results/{model_name}/mod
         alpaca_main.evaluate(model_outputs=model_outputs.format(model_name=model_name), **kwargs)
 
 
+def compare_leaderboards(leaderboard_path_1, leaderboard_path_2):
+    df_lb_1 = utils.load_or_convert_to_dataframe(leaderboard_path_1)
+    df_lb_2 = utils.load_or_convert_to_dataframe(leaderboard_path_2)
+
+    # keep only intersection of models and in the same order
+    intersected_models = df_lb_1.index.intersection(df_lb_2.index)
+    df_lb_1 = df_lb_1.loc[intersected_models]
+    df_lb_2 = df_lb_2.loc[intersected_models]
+
+    metrics = {}
+    metrics["Spearman corr."] = spearmanr(df_lb_1["win_rate"], df_lb_2["win_rate"]).statistic
+    metrics["Pearson corr."] = pearsonr(df_lb_1["avg_length"], df_lb_2["avg_length"]).statistic
+
+    print(pd.Series(metrics).to_string(float_format="%.2f"))
+
+
 def make_leaderboard_like(leaderboard_to_copy: Optional[AnyPath], **kwargs):
     """Make a leaderboard on all the models that have been evaluated in another leaderboard."""
     df_lb_old = pd.read_csv(leaderboard_to_copy, index_col=0)
 
     kwargs["is_cache_leaderboard"] = True
+    kwargs["is_return_instead_of_print"] = True
     for m, r in df_lb_old.iterrows():
         kwargs["current_leaderboard_mode"] = r["mode"]
-        alpaca_main.evaluate(model_outputs=f"results/{m}/model_outputs.json", **kwargs)
+        leaderboard_new, _ = alpaca_main.evaluate(model_outputs=f"results/{m}/model_outputs.json", **kwargs)
+
+    print("Comparison between the leaderboards:")
+    compare_leaderboards(leaderboard_to_copy, leaderboard_new)
 
 
 def main(task, **kwargs):
