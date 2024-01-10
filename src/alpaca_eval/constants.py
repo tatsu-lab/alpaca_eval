@@ -35,9 +35,9 @@ HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
 DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 ########################
 
-IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "False"))
+IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "True"))
 ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
-ANNOTATOR_CONFIG_AE2 = "alpaca_eval_gpt4_turbo_fn"  # "weighted_alpaca_eval_gpt4_turbo"
+ANNOTATOR_CONFIG_AE2 = "alpaca_eval_cot_gpt4_turbo_fn"
 DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
 DEFAULT_CACHE_DIR = None
 EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
@@ -183,13 +183,25 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "chatgpt",
     "gemini-pro",
     "Mixtral-8x7B-Instruct-v0.1",
-    "Mistral-7B-Instruct-v0.2"
-    # "vicuna-33b-v1.3",
-    # "llama-2-13b-chat-hf",
-    # "llama-2-7b-chat-hf",
-    # "alpaca-farm-ppo-sim-gpt4-20k",
-    # "alpaca-7b",
+    "Mistral-7B-Instruct-v0.2",
+    "vicuna-33b-v1.3",
+    "alpaca-7b",
 ]
+
+# maps models to Arena Elo rating
+CHATBOT_ARENA_LEADERBOARD = {
+    "gpt4_turbo": 1243,
+    "gpt4": 1192,
+    "tulu-2-dpo-70b": 1110,
+    "Yi-34B-Chat": 1110,
+    "llama-2-70b-chat-hf": 1077,
+    "claude-2.1": 1117,
+    "chatgpt": 1074,
+    "gemini-pro": 1111,
+    "Mixtral-8x7B-Instruct-v0.1": 1121,
+    "Mistral-7B-Instruct-v0.2": 1023,
+    "vicuna-33b-v1.3": 1095,
+}
 
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
 

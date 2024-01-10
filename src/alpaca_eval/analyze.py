@@ -308,7 +308,7 @@ class Analyzer:
             right_index=True,
         )
         s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
-        r, _ = pearsonr(df["win_rate_2"], df["win_rate_1"])
+        r = pearsonr(df["win_rate_2"], df["win_rate_1"]).statistic
 
         return dict(spearman=s, pearson=r)
 

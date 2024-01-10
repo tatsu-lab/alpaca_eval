@@ -37,4 +37,6 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
                 idx, "samples"
             ] = f"https://github.com/tatsu-lab/alpaca_eval/blob/main/results/{informal_name}/model_outputs.json"
     df = df.sort_values(by=["win_rate"], ascending=False)
-    df.to_csv(Path("docs") / leaderboard_file.name, index=False)
+    save_dir = Path("docs") / leaderboard_file.parent.name
+    save_dir.mkdir(exist_ok=True, parents=True)
+    df.to_csv(save_dir / leaderboard_file.name, index=False)
