@@ -2,6 +2,7 @@ name,win_rate,avg_length,link,samples,filter
 GPT-4 Turbo,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_turbo/model_outputs.json,minimal
 Yi 34B Chat,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,minimal
 GPT-4,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
+GPT-4 0314,22.07325892871952,1371,,,verified
 XwinLM 70b V0.1,21.812957073994184,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
 Evo v2 7B,20.83411302254932,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 PairRM+Tulu 2+DPO 70B (best-of-16),18.63896296749771,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
@@ -15,6 +16,7 @@ GPT-4 0613,15.755038087701964,1140,,https://github.com/tatsu-lab/alpaca_eval/blo
 Claude 2.1,15.733506736409938,1096,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2.1/model_outputs.json,minimal
 Evo 7B,15.577437399431057,1774,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-7b/model_outputs.json,community
 Mistral 7B v0.2,14.722772657714286,1676,https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-Instruct-v0.2/model_outputs.json,minimal
+GPT 3.5 Turbo 0613,14.132390707727575,1328,,,verified
 LLaMA2 Chat 70B,13.871009062248447,1790,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,minimal
 UltraLM 13B V2.0 (best-of-16),13.853373471264224,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
 PairRM+Tulu 2+DPO 13B (best-of-16),13.831901016808686,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
@@ -37,6 +39,7 @@ GPT 3.5 Turbo 0301,9.622453295105588,827,,https://github.com/tatsu-lab/alpaca_ev
 OpenChat V2-W 13B,9.615344158366243,1566,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
 Humpback LLaMa 65B,9.42513904779845,1232,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama-65b/model_outputs.json,community
 airoboros 65B,9.388950149698426,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-65b/model_outputs.json,community
+GPT 3.5 Turbo 1106,9.177964562109176,796,,,verified
 airoboros 33B,9.053160396238688,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-33b/model_outputs.json,community
 OpenBuddy-LLaMA-65B-v8,8.770650150929061,1162,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
 GPT-3.5,8.564313096485627,1018,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt35_turbo_instruct/model_outputs.json,community
@@ -48,7 +51,8 @@ OpenChat-13B,8.02238601080984,1632,https://github.com/imoneoi/openchat,https://g
 JinaChat,7.786130393538249,676,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/jina-chat/model_outputs.json,community
 Phi-2 DPO,7.757095701755821,1687,https://huggingface.co/lxuechen/phi-2-dpo,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/phi-2-dpo/model_outputs.json,verified
 LLaMA2 Chat 13B,7.702309957903472,1513,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-13b-chat-hf/model_outputs.json,minimal
-UltraLM 13B V2.0,7.504622955902916,1399,https://github.com/thunlp/UltraChat,,community
+LLaMA2 Chat 7B Evol70k-NEFT,7.602383512198759,1612,https://github.com/neelsjain/NEFTune,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-chat-7b-evol70k-neft/model_outputs.json,community
+UltraLM 13B V2.0,7.504622955902916,1399,https://github.com/thunlp/UltraChat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0/model_outputs.json,community
 OpenChat8192-13B,7.472766807947187,1664,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat8192-13b/model_outputs.json,community
 Claude2 Alpaca 13B,7.437351324663077,1127,https://github.com/Lichang-Chen/claude2-alpaca,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude2-alpaca-13b/model_outputs.json,community
 OpenCoderPlus-15B,7.406222451098027,1628,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/opencoderplus-15b/model_outputs.json,community
@@ -89,5 +93,4 @@ Pythia 12B SFT,2.5780902810944086,913,https://huggingface.co/OpenAssistant/pythi
 Phi 2,2.344452107114733,626,https://huggingface.co/microsoft/phi-2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/phi-2/model_outputs.json,community
 Falcon 7B Instruct,2.146617553280376,478,https://huggingface.co/tiiuae/falcon-7b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-7b-instruct/model_outputs.json,verified
 Baichuan-13B-Chat,1.9921455614645391,1727,https://huggingface.co/baichuan-inc/Baichuan-13B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baichuan-13b-chat/model_outputs.json,community
-Davinci003,1.9621476654673384,307,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/text_davinci_003/model_outputs.json,minimal
 Pythia 12B OASST SFT,1.7901140833302784,726,https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/oasst-sft-pythia-12b/model_outputs.json,verified
