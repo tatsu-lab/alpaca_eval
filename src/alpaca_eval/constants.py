@@ -188,6 +188,21 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "alpaca-7b",
 ]
 
+# maps models to Arena Elo rating
+CHATBOT_ARENA_LEADERBOARD = {
+    "gpt4_turbo": 1243,
+    "gpt4": 1192,
+    "tulu-2-dpo-70b": 1110,
+    "Yi-34B-Chat": 1110,
+    "llama-2-70b-chat-hf": 1077,
+    "claude-2.1": 1117,
+    "chatgpt": 1074,
+    "gemini-pro": 1111,
+    "Mixtral-8x7B-Instruct-v0.1": 1121,
+    "Mistral-7B-Instruct-v0.2": 1023,
+    "vicuna-33b-v1.3": 1095,
+}
+
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
 
 CURRENT_USER = getpass.getuser()
