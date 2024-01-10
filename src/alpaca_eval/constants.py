@@ -37,7 +37,7 @@ DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 
 IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "True"))
 ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
-ANNOTATOR_CONFIG_AE2 = "alpaca_eval_cot_gpt4_turbo_fn"
+ANNOTATOR_CONFIG_AE2 = "weighted_alpaca_eval_gpt4_turbo"
 DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
 DEFAULT_CACHE_DIR = None
 EVALUATORS_CONFIG_DIR = CURRENT_DIR / "evaluators_configs"
