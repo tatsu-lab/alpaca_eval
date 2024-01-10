@@ -1,8 +1,12 @@
+from typing import Optional
+
 import fire
+import pandas as pd
 
 from alpaca_eval import analyze, annotators, constants
 from alpaca_eval import main as alpaca_main
 from alpaca_eval import metrics, utils
+from alpaca_eval.types import AnyPath
 
 
 def precompute_on_all_human_leaderboard(
@@ -10,7 +14,7 @@ def precompute_on_all_human_leaderboard(
     Annotator=annotators.PairwiseAnnotator,
     all_data=constants.ALPACAFARM_GOLD_ANNOTATIONS,
     analyzer_kwargs=None,
-    **annotator_kwargs
+    **annotator_kwargs,
 ):
     """Precompute all instructions on the eval leaderboard that has been annotated by humans."""
     analyzer_kwargs = analyzer_kwargs or {}
@@ -24,7 +28,7 @@ def precompute_evaluator_leaderboard(
     annotators_configs_to_analyze="MINIMAL_EVALUATORS",
     annotators_configs_to_benchmark="VERIFIED_EVALUATORS",
     max_instances=None,
-    **kwargs
+    **kwargs,
 ):
     """Precompute evaluator's leaderboard for important API models."""
     if isinstance(annotators_configs_to_analyze, str):
@@ -41,7 +45,7 @@ def precompute_evaluator_leaderboard(
             is_save_leaderboard=max_instances is None,
             is_return_instead_of_print=True,  # don't print
             current_leaderboard_mode="minimal",
-            **kwargs
+            **kwargs,
         )
 
     for annotators_config in annotators_configs_to_benchmark:
@@ -53,7 +57,7 @@ def precompute_evaluator_leaderboard(
             is_return_instead_of_print=True,  # don't print
             is_single_annotator=True,
             current_leaderboard_mode="verified",
-            **kwargs
+            **kwargs,
         )
 
 
@@ -62,6 +66,16 @@ def update_leaderboard(leaderboard_path, model_outputs="results/{model_name}/mod
     df_leaderboard = utils.load_or_convert_to_dataframe(leaderboard_path)
     for model_name in df_leaderboard.index:
         alpaca_main.evaluate(model_outputs=model_outputs.format(model_name=model_name), **kwargs)
+
+
+def make_leaderboard_like(leaderboard_to_copy: Optional[AnyPath], **kwargs):
+    """Make a leaderboard on all the models that have been evaluated in another leaderboard."""
+    df_lb_old = pd.read_csv(leaderboard_to_copy, index_col=0)
+
+    kwargs["is_cache_leaderboard"] = True
+    for m, r in df_lb_old.iterrows():
+        kwargs["current_leaderboard_mode"] = r["mode"]
+        alpaca_main.evaluate(model_outputs=f"results/{m}/model_outputs.json", **kwargs)
 
 
 def main(task, **kwargs):

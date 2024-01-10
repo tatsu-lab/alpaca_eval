@@ -1,13 +1,13 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Literal, Optional, Union
 
 import fire
 import pandas as pd
 
 from . import analyze, annotators, constants, decoders, metrics, utils
-from .types import AnyData, AnyPath
+from .types import AnyData, AnyLoadableDF, AnyPath
 
 CUR_DIR = Path(__file__).parent
 
@@ -15,8 +15,8 @@ __all__ = ["evaluate", "evaluate_from_model", "analyze_evaluators", "make_leader
 
 
 def evaluate(
-    model_outputs: Optional[Union[AnyPath, AnyData, Callable]] = None,
-    reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    model_outputs: Optional[AnyLoadableDF] = None,
+    reference_outputs: AnyLoadableDF = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
     annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
     name: Optional[str] = None,
     output_path: Optional[Union[AnyPath, str]] = "auto",
@@ -198,7 +198,7 @@ def evaluate(
 def evaluate_from_model(
     model_configs: Union[AnyPath, dict],
     reference_model_configs: Optional[Union[AnyPath, dict]] = None,
-    evaluation_dataset: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    evaluation_dataset: AnyLoadableDF = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
     annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
     output_path: AnyPath = "auto",
     max_instances: int = None,
@@ -353,8 +353,8 @@ def evaluate_from_model(
 def make_leaderboard(
     leaderboard_path: Optional[AnyPath] = None,
     annotators_config: AnyPath = constants.DEFAULT_ANNOTATOR_CONFIG,
-    all_model_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAFARM_ALL_OUTPUTS,
-    reference_outputs: Union[AnyPath, AnyData, Callable] = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
+    all_model_outputs: AnyLoadableDF = constants.ALPACAFARM_ALL_OUTPUTS,
+    reference_outputs: AnyLoadableDF = constants.ALPACAEVAL_REFERENCE_OUTPUTS,
     fn_add_to_leaderboard: Callable = "evaluate",
     leaderboard_mode: str = "verified",
     is_return_instead_of_print: bool = False,
@@ -377,12 +377,11 @@ def make_leaderboard(
         those. If the path contains a globbing pattern, we will read all files matching the pattern and concatenate
         them. Each dictionary (or row of dataframe) should contain the keys that are formatted in the prompts. E.g. by
         default `instruction` and `output` with optional `input`. It should also contain a column `generator` with the
-        name of the current model.
+        name of the current model. Could also be a list of the above, in which case the output is the concatenation.
 
     reference_outputs : path or data, optional
         The outputs of the reference model. Same format as `all_model_outputs` but without needing `generator`. By
-        default,
-        the reference outputs are the 003 outputs on AlpacaEval set.
+        default, the reference outputs are the 003 outputs on AlpacaEval set.
 
     fn_add_to_leaderboard : callable or str, optional
         The function to use to add a model to the leaderboard. If a string, it should be the name of a function in
