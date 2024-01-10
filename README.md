@@ -1144,32 +1144,37 @@ AlpacaEval 2.0 is a new version of AlpacaEval. Here are the differences:
 By default, AlpacaEval 2.0 will be used from `pip installl alpaca_eval==0.5`. If you wish to use the old configs by default, you can set `IS_ALPACA_EVAL_2=False` in your environment.
 
 **Interpreting Chain of Thought**:
-To better understand the auto-annotations, you can check the `raw_annotations["concise_explanation]` column in `annotations.json` (e.g. [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/results/gpt4/alpaca_eval_cot_gpt4_turbo_fn/annotations.json)) which contains the chain of thought reasoning of the auto annotator. Note that the raw_annotations is not modified by the randomization of the order of the outputs. In particular, `"m"` and `"M"` can sometime refer to the first model (the reference) and sometime to the second model (the model being evaluated). To understand which model is being referred to, you should use the column `preference` and `ordered_models`. For example in the following annotation we see that the preference is 1.0 and corresponds to model `M` in `concise_explanation` (see `ordered_models`).  
+
+To better understand the auto-annotations, you can check the `raw_annotations["concise_explanation]` column in `annotations.json` (e.g. [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/results/gpt4/alpaca_eval_cot_gpt4_turbo_fn/annotations.json)) which contains the chain of thought reasoning of the auto annotator. Note that the raw_annotations is not modified by the randomization of the order of the outputs. In particular, `"m"` and `"M"` can sometime refer to the first model (the reference) and sometime to the second model (the model being evaluated). To understand which model is being referred to, you should use the column `preference` and `ordered_models`. When pushing the annotations to GitHub we use those to add a dictionary `"referenced_models"` mapping the model names to the corresponding outputs (see [`add_referenced_model_`](https://github.com/tatsu-lab/alpaca_eval/blob/main/docs/format_sample_sheets.py)). For example in the following annotation we see that the preference is 1.0 (i.e. `output_1`) and corresponds to model `M` in `concise_explanation` (see `ordered_models`).  
 
 ```json 
 {
-    "instruction":"How did US states get their names?",
-    "output_1":"The names of U.S. states are derived from a variety of languages and sources, including indigenous American languages, European languages (primarily English, Spanish, and French), as well as other historical influences. Here is a brief overview of how some states got their names:\n\n1. **Indigenous American Languages**: Many state names come from Native American words or names of tribes, often from the languages of the indigenous peoples who lived in or near those areas.\n   - **Alabama**: Possibly derived from the Choctaw language, meaning \"thicket clearers.\"\n   - **Connecticut**: From a Mohegan-Pequot word meaning \"long tidal river.\"\n   - **Massachusetts**: [...]",
-    "generator_1":"gpt4_1106_preview",
-    "dataset":"helpful_base",
-    "output_2":"The names of the 50 U.S. states come from a variety of sources, including Native American languages, European languages, and historical figures. Here's a brief overview of how some states got their names:\n\n1. Native American origins: Many states have names derived from Native American languages. For example, Alabama comes from the Choctaw word \"Albah amo,\" meaning \"plant gatherers\" or \"herb gatherers.\" Similarly, the name Mississippi comes from the Ojibwe word \"Misi-ziibi,\" meaning \"great river.\"\n\n2. European languages: [...].",
-    "generator_2":"gpt4",
-    "annotator":"alpaca_eval_cot_gpt4_turbo_fn",
-    "preference":1.0,
-    "raw_completion":{
-      "concise_explanation":"Model M provided a more detailed and structured response, including bold headings for each category and a wider range of examples. It also included additional categories such as 'Other European Languages' and 'Combination of Languages and Influences', which added depth to the explanation. Model m's response was accurate but less comprehensive and lacked the clear structure found in Model M's output.",
-      "ordered_models":[
-        {
-          "model":"M",
-          "rank":1
-        },
-        {
-          "model":"m",
-          "rank":2
-        }
-      ]
-    }
+  "instruction": "How did US states get their names?",
+  "output_1": "The names of U.S. states are derived from a variety of languages and sources, including indigenous American languages, European languages (primarily English, Spanish, and French), as well as other historical influences. Here is a brief overview of how some states got their names:\n\n1. **Indigenous American Languages**: Many state names come from Native American words or names of tribes, often from the languages of the indigenous peoples who lived in or near those areas.\n   - **Alabama**: Possibly derived from the Choctaw language, meaning \"thicket clearers.\"\n   - **Connecticut**: From a Mohegan-Pequot word meaning \"long tidal river.\"\n   - **Massachusetts**: [...]",
+  "generator_1": "gpt4_1106_preview",
+  "dataset": "helpful_base",
+  "output_2": "The names of the 50 U.S. states come from a variety of sources, including Native American languages, European languages, and historical figures. Here's a brief overview of how some states got their names:\n\n1. Native American origins: Many states have names derived from Native American languages. For example, Alabama comes from the Choctaw word \"Albah amo,\" meaning \"plant gatherers\" or \"herb gatherers.\" Similarly, the name Mississippi comes from the Ojibwe word \"Misi-ziibi,\" meaning \"great river.\"\n\n2. European languages: [...].",
+  "generator_2": "gpt4",
+  "annotator": "alpaca_eval_cot_gpt4_turbo_fn",
+  "preference": 1.0,
+  "raw_completion": {
+    "concise_explanation": "Model M provided a more detailed and structured response, including bold headings for each category and a wider range of examples. It also included additional categories such as 'Other European Languages' and 'Combination of Languages and Influences', which added depth to the explanation. Model m's response was accurate but less comprehensive and lacked the clear structure found in Model M's output.",
+    "ordered_models": [
+      {
+        "model": "M",
+        "rank": 1
+      },
+      {
+        "model": "m",
+        "rank": 2
+      }
+    ]
+  },
+  "referenced_models": {
+    "M": "output_1",
+    "m": "output_2"
   }
+}
 ```
 
 
