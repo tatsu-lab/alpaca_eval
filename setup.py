@@ -40,7 +40,7 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),
     author="The Alpaca Team",
-    install_requires=["python-dotenv", "datasets", "openai", "pandas", "tiktoken>=0.3.2", "fire", "scipy"],
+    install_requires=["python-dotenv", "datasets", "openai>=1.5.0", "pandas", "tiktoken>=0.3.2", "fire", "scipy"],
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
         "dev": PACKAGES_DEV,
