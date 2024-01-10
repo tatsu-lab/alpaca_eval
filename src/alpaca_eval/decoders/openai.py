@@ -370,6 +370,11 @@ def _get_price_per_token(model, price_per_token=None):
 def _get_backwards_compatible_configs(
     openai_api_keys=[], openai_organization_ids=[None], openai_api_base=None
 ) -> list[dict[str, Any]]:
+    if isinstance(openai_api_keys, str) or openai_api_keys is None:
+        openai_api_keys = [openai_api_keys]
+    if isinstance(openai_organization_ids, str) or openai_organization_ids is None:
+        openai_organization_ids = [openai_organization_ids]
+
     client_configs = []
     for api_key in openai_api_keys:
         for org in openai_organization_ids:
