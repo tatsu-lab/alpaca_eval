@@ -33,6 +33,7 @@ CausalLM-14B,11.146160870124424,1391,https://huggingface.co/CausalLM/14B,https:/
 OpenChat V3.1 13B,11.08223048948354,1484,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
 Zephyr 7B Beta,10.99288575525315,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
 CUT 13B,10.779089202472866,1637,https://github.com/wwxu21/CUT,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cut-13b/model_outputs.json,community
+OpenHermes-2.5-Mistral (7B),10.340415705751552,1107,https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/OpenHermes-2.5-Mistral-7B/model_outputs.json,verified
 Humpback LLaMa2 70B,10.121771502758886,1107,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama2-70b/model_outputs.json,community
 Tulu 2+DPO 13B,10.11978838839624,1614,https://huggingface.co/allenai/tulu-2-dpo-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-13b/model_outputs.json,community
 GPT 3.5 Turbo 0301,9.622453295105588,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0301/model_outputs.json,verified
