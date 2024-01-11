@@ -955,7 +955,7 @@ Concretely you should do something like:
 git add src/alpaca_eval/models_configs/<model_name>
 git add src/alpaca_eval/leaderboards/data_AlpacaEval
 git add results/<model_name>/model_outputs.json
-git add results/<model_name>/annotations.json
+git add results/<model_name>/*/annotations.json
 git commit -m "Add <model_name> to AlpacaEval"
 git push
 ``` 
