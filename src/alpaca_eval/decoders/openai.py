@@ -136,7 +136,7 @@ def openai_completions(
 
     inputs = zip(prompt_batches, max_tokens)
 
-    kwargs = dict(n=1, model=model_name, is_chat=is_chat, **decoding_kwargs)
+    kwargs = dict(model=model_name, is_chat=is_chat, **decoding_kwargs)
     kwargs_to_log = {k: v for k, v in kwargs.items() if "api_key" not in k}
     logging.info(f"Kwargs to completion: {kwargs_to_log}. num_procs={num_procs}")
 
@@ -210,7 +210,7 @@ def _openai_completion_helper(
     # randomly select the client
     client_idcs = range(len(all_clients))
     curr_client_idx = random.choice(client_idcs)
-    logging.info(f"Using OAI client number {curr_client_idx} out of {len(client_idcs)}.")
+    logging.info(f"Using OAI client number {curr_client_idx+1} out of {len(client_idcs)}.")
     client = all_clients[curr_client_idx]
 
     # copy shared_kwargs to avoid modifying it
