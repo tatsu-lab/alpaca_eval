@@ -108,7 +108,7 @@ This will print the leaderboard to the console, and save both the leaderboard an
 - **model_outputs** : A path to a json file for the outputs of the model to add to the leaderboard. Each dictionary
   should
   contain the keys `instruction` and `output`.
-- **annotators_config**: This is the annotator to use. We recommend using `alpaca_eval_cot_gpt4_turbo_fn` (
+- **annotators_config**: This is the annotator to use. We recommend using `weighted_alpaca_eval_gpt4_turbo` (
   default for AlpacaEval 2.0), which has a
   high agreement rate with our human annotation data, large context size, and is pretty cheap. For a comparison of all annotators see [here](#evaluators).
 - **reference_outputs**:  The outputs of the reference model. Same format as `model_outputs`. By default, this
@@ -156,7 +156,7 @@ Our leaderboards are computed on the [AlpacaEval dataset](https://huggingface.co
 We precomputed the leaderboard for important models using different baseline models and autoannotators. 
 Our two main leaderboards ("AlpacaEval 2.0" and "AlpacaEval") can be found
 [on this page](https://tatsu-lab.github.io/alpaca_eval/).
-"AlpacaEval 2.0" uses `alpaca_eval_cot_gpt4_turbo_fn` for the annotator and `gpt4_turbo` for the baseline.
+"AlpacaEval 2.0" uses `weighted_alpaca_eval_gpt4_turbo` for the annotator and `gpt4_turbo` for the baseline.
 "AlpacaEval" uses `alpaca_eval_gpt4` for the annotator and `text_davinci_003` for the baseline.
 For all precomputed leaderboards see [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/leaderboards).
 Later we also show how to [add your model](https://github.com/tatsu-lab/alpaca_eval#evaluating-a-model) to the
@@ -188,7 +188,7 @@ the ApacaEval dataset.
 We then pair each output with the output of our reference model (e.g. `text-davinci-003`) on the same instruction.
 We then ask our automatic evaluator which output they prefer.
 See [AlpacaEval's](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4)
-and [AlpacaEval 2.0's](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_cot_gpt4_turbo_fn) prompts and configs, in particular we randomize the order of
+and [AlpacaEval 2.0's](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/weighted_alpaca_eval_gpt4_turbo) prompts and configs, in particular we randomize the order of
 outputs to avoid position bias.
 We then average the preferences over all instructions in the dataset to get the win rate of the model over the baseline.
 If both outputs are exactly the same we use a half preference for both models.
@@ -221,8 +221,8 @@ similar to that of Aviary.
 We make changes to Aviary's prompt to decrease the bias for longer outputs.
 Details in [Related work](#related-work).
 
-For AlpacaEval 2.0 we use `alpaca_eval_cot_gpt4_turbo_fn`, which is a similar prompt with Chain of Thought reasoning and using GPT4_turbo as model (
-see [configs](#https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/alpaca_eval_cot_gpt4_turbo_fn/configs.yaml#L5)).
+For AlpacaEval 2.0 we use `weighted_alpaca_eval_gpt4_turbo`, which uses logprobs to compute continuous preference and uses GPT4_turbo as model (
+see [configs](#https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/weighted_alpaca_eval_gpt4_turbo/configs.yaml)).
 
 </details>
 
@@ -233,7 +233,7 @@ see [configs](#https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eva
 We evaluate different automatic annotators on the AlpacaEval set by comparing to
 2.5K [human annotations](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_farm_human_crossannotations.json)
 we collected (~650 instructions each with 4 human annotations).
-Below we show metrics for our suggested evaluators (`alpaca_eval_cot_gpt4_turbo_fn`,`alpaca_eval_gpt4`), for prior
+Below we show metrics for our suggested evaluators (`weighted_alpaca_eval_gpt4_turbo`,`alpaca_eval_gpt4`), for prior
 automatic
 evaluators ([`alpaca_farm_greedy_gpt4`](https://github.com/tatsu-lab/alpaca_farm),[`aviary_gpt4`](https://aviary.anyscale.com/),[`lmsys_gpt4`](https://chat.lmsys.org/)),
 for humans (`humans`), and for different base models with essentially the same
@@ -241,19 +241,22 @@ prompt (`gpt4`,`claude`,`text_davinci_003`,`chatgpt_fn`,`guanaco_33b`, `chatgpt`
 See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs) for the configs of all
 evaluators that are available out of the box and their associated metrics.
 
-|                               |   Human agreement |   Price [$/1000 examples] |   Time [seconds/1000 examples] |   Spearman corr. |   Pearson corr. |   Bias |   Variance |   Proba. prefer longer |
-|:------------------------------|------------------:|--------------------------:|-------------------------------:|-----------------:|----------------:|-------:|-----------:|-----------------------:|
-| alpaca_eval_gpt4              |              69.2 |                      13.6 |                           1455 |             0.97 |            0.93 |   28.4 |       14.6 |                   0.68 |
-| alpaca_eval_cot_gpt4_turbo_fn |              68.6 |                       6.3 |                           1989 |             0.97 |            0.90 |   29.3 |       18.4 |                   0.67 |
-| alpaca_eval_gpt4_turbo_fn     |              68.1 |                       5.5 |                            864 |             0.93 |            0.82 |   30.2 |       15.6 |                   0.65 |
-| gpt4                          |              66.9 |                      12.5 |                           1037 |             0.88 |            0.87 |   31.5 |       14.6 |                   0.65 |
-| alpaca_farm_greedy_gpt4       |              66.4 |                      15.3 |                            878 |             0.85 |            0.75 |   30.2 |       19.3 |                   0.60 |
-| humans                        |              65.7 |                     300.0 |                          36800 |             1.00 |            1.00 |    0.0 |       34.3 |                   0.64 |
-| claude                        |              65.3 |                       3.3 |                            173 |             0.93 |            0.90 |   32.4 |       18.5 |                   0.66 |
-| lmsys_gpt4                    |              65.3 |                      13.9 |                          17982 |             0.98 |            0.97 |   31.6 |       15.9 |                   0.74 |
-| text_davinci_003              |              64.1 |                       8.7 |                            121 |             0.85 |            0.83 |   33.8 |       22.7 |                   0.70 |
-| longest                       |              62.2 |                       0.0 |                              0 |             0.27 |            0.56 |   37.8 |        0.0 |                   1.00 |
-| chatgpt                       |              57.3 |                       0.8 |                            285 |             0.72 |            0.71 |   39.4 |       34.1 |                   0.59 |
+|                                 |   Human agreement |   Price [$/1000 examples] |   Time [seconds/1000 examples] |   Spearman corr. |   Pearson corr. |   Bias |   Variance |   Proba. prefer longer |
+|:--------------------------------|------------------:|--------------------------:|-------------------------------:|-----------------:|----------------:|-------:|-----------:|-----------------------:|
+| alpaca_eval_gpt4                |              69.2 |                      13.6 |                           1455 |             0.97 |            0.93 |   28.4 |       14.6 |                   0.68 |
+| alpaca_eval_cot_gpt4_turbo_fn   |              68.6 |                       6.3 |                           1989 |             0.97 |            0.90 |   29.3 |       18.4 |                   0.67 |
+| alpaca_eval_gpt4_turbo_fn       |              68.1 |                       5.5 |                            864 |             0.93 |            0.82 |   30.2 |       15.6 |                   0.65 |
+| gpt4                            |              66.9 |                      12.5 |                           1037 |             0.88 |            0.87 |   31.5 |       14.6 |                   0.65 |
+| alpaca_farm_greedy_gpt4         |              66.4 |                      15.3 |                            878 |             0.85 |            0.75 |   30.2 |       19.3 |                   0.60 |
+| alpaca_eval_cot_gpt4_turbo_fn |              65.7 |                       4.3 |                            228 |             0.78 |            0.77 |   33.9 |       23.7 |                   0.61 |
+| humans                          |              65.7 |                     300.0 |                          36800 |             1.00 |            1.00 |    0.0 |       34.3 |                   0.64 |
+| claude                          |              65.3 |                       3.3 |                            173 |             0.93 |            0.90 |   32.4 |       18.5 |                   0.66 |
+| lmsys_gpt4                      |              65.3 |                      13.9 |                          17982 |             0.98 |            0.97 |   31.6 |       15.9 |                   0.74 |
+| text_davinci_003                |              64.1 |                       8.7 |                            121 |             0.85 |            0.83 |   33.8 |       22.7 |                   0.70 |
+| longest                         |              62.2 |                       0.0 |                              0 |             0.27 |            0.56 |   37.8 |        0.0 |                   1.00 |
+| chatgpt                         |              57.3 |                       0.8 |                            285 |             0.72 |            0.71 |   39.4 |       34.1 |                   0.59 |
+
+
 
 <details>
   <summary><b>How exactly are those metrics computed?</b></summary>
@@ -341,7 +344,7 @@ due to resource (time and price) constraints. This explains why the #parsed is 6
 <details>
   <summary><b>Tips for choosing evaluators</b></summary>
 
-Overall we recommend using `annotators_config=alpaca_eval_cot_gpt4_turbo_fn` if you want the high agreement with humans, and
+Overall we recommend using `annotators_config=weighted_alpaca_eval_gpt4_turbo` if you want the high agreement with humans, and
 `annotators_config=chatgpt_fn` if you are on a tight budget.
 
 When choosing an annotator we recommend you to consider the following (the first three are obvious):
@@ -367,7 +370,7 @@ lmsys for
 reference purposes). For
 all
 results see [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/README.md).
-In general, we found `alpaca_eval_cot_gpt4_turbo_fn` to be a good trade-off between quality / price / time /
+In general, we found `weighted_alpaca_eval_gpt4_turbo` to be a good trade-off between quality / price / time /
 variance / length bias.
 
 </details>
@@ -1138,45 +1141,10 @@ datasets: [self-instruct](https://github.com/yizhongw/self-instruct),
   <summary><h2 tabindex="-1" dir="auto">AlpacaEval 2.0</h2></summary>
 
 AlpacaEval 2.0 is a new version of AlpacaEval. Here are the differences:
-- **reference: `gpt4_turbo`**: we upgraded the baseline from `text-davinci-003` to `gpt4_turbo` to make the benchmark more challenging and have a metric that better reflect the current state of the art.
-- **annotator: `alpaca_eval_cot_gpt4_turbo_fn`**: we improved the annotator in quality and price. First, we use the `gpt4_turbo` model for annotating, which is approximately 2x cheaper than `gpt4`. Second, we use Chain of Though reasoning, which improved the performance of the prompt as well as interpretability (you can now understand why a certain output was selected). Third, we changed the prompt to use function calling, which improved its performance and reliability.
+- **reference: `gpt4_turbo`**: we upgraded the baseline from `text-davinci-003` to `gpt4_turbo` to make the benchmark more challenging and have a metric that better reflects the current state of the art.
+- **annotator: `weighted_alpaca_eval_gpt4_turbo`**: we improved the annotator in quality and price. First, we use the `gpt4_turbo` model for annotating, which is approximately 2x cheaper than `gpt4`. Second, we changed the prompt such that the model outputs a single token, which further reduced cost and speed. Finally, instead of using a binary preference, we used the logprobs to compute a continuous preference, which gives the final weighted win-rate. Note that the latter two changes had the surprising effect of decreasing the annotators' length biased.
 
 By default, AlpacaEval 2.0 will be used from `pip installl alpaca_eval==0.5`. If you wish to use the old configs by default, you can set `IS_ALPACA_EVAL_2=False` in your environment.
-
-**Interpreting Chain of Thought**:
-
-To better understand the auto-annotations, you can check the `raw_annotations["concise_explanation]` column in `annotations.json` (e.g. [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/results/gpt4/alpaca_eval_cot_gpt4_turbo_fn/annotations.json)) which contains the chain of thought reasoning of the auto annotator. Note that the raw_annotations is not modified by the randomization of the order of the outputs. In particular, `"m"` and `"M"` can sometime refer to the first model (the reference) and sometime to the second model (the model being evaluated). To understand which model is being referred to, you should use the column `preference` and `ordered_models`. When pushing the annotations to GitHub we use those to add a dictionary `"referenced_models"` mapping the model names to the corresponding outputs (see [`add_referenced_model_`](https://github.com/tatsu-lab/alpaca_eval/blob/main/docs/format_sample_sheets.py)). For example in the following annotation we see that the preference is 1.0 (i.e. `output_1`) and corresponds to model `M` in `concise_explanation` (see `ordered_models`).  
-
-```json 
-{
-  "instruction": "How did US states get their names?",
-  "output_1": "The names of U.S. states are derived from a variety of languages and sources, including indigenous American languages, European languages (primarily English, Spanish, and French), as well as other historical influences. Here is a brief overview of how some states got their names:\n\n1. **Indigenous American Languages**: Many state names come from Native American words or names of tribes, often from the languages of the indigenous peoples who lived in or near those areas.\n   - **Alabama**: Possibly derived from the Choctaw language, meaning \"thicket clearers.\"\n   - **Connecticut**: From a Mohegan-Pequot word meaning \"long tidal river.\"\n   - **Massachusetts**: [...]",
-  "generator_1": "gpt4_1106_preview",
-  "dataset": "helpful_base",
-  "output_2": "The names of the 50 U.S. states come from a variety of sources, including Native American languages, European languages, and historical figures. Here's a brief overview of how some states got their names:\n\n1. Native American origins: Many states have names derived from Native American languages. For example, Alabama comes from the Choctaw word \"Albah amo,\" meaning \"plant gatherers\" or \"herb gatherers.\" Similarly, the name Mississippi comes from the Ojibwe word \"Misi-ziibi,\" meaning \"great river.\"\n\n2. European languages: [...].",
-  "generator_2": "gpt4",
-  "annotator": "alpaca_eval_cot_gpt4_turbo_fn",
-  "preference": 1.0,
-  "raw_completion": {
-    "concise_explanation": "Model M provided a more detailed and structured response, including bold headings for each category and a wider range of examples. It also included additional categories such as 'Other European Languages' and 'Combination of Languages and Influences', which added depth to the explanation. Model m's response was accurate but less comprehensive and lacked the clear structure found in Model M's output.",
-    "ordered_models": [
-      {
-        "model": "M",
-        "rank": 1
-      },
-      {
-        "model": "m",
-        "rank": 2
-      }
-    ]
-  },
-  "referenced_models": {
-    "M": "output_1",
-    "m": "output_2"
-  }
-}
-```
-
 
 </details>
 
@@ -1278,6 +1246,46 @@ For example:
 
 </details>
 
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Interpreting Chain of Thought, when available</h2></summary>
+
+For some annotators, e.g. `alpaca_eval_cot_gpt4_turbo_fn` we use chan of thought reasoning to make the models preferences more interpretable. Those can then be found under `raw_annotations` in the `annotations.json` file. We describe how to interpret those below.
+
+To better understand the auto-annotations, you can check the `raw_annotations["concise_explanation]` column in `annotations.json` (e.g. [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/results/gpt4/alpaca_eval_cot_gpt4_turbo_fn/annotations.json)) which contains the chain of thought reasoning of the auto annotator. Note that the raw_annotations is not modified by the randomization of the order of the outputs. In particular, `"m"` and `"M"` can sometime refer to the first model (the reference) and sometime to the second model (the model being evaluated). To understand which model is being referred to, you should use the column `preference` and `ordered_models`. When pushing the annotations to GitHub we use those to add a dictionary `"referenced_models"` mapping the model names to the corresponding outputs (see [`add_referenced_model_`](https://github.com/tatsu-lab/alpaca_eval/blob/main/docs/format_sample_sheets.py)). For example in the following annotation we see that the preference is 1.0 (i.e. `output_1`) and corresponds to model `M` in `concise_explanation` (see `ordered_models`).  
+
+```json 
+{
+  "instruction": "How did US states get their names?",
+  "output_1": "The names of U.S. states are derived from a variety of languages and sources, including indigenous American languages, European languages (primarily English, Spanish, and French), as well as other historical influences. Here is a brief overview of how some states got their names:\n\n1. **Indigenous American Languages**: Many state names come from Native American words or names of tribes, often from the languages of the indigenous peoples who lived in or near those areas.\n   - **Alabama**: Possibly derived from the Choctaw language, meaning \"thicket clearers.\"\n   - **Connecticut**: From a Mohegan-Pequot word meaning \"long tidal river.\"\n   - **Massachusetts**: [...]",
+  "generator_1": "gpt4_1106_preview",
+  "dataset": "helpful_base",
+  "output_2": "The names of the 50 U.S. states come from a variety of sources, including Native American languages, European languages, and historical figures. Here's a brief overview of how some states got their names:\n\n1. Native American origins: Many states have names derived from Native American languages. For example, Alabama comes from the Choctaw word \"Albah amo,\" meaning \"plant gatherers\" or \"herb gatherers.\" Similarly, the name Mississippi comes from the Ojibwe word \"Misi-ziibi,\" meaning \"great river.\"\n\n2. European languages: [...].",
+  "generator_2": "gpt4",
+  "annotator": "alpaca_eval_cot_gpt4_turbo_fn",
+  "preference": 1.0,
+  "raw_completion": {
+    "concise_explanation": "Model M provided a more detailed and structured response, including bold headings for each category and a wider range of examples. It also included additional categories such as 'Other European Languages' and 'Combination of Languages and Influences', which added depth to the explanation. Model m's response was accurate but less comprehensive and lacked the clear structure found in Model M's output.",
+    "ordered_models": [
+      {
+        "model": "M",
+        "rank": 1
+      },
+      {
+        "model": "m",
+        "rank": 2
+      }
+    ]
+  },
+  "referenced_models": {
+    "M": "output_1",
+    "m": "output_2"
+  }
+}
+```
+
+
+</details>
 
 <details>
   <summary><h2 tabindex="-1" dir="auto">Major updates</h2></summary>
