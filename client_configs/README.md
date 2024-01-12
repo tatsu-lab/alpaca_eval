@@ -52,7 +52,7 @@ gpt-4-1106-preview: # only when using `model_name: gpt-4-1106-preview`
 ```
 
 
-Here the configurations will be appended to `default` when using the model_name `gpt-4` in the `evaluators_configs` such as [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4/configs.yaml#L6). When hitting a rate limit we will be then switching between two OpenAI clients and one Azure, each using the same underlying model. Note that when using Azure, some parameters might be slightly different and thus cause issues, as Ayure typically lags a few months behind OpenAI's API.
+Here the configurations will be appended to `default` when using the model_name `gpt-4` in the `evaluators_configs` such as [here](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4/configs.yaml#L6). When hitting a rate limit we will be then switching between two OpenAI clients and one Azure, each using the same underlying model. Note that when using Azure, some parameters might be slightly different and thus cause issues, as Azure typically lags a few months behind OpenAI's API. **Unfortunately it's not currently possible to use Azure with AlpacaEval2.0 as they do not provide logprobs**, this will hopefully be fixed soon.
 
 ## Fully backward compatible
 
