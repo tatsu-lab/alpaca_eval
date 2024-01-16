@@ -964,6 +964,9 @@ git push
 ``` 
 5. Create a [pull request on AlpacaEval](https://github.com/tatsu-lab/alpaca_eval/pulls)
 
+Note: if you are generating outputs outside of AlpacaEval you should still add a model config but with `fn_completions: null`. 
+See [this config](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_eval/models_configs/dolphin-2.2.1-mistral-7b/configs.yaml) for an example.
+
 <details>
   <summary><h3 tabindex="-1" dir="auto">Getting your model verified</h3></summary>
 

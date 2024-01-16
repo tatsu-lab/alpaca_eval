@@ -149,7 +149,7 @@ def huggingface_local_completions(
         ):
             generated_text = out[0]["generated_text"]
             if remove_ending is not None and generated_text.endswith(remove_ending):
-                generated_text = generated_text[:-len(remove_ending)]
+                generated_text = generated_text[: -len(remove_ending)]
             completions.append(generated_text)
 
     logging.info(f"Time for {n_examples} completions: {t}")
