@@ -32,6 +32,7 @@ def huggingface_local_completions(
     batch_size: int = 1,
     model_kwargs=None,
     cache_dir: Optional[str] = constants.DEFAULT_CACHE_DIR,
+    remove_ending: Optional[str] = None,
     is_fast_tokenizer: bool = True,
     adapters_name: Optional[str] = None,
     **kwargs,
@@ -57,6 +58,9 @@ def huggingface_local_completions(
 
     cache_dir : str, optional
         Directory to use for caching the model.
+
+    remove_ending : str, optional
+        The ending string to be removed from completions. Typically eos_token.
 
     kwargs :
         Additional kwargs to pass to `InferenceApi.__call__`.
@@ -143,7 +147,10 @@ def huggingface_local_completions(
                 pad_token_id=tokenizer.pad_token_id,
             )
         ):
-            completions.append(out[0]["generated_text"])
+            generated_text = out[0]["generated_text"]
+            if remove_ending is not None and generated_text.endswith(remove_ending):
+                generated_text = generated_text[:-len(remove_ending)]
+            completions.append(generated_text)
 
     logging.info(f"Time for {n_examples} completions: {t}")
 
