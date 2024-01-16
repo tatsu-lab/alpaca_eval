@@ -11,5 +11,5 @@ internlm2-chat-20b-ppo:
     batch_size: 32
     eos_token_id: 92542
     remove_ending: "[UNUSED_TOKEN_145]"
-  pretty_name: "InternLM2 Chat 20B ppo"
+  pretty_name: "InternLM2 Chat 20B"
   link: "https://huggingface.co/internlm/internlm2-chat-20b"
