@@ -59,6 +59,9 @@ def huggingface_local_completions(
     cache_dir : str, optional
         Directory to use for caching the model.
 
+    remove_ending : str, optional
+        The ending string to be removed from completions. Typically eos_token.
+
     kwargs :
         Additional kwargs to pass to `InferenceApi.__call__`.
     """
