@@ -1,5 +1,6 @@
 name,win_rate,avg_length,link,samples,filter
 GPT-4 Turbo,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_turbo/model_outputs.json,minimal
+PairRM 0.4B+Yi-34B-Chat (best-of-16),31.24128294682124,2195,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-Yi-34B-Chat/model_outputs.json,community
 Yi 34B Chat,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,minimal
 GPT-4,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 GPT-4 0314,22.07325892871952,1371,,,verified
@@ -7,7 +8,7 @@ Mistral Medium,21.855772543461345,1500,https://mistral.ai/news/la-plateforme/,ht
 XwinLM 70b V0.1,21.812957073994184,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
 InternLM2 Chat 20B,21.74915450056264,2373,https://huggingface.co/internlm/internlm2-chat-20b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-20b-ppo/model_outputs.json,community
 Evo v2 7B,20.83411302254932,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
-PairRM+Tulu 2+DPO 70B (best-of-16),18.63896296749771,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
+PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),18.63896296749771,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Mixtral 8x7B v0.1,18.25531762637268,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
 XwinLM 13b V0.1,17.427934750214753,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 Claude 2,17.188240356594065,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
@@ -21,10 +22,10 @@ Mistral 7B v0.2,14.722772657714286,1676,https://huggingface.co/mistralai/Mistral
 GPT 3.5 Turbo 0613,14.132390707727575,1328,,,verified
 LLaMA2 Chat 70B,13.871009062248447,1790,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,minimal
 UltraLM 13B V2.0 (best-of-16),13.853373471264224,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
-PairRM+Tulu 2+DPO 13B (best-of-16),13.831901016808686,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
+PairRM 0.4B+Tulu 2+DPO 13B (best-of-16),13.831901016808686,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
 LMCocktail-10.7B-v1,13.153430917188382,1203,https://huggingface.co/Yhyu13/LMCocktail-10.7B-v1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/LMCocktail-10.7B-v1/model_outputs.json,community
 Cohere Command,12.901455209677016,1983,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cohere/model_outputs.json,minimal
-PairRM+Zephyr 7B Beta (best-of-16),12.841278255668827,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
+PairRM 0.4B+Zephyr 7B Beta (best-of-16),12.841278255668827,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
 Vicuna 33B v1.3,12.70594792156943,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,minimal
 DEITA 7B v1.0,12.646639472549904,1417,https://github.com/hkust-nlp/deita,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deita-7b-v1.0/model_outputs.json,community
 WizardLM 13B V1.2,12.02748034290454,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
