@@ -12,5 +12,5 @@ pairrm-tulu-2-70b:
     do_sample: False
     best_of: 16 # number of completions to generate, using PairRM to select the best one
     batch_size: 800
-  pretty_name: "PairRM+Tulu 2+DPO 70B (best-of-16)"
+  pretty_name: "PairRM 0.4B+Tulu 2+DPO 70B (best-of-16)"
   link: "https://huggingface.co/llm-blender/PairRM"
