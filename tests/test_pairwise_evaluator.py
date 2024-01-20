@@ -25,21 +25,21 @@ def expected_annotations():
             "output_1": "4",
             "output_2": "5",
             "annotator": "test",
-            "preference": 1.0,
+            "preference": 1,
         },
         {
             "instruction": "1+1",
             "output_1": "2",
             "output_2": "1",
             "annotator": "test",
-            "preference": 2.0,
+            "preference": 2,
         },
         {
             "instruction": "2+3",
             "output_1": "5",
             "output_2": "4",
             "annotator": "test",
-            "preference": 1.0,
+            "preference": 1,
         },
     ]
 

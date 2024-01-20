@@ -33,3 +33,6 @@ jobs:
       - name: Run doctest
         run: |
           pytest --doctest-modules --ignore=src/alpaca_eval/decoders src/alpaca_eval/
+      - name: Setup tmate session for debugging
+        if: failure() # This step will be executed only if any of the previous steps failed
+        uses: mxschmitt/action-tmate@v3
