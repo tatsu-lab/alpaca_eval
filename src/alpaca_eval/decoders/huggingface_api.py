@@ -6,7 +6,7 @@ from typing import Sequence
 
 import numpy as np
 import tqdm
-from huggingface_hub.inference_api import InferenceApi
+from huggingface_hub import InferenceClient
 
 from .. import constants, utils
 
@@ -16,7 +16,6 @@ __all__ = ["huggingface_api_completions"]
 def huggingface_api_completions(
     prompts: Sequence[str],
     model_name: str,
-    gpu: bool = False,
     do_sample: bool = False,
     num_procs: int = 1,
     **kwargs,
@@ -31,9 +30,6 @@ def huggingface_api_completions(
     model_name : str, optional
         Name of the model (repo on hugging face hub)  to use for decoding.
 
-    gpu : bool, optional
-        Whether to use GPU for decoding.
-
     do_sample : bool, optional
         Whether to use sampling for decoding.
 
@@ -41,7 +37,7 @@ def huggingface_api_completions(
         Number of parallel processes to use for decoding.
 
     kwargs :
-        Additional kwargs to pass to `InferenceApi.__call__`.
+        Additional kwargs to pass to `InferenceClient.__call__`.
     """
     n_examples = len(prompts)
     if n_examples == 0:
@@ -50,11 +46,9 @@ def huggingface_api_completions(
     else:
         logging.info(f"Using `huggingface_api_completions` on {n_examples} prompts using {model_name}.")
 
-    inference = InferenceApi(
+    inference = InferenceClient(
         model_name,
-        task="text-generation",
         token=constants.HUGGINGFACEHUB_API_TOKEN,
-        gpu=gpu,
     )
 
     default_kwargs = dict(do_sample=do_sample, options=dict(wait_for_model=True), return_full_text=False)
@@ -62,7 +56,9 @@ def huggingface_api_completions(
     logging.info(f"Kwargs to completion: {default_kwargs}")
 
     with utils.Timer() as t:
-        partial_completion_helper = functools.partial(inference_helper, inference=inference, params=default_kwargs)
+        partial_completion_helper = functools.partial(
+            inference_helper, inference=inference.text_generation, params=default_kwargs
+        )
         if num_procs == 1:
             completions = [partial_completion_helper(prompt) for prompt in tqdm.tqdm(prompts, desc="prompts")]
         else:

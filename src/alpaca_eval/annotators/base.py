@@ -329,8 +329,13 @@ class BaseAnnotator(abc.ABC):
             self._get_all_keys_to_keep(list(df_to_annotate.columns) + list(df_annotated.columns))
         ]
         df_to_annotate = df_to_annotate[[c for c in df_to_annotate.columns if c not in df_annotated.columns or c in on]]
-        # need to remove all other columns before merging if not you will
-        df_annotated = df_to_annotate.merge(df_annotated, on=on, how="outer")
+        # need to remove all other columns before merging but wannt to keep the same row ordering
+        df_to_annotate["temp_index"] = df_to_annotate.index
+        df_annotated = (
+            df_to_annotate.merge(df_annotated, on=on, how="outer")
+            .sort_values(by="temp_index")
+            .drop(columns="temp_index")
+        )
 
         annotated = df_annotated.to_dict(orient="records")
 

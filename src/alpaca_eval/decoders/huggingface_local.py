@@ -63,7 +63,7 @@ def huggingface_local_completions(
         The ending string to be removed from completions. Typically eos_token.
 
     kwargs :
-        Additional kwargs to pass to `InferenceApi.__call__`.
+        Additional kwargs to pass to `InferenceClient.__call__`.
     """
     model_kwargs = model_kwargs or {}
     if "device_map" not in model_kwargs:

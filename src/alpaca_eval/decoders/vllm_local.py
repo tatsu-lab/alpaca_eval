@@ -41,7 +41,7 @@ def vllm_local_completions(
         Additional kwargs to pass to from_pretrained.
 
     kwargs :
-        Additional kwargs to pass to `InferenceApi.__call__`.
+        Additional kwargs to SamplingParams
     """
     global llm, llmModelName
     tp = 1
@@ -62,21 +62,9 @@ def vllm_local_completions(
     if model_name != llmModelName:
         assert False, "vllm_local_completions can only be used with a single model"
 
-    sampling_params = SamplingParams(max_tokens=max_new_tokens)
-    if "temperature" in kwargs:
-        sampling_params.temperature = kwargs["temperature"]
-    if "top_p" in kwargs:
-        sampling_params.top_p = kwargs["top_p"]
-    if "top_k" in kwargs:
-        sampling_params.top_k = kwargs["top_k"]
-    if "stop_token_ids" in kwargs:
-        sampling_params.stop_token_ids = kwargs["stop_token_ids"]
+    sampling_params = SamplingParams(max_tokens=max_new_tokens, **kwargs)
     if do_sample:
         sampling_params.use_beam_search = True
-    if "length_penalty" in kwargs:
-        sampling_params.length_penalty = kwargs["length_penalty"]
-    if "early_stopping" in kwargs:
-        sampling_params.early_stopping = kwargs["early_stopping"]
     completions = []
     with utils.Timer() as t:
         for i in range(0, len(prompts), batch_size):
