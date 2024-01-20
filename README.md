@@ -1147,7 +1147,7 @@ AlpacaEval 2.0 is a new version of AlpacaEval. Here are the differences:
 - **reference: `gpt4_turbo`**: we upgraded the baseline from `text-davinci-003` to `gpt4_turbo` to make the benchmark more challenging and have a metric that better reflects the current state of the art.
 - **annotator: `weighted_alpaca_eval_gpt4_turbo`**: we improved the annotator in quality and price. First, we use the `gpt4_turbo` model for annotating, which is approximately 2x cheaper than `gpt4`. Second, we changed the prompt such that the model outputs a single token, which further reduced cost and speed. Finally, instead of using a binary preference, we used the logprobs to compute a continuous preference, which gives the final weighted win-rate. Note that the latter two changes had the surprising effect of decreasing the annotators' length biased.
 
-By default, AlpacaEval 2.0 will be used from `pip installl alpaca_eval==0.5`. If you wish to use the old configs by default, you can set `IS_ALPACA_EVAL_2=False` in your environment.
+By default, AlpacaEval 2.0 will be used from `pip install alpaca_eval==0.5`. If you wish to use the old configs by default, you can set `IS_ALPACA_EVAL_2=False` in your environment.
 
 </details>
 
