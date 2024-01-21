@@ -57,7 +57,7 @@ def test_cohere_completions(mocker):
 def test_huggingface_api_completions(mocker):
     mocker.patch(
         "alpaca_eval.decoders.huggingface_api.inference_helper",
-        return_value=dict(generated_text="Mocked completion text"),
+        return_value="Mocked completion text",
     )
     result = huggingface_api_completions(
         ["Prompt 1", "Prompt 2"],

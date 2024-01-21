@@ -51,7 +51,7 @@ def huggingface_api_completions(
         token=constants.HUGGINGFACEHUB_API_TOKEN,
     )
 
-    default_kwargs = dict(do_sample=do_sample, options=dict(wait_for_model=True), return_full_text=False)
+    default_kwargs = dict(do_sample=do_sample, return_full_text=False)
     default_kwargs.update(kwargs)
     logging.info(f"Kwargs to completion: {default_kwargs}")
 
@@ -72,8 +72,6 @@ def huggingface_api_completions(
                 )
     logging.info(f"Time for {n_examples} completions: {t}")
 
-    completions = [completion["generated_text"] for completion in completions]
-
     # unclear pricing
     price = [np.nan] * len(completions)
     avg_time = [t.duration / n_examples] * len(completions)
@@ -81,23 +79,26 @@ def huggingface_api_completions(
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
 
 
-def inference_helper(prompt: str, inference, params, n_retries=100, waiting_time=2) -> dict:
+def inference_helper(prompt: str, inference, params, n_retries=100, waiting_time=2) -> str:
     for _ in range(n_retries):
-        output = inference(inputs=prompt, params=params)
-        if "error" in output and n_retries > 0:
-            error = output["error"]
-            if "Rate limit reached" in output["error"]:
-                logging.warning(f"Rate limit reached... Trying again in {waiting_time} seconds. Full error: {error}")
-                time.sleep(waiting_time)
-            elif "Input validation error" in error and "max_new_tokens" in error:
-                params["max_new_tokens"] = int(params["max_new_tokens"] * 0.8)
-                logging.warning(
-                    f"`max_new_tokens` too large. Reducing target length to {params['max_new_tokens']}, " f"Retrying..."
-                )
-                if params["max_new_tokens"] == 0:
+        try:
+            # TODO: check why doesn't stop after </s>
+            output = inference(prompt=prompt, **params)
+        except Exception as error:
+            if n_retries > 0:
+                if "Rate limit reached" in error:
+                    logging.warning(f"Rate limit reached... Trying again in {waiting_time} seconds.")
+                    time.sleep(waiting_time)
+                elif "Input validation error" in error and "max_new_tokens" in error:
+                    params["max_new_tokens"] = int(params["max_new_tokens"] * 0.8)
+                    logging.warning(
+                        f"`max_new_tokens` too large. Reducing target length to {params['max_new_tokens']}, "
+                        f"Retrying..."
+                    )
+                    if params["max_new_tokens"] == 0:
+                        raise ValueError(f"Error in inference. Full error: {error}")
+                else:
                     raise ValueError(f"Error in inference. Full error: {error}")
             else:
-                raise ValueError(f"Error in inference. Full error: {error}")
-        else:
-            return output[0]
-    raise ValueError(f"Error in inference. We tried {n_retries} times and failed.")
+                raise ValueError(f"Error in inference. We tried {n_retries} times and failed. Full error: {error}")
+        return output
