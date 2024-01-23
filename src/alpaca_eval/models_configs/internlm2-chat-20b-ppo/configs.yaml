@@ -10,6 +10,6 @@ internlm2-chat-20b-ppo:
     max_new_tokens: 2048
     batch_size: 32
     eos_token_id: 92542
-    remove_ending: "[UNUSED_TOKEN_145]"
+    remove_ending: "<|im_end|>"
   pretty_name: "InternLM2 Chat 20B"
   link: "https://huggingface.co/internlm/internlm2-chat-20b"
