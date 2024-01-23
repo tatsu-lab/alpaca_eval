@@ -1,6 +1,8 @@
 name,win_rate,avg_length,link,samples,filter
 GPT-4 Turbo,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_turbo/model_outputs.json,minimal
+Snorkel (Mistral-PairRM-DPO+best-of-16),34.8601328912795,2616,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO-best-of-16/model_outputs.json,community
 PairRM 0.4B+Yi-34B-Chat (best-of-16),31.24128294682124,2195,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-Yi-34B-Chat/model_outputs.json,community
+Snorkel (Mistral-PairRM-DPO),30.2200527006216,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
 Yi 34B Chat,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,minimal
 GPT-4,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 GPT-4 0314,22.07325892871952,1371,,,verified
@@ -45,7 +47,7 @@ Humpback LLaMa 65B,9.42513904779845,1232,https://arxiv.org/abs/2308.06259,https:
 airoboros 65B,9.388950149698426,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-65b/model_outputs.json,community
 GPT 3.5 Turbo 1106,9.177964562109176,796,,,verified
 airoboros 33B,9.053160396238688,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-33b/model_outputs.json,community
-Dolphin 2.2.1 7B,9.0397997282823,1130,https://huggingface.co/cognitivecomputations/dolphin-2.2.1-mistral-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dolphin-2.2.1-mistral-7b/model_outputs.json,community
+Dolphin 2.2.1 Mistral 7B,9.0397997282823,1130,https://huggingface.co/cognitivecomputations/dolphin-2.2.1-mistral-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dolphin-2.2.1-mistral-7b/model_outputs.json,community
 OpenBuddy-LLaMA-65B-v8,8.770650150929061,1162,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
 GPT-3.5,8.564313096485627,1018,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt35_turbo_instruct/model_outputs.json,community
 OpenChat V2 13B,8.435075644770901,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
