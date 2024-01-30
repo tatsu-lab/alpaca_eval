@@ -3,6 +3,29 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional, Union
 
+# # import fire
+# import pandas as pd
+# import sys
+# import os
+# import argparse
+
+# # Add the parent directory to sys.path
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+# # Add the project root to sys.path
+# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+# sys.path.append(project_root)
+
+# # Add the project root to sys.path
+# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# sys.path.append(project_root)
+
+
+# from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
+# # from .. import analyze, annotators, constants, decoders, metrics, utils
+
+# from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
+
 import fire
 import pandas as pd
 
@@ -575,6 +598,11 @@ ALL_FUNCTIONS = {
 
 
 def main():
+    # evaluate_from_model(
+    #     model_configs="./zephyr-7b-beta",
+    #     annotators_config="alpaca_eval_gpt4_turbo_fn",
+    # )
+
     is_fn_name = len(sys.argv) > 1 and "--" not in sys.argv[1]
     is_help = any(a == "--help" for a in sys.argv)
 
@@ -587,3 +615,4 @@ def main():
 
 if __name__ == "__main__":
     fire.Fire(ALL_FUNCTIONS)
+    # main()
