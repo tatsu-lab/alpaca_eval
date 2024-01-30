@@ -220,7 +220,17 @@ def _openai_completion_helper(
     while True:
         try:
             if is_chat:
-                completion_batch = client.chat.completions.create(messages=prompt_batch[0], **curr_kwargs)
+                model_args = {
+                    "model" : "gpt-4-1106-Preview",
+                    "temperature" : 0.7,
+                    "max_tokens": 200,
+                    "temperature": 1,
+                    "top_p": 1.0
+                }
+
+                # curr_kwargs["logprobs"] = 0
+                completion_batch = client.chat.completions.create(messages=prompt_batch[0], **model_args)
+                # completion_batch = client.chat.completions.create(messages=prompt_batch[0], **d)
 
                 choices = completion_batch.choices
                 for i, choice in enumerate(choices):

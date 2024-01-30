@@ -3,34 +3,38 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional, Union
 
-# # import fire
-# import pandas as pd
-# import sys
-# import os
+import fire
+import pandas as pd
+import sys
+import os
 # import argparse
 
-# # Add the parent directory to sys.path
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+# Add the parent directory to sys.path
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 # # Add the project root to sys.path
 # project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 # sys.path.append(project_root)
 
-# # Add the project root to sys.path
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# sys.path.append(project_root)
+# Add the project root to sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(project_root)
 
 
-# from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
-# # from .. import analyze, annotators, constants, decoders, metrics, utils
+from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
+# from .. import analyze, annotators, constants, decoders, metrics, utils
 
-# from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
+from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
 
-import fire
-import pandas as pd
+# import fire
+# import pandas as pd
 
-from . import analyze, annotators, constants, decoders, metrics, utils
-from .types import AnyData, AnyLoadableDF, AnyPath
+# from . import analyze, annotators, constants, decoders, metrics, utils
+# import analyze
+# import annotators, constants, decoders, metrics, utils
+
+
+# from .types import AnyData, AnyLoadableDF, AnyPath
 
 CUR_DIR = Path(__file__).parent
 
@@ -606,13 +610,18 @@ def main():
     is_fn_name = len(sys.argv) > 1 and "--" not in sys.argv[1]
     is_help = any(a == "--help" for a in sys.argv)
 
-    if is_fn_name or is_help:
-        fire.Fire(ALL_FUNCTIONS)
-    else:
-        # default behavior if no function is specified
-        fire.Fire(evaluate)
+    evaluate(
+         model_outputs="/home/sambroy/git-repos/alpaca_eval/trial/outputs.json",
+         annotators_config="weighted_alpaca_eval_gpt4_turbo",
+    )
+
+    # if is_fn_name or is_help:
+    #     fire.Fire(ALL_FUNCTIONS)
+    # else:
+    #     # default behavior if no function is specified
+    #     fire.Fire(evaluate)
 
 
 if __name__ == "__main__":
-    fire.Fire(ALL_FUNCTIONS)
-    # main()
+    # fire.Fire(ALL_FUNCTIONS)
+    main()
