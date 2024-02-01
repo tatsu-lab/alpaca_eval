@@ -6,6 +6,7 @@ Note: not worth to make the changes but all the parsers could have been processo
 """
 
 import abc
+import json
 from typing import Optional, Sequence
 
 import numpy as np
@@ -13,14 +14,21 @@ import pandas as pd
 
 from . import utils
 
-__all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor"]
+__all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor", "RawCompletionProcessor"]
 
 
 class BaseProcessor(abc.ABC):
     """Base class for a processor."""
 
-    def __init__(self, seed: int = 123):
+    def __init__(
+        self,
+        seed: int = 123,
+        annotation_column: str = "annotation",
+        completion_column: str = "raw_completion",
+    ):
         self.seed = seed
+        self.annotation_column = annotation_column
+        self.completion_column = completion_column
 
     @abc.abstractmethod
     def preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
@@ -190,3 +198,72 @@ class PaddingForBatchesProcessor(BaseProcessor):
 
     def postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         return df_annotated[~df_annotated["is_padding"].astype(bool)].drop(columns=["is_padding"]).copy()
+
+
+class RawCompletionProcessor(BaseProcessor):
+    r"""Processes the raw completins by loading them as a JSON and, if chain of thought is used, adding a dictionary
+    "referenced_models" to better understand which model names correspond to which outputs in the chain of thought.
+
+    Examples
+    --------
+    >>> raw_completion = '{"concise_explanation": "M is better", "ordered_models": [{"rank": 1, "model": "M"}, {"rank": 2, "model": "m"}]}'
+    >>> df = pd.DataFrame([dict(preference=2, raw_completion=raw_completion),
+    ...                    dict(preference=1, raw_completion=raw_completion)])
+    >>> processor = RawCompletionProcessor(is_chain_of_thought=True)
+    >>> processor.postprocess(df).drop(columns=["ordered_models"])
+        preference	                                   raw_completion	                referenced_models
+    0	        2	{'concise_explanation': 'M is better', 'ordere...	{'M': 'output_2', 'm': 'output_1'}
+    1	        1	{'concise_explanation': 'M is better', 'ordere...	{'M': 'output_1', 'm': 'output_2'}
+    """
+
+    def __init__(self, is_chain_of_thought: bool = False, **kwargs):
+        self.is_chain_of_thought = is_chain_of_thought
+        super().__init__(**kwargs)
+
+    def preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
+        return df_to_annotate
+
+    def postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
+        """Load the raw completion as a JSON and add the referenced models to better understand chain of thought."""
+        df_annotated = df_annotated.copy()
+
+        if self.completion_column in df_annotated:
+            df_annotated[self.completion_column] = df_annotated[self.completion_column].apply(_try_json_load)
+            if self.is_chain_of_thought:
+                self.add_referenced_model_(df_annotated)
+
+        return df_annotated
+
+    def add_referenced_model_(self, df):
+        """Add a dictionary to better understand chain of thought in case it's useful"""
+        for i, r in df.iterrows():
+            if (
+                isinstance(r[self.completion_column], dict)
+                and "concise_explanation" in r[self.completion_column]
+                and "ordered_models" in r[self.completion_column]
+            ):
+                preference = int(df.loc[i, "preference"])
+                ordered_models = df.loc[i, self.completion_column]["ordered_models"]
+                for m in ordered_models:
+                    if m["rank"] == 1:
+                        first_model = m["model"]
+                    elif m["rank"] == 2:
+                        second_model = m["model"]
+                    else:
+                        assert False
+
+                if "referenced_models" not in df.columns:
+                    df["referenced_models"] = None
+
+                df.at[i, "referenced_models"] = {
+                    first_model: f"output_{preference}",
+                    second_model: f"output_{3 - preference}",
+                }
+
+
+def _try_json_load(el):
+    """Try to load as json"""
+    try:
+        return json.loads(el)
+    except:
+        return el

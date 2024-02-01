@@ -548,9 +548,6 @@ class SingleAnnotator:
 
     completion_key : str, optional
         Key of the output of `fn_completions` to use for parsing the completions into annotations.
-
-    is_json_load_raw_completions : bool, optional
-        Whether to try to load the raw completions into a json. If exceptionthen will return the raw completions as is.
     """
 
     def __init__(
@@ -569,7 +566,6 @@ class SingleAnnotator:
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
         completion_key: str = "completions",
-        is_json_load_raw_completions: bool = False,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -588,7 +584,6 @@ class SingleAnnotator:
         self.batch_size = batch_size
         self.annotation_column = annotation_column
         self.completion_column = "raw_completion" if is_store_raw_completions else None
-        self.is_json_load_raw_completions = is_json_load_raw_completions
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
@@ -605,6 +600,8 @@ class SingleAnnotator:
             }
         for processor, processor_kwargs in processors_to_kwargs.items():
             processor_kwargs["seed"] = self.seed
+            processor_kwargs["annotation_column"] = self.annotation_column
+            processor_kwargs["completion_column"] = self.completion_column
             Processor = self._search_processor(processor)
             self.processors += [Processor(**processor_kwargs)]
 
@@ -743,12 +740,6 @@ class SingleAnnotator:
                 batch_annotations = [None] * self.batch_size
 
             all_annotations += batch_annotations
-
-            if self.is_json_load_raw_completions:
-                try:
-                    completion = json.loads(completion)
-                except:
-                    pass
 
             all_completions += [completion] * self.batch_size
         return all_annotations, all_completions
