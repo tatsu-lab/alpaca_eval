@@ -22,4 +22,3 @@ chatgpt_fn:
       1: '(?i)output \(a\)'
       2: '(?i)output \(b\)'
   batch_size: 1
-  is_json_load_raw_completions: true

@@ -88,7 +88,11 @@ class BaseAnnotator(abc.ABC):
         annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
-        other_output_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example", "raw_completion"),
+        other_output_keys_to_keep: Sequence[str] = (
+            "price_per_example",
+            "time_per_example",
+            "raw_completion",
+        ),
         other_input_keys_to_keep: Sequence[str] = (),
         is_store_missing_annotations: bool = True,
         base_dir: Optional[utils.AnyPath] = None,
@@ -102,9 +106,6 @@ class BaseAnnotator(abc.ABC):
         self.is_avoid_reannotations = is_avoid_reannotations
         self.primary_keys = list(primary_keys)
         self.all_keys = self.primary_keys + [self.annotator_column]
-        self.other_output_keys_to_keep = list(other_output_keys_to_keep)
-        self.other_input_keys_to_keep = list(other_input_keys_to_keep)
-        self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
         if isinstance(annotation_type, str):
@@ -115,6 +116,10 @@ class BaseAnnotator(abc.ABC):
         self.annotators_config = self._initialize_annotators_config(annotators_config)
         self.annotators = self._initialize_annotators()
         self.df_annotations = None
+
+        self.other_input_keys_to_keep = self._get_other_input_keys_to_keep(other_input_keys_to_keep)
+        self.other_output_keys_to_keep = self._get_other_output_keys_to_keep(other_output_keys_to_keep)
+        self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
 
     ### Abstract methods ###
 
@@ -280,6 +285,12 @@ class BaseAnnotator(abc.ABC):
                 columns_to_annotate = columns_to_annotate + [
                     c for c in self.other_output_keys_to_keep if c in df_to_annotate.columns
                 ]
+                # if df_to_annotate "raw_completion" is a dict, put it back to a json string so that you can reparse it
+                # TODO: this is for backward compatibility, remove in the future
+                if "raw_completion" in df_to_annotate.columns:
+                    df_to_annotate["raw_completion"] = df_to_annotate["raw_completion"].apply(
+                        lambda x: json.dumps(x) if isinstance(x, dict) else x
+                    )
 
             curr_annotated = self.annotators[annotator](
                 df_to_annotate.loc[curr_idcs, columns_to_annotate],
@@ -421,6 +432,22 @@ class BaseAnnotator(abc.ABC):
 
         return df_to_annotate
 
+    def _get_other_input_keys_to_keep(self, other_input_keys_to_keep: Sequence[str]) -> list[str]:
+        """Get the other input keys to keep, which includes the ones that are needed for the processors."""
+        processor_keys_to_keep = []
+        for a in self.annotators.values():
+            for p in a.processors:
+                processor_keys_to_keep += p.other_input_keys_to_keep
+        return list(set(list(other_input_keys_to_keep) + list(processor_keys_to_keep)))
+
+    def _get_other_output_keys_to_keep(self, other_output_keys_to_keep: Sequence[str]) -> list[str]:
+        """Get the other output keys to keep, which includes the ones that are needed for the processors."""
+        processor_keys_to_keep = []
+        for a in self.annotators.values():
+            for p in a.processors:
+                processor_keys_to_keep += p.other_output_keys_to_keep
+        return list(set(list(other_output_keys_to_keep) + list(processor_keys_to_keep)))
+
     #######################
 
 
@@ -548,9 +575,6 @@ class SingleAnnotator:
 
     completion_key : str, optional
         Key of the output of `fn_completions` to use for parsing the completions into annotations.
-
-    is_json_load_raw_completions : bool, optional
-        Whether to try to load the raw completions into a json. If exceptionthen will return the raw completions as is.
     """
 
     def __init__(
@@ -569,7 +593,6 @@ class SingleAnnotator:
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
         completion_key: str = "completions",
-        is_json_load_raw_completions: bool = False,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)
@@ -588,7 +611,6 @@ class SingleAnnotator:
         self.batch_size = batch_size
         self.annotation_column = annotation_column
         self.completion_column = "raw_completion" if is_store_raw_completions else None
-        self.is_json_load_raw_completions = is_json_load_raw_completions
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
@@ -605,6 +627,8 @@ class SingleAnnotator:
             }
         for processor, processor_kwargs in processors_to_kwargs.items():
             processor_kwargs["seed"] = self.seed
+            processor_kwargs["annotation_column"] = self.annotation_column
+            processor_kwargs["completion_column"] = self.completion_column
             Processor = self._search_processor(processor)
             self.processors += [Processor(**processor_kwargs)]
 
@@ -743,12 +767,6 @@ class SingleAnnotator:
                 batch_annotations = [None] * self.batch_size
 
             all_annotations += batch_annotations
-
-            if self.is_json_load_raw_completions:
-                try:
-                    completion = json.loads(completion)
-                except:
-                    pass
 
             all_completions += [completion] * self.batch_size
         return all_annotations, all_completions

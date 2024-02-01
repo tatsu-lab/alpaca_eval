@@ -37,4 +37,5 @@ alpaca_eval_cot_gpt4_turbo_fn:
         ranking_parser:
           model_1_name: "m"
   batch_size: 1
-  is_json_load_raw_completions: true
+  processors_to_kwargs:
+    ChainOfThoughtProcessor: {}
