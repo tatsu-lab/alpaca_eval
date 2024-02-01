@@ -210,10 +210,10 @@ class RawCompletionProcessor(BaseProcessor):
     >>> df = pd.DataFrame([dict(preference=2, raw_completion=raw_completion),
     ...                    dict(preference=1, raw_completion=raw_completion)])
     >>> processor = RawCompletionProcessor(is_chain_of_thought=True)
-    >>> processor.postprocess(df).drop(columns=["ordered_models"])
-        preference	                                   raw_completion	                referenced_models
-    0	        2	{'concise_explanation': 'M is better', 'ordere...	{'M': 'output_2', 'm': 'output_1'}
-    1	        1	{'concise_explanation': 'M is better', 'ordere...	{'M': 'output_1', 'm': 'output_2'}
+    >>> processor.postprocess(df)["referenced_models"]
+    0    {'M': 'output_2', 'm': 'output_1'}
+    1    {'M': 'output_1', 'm': 'output_2'}
+    Name: referenced_models, dtype: object
     """
 
     def __init__(self, is_chain_of_thought: bool = False, **kwargs):

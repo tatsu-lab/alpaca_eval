@@ -78,6 +78,7 @@ Details in [limitations](#limitations).
     - [Data Release](#data-release)
     - [Differences with AlpacaFarm](#differences-with-alpacafarm)
     - [Related work](#related-work)
+    - [Interpreting Chain of Thought](#interpreting-chain-of-thought-when-available)
     - [Major updates](#major-updates)
 
 </details>
