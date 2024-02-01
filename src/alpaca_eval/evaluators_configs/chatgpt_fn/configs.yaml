@@ -22,6 +22,3 @@ chatgpt_fn:
       1: '(?i)output \(a\)'
       2: '(?i)output \(b\)'
   batch_size: 1
-  processors_to_kwargs:
-    RawCompletionProcessor:
-      is_chain_of_thought: false

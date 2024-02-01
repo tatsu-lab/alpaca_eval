@@ -14,11 +14,15 @@ import pandas as pd
 
 from . import utils
 
-__all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor", "RawCompletionProcessor"]
+__all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor", "ChainOfThoughtProcessor"]
 
 
 class BaseProcessor(abc.ABC):
     """Base class for a processor."""
+
+    # additional input and output keys that should be kept in the annotator
+    other_input_keys_to_keep = []
+    other_output_keys_to_keep = []
 
     def __init__(
         self,
@@ -200,8 +204,9 @@ class PaddingForBatchesProcessor(BaseProcessor):
         return df_annotated[~df_annotated["is_padding"].astype(bool)].drop(columns=["is_padding"]).copy()
 
 
-class RawCompletionProcessor(BaseProcessor):
-    r"""Processes the raw completins by loading them as a JSON and, if chain of thought is used, adding a dictionary
+class ChainOfThoughtProcessor(BaseProcessor):
+    r"""Processes the raw completions by extracting the chain of thought as a new column
+    by loading them as a JSON and, if chain of thought is used, adding a dictionary
     "referenced_models" to better understand which model names correspond to which outputs in the chain of thought.
 
     Examples
@@ -209,41 +214,49 @@ class RawCompletionProcessor(BaseProcessor):
     >>> raw_completion = '{"concise_explanation": "M is better", "ordered_models": [{"rank": 1, "model": "M"}, {"rank": 2, "model": "m"}]}'
     >>> df = pd.DataFrame([dict(preference=2, raw_completion=raw_completion),
     ...                    dict(preference=1, raw_completion=raw_completion)])
-    >>> processor = RawCompletionProcessor(is_chain_of_thought=True)
-    >>> processor.postprocess(df)["referenced_models"]
-    0    {'M': 'output_2', 'm': 'output_1'}
-    1    {'M': 'output_1', 'm': 'output_2'}
-    Name: referenced_models, dtype: object
+    >>> processor = ChainOfThoughtProcessor()
+    >>> processor.postprocess(df)[["referenced_models", "concise_explanation"]]
+                        referenced_models concise_explanation
+    0  {'M': 'output_2', 'm': 'output_1'}         M is better
+    1  {'M': 'output_1', 'm': 'output_2'}         M is better
     """
-
-    def __init__(self, is_chain_of_thought: bool = False, **kwargs):
-        self.is_chain_of_thought = is_chain_of_thought
-        super().__init__(**kwargs)
+    # those columns should be added to the final result
+    other_output_keys_to_keep = ["referenced_models", "concise_explanation"]
 
     def preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         return df_to_annotate
+
+    @property
+    def _tmp_col(self):
+        return "json_" + self.completion_column
 
     def postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
         """Load the raw completion as a JSON and add the referenced models to better understand chain of thought."""
         df_annotated = df_annotated.copy()
 
         if self.completion_column in df_annotated:
-            df_annotated[self.completion_column] = df_annotated[self.completion_column].apply(_try_json_load)
-            if self.is_chain_of_thought:
-                self.add_referenced_model_(df_annotated)
+            df_annotated[self._tmp_col] = df_annotated[self.completion_column].apply(_try_json_load)
+            self.add_referenced_model_(df_annotated)
+            # add the concise explanation
+            df_annotated["concise_explanation"] = df_annotated[self._tmp_col].apply(
+                lambda x: x.get("concise_explanation", None)
+            )
+            df_annotated = df_annotated.drop(columns=[self._tmp_col])
 
         return df_annotated
 
     def add_referenced_model_(self, df):
         """Add a dictionary to better understand chain of thought in case it's useful"""
+        df["referenced_models"] = None
+
         for i, r in df.iterrows():
             if (
-                isinstance(r[self.completion_column], dict)
-                and "concise_explanation" in r[self.completion_column]
-                and "ordered_models" in r[self.completion_column]
+                isinstance(r[self._tmp_col], dict)
+                and "concise_explanation" in r[self._tmp_col]
+                and "ordered_models" in r[self._tmp_col]
             ):
                 preference = int(df.loc[i, "preference"])
-                ordered_models = df.loc[i, self.completion_column]["ordered_models"]
+                ordered_models = df.loc[i, self._tmp_col]["ordered_models"]
                 for m in ordered_models:
                     if m["rank"] == 1:
                         first_model = m["model"]
@@ -251,9 +264,6 @@ class RawCompletionProcessor(BaseProcessor):
                         second_model = m["model"]
                     else:
                         assert False
-
-                if "referenced_models" not in df.columns:
-                    df["referenced_models"] = None
 
                 df.at[i, "referenced_models"] = {
                     first_model: f"output_{preference}",

@@ -92,7 +92,6 @@ class BaseAnnotator(abc.ABC):
             "price_per_example",
             "time_per_example",
             "raw_completion",
-            "referenced_models",
         ),
         other_input_keys_to_keep: Sequence[str] = (),
         is_store_missing_annotations: bool = True,
@@ -107,9 +106,6 @@ class BaseAnnotator(abc.ABC):
         self.is_avoid_reannotations = is_avoid_reannotations
         self.primary_keys = list(primary_keys)
         self.all_keys = self.primary_keys + [self.annotator_column]
-        self.other_output_keys_to_keep = list(other_output_keys_to_keep)
-        self.other_input_keys_to_keep = list(other_input_keys_to_keep)
-        self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
         self.is_store_missing_annotations = is_store_missing_annotations
         self.is_raise_if_missing_primary_keys = is_raise_if_missing_primary_keys
         if isinstance(annotation_type, str):
@@ -120,6 +116,10 @@ class BaseAnnotator(abc.ABC):
         self.annotators_config = self._initialize_annotators_config(annotators_config)
         self.annotators = self._initialize_annotators()
         self.df_annotations = None
+
+        self.other_input_keys_to_keep = self._get_other_input_keys_to_keep(other_input_keys_to_keep)
+        self.other_output_keys_to_keep = self._get_other_output_keys_to_keep(other_output_keys_to_keep)
+        self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
 
     ### Abstract methods ###
 
@@ -285,6 +285,12 @@ class BaseAnnotator(abc.ABC):
                 columns_to_annotate = columns_to_annotate + [
                     c for c in self.other_output_keys_to_keep if c in df_to_annotate.columns
                 ]
+                # if df_to_annotate "raw_completion" is a dict, put it back to a json string so that you can reparse it
+                # TODO: this is for backward compatibility, remove in the future
+                if "raw_completion" in df_to_annotate.columns:
+                    df_to_annotate["raw_completion"] = df_to_annotate["raw_completion"].apply(
+                        lambda x: json.dumps(x) if isinstance(x, dict) else x
+                    )
 
             curr_annotated = self.annotators[annotator](
                 df_to_annotate.loc[curr_idcs, columns_to_annotate],
@@ -425,6 +431,22 @@ class BaseAnnotator(abc.ABC):
                 df_to_annotate = df_to_annotate.drop(columns=[c + "_old", c + "_new"])
 
         return df_to_annotate
+
+    def _get_other_input_keys_to_keep(self, other_input_keys_to_keep: Sequence[str]) -> list[str]:
+        """Get the other input keys to keep, which includes the ones that are needed for the processors."""
+        processor_keys_to_keep = []
+        for a in self.annotators.values():
+            for p in a.processors:
+                processor_keys_to_keep += p.other_input_keys_to_keep
+        return list(set(list(other_input_keys_to_keep) + list(processor_keys_to_keep)))
+
+    def _get_other_output_keys_to_keep(self, other_output_keys_to_keep: Sequence[str]) -> list[str]:
+        """Get the other output keys to keep, which includes the ones that are needed for the processors."""
+        processor_keys_to_keep = []
+        for a in self.annotators.values():
+            for p in a.processors:
+                processor_keys_to_keep += p.other_output_keys_to_keep
+        return list(set(list(other_output_keys_to_keep) + list(processor_keys_to_keep)))
 
     #######################
 

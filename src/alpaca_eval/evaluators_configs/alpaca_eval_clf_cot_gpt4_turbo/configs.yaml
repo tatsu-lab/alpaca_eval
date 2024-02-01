@@ -16,5 +16,4 @@ alpaca_eval_clf_cot_gpt4_turbo:
   completion_key: "completions_all"
   batch_size: 1
   processors_to_kwargs:
-    RawCompletionProcessor:
-      is_chain_of_thought: true
+    ChainOfThoughtProcessor: {}

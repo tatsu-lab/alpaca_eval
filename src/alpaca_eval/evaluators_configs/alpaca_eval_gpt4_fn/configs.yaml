@@ -33,6 +33,3 @@ alpaca_eval_gpt4_fn:
           annotation_key: "ordered_models"
         ranking_parser: {}
   batch_size: 1
-  processors_to_kwargs:
-    RawCompletionProcessor:
-      is_chain_of_thought: false
