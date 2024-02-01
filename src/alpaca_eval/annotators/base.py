@@ -88,7 +88,12 @@ class BaseAnnotator(abc.ABC):
         annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
-        other_output_keys_to_keep: Sequence[str] = ("price_per_example", "time_per_example", "raw_completion"),
+        other_output_keys_to_keep: Sequence[str] = (
+            "price_per_example",
+            "time_per_example",
+            "raw_completion",
+            "referenced_models",
+        ),
         other_input_keys_to_keep: Sequence[str] = (),
         is_store_missing_annotations: bool = True,
         base_dir: Optional[utils.AnyPath] = None,
