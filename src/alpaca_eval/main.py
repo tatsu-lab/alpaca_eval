@@ -1,13 +1,34 @@
 import logging
+logging.basicConfig(level=logging.INFO)
+
+
 import sys
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional, Union
 
-import fire
+# import fire
 import pandas as pd
+import sys
+import os
+import json
 
-from . import analyze, annotators, constants, decoders, metrics, utils
-from .types import AnyData, AnyLoadableDF, AnyPath
+# Add the parent directory to sys.path
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+# Add the project root to sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+sys.path.append(project_root)
+
+# Add the project root to sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(project_root)
+
+
+from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
+# from .. import analyze, annotators, constants, decoders, metrics, utils
+
+from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
+
 
 CUR_DIR = Path(__file__).parent
 
@@ -122,36 +143,38 @@ def evaluate(
         reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
         name = utils.get_generator_name(name, model_outputs)
 
-        if (name not in leaderboard) or is_overwrite_leaderboard:
-            logging.info(f"Evaluating the {name} outputs.")
+        ## Note (SR): we are going to use gpt4 to evaluate the outputs
+        ## and bypass the cache-check for now.
+        # if (name not in leaderboard) or is_overwrite_leaderboard:
+        logging.info(f"Evaluating the {name} outputs.")
 
-            if max_instances is not None:
-                # first we shuffle both outputs with a fix seed => more representative
-                if len(model_outputs) != len(reference_outputs):
-                    logging.warning(
-                        "model_outputs and reference_outputs have different lengths, so we cannot shuffle before taking the first max_instances."
-                    )
-                else:
-                    seed = 123
-                    model_outputs = model_outputs.sample(frac=1, random_state=seed)
-                    reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
+        if max_instances is not None:
+            # first we shuffle both outputs with a fix seed => more representative
+            if len(model_outputs) != len(reference_outputs):
+                logging.warning(
+                    "model_outputs and reference_outputs have different lengths, so we cannot shuffle before taking the first max_instances."
+                )
+            else:
+                seed = 123
+                model_outputs = model_outputs.sample(frac=1, random_state=seed)
+                reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
 
-                model_outputs = model_outputs[:max_instances]
-                reference_outputs = reference_outputs[:max_instances]
+            model_outputs = model_outputs[:max_instances]
+            reference_outputs = reference_outputs[:max_instances]
 
-            annotator = Annotator(annotators_config=annotators_config, **annotator_kwargs)
-            annotations = annotator.annotate_head2head(
-                outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
-            )
+        annotator = Annotator(annotators_config=annotators_config, **annotator_kwargs)
+        annotations = annotator.annotate_head2head(
+            outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
+        )
 
-            if isinstance(fn_metric, str):
-                fn_metric = getattr(metrics, fn_metric)
+        if isinstance(fn_metric, str):
+            fn_metric = getattr(metrics, fn_metric)
 
-            leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
-            leaderboard[name]["mode"] = current_leaderboard_mode
-            leaderboard[name]["avg_length"] = int(model_outputs["output"].str.len().mean())
-        else:
-            logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
+        leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
+        leaderboard[name]["mode"] = current_leaderboard_mode
+        leaderboard[name]["avg_length"] = int(model_outputs["output"].str.len().mean())
+        # else:
+        #     logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
 
     output_path = utils.get_output_path(output_path, arg_model_outputs, name)
 
@@ -340,14 +363,7 @@ def evaluate_from_model(
         if evaluation_dataset in [constants.ALPACAEVAL_REFERENCE_OUTPUTS]:
             reference_outputs = evaluation_dataset
 
-    return evaluate(
-        model_outputs=model_outputs,
-        reference_outputs=reference_outputs,
-        annotators_config=annotators_config,
-        output_path=output_path,
-        max_instances=max_instances,
-        **kwargs,
-    )
+    return None
 
 
 def make_leaderboard(
@@ -573,17 +589,3 @@ ALL_FUNCTIONS = {
     "analyze_evaluators": analyze_evaluators,
 }
 
-
-def main():
-    is_fn_name = len(sys.argv) > 1 and "--" not in sys.argv[1]
-    is_help = any(a == "--help" for a in sys.argv)
-
-    if is_fn_name or is_help:
-        fire.Fire(ALL_FUNCTIONS)
-    else:
-        # default behavior if no function is specified
-        fire.Fire(evaluate)
-
-
-if __name__ == "__main__":
-    fire.Fire(ALL_FUNCTIONS)

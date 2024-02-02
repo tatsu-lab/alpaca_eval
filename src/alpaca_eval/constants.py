@@ -35,7 +35,10 @@ HUGGINGFACEHUB_API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN", None)
 DATASETS_FORCE_DOWNLOAD = os.environ.get("DATASETS_FORCE_DOWNLOAD", False)
 ########################
 
-IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "True"))
+# IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "True"))
+
+# We do not have logprobs. so we will go with default alpaca eval 1
+IS_ALPACA_EVAL_2 = ast.literal_eval(os.environ.get("IS_ALPACA_EVAL_2", "False"))
 ANNOTATOR_CONFIG_AE1 = "alpaca_eval_gpt4"
 ANNOTATOR_CONFIG_AE2 = "weighted_alpaca_eval_gpt4_turbo"
 DEFAULT_ANNOTATOR_CONFIG = ANNOTATOR_CONFIG_AE2 if IS_ALPACA_EVAL_2 else ANNOTATOR_CONFIG_AE1
@@ -221,3 +224,17 @@ def ALPACAFARM_ALL_OUTPUTS():
             token=DATASETS_TOKEN,
             download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
         )["eval"]
+
+
+
+## TODO (sambroy 2/2/2024):
+## pass the key name as an input to stage2, and use that to get the secret.
+## Right now, hardcoding it in constants.py
+
+### AML Keyvault stuff
+### In the keyvault of the AML workspace, we have a secret called
+### "AlpacaGPT4Key" which contains the API key for the GPT-4-1106 model
+### and also a secret called "AlpacaGPT40613Key" which contains the API key for the GPT-4-0613 model
+GPT4_API_KEY = "AlpacaGPT40613Key"
+
+assert GPT4_API_KEY in ["AlpacaGPT40613Key", "AlpacaGPT4Key"]

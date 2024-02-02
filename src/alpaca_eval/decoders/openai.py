@@ -2,6 +2,9 @@ import copy
 import functools
 import json
 import logging
+
+logging.basicConfig(level=logging.INFO)
+
 import math
 import multiprocessing
 import os
@@ -14,6 +17,9 @@ import openai
 import tiktoken
 import tqdm
 from openai import OpenAI
+
+from azureml.core import Run, Workspace
+
 
 from .. import constants, utils
 
@@ -206,6 +212,19 @@ def _openai_completion_helper(
         ),
         **client_kwargs,
     )
+
+    # get the key for alpaca gpt4 client saved as AlpacaGPT4Key
+    run_context = Run.get_context()
+    ws = run_context.experiment.workspace
+    keyvault = ws.get_default_keyvault()
+    keyname = constants.GPT4_API_KEY
+
+    secret_value = keyvault.get_secret(name=keyname)
+
+    if len(all_clients) == 1:
+        all_clients[0].api_key = secret_value
+    else:
+        raise ValueError("Multiple clients found; please check which one should get the GPT4 api key.")
 
     # randomly select the client
     client_idcs = range(len(all_clients))
