@@ -228,6 +228,7 @@ def evaluate_from_model(
     is_strip_output: bool = True,
     is_load_outputs: bool = True,
     chunksize: int = 64,
+    debug_len: int = -1,
     **kwargs,
 ):
     """Evaluate a model from HuggingFace or an API provider. This is a wrapper around `evaluate` which includes
@@ -272,10 +273,20 @@ def evaluate_from_model(
     chunksize : int, optional
         Number of instances to generate before saving. If None, we save after all generations.
 
+    debug_len: int, optional
+        Run evaluate_from_model in debug mode on only a few instances. If set to > 0 will pick up to `debug_len` many inputs 
+        to run model and reference model on.
+
     kwargs:
         Other kwargs to `evaluate`
     """
     df_dataset = utils.load_or_convert_to_dataframe(evaluation_dataset)
+
+    logging.info(f"Number of rows in evaluation dataset = {len(df_dataset)}")
+
+    ## for debugging, keep only 15 rows.
+    if debug_len > 0:
+        df_dataset = df_dataset.head(debug_len)
 
     if chunksize is not None and not is_load_outputs:
         logging.info("`is_load_outputs` has to be true to use chunksize. Setting it to True.")

@@ -220,7 +220,7 @@ def _openai_completion_helper(
     keyname = constants.GPT4_API_KEY
 
     secret_value = keyvault.get_secret(name=keyname)
-
+    
     if len(all_clients) == 1:
         all_clients[0].api_key = secret_value
     else:
