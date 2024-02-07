@@ -4,6 +4,7 @@ Snorkel (Mistral-PairRM-DPO+best-of-16),34.8601328912795,2616,https://huggingfac
 PairRM 0.4B+Yi-34B-Chat (best-of-16),31.24128294682124,2195,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-Yi-34B-Chat/model_outputs.json,community
 Snorkel (Mistral-PairRM-DPO),30.2200527006216,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
 Yi 34B Chat,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,minimal
+Qwen1.5 72B Chat,26.49828339573589,1549,https://huggingface.co/collections/Qwen/qwen15-65c0a2f577b1ecb76d786524,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-72B-Chat/model_outputs.json,community
 GPT-4,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 GPT-4 0314,22.07325892871952,1371,,,verified
 Mistral Medium,21.855772543461345,1500,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-medium/model_outputs.json,minimal
