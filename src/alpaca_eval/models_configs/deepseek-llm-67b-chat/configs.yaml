@@ -9,5 +9,5 @@ deepseek-llm-67b-chat:
     temperature: 0.7
     top_p: 1.0
     do_sample: True
-  pretty_name: " DeepSeek LLM 67B Chat"
+  pretty_name: "DeepSeek LLM 67B Chat"
   link: "https://huggingface.co/deepseek-ai/deepseek-llm-67b-chat"

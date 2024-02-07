@@ -190,17 +190,29 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
 
 # maps models to Arena Elo rating
 CHATBOT_ARENA_LEADERBOARD = {
-    "gpt4_turbo": 1243,
-    "gpt4": 1192,
+    "gpt4_turbo": 1249,
+    "gpt4_0314": 1189,
+    "gpt4_0613": 1161,
+    "claude": 1150,
+    "claude-2": 1131,
+    "claude-2.1": 1110,
     "tulu-2-dpo-70b": 1110,
     "Yi-34B-Chat": 1110,
     "llama-2-70b-chat-hf": 1077,
-    "claude-2.1": 1117,
-    "chatgpt": 1074,
+    "gpt-3.5-turbo-1106": 1072,
     "gemini-pro": 1111,
     "Mixtral-8x7B-Instruct-v0.1": 1121,
     "Mistral-7B-Instruct-v0.2": 1023,
     "vicuna-33b-v1.3": 1095,
+    "Starling-LM-7B-alpha": 1089,
+    "dolphin-2.2.1-mistral-7b": 1064,
+    "zephyr-7b-alpha": 1037,
+    "oasst-sft-pythia-12b": 896,
+    "wizardlm-13b-v1.2": 1058,
+    "guanaco-33b": 1031,
+    "deepseek-llm-67b-chat": 1082,
+    "wizardlm-70b": 1105,
+    "Qwen-14B-Chat": 1034,
 }
 
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
