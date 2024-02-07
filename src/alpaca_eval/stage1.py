@@ -64,44 +64,35 @@ def stage1_main():
 
     logging.info(f"Args = \n{args}")
 
-    ### get right model config. Either model_path or model_config should be provided; but not both. 
-    ### Keep an assert statement to check this.
-    ### If model_config is provided, load the model_configs from the file.
-    ### If model_path is provided, build the model_configs dictionary from the model_path.
-    if len(model_config) > 0: 
-        model_configs = "./" + model_config
-    else:
-        model_name = args.model_name if args.model_name is not None else "custom_model_name"
+    ## The model path is provided by the input model. 
+    ## The model config is provided by the model_config parameter. 
+    ## We will:
+    ##      - pick up the appropriate model_config from the model_configs folder according to the model_config parameter
+    ##      - we will change the model_name field to point to the model_path 
+    ##      - use this model_config dict to pass to the evaluate_from_model
 
-        ## build the model_configs dictionary
-        base_model_config = {
-            model_name: {
-                "prompt_template": "zephyr-7b-alpha/prompt.txt",  # This is a prompt template or path to one. It contains placeholders for keys in the data dictionary, typically {instruction} and {output}.
-                "fn_completions": "huggingface_local_completions",  # This is the name of the function in a library or module (presumably `alpaca_farm.decoders` or similar) that will be used for generating completions. This function needs to accept a `prompts` argument, which is a list of strings.
-                "completions_kwargs": {  # These are the keyword arguments for the `fn_completions` function, specifying how completions should be generated.
-                    "model_name": "",  # The identifier for the model to use for decoding, which in this case, is a model hosted on Hugging Face's model hub eg. HuggingFaceH4/zephyr-7b-beta.
-                    "model_kwargs": {  # Additional kwargs that are likely passed to the model or the generation function, possibly for configuring the underlying machine learning framework (like PyTorch).
-                        "torch_dtype": 'bfloat16'  # Specifies the data type for PyTorch tensors, in this case, using bfloat16 for potentially reduced memory usage and faster computation.
-                    },
-                    "max_new_tokens": 2048,  # The maximum number of new tokens to generate in the completions.
-                    "temperature": 0.7,  # The temperature setting for the generation, which controls the randomness. A value of 0.7 suggests a balance between randomness and determinism.
-                    "top_p": 1.0,  # The nucleus sampling parameter, controlling the cumulative probability cutoff for token selection. A value of 1.0 effectively disables nucleus sampling.
-                    "do_sample": True  # Indicates that sampling is enabled, allowing for stochastic generation rather than deterministic output.
-                },
-                "pretty_name": "Custom Model",  # A human-readable name for the model or configuration.
-                "link": ""  # A URL providing more information about the model, likely pointing to its page on Hugging Face's model hub.
-            }
-        }
+    ae_model_config = utils.load_configs(model_config, relative_to=constants.MODELS_CONFIG_DIR)
 
-        base_model_config[model_name]["completions_kwargs"]["model_name"] = args.model_path
+    # get name of model 
+    model_name = list(ae_model_config.keys())[0]
+    if args.model_path is not None:
+        ae_model_config[model_name]["completions_kwargs"]["model_name"] = args.model_path
 
-        model_configs = base_model_config
+    logging.info(f"Model Configs = \n{ae_model_config}")
+    # else go with the default AE config and model on HF.
+
+    ## TODO: do we change the model name?
+    ## For this, we will take the ae_model_config dictionary, and rename the toplevel key to the model_name
+    
+    # if args.model_name is not None:
+    #     ae_model_config[args.model_name] = ae_model_config.pop(model_name)
+    #     model_name = args.model_name
+
+    # ae_model_config[model_name]["pretty_name"] = args.model_name
 
 
     evaluate_from_model(
-                # model_configs="./zephyr-7b-beta",
-                model_configs=model_configs,
-                annotators_config="alpaca_eval_gpt4",  # we are using alpaca eval 1, because no logprobs.
+                model_configs=ae_model_config,
                 output_path=output_dir,
                 debug_len=args.debug_len,
             )

@@ -31,11 +31,7 @@ from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
 
 from alpaca_eval.main import evaluate, evaluate_from_model, analyze_evaluators, make_leaderboard
 
-
-
 CUR_DIR = Path(__file__).parent
-
-__all__ = ["evaluate", "evaluate_from_model", "analyze_evaluators", "make_leaderboard"]
 
 
 def str2bool(v):
@@ -55,21 +51,13 @@ def parse_args():
     # Define arguments based on the YAML spec
     # For inputs; here the inputs are model and reference model outputs.
     parser.add_argument("--model_outputs", type=str, help="Path to the directory containing the model outputs", required=False)
-    parser.add_argument("--use_alpaca_eval_1", type=str2bool, help="Whether to use the alpaca_eval_1 or eval_2; by default set to False.", required=False, default=False)
+    parser.add_argument("--use_alpaca_eval_1", type=str2bool, help="Whether to use the alpaca_eval_1 or eval_2; by default set to False.", required=False, default=True)
 
     # For outputs
     parser.add_argument("--output_dir", type=str, help="Output directory")
 
     # Parse and return the arguments
     return parser.parse_args()
-
-
-ALL_FUNCTIONS = {
-    "evaluate": evaluate,
-    "evaluate_from_model": evaluate_from_model,
-    "make_leaderboard": make_leaderboard,
-    "analyze_evaluators": analyze_evaluators,
-}
 
 
 def stage2_main():
@@ -86,9 +74,6 @@ def stage2_main():
     else:
         annotator_config_file = "weighted_alpaca_eval_gpt4_turbo"
     
-    # # hardcoding it to check on AML first.
-    # annotator_config_file = "weighted_alpaca_eval_gpt4_turbo"
-
     logging.info(f"Using annotator_config_file = {annotator_config_file}")
 
 
@@ -113,12 +98,6 @@ def stage2_main():
         output_path=output_dir,
         max_instances=None,
     )
-
-    # right now still consuming from model_configs folder.
-    # evaluate_from_model(
-    #     model_configs="./zephyr-7b-beta",
-    #     annotators_config="",
-    # )
 
 
 
