@@ -1,0 +1,14 @@
+Qwen1.5-72B-Chat:
+  prompt_template: "Qwen1.5-72B-Chat/prompt.txt"
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "Qwen/Qwen1.5-72B-Chat"
+    requires_chatml: True
+    temperature: 0.7
+    num_procs: 8
+    max_tokens: 3500
+    top_p: 0.8
+    client_kwargs:
+      base_url: "https://api.together.xyz/v1"
+  pretty_name: "Qwen1.5 72B Chat"
+  link: "https://huggingface.co/collections/Qwen/qwen15-65c0a2f577b1ecb76d786524"
