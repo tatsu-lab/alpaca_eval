@@ -33,4 +33,3 @@ alpaca_eval_gpt4_fn:
           annotation_key: "ordered_models"
         ranking_parser: {}
   batch_size: 1
-  is_json_load_raw_completions: true
