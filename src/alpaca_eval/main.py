@@ -31,7 +31,6 @@ import json
 
 from . import analyze, annotators, constants, decoders, metrics, utils
 from .types import AnyData, AnyLoadableDF, AnyPath
-from .main import evaluate, evaluate_from_model, analyze_evaluators, make_leaderboard
 
 CUR_DIR = Path(__file__).parent
 

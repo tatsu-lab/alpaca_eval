@@ -25,12 +25,12 @@ import json
 
 
 # from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
-from . import analyze, annotators, constants, decoders, metrics, utils
-
 # from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
-from .types import AnyData, AnyLoadableDF, AnyPath
-
 # from alpaca_eval.main import evaluate, evaluate_from_model, analyze_evaluators, make_leaderboard
+
+
+from . import analyze, annotators, constants, decoders, metrics, utils
+from .types import AnyData, AnyLoadableDF, AnyPath
 from .main import evaluate, evaluate_from_model, analyze_evaluators, make_leaderboard
 
 CUR_DIR = Path(__file__).parent

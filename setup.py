@@ -72,7 +72,7 @@ setuptools.setup(
     ],
     entry_points={
         "console_scripts": [
-            "alpaca_eval=alpaca_eval.main:main",
+            "alpaca_eval=alpaca_eval.stage1:stage1_main",
         ],
     },
     include_package_data=True,
