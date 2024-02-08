@@ -1,3 +1,2 @@
-<|user|>
-{instruction}<|end|>
-<|assistant|>
+Instruct: {instruction}
+Output:
