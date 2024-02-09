@@ -12,28 +12,9 @@ import os
 import argparse
 import json
 
-# # Add the parent directory to sys.path
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-# # Add the project root to sys.path
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# sys.path.append(project_root)
-
-# # Add the project root to sys.path
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# sys.path.append(project_root)
-
-
-# from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
-# from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
-# from alpaca_eval.main import evaluate, evaluate_from_model, analyze_evaluators, make_leaderboard
-
-
 from . import analyze, annotators, constants, decoders, metrics, utils
 from .types import AnyData, AnyLoadableDF, AnyPath
 from .main import evaluate, evaluate_from_model, analyze_evaluators, make_leaderboard
-
-CUR_DIR = Path(__file__).parent
 
 
 def str2bool(v):
@@ -65,11 +46,10 @@ def parse_args():
 def stage2_main():
     args = parse_args()
 
+    logging.info(f"Args = \n{args}")
+
     model_outputs_path = args.model_outputs
     output_dir = args.output_dir
-
-    print(f"Path to model + reference model outputs: {model_outputs_path}")
-    print(f"Output Directory: {output_dir}")
 
     if args.use_alpaca_eval_1:
         annotator_config_file = "alpaca_eval_gpt4"
@@ -80,17 +60,7 @@ def stage2_main():
 
 
     # convert from json to pandas dataframe; this is what the evaluate function expects
-    model_outputs_file = os.path.join(args.model_outputs, "model_outputs.json")
-    reference_model_outputs_file = os.path.join(args.model_outputs, "reference_outputs.json")
-
-    with open(model_outputs_file, 'r', encoding='utf-8') as fo:
-        model_outputs = json.load(fo)
-
     model_outputs_df = pd.read_json(os.path.join(model_outputs_path, "model_outputs.json"), orient='records')
-
-    with open(reference_model_outputs_file, 'r', encoding='utf-8') as fo:
-        reference_model_outputs = json.load(fo)
-
     reference_model_outputs_df = pd.read_json(os.path.join(model_outputs_path, "reference_outputs.json"), orient='records')
 
     evaluate(

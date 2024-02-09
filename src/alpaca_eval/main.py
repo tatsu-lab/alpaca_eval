@@ -12,23 +12,6 @@ import sys
 import os
 import json
 
-# # Add the parent directory to sys.path
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-# # Add the project root to sys.path
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# sys.path.append(project_root)
-
-# # Add the project root to sys.path
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# sys.path.append(project_root)
-
-
-# from alpaca_eval import analyze, annotators, constants, decoders, metrics, utils
-# # from .. import analyze, annotators, constants, decoders, metrics, utils
-
-# from alpaca_eval.types import AnyData, AnyLoadableDF, AnyPath
-
 from . import analyze, annotators, constants, decoders, metrics, utils
 from .types import AnyData, AnyLoadableDF, AnyPath
 
