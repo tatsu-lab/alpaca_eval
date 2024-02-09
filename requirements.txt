@@ -1,5 +1,5 @@
 torch==2.1.2
-transformers
+transformers>=4.36
 peft
 accelerate
 bitsandbytes
