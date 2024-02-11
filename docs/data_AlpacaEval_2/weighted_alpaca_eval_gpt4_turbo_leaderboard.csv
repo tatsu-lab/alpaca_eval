@@ -11,7 +11,7 @@ Claude 2.1 (verbose),24.354071090158502,1414,,https://github.com/tatsu-lab/alpac
 GPT-4,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 GPT-4 0613 (verbose),23.23736004346385,1473,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613_verbose/model_outputs.json,dev
 GPT-4 Turbo (concise),22.92019444047205,1136,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview_concise/model_outputs.json,dev
-GPT-4 0314,22.07325892871952,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
+GPT-4 0314,22.07325892871952,1371,,,verified
 Mistral Medium,21.855772543461345,1500,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-medium/model_outputs.json,minimal
 XwinLM 70b V0.1,21.812957073994184,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
 InternLM2 Chat 20B,21.74915450056264,2373,https://huggingface.co/internlm/internlm2-chat-20b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-20b-ppo/model_outputs.json,community
@@ -30,7 +30,7 @@ Evo 7B,15.577437399431057,1774,,https://github.com/tatsu-lab/alpaca_eval/blob/ma
 Mistral 7B v0.2,14.722772657714286,1676,https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-Instruct-v0.2/model_outputs.json,minimal
 WizardLM 70B,14.38389608705848,1545,https://huggingface.co/WizardLM/WizardLM-70B-V1.0,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-70b/model_outputs.json,community
 Starling LM 7B alpha,14.245923521762474,1895,https://huggingface.co/berkeley-nest/Starling-LM-7B-alpha,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Starling-LM-7B-alpha/model_outputs.json,community
-GPT 3.5 Turbo 0613,14.132390707727575,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
+GPT 3.5 Turbo 0613,14.132390707727575,1328,,,verified
 LLaMA2 Chat 70B,13.871009062248447,1790,https://ai.meta.com/llama/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/llama-2-70b-chat-hf/model_outputs.json,verified
 UltraLM 13B V2.0 (best-of-16),13.853373471264224,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 13B (best-of-16),13.831901016808686,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
@@ -59,7 +59,7 @@ Humpback LLaMa 65B,9.42513904779845,1232,https://arxiv.org/abs/2308.06259,https:
 GPT-4 0613 (concise),9.400320574645916,627,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613_concise/model_outputs.json,dev
 airoboros 65B,9.388950149698426,1512,https://huggingface.co/jondurbin/airoboros-65b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-65b/model_outputs.json,community
 Claude 2.1 (concise),9.227125240718587,573,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2.1_concise/model_outputs.json,dev
-GPT 3.5 Turbo 1106,9.177964562109176,796,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-1106/model_outputs.json,verified
+GPT 3.5 Turbo 1106,9.177964562109176,796,,,verified
 airoboros 33B,9.053160396238688,1514,https://huggingface.co/jondurbin/airoboros-33b-gpt4-1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/airoboros-33b/model_outputs.json,community
 Dolphin 2.2.1 Mistral 7B,9.0397997282823,1130,https://huggingface.co/cognitivecomputations/dolphin-2.2.1-mistral-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dolphin-2.2.1-mistral-7b/model_outputs.json,community
 OpenBuddy-LLaMA-65B-v8,8.770650150929061,1162,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
