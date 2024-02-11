@@ -73,7 +73,7 @@ VERIFIED_EVALUATORS = tuple(
 )
 
 # order matters i => i+1 when filtering
-ORDERED_LEADERBOARD_MODES = ["minimal", "verified", "community"]
+ORDERED_LEADERBOARD_MODES = ["minimal", "verified", "community", "dev"]
 
 
 def get_alpaca_eval_data(dataset="alpaca_eval_gpt4_baseline"):

@@ -317,7 +317,7 @@
                     if (row['name'] || row['win_rate'] || row['avg_length']) {
                         let filter = row['filter'];
 
-                        if ((communityRadio.checked) ||
+                        if ((communityRadio.checked && (filter === 'verified' || filter === 'minimal' || filter === 'community')) ||
                             (verifiedRadio.checked && (filter === 'verified' || filter === 'minimal'))) {
 
                             const tr = document.createElement('tr');
