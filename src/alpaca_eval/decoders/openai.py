@@ -190,6 +190,7 @@ def _openai_completion_helper(
     openai_api_base: Optional[str] = os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else openai.base_url,
     ############################
     client_kwargs: Optional[dict[str, Any]] = None,
+    n_retries: Optional[int] = 10,
     **kwargs,
 ):
     client_kwargs = client_kwargs or dict()
@@ -217,7 +218,9 @@ def _openai_completion_helper(
     kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
 
-    while True:
+    # ensure no infinite loop
+    choices = None
+    for _ in range(n_retries):
         try:
             if is_chat:
                 completion_batch = client.chat.completions.create(messages=prompt_batch[0], **curr_kwargs)
@@ -274,6 +277,12 @@ def _openai_completion_helper(
                     logging.info(f"Switching OAI client to client number {curr_client_idx}.")
                 logging.info(f"Sleeping {sleep_time} before retrying to call openai API...")
                 time.sleep(sleep_time)  # Annoying rate limit on requests.
+
+    if choices is None:
+        logging.warning(f"Max retries reached. Returning empty completions.")
+        # TODO: the return is a tmp hack, should be handled better
+        choices = [dict(text="", total_tokens=0)] * len(prompt_batch)
+
     return choices
 
 

@@ -86,7 +86,7 @@ def _anthropic_completion_helper(
     sleep_time: int = 2,
     anthropic_api_keys: Optional[Sequence[str]] = (constants.ANTHROPIC_API_KEY,),
     temperature: Optional[float] = 0.7,
-    n_retries: Optional[int] = 3,
+    n_retries: Optional[int] = 10,
     **kwargs,
 ):
     prompt, max_tokens = args
@@ -101,9 +101,9 @@ def _anthropic_completion_helper(
 
     kwargs.update(dict(max_tokens_to_sample=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
-    curr_try = 0
-    while True:
-        curr_try += 1
+
+    response = None
+    for _ in range(n_retries):
         try:
             response = client.completions.create(prompt=prompt, **curr_kwargs)
 
@@ -128,10 +128,9 @@ def _anthropic_completion_helper(
             response = anthropic.types.Completion(completion="", model="", stop_reason="api_error")
             break
 
-        if curr_try > n_retries:
-            logging.warning(f"Max retries reached. Returning empty completion.")
-            response = anthropic.types.Completion(completion="", model="", stop_reason="max_retries_exceeded")
-            break
+    if response is None:
+        logging.warning(f"Max retries reached. Returning empty completion.")
+        response = anthropic.types.Completion(completion="", model="", stop_reason="max_retries_exceeded")
 
     return response
 
