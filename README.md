@@ -78,7 +78,7 @@ Details in [limitations](#limitations).
     - [Data Release](#data-release)
     - [Differences with AlpacaFarm](#differences-with-alpacafarm)
     - [Related work](#related-work)
-    - [Interpreting Chain of Thought](#interpreting-chain-of-thought-when-available)
+    - [Interpreting annotations](#interpreting-annotations)
     - [Major updates](#major-updates)
 
 </details>
@@ -1252,9 +1252,21 @@ For example:
 
 
 <details>
-  <summary><h2 tabindex="-1" dir="auto">Interpreting Chain of Thought, when available</h2></summary>
+  <summary><h2 tabindex="-1" dir="auto">Interpreting annotations</h2></summary>
 
-For some annotators, e.g. `alpaca_eval_cot_gpt4_turbo_fn` we use chan of thought reasoning to make the models preferences more interpretable. Those can then be found under `concise_explanation` in the `annotations.json` file. To interpret them, you should also look at `referenced_models` which translates the temporary model name (in the prompt) to the actual output. Below, we provide more explanation as to what is happening behind the scenes.
+For all models you can find the auto-annotations under `results/<model_name>/*/annotations.json`. The annotations have the following columns:
+- `instruction`: the prompt
+- `generator_1`: the baseline model
+- `output_1`: the output of the baseline model
+- `generator_2`: the model being evaluated
+- `output_2`: the output of the model being evaluated
+- `annotator`: the auto-annotator
+- `preference`: the result of the auto-annotator. This is a float between 1 and 2. Closer to 1 means that the auto-annotator prefers `output_1`, closer to 2 means that it prefers `output_2`. For AlpacaEval 2.0, `preference-1` corresponds to the probability of `output_1` being preferred. For AlpacaEval 1.0, `preference` is 1 if `output_1` is preferred, 2 if `output_2` is preferred, and 1.5 if they are the same. The win rate is always`(preference -1).mean()`.
+- `raw_completion`: the raw output of the auto-annotator. 
+
+**Chain of through**
+
+For some annotators, e.g. `alpaca_eval_cot_gpt4_turbo_fn` we use **chain of thought reasoning** to make the models preferences more interpretable. Those can then be found under `concise_explanation`. To interpret them, you should also look at `referenced_models` which translates the temporary model name (in the prompt) to the actual output. Below, we provide more explanation as to what is happening behind the scenes.
 
 You can check the `raw_annotations["concise_explanation]` column in `annotations.json` (e.g. [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/results/gpt4/alpaca_eval_cot_gpt4_turbo_fn/annotations.json)) which contains the chain of thought reasoning of the auto annotator. Note that the raw_annotations is not modified by the randomization of the order of the outputs. In particular, `"m"` and `"M"` can sometime refer to the first model (the reference) and sometime to the second model (the model being evaluated). To understand which model is being referred to, you should use the column `preference` and `ordered_models`. To make it easier we add a column `"referenced_models"` mapping the model names to the corresponding outputs. For example in the following annotation we see that the preference is 1.0 (i.e. `output_1`) and corresponds to model `M` in `concise_explanation` (see `ordered_models`).  
 
