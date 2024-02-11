@@ -101,7 +101,9 @@ def _anthropic_completion_helper(
 
     kwargs.update(dict(max_tokens_to_sample=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
+    curr_try = 0
     while True:
+        curr_try += 1
         try:
             response = client.completions.create(prompt=prompt, **curr_kwargs)
 
@@ -121,6 +123,15 @@ def _anthropic_completion_helper(
 
         except anthropic.APITimeoutError as e:
             logging.warning(f"API TimeoutError: {e}. Retrying request.")
+
+        except anthropic.APIError as e:
+            response = anthropic.types.Completion(completion="", model="", stop_reason="api_error")
+            break
+
+        if curr_try > n_retries:
+            logging.warning(f"Max retries reached. Returning empty completion.")
+            response = anthropic.types.Completion(completion="", model="", stop_reason="max_retries_exceeded")
+            break
 
     return response
 
