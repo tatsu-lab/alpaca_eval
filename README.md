@@ -63,15 +63,15 @@ Details in [limitations](#limitations).
     - [Evaluating a model](#evaluating-a-model)
     - [Making a new leaderboard](#making-a-new-leaderboard)
     - [Making a new evaluator](#making-a-new-evaluator)
-4. [Analysis](#additional-analysis-and-plots)
-    - [Analyzing an evaluator](#analyzing-an-evaluator)
-    - [Analyzing an eval set](#analyzing-an-eval-set)
-5. [Contributing](#contributing)
+4. [Contributing](#contributing)
     - [Contributing a model](#contributing-a-model)
     - [Contributing an evaluator](#contributing-an-evaluator)
     - [Contributing an eval set](#contributing-an-eval-set)
     - [Contributing a completion function](#contributing-a-completion-function)
-6. [Limitations](#limitations)
+5. [Limitations](#limitations)
+6. [Analysis](#additional-analysis-and-plots)
+    - [Analyzing an evaluator](#analyzing-an-evaluator)
+    - [Analyzing an eval set](#analyzing-an-eval-set)
 7. [Citation](#citation)
 8. [Additional information](#additional-information)
     - [AlpacaEval 2.0](#alpacaeval-20)
@@ -823,99 +823,6 @@ evaluation.
 If you want a cheaper evaluation you can use a single seed using `--is_single_annotator True` which will skip the
 estimation of bias and variance.
 
-# Additional analysis and plots
-
-AlpacaEval provides a few visualization tools to help you analyze and improve your automatic evaluation pipeline. We
-briefly explain
-them here and provide
-notebooks for more analysis. 
-For a description of all the metrics we consider
-refer to [How exactly are those metrics computed?](https://github.com/tatsu-lab/alpaca_eval#evaluators)
-
-## Analyzing an evaluator
-
-**Analyzing evaluators:**
-[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb)
-
-As we saw in [the evaluator's leaderboard](#evaluators), there are many metrics to consider when selecting an evaluator,
-e.g. the quality, price, and speed. To assist with selection of the evaluator we provide a few functions to plot those
-metrics.
-The following shows for example the price/time/agreement of the different evaluators.
-
-![plot_quality_vs_price_and_time.png](figures%2Fplot_quality_vs_price_and_time.png)
-
-Here we see that `alpaca_eval_gpt4` performs very well and is better than humans on all the considered metrics.
-
-Previously we only considered the agreement with human annotators overall.
-An additional validation that one could do is checking whether making a leaderboard using our
-automatic annotator gives similar results as a leaderboard from humans.
-To enable such analysis, we release [human
-annotations](#data-release) of outputs from 22 methods from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) =>
-22*805 = ~18K annotations. As a result we
-can
-test
-the correlation between the win-rates of the 22 models as evaluated by the humans and our automatic annotator.
-Note that this is arguably a better way of selecting an automatic evaluator than using "human agreement [%]" but is
-expensive given that it requires 18K
-annotations.
-The plot below shows such correlation for the `alpaca_eval_gpt4` evaluator.
-
-<p float="left" align="middle">
-<img src="figures/plot_winrate_correlations_alpaca_eval.png" alt="Correlation between humans and alpaca_eval_gpt4" width="400"/>
-</p>
-
-We see that the `alpaca_eval_gpt4` leaderboard is highly correlated (0.94 Pearson correlation) to the leaderboard from
-humans, which further
-suggests that automatic evaluation is a good proxy for human evaluation.
-For the code and more analysis,
-see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb), or the
-colab notebook above.
-
-## Analyzing an eval set
-
-**Making evaluation sets:**
-[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb)
-
-When creating an evaluation set there are two main factors to consider: how much data to use? and what data?
-
-One way of answering those question is by considering a leaderboard of models that you believe are of different
-quality and checking what and how much data is needed to distinguish between them in a statistically significant way.
-We will do so below using a paired t-test to test if the difference in win-rates between every pair of models
-is
-statistically significant.
-
-First, let us consider the question of how much data to use.
-Below we show the number of random samples needed from AlpacaEval for the paired t-test to give a p-value < 0.05 for
-each pair of models in the minimal `alpaca_eval_gpt4`
-leaderboard.
-Grey cells correspond to pairs that are not significantly different on the 805 samples.
-y- and x-axis are ordered by the win-rate of the first and second model respectively.
-
-
-<p float="left" align="middle">
-<img src="figures/plot_paired_ttest_nsamples.png" alt="Number of samples needed to distinguish pairs in the Claude leaderboard" width="500"/>
-</p>
-
-We see that most models can already be distinguished with 50 samples, and that 150 samples allows distinguishing the
-majority of pairs (74 out of 78). This suggests that we can decrease the evaluation set size by a factor of
-4 when testing two models that have similar performance gaps as those on the
-minimal `alpaca_eval_gpt4` [leaderboard](#models).
-
-The second question is what data to use. Again we can try to answer this question from a statistical power perspective:
-what data allows to best distinguish between models. Let's consider this for all the datasets that are part of
-AlpacaEval, but let us control for the size of the evaluation sets as we only care about the quality of the data. The
-following plot shows the p-values from the paired t-test of each pairs of models on 80 examples of each subset of
-AlpacaEval.
-
-![plot_paired_ttests_per_dataset.png](figures%2Fplot_paired_ttests_per_dataset.png)
-
-We see for example that the self-instruct dataset yields the least statistical power, which suggests that one could
-remove this dataset from the evaluation set.
-The exact reason should be analyzed in future work.
-For the code and more analysis
-see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
-colab notebook above.
-
 # Contributing
 
 We are accepting PRs for new models, evaluators, and eval sets, in addition to bug fixes.
@@ -1104,6 +1011,100 @@ instructions where Alpaca "performs" better than better model; and
 (2) this can push users to select data to support the hypothesis that they want to validate.
 
 </details>
+
+
+# Additional analysis and plots
+
+AlpacaEval provides a few visualization tools to help you analyze and improve your automatic evaluation pipeline. We
+briefly explain
+them here and provide
+notebooks for more analysis. 
+For a description of all the metrics we consider
+refer to [How exactly are those metrics computed?](https://github.com/tatsu-lab/alpaca_eval#evaluators)
+
+## Analyzing an evaluator
+
+**Analyzing evaluators:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb)
+
+As we saw in [the evaluator's leaderboard](#evaluators), there are many metrics to consider when selecting an evaluator,
+e.g. the quality, price, and speed. To assist with selection of the evaluator we provide a few functions to plot those
+metrics.
+The following shows for example the price/time/agreement of the different evaluators.
+
+![plot_quality_vs_price_and_time.png](figures%2Fplot_quality_vs_price_and_time.png)
+
+Here we see that `alpaca_eval_gpt4` performs very well and is better than humans on all the considered metrics.
+
+Previously we only considered the agreement with human annotators overall.
+An additional validation that one could do is checking whether making a leaderboard using our
+automatic annotator gives similar results as a leaderboard from humans.
+To enable such analysis, we release [human
+annotations](#data-release) of outputs from 22 methods from [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm) =>
+22*805 = ~18K annotations. As a result we
+can
+test
+the correlation between the win-rates of the 22 models as evaluated by the humans and our automatic annotator.
+Note that this is arguably a better way of selecting an automatic evaluator than using "human agreement [%]" but is
+expensive given that it requires 18K
+annotations.
+The plot below shows such correlation for the `alpaca_eval_gpt4` evaluator.
+
+<p float="left" align="middle">
+<img src="figures/plot_winrate_correlations_alpaca_eval.png" alt="Correlation between humans and alpaca_eval_gpt4" width="400"/>
+</p>
+
+We see that the `alpaca_eval_gpt4` leaderboard is highly correlated (0.94 Pearson correlation) to the leaderboard from
+humans, which further
+suggests that automatic evaluation is a good proxy for human evaluation.
+For the code and more analysis,
+see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb), or the
+colab notebook above.
+
+## Analyzing an eval set
+
+**Making evaluation sets:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb)
+
+When creating an evaluation set there are two main factors to consider: how much data to use? and what data?
+
+One way of answering those question is by considering a leaderboard of models that you believe are of different
+quality and checking what and how much data is needed to distinguish between them in a statistically significant way.
+We will do so below using a paired t-test to test if the difference in win-rates between every pair of models
+is
+statistically significant.
+
+First, let us consider the question of how much data to use.
+Below we show the number of random samples needed from AlpacaEval for the paired t-test to give a p-value < 0.05 for
+each pair of models in the minimal `alpaca_eval_gpt4`
+leaderboard.
+Grey cells correspond to pairs that are not significantly different on the 805 samples.
+y- and x-axis are ordered by the win-rate of the first and second model respectively.
+
+
+<p float="left" align="middle">
+<img src="figures/plot_paired_ttest_nsamples.png" alt="Number of samples needed to distinguish pairs in the Claude leaderboard" width="500"/>
+</p>
+
+We see that most models can already be distinguished with 50 samples, and that 150 samples allows distinguishing the
+majority of pairs (74 out of 78). This suggests that we can decrease the evaluation set size by a factor of
+4 when testing two models that have similar performance gaps as those on the
+minimal `alpaca_eval_gpt4` [leaderboard](#models).
+
+The second question is what data to use. Again we can try to answer this question from a statistical power perspective:
+what data allows to best distinguish between models. Let's consider this for all the datasets that are part of
+AlpacaEval, but let us control for the size of the evaluation sets as we only care about the quality of the data. The
+following plot shows the p-values from the paired t-test of each pairs of models on 80 examples of each subset of
+AlpacaEval.
+
+![plot_paired_ttests_per_dataset.png](figures%2Fplot_paired_ttests_per_dataset.png)
+
+We see for example that the self-instruct dataset yields the least statistical power, which suggests that one could
+remove this dataset from the evaluation set.
+The exact reason should be analyzed in future work.
+For the code and more analysis
+see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
+colab notebook above.
 
 # Citation
 
