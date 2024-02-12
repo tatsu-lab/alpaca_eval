@@ -199,7 +199,7 @@ CHATBOT_ARENA_LEADERBOARD = {
     "claude-2": 1132,
     "claude-2.1": 1119,
     "Mixtral-8x7B-Instruct-v0.1": 1118,
-    #'gpt-3.5-turbo-0613': 1118, # results folder missing
+    "gpt-3.5-turbo-0613": 1118,
     "Yi-34B-Chat": 1115,
     "gemini-pro": 1114,
     "claude-instant-1.2": 1109,
