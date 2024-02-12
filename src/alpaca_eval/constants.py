@@ -188,32 +188,43 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "alpaca-7b",
 ]
 
+# Feb 2, 2024
 # maps models to Arena Elo rating
 CHATBOT_ARENA_LEADERBOARD = {
-    "gpt4_1106_preview": 1249,
-    "gpt4_0314": 1189,
-    "gpt4_0613": 1161,
-    "claude": 1150,
-    "claude-2": 1131,
-    "claude-2.1": 1119,
-    "tulu-2-dpo-70b": 1104,
-    "Yi-34B-Chat": 1115,
-    "llama-2-70b-chat-hf": 1077,
-    "gpt-3.5-turbo-1106": 1072,
-    "gemini-pro": 1111,
-    "Mixtral-8x7B-Instruct-v0.1": 1121,
-    "Mistral-7B-Instruct-v0.2": 1023,
-    "vicuna-33b-v1.3": 1095,
-    "Starling-LM-7B-alpha": 1089,
-    "dolphin-2.2.1-mistral-7b": 1064,
-    "zephyr-7b-alpha": 1037,
-    "oasst-sft-pythia-12b": 896,
-    "wizardlm-13b-v1.2": 1058,
-    "guanaco-33b": 1031,
-    "deepseek-llm-67b-chat": 1082,
-    "wizardlm-70b": 1105,
-    "Qwen-14B-Chat": 1034,
-    "claude-instant-1.2": 1109,
+    'gpt4_1106_preview': 1252,
+    'gpt4': 1190, # gpt4_0314 has no results folder, assume this is same
+    'gpt4_0613': 1162,
+    'mistral-medium': 1150,
+    'claude': 1149,
+    'claude-2': 1132,
+    'claude-2.1': 1119,
+    'Mixtral-8x7B-Instruct-v0.1': 1118,
+    #'gpt-3.5-turbo-0613': 1118, # results folder missing
+    'Yi-34B-Chat': 1115,
+    'gemini-pro': 1114,
+    'claude-instant-1.2': 1109,
+    'gpt-3.5-turbo-0301': 1105,
+    'wizardlm-70b': 1105,
+    'tulu-2-dpo-70b': 1104,
+    'vicuna-33b-v1.3': 1093,
+    'Starling-LM-7B-alpha': 1090,
+    'deepseek-llm-67b-chat': 1082,
+    'llama-2-70b-chat-hf': 1082,
+    'OpenHermes-2.5-Mistral-7B': 1078,
+     #'gpt-3.5-turbo-1106': 1071, # results folder missing
+    'dolphin-2.2.1-mistral-7b': 1065,
+    'wizardlm-13b-v1.2': 1058,
+    'zephyr-7b-beta': 1051,
+    'llama-2-13b-chat-hf': 800,
+    'vicuna-13b-v1.5': 1040,
+    'zephyr-7b-alpha': 1037,
+    'Qwen-14B-Chat': 1034,
+    'guanaco-33b': 1032,
+    'llama-2-7b-chat-hf': 1024,
+    'vicuna-7b-v1.5': 1005
+    # older models
+    #'chatglm2-6b': 930,
+    #'oasst-sft-pythia-12b': 897,
 }
 
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
