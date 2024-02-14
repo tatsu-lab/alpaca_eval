@@ -215,7 +215,7 @@ CHATBOT_ARENA_LEADERBOARD = {
     "dolphin-2.2.1-mistral-7b": 1065,
     "wizardlm-13b-v1.2": 1058,
     "zephyr-7b-beta": 1051,
-    "llama-2-13b-chat-hf": 800,
+    "llama-2-13b-chat-hf": 1042,
     "vicuna-13b-v1.5": 1040,
     "zephyr-7b-alpha": 1037,
     "Qwen-14B-Chat": 1034,
