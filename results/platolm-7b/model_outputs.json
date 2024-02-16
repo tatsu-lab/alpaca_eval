@@ -3223,12 +3223,6 @@
   },
   {
     "dataset":"selfinstruct",
-    "instruction":"Use appropriate emojis to convey the meaning in the given text.\n\nCute cat\nplayful\nSoft",
-    "output":"",
-    "generator":"platolm-7b"
-  },
-  {
-    "dataset":"selfinstruct",
     "instruction":"The topic of a YouTube post has been described and based on the information, you need to write a hook for starting the post. A catchy hook will keep your readers interested so they keep reading. It would be great if you could come up with as many hooks as you can.\n\nA video showing how to make a tasty cup of coffee",
     "output":"1. \"Ready to wake up and smell the coffee? Join us as we dive into the art of brewing the perfect cup of java that will leave you craving for more!\"\n2. \"Espresso lovers unite! In this video, we'll reveal the secret recipe for a rich and aromatic cup of coffee that will make you feel like you're in your favorite caf\u00e9.\"\n3. \"Calling all coffee connoisseurs! Get ready to elevate your coffee game with our step-by-step guide on how to make a cup of coffee that will leave your friends and family craving for more.\"\n4. \"Wake up and smell the brewing! Join us on a delightful journey as we show you how to create a cup of coffee that is so good, it'll make your taste buds dance with joy.\"\n5. \"Don't settle for mediocre coffee! Discover the secrets to brewing a coffee masterpiece in your own kitchen. It's time to upgrade your morning ritual.\"\n6. \"Coffee lovers, rejoice! In this video, we'll unveil the ultimate recipe for a heavenly cup of coffee that will make you wonder how you ever lived without it.\"\n7. \"Escape the coffee rut and take your brewing skills to the next level! We've got the ultimate guide to help you create a cup of coffee that is simply irresistible.\"\n8. \"Ready to become the barista of your own home? Join us as we unveil the secrets to making a cup of coffee that will impress even the most discerning taste buds.\"\n9. \"Want to impress your friends (and yourself) with a cup of coffee that's out of this world? We've got you covered! Watch now to learn the art of brewing perfection.\"\n10. \"Craving a coffee experience that'll make your taste buds sing? Look no further! Follow our step-by-step guide to create a cup of coffee that's pure bliss.\"",
     "generator":"platolm-7b"

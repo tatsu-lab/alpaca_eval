@@ -2455,12 +2455,6 @@
   },
   {
     "dataset":"oasst",
-    "instruction":"What are the lyrics to the third verse of Rick Astley's Never Gonna Give You Up?",
-    "output":"",
-    "generator":"gpt35_turbo_instruct"
-  },
-  {
-    "dataset":"oasst",
     "instruction":"write code that imitates a fake chatbot using a modal where it shows the human users previously typedmesages and the ai chat bots messages all within html. Create the modal fake chathistory having 4 overall messages. With 2 messages from the bot and 2 messages from the human .",
     "output":"<div id=\"modal\">\n  <div id=\"chat-history\">\n    <div class=\"message\">\n      <div class=\"bot-message\">\n        <p>Hello there! I am a fake chatbot. How can I assist you today?<\/p>\n      <\/div>\n      <div class=\"human-message\">\n        <p>Hi there! Can you help me order a pizza?<\/p>\n      <\/div>\n    <\/div>\n    <div class=\"message\">\n      <div class=\"bot-message\">\n        <p>Sure thing! What kind of pizza would you like to order?<\/p>\n      <\/div>\n      <div class=\"human-message\">\n        <p>I would like a pepperoni pizza with extra cheese.<\/p>\n      <\/div>\n    <\/div>\n    <div class=\"message\">\n      <div class=\"bot-message\">\n        <p>Great choice! Your pizza will be delivered in 30 minutes or less.<\/p>\n      <\/div>\n      <div class=\"human-message\">\n        <p>Thank you so much! I can't wait to eat it.<\/p>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
     "generator":"gpt35_turbo_instruct"

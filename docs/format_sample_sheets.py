@@ -28,11 +28,16 @@ min_annotation_columns = {
 
 # Create a dict mapping each instruction in df_reference to its index => will keep that order for the other files
 order = {tuple(pair): i for i, pair in enumerate(zip(df_reference["dataset"], df_reference["instruction"]))}
+max_missing_examples = 5
 
 for f in RESULTS_DIR.glob(f"*/*/{F_OUTPUTS}"):
     df = pd.read_json(f, orient="records")
-    if len(df_reference) != len(df):
-        raise ValueError(f"Length of {f} is not equal to the reference file {len(df_reference)}!={len(df)}.")
+    n_diff = len(df_reference) - len(df)
+    if n_diff - max_missing_examples:
+        raise ValueError(f"There are more than 5 examples missing in {f}. {len(df_reference)}!={len(df)}.")
+
+    if (df["output"].str.len() == 0).any():
+        raise ValueError(f"Empty output in {f}.")
 
     # Sort the df using the reference df
     df["order"] = df.apply(lambda row: order[(row["dataset"], row["instruction"])], axis=1)
@@ -46,8 +51,9 @@ for f in RESULTS_DIR.glob(f"*/*/{F_OUTPUTS}"):
 
 for f in RESULTS_DIR.glob(f"*/*/{F_ANNOTATIONS}"):
     df = pd.read_json(f, orient="records")
-    if len(df_reference) != len(df):
-        raise ValueError(f"Length of {f} is not equal to the reference file {len(df_reference)}!={len(df)}.")
+    n_diff = len(df_reference) - len(df)
+    if n_diff - max_missing_examples > 0:
+        raise ValueError(f"There are more than 5 examples missing in {f}. {len(df_reference)}!={len(df)}.")
 
     # can't sort because you don't have the dataset
     # df["order"] = df.apply(lambda row: order[(row["dataset"], row["instruction"])], axis=1)
@@ -66,5 +72,6 @@ for f in RESULTS_DIR.glob(f"*/*/{F_ANNOTATIONS}"):
         df_subset = df.query(f"generator_1 == '{baseline}'").sort_values("instruction")
         df_baseline = df_references[baseline].sort_values("instruction")
         # now make sure that df_subset["output_1"] is the same as df_baseline["output"] when you sort by instruction
-        if not df_baseline["output"].equals(df_subset["output_1"]):
-            raise ValueError(f"Output_1 in {f} is not the same as the reference file {baseline}.")
+        if n_diff == 0:  # hard to check otherwise
+            if not df_baseline["output"].equals(df_subset["output_1"]):
+                raise ValueError(f"Output_1 in {f} is not the same as the reference file {baseline}.")

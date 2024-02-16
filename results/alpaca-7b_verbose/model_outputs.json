@@ -2197,12 +2197,6 @@
   },
   {
     "dataset":"oasst",
-    "instruction":"Make ASCII art of a cat",
-    "output":"",
-    "generator":"alpaca-7b_verbose"
-  },
-  {
-    "dataset":"oasst",
     "instruction":"explain what the theory of sexual selection is and give an example.",
     "output":"Sexual selection is the process by which certain traits become more common in a population due to their selective advantage in reproduction. For example, peacocks have long tail feathers which are thought to have evolved as a way for males to attract mates. The longer and more vibrant the feathers, the more likely a male peacock was to be chosen for mating. This is an example of sexual selection in action.",
     "generator":"alpaca-7b_verbose"
@@ -2901,12 +2895,6 @@
     "dataset":"selfinstruct",
     "instruction":"Come up with some search queries on google about coding stuff.",
     "output":"1. \"Best coding language to learn\"\n2. \"Differences between JavaScript and Python\"\n3. \"What is the best IDE for coding\"\n4. \"How to become a better coder\"\n5. \"What is the best way to learn coding\"\n6. \"What coding languages are popular\"",
-    "generator":"alpaca-7b_verbose"
-  },
-  {
-    "dataset":"selfinstruct",
-    "instruction":"Discover the most relevant StackOverflow questions for your search term. And output a list of their URLs.\n\nremove item in array",
-    "output":"",
     "generator":"alpaca-7b_verbose"
   },
   {
@@ -4131,12 +4119,6 @@
     "dataset":"selfinstruct",
     "instruction":"Suggest some product bundles that are often purchased with a given product.\n\nMacBook Air",
     "output":"Some product bundles that are often purchased with a MacBook Air include a mouse, keyboard, external hard drive, and protective case.",
-    "generator":"alpaca-7b_verbose"
-  },
-  {
-    "dataset":"selfinstruct",
-    "instruction":"Create a template in markdown to create scope for Jira tickets. Members should use this template as a checklist to ensure they have included all the necessary information when creating a ticket.",
-    "output":"",
     "generator":"alpaca-7b_verbose"
   },
   {

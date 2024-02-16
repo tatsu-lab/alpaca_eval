@@ -4135,12 +4135,6 @@
   },
   {
     "dataset":"selfinstruct",
-    "instruction":"Create a template in markdown to create scope for Jira tickets. Members should use this template as a checklist to ensure they have included all the necessary information when creating a ticket.",
-    "output":"",
-    "generator":"alpaca-7b_concise"
-  },
-  {
-    "dataset":"selfinstruct",
     "instruction":"As part of software engineering, user stories describe what the user wants the system to do, while acceptance criteria describe the conditions a specific user story must meet. Create basic acceptance criteria based on the given user story.\n\nUser story: As a user, I want to use a search field to type a city, name, or street, so that I could find matching hotel options.",
     "output":"Acceptance criteria:\n- The search field should be displayed on the page.\n- The user should be able to type a city, name, or street into the search field.\n- The search field should have an autocomplete feature that offers relevant options as the user types.\n- The search results should be sorted and filtered according to the user's preference.\n- The search field should be fully integrated with the hotel booking system.",
     "generator":"alpaca-7b_concise"

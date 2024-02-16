@@ -4147,12 +4147,6 @@
   },
   {
     "dataset":"selfinstruct",
-    "instruction":"A user story is an informal, general explanation of a software feature written from the perspective of the end user or customer. Write a user story for a given software.\n\nGmail",
-    "output":"",
-    "generator":"llama-2-70b-chat-hf"
-  },
-  {
-    "dataset":"selfinstruct",
     "instruction":"Write a Jira ticket for the given task.\n\nNew Employee onboarding",
     "output":"Sure, here's a sample Jira ticket for the task of new employee onboarding:\n\nTitle: New Employee Onboarding\n\nProject: HR\n\nIssue Type: Task\n\nPriority: High\n\nAssignee: [HR Manager]\n\nDescription:\n\nThe purpose of this task is to ensure that new employees receive a comprehensive onboarding experience, including necessary training and introductions to key team members. This will help them to feel welcomed, informed, and prepared to succeed in their new role.\n\nSteps to be taken:\n\n1. Create an onboarding schedule for new employees, including dates and times for training sessions, meetings with team members, and other important events.\n2. Develop an onboarding checklist that includes all necessary tasks and activities, such as completing paperwork, setting up technology, and reviewing company policies.\n3. Assign a mentor or buddy to each new employee to provide guidance and support during the onboarding process.\n4. Provide training on company policies, procedures, and culture.\n5. Introduce new employees to key team members and stakeholders.\n6. Ensure that all necessary technology and equipment is set up and functioning properly.\n7. Review performance goals and expectations with new employees.\n8. Solicit feedback from new employees throughout the onboarding process to identify areas for improvement.\n\nAcceptance Criteria:\n\n1. Onboarding schedule and checklist are created and communicated to all relevant stakeholders.\n2. Mentor or buddy is assigned to each new employee.\n3. Training sessions are conducted and attended by all new employees.\n4. Introductions to key team members and stakeholders are completed.\n5. All necessary technology and equipment is set up and functioning properly.\n6. Performance goals and expectations are reviewed with new employees.\n7. Feedback is solicited from new employees throughout the onboarding process.\n\nEstimated Time to Complete: 2 weeks\n\nLabels: HR, Onboarding, Task\n\nThis is just a sample and can be modified based on the specific needs of your organization.",
     "generator":"llama-2-70b-chat-hf"
