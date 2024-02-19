@@ -18,10 +18,10 @@ InternLM2 Chat 20B,21.74915450056264,2373,https://huggingface.co/internlm/intern
 Evo v2 7B,20.83411302254932,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),18.63896296749771,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Mixtral 8x7B v0.1,18.25531762637268,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
+Gemini Pro,18.1776445406489,1456,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemini-pro/model_outputs.json,community
 XwinLM 13b V0.1,17.427934750214753,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 Claude 2,17.188240356594065,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
 Claude,16.98534361252407,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,verified
-Gemini Pro,16.848301632919256,1315,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemini-pro/model_outputs.json,minimal
 Claude Instant 1.2,16.127399621587912,1112,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-instant-1.2/model_outputs.json,community
 Tulu 2+DPO 70B,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
 GPT-4 0613,15.755038087701964,1140,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613/model_outputs.json,verified
