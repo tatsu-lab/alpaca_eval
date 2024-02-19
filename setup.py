@@ -35,7 +35,6 @@ PACKAGES_LOCAL = [
 ]
 PACKAGES_ALL_API = [
     "anthropic>=0.3.3",
-    "huggingface_hub>=0.2",
     "cohere",
     "replicate",
     "boto3>=1.28.58",
@@ -50,7 +49,16 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),
     author="The Alpaca Team",
-    install_requires=["python-dotenv", "datasets", "openai>=1.5.0", "pandas", "tiktoken>=0.3.2", "fire", "scipy"],
+    install_requires=[
+        "python-dotenv",
+        "datasets",
+        "openai>=1.5.0",
+        "pandas",
+        "tiktoken>=0.3.2",
+        "fire",
+        "scipy",
+        "huggingface_hub",
+    ],
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
         "dev": PACKAGES_DEV,
