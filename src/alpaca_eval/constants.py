@@ -5,6 +5,7 @@ from functools import partial
 from pathlib import Path
 
 import datasets
+from huggingface_hub import hf_hub_download
 
 CURRENT_DIR = Path(__file__).parent
 BASE_DIR = Path(__file__).parents[2]
@@ -91,6 +92,19 @@ ALPACAEVAL_REFERENCE_OUTPUTS_2 = get_alpaca_eval_data
 ALPACAEVAL_REFERENCE_OUTPUTS_1 = partial(get_alpaca_eval_data, dataset="alpaca_eval")
 
 ALPACAEVAL_REFERENCE_OUTPUTS = ALPACAEVAL_REFERENCE_OUTPUTS_2 if IS_ALPACA_EVAL_2 else ALPACAEVAL_REFERENCE_OUTPUTS_1
+
+
+def ALPACAEVAL_INSTRUCTION_PARAMETERS():
+    out = hf_hub_download(
+        repo_id="tatsu-lab/alpaca_eval",
+        filename="instruction_difficulty.csv",
+        repo_type="dataset",
+        force_download=DATASETS_FORCE_DOWNLOAD,
+        cache_dir=DEFAULT_CACHE_DIR,
+        token=DATASETS_TOKEN,
+    )
+    pd.read_csv(out, index_col=0).squeeze()
+    return df
 
 
 def ALPACAFARM_GOLD_CROSSANNOTATIONS():

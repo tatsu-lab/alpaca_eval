@@ -2197,12 +2197,6 @@
   },
   {
     "dataset":"oasst",
-    "instruction":"Make ASCII art of a cat",
-    "output":"",
-    "generator":"minotaur-13b"
-  },
-  {
-    "dataset":"oasst",
     "instruction":"explain what the theory of sexual selection is and give an example.",
     "output":"The theory of sexual selection is a biological concept that explains how certain traits evolve and become more common in a population due to their role in attracting mates and increasing the chance of successful reproduction. It is based on the idea that individuals of one sex, usually males, compete for the attention of the opposite sex by developing traits that make them more attractive or appealing. This leads to a process of natural selection, where the individuals with the most attractive traits are more likely to reproduce and pass on their genes to the next generation.\n\nAn example of sexual selection is the case of the peacock's tail. The long, brightly colored feathers that make up the tail of a male peacock are not useful for survival or escaping predators. However, they are extremely attractive to female peacocks, who are more likely to mate with males with larger and more ornate tails. As a result, over time, the traits that make up the male peacock's tail have been selected for, as they increase the likelihood of successful reproduction. This is an example of sexual selection, as it is the female peacock's preference for these traits that drives their evolution and spread in the population.",
     "generator":"minotaur-13b"

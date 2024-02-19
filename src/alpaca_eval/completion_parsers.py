@@ -70,6 +70,9 @@ def regex_parser(completion: str, outputs_to_match: dict[Any, Any]) -> list[Any]
     >>> regex_parser(completion, {1: ' true', 2: ' false'})
     [1, 2, 1, 2]
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     for k, v in outputs_to_match.items():
         if not isinstance(v, re.Pattern):
             # inplace modification, which is bad practice but useful to speedup
@@ -101,6 +104,9 @@ def lmsys_parser(completion: str) -> list[Any]:
     >>> lmsys_parser("1 1\n ...")
     [0]
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     try:
         score_pair = completion.split("\n")[0]
         score_pair = score_pair.replace(",", " ")
@@ -133,6 +139,9 @@ def ranking_parser(completion: str, model_1_name: str = "model_1") -> list[Any]:
     >>> ranking_parser("[{'model': 'model_1', 'rank': 3}, {'model': 'model_2', 'rank': 1}]")
     [nan]
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     try:
         if isinstance(completion, str):
             ordered_completions = ast.literal_eval(completion)
@@ -163,6 +172,9 @@ def json_parser(completion: str, annotation_key: Optional[str]) -> list[Any]:
     >>> json_parser(completion, "integer")
     [1]
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     # search for a pattern "```json{...}```" and take what is inside the curly brackets
     if "```json" in completion:
         completion = re.search(r"```json(.*?)```", completion, re.DOTALL).group(1)
@@ -185,6 +197,9 @@ def eval_parser(completion: str) -> list[Any]:
     >>> eval_parser("[True,1,'False']")
     [True, 1, 'False']
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     evaluated_completion = ast.literal_eval(completion)
     if not isinstance(evaluated_completion, list):
         evaluated_completion = [evaluated_completion]
@@ -212,6 +227,9 @@ def replace_parser(completion: str, replacer: dict, default_replacer: Any = "aut
     >>> replace_parser("True", replacer={"True": 1})
     [1]
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     return [replacer.get(completion, completion if default_replacer == "auto" else default_replacer)]
 
 
@@ -245,6 +263,9 @@ def logprob_parser(
         should be in position i. If an integer, then we batch size should be 1 and the desired answer should be the
         token of that position. E.g. `log_prob_index=-1` is useful when using chain for thought reasoning.
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     # completion should be like
     # [{'finish_reason': 'length', 'index': 0, 'logprobs': {'content': [{'token': 'M', 'bytes': [77], 'logprob': -0.017597131, 'top_logprobs': [{'token': 'M', 'bytes': [77], 'logprob': -0.017597131}, {'token': 'm', 'bytes': [109], 'logprob': -4.048847}, {'token': 'Both', 'bytes': [66, 111, 116, 104], 'logprob': -14.908222}, {'token': 'The', 'bytes': [84, 104, 101], 'logprob': -15.705097}, {'token': 'Based', 'bytes': [66, 97, 115, 101, 100], 'logprob': -15.955097}]}]}, 'message': {'content': 'M', 'role': 'assistant', 'function_call': None, 'tool_calls': None}, 'text': 'M', 'total_tokens': 390.0}]}
     # make sure completion["logprobs"]["content"][0]["top_logprobs"] exists
@@ -320,6 +341,9 @@ def pipeline_meta_parser(
     >>> pipeline_meta_parser(completion, parsers_to_kwargs)
     [1]
     """
+    if completion == "":
+        raise ValueError("The completion is empty.")
+
     all_parsers = list(parsers_to_kwargs.keys())
     all_kwargs = list(parsers_to_kwargs.values())
 

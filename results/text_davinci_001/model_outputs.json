@@ -1483,12 +1483,6 @@
   },
   {
     "dataset":"koala",
-    "instruction":"Make a slide to introduce Cantonese",
-    "output":"",
-    "generator":"text_davinci_001"
-  },
-  {
-    "dataset":"koala",
     "instruction":"I am trying to create an economic management book on the impact of AI technology development on the content industry and how to prepare, plan, and actually apply AI technology, apps, and tools that can be used depending on the type of content from the perspective of companies and individuals. Please provide a table of contents for the 50-listed book and a brief description of each table of contents.\nAnswer in English.",
     "output":"Table of Contents\n\n1. Introduction\n\n2. The Impact of AI Technology Development on the Content Industry\n\n3. Preparing for and Applying AI Technology in the Content Industry\n\n3.1. AI Technology and Tools for Content Creation\n3.2. AI Technology and Tools for Content Management and Distribution\n3.3. AI Technology and Tools for Content Analysis and Monetization\n4. Conclusion",
     "generator":"text_davinci_001"
@@ -3021,12 +3015,6 @@
     "dataset":"selfinstruct",
     "instruction":"What other Amazon products might interest someone who visited the given product?\n\nZeroll Zerolon Hardcoat Anodized Commercial Ice Cream Scoop with Unique Liquid Filled Heat Conductive Handle Easy Release Made in USA, 1.5-Ounce, Black",
     "output":"Zeroll Zerolon Hardcoat Anodized Commercial Ice Cream Scoop with Unique Liquid Filled Heat Conductive Handle Easy Release Made in USA, 1.5-Ounce, Black\nZeroll Original Ice Cream Scoop with Unique Liquid Filled Heat Conductive Handle, 1.5-Ounce, Red\nZEROLON ICE CREAM SCOOP, HEAT CONDUCTIVE, 1.5 OZ",
-    "generator":"text_davinci_001"
-  },
-  {
-    "dataset":"selfinstruct",
-    "instruction":"Compare the given item with similar products based on its properties such as price, rating, etc. For product comparison, use a table and separate the columns with \"|\".\n\nItem: iBayam Journal Planner Pens Colored Pens Fine Point Markers Fine Tip Drawing Pens Porous Fineliner Pen for Journaling Writing Note Taking Calendar Coloring Art Office Back to School Supplies, 18 Color",
-    "output":"",
     "generator":"text_davinci_001"
   },
   {
