@@ -178,7 +178,13 @@ class BaseAnnotator(abc.ABC):
 
         # note: not ideal potentially doing a lot of dataframe copies. But given that they should be small, ~ok
         df_to_annotate = utils.convert_to_dataframe(to_annotate)
+
         # make sure primary keys are strings
+        # you need to remember what was converted to string to convert it back => loop through all
+        # the values, and if they are not strings, then store the inverse mapping
+        inverse_mapper = {
+            c: {str(el): el for el in df_to_annotate[c] if not isinstance(el, str)} for c in self.primary_keys
+        }
         for c in self.primary_keys:
             df_to_annotate[c] = df_to_annotate[c].astype(str)
 
@@ -188,6 +194,12 @@ class BaseAnnotator(abc.ABC):
             df_annotated = self._annotate(curr_df_to_annotate, **decoding_kwargs)
             annotated = self._postprocess_and_store_(df_annotated, df_chunk)
             all_annotated.extend(annotated)
+
+        # undo the string conversion for the primary keys
+        all_annotated = [
+            {c: inverse_mapper[c].get(el, el) if c in inverse_mapper else el for c, el in row.items()}
+            for row in all_annotated
+        ]
 
         return all_annotated
 
