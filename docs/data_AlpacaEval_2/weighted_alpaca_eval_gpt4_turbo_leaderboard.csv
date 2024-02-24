@@ -82,6 +82,7 @@ GPT 3.5 Turbo 1106 (verbose),7.415864977744737,431,,https://github.com/tatsu-lab
 OpenCoderPlus-15B,7.406222451098027,1628,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/opencoderplus-15b/model_outputs.json,community
 Recycled WizardLM 7B V2.0,7.337129370777165,1583,https://github.com/tianyi-lab/Reflection_Tuning,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/recycled-wizardlm-7b-v2.0/model_outputs.json,community
 Vicuna 13B v1.3,7.137240386566132,1132,https://huggingface.co/lmsys/vicuna-13b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.3/model_outputs.json,verified
+Gemma Instruct (7B),6.937294379740917,1115,https://huggingface.co/google/gemma-7b-it,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-7b-it/model_outputs.json,community
 Guanaco 65B,6.858494513348623,1249,https://huggingface.co/timdettmers/guanaco-65b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-65b/model_outputs.json,verified
 Vicuna 13B v1.5,6.722122014856962,1061,https://huggingface.co/lmsys/vicuna-13b-v1.5,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-13b-v1.5/model_outputs.json,community
 Recycled WizardLM 7B V1.0,6.632749960625087,1494,https://github.com/tianyi-lab/Reflection_Tuning,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/recycled-wizardlm-7b-v1.0/model_outputs.json,community
@@ -109,6 +110,7 @@ OpenBuddy-Falcon-7b-v6,3.521174371970537,1152,https://huggingface.co/OpenBuddy/o
 Guanaco 13B,3.469596859738549,1774,https://huggingface.co/timdettmers/guanaco-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-13b/model_outputs.json,verified
 Alpaca Farm PPO Sim (GPT-4) 7B,3.4503419870389886,511,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-sim-gpt4-20k-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-sim-gpt4-20k/model_outputs.json,verified
 Baize-v2 7B,3.4048149774522174,1127,https://huggingface.co/project-baize/baize-v2-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baize-v2-7b/model_outputs.json,community
+Gemma Instruct (2B),3.401971438278826,1041,https://huggingface.co/google/gemma-2b-it,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-2b-it/model_outputs.json,community
 Falcon 40B Instruct,3.342918822548359,662,https://huggingface.co/tiiuae/falcon-40b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-40b-instruct/model_outputs.json,verified
 MiniChat 3B,3.007150706395052,868,https://huggingface.co/GeneZC/MiniChat-3B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/minichat-3b/model_outputs.json,community
 Alpaca 7B (verbose),2.922181016050766,537,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-7b_verbose/model_outputs.json,dev
