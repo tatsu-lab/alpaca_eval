@@ -416,24 +416,31 @@ def get_output_path(output_path, model_outputs, name, dflt_dir="results"):
     return output_path
 
 
-def print_leaderboard(df_leaderboard, leaderboard_mode, cols_to_print, current_name=None):
+def print_leaderboard(df_leaderboard, leaderboard_mode_or_models, cols_to_print, current_name=None):
     cols_to_print = list(cols_to_print)
 
-    if leaderboard_mode is not None:
+    if isinstance(leaderboard_mode_or_models, str):
         if "mode" in df_leaderboard.columns:
             # select all modes that come before
-            current_idx = constants.ORDERED_LEADERBOARD_MODES.index(leaderboard_mode)
+            current_idx = constants.ORDERED_LEADERBOARD_MODES.index(leaderboard_mode_or_models)
             df_leaderboard["mode_idx"] = df_leaderboard["mode"].apply(constants.ORDERED_LEADERBOARD_MODES.index)
 
             is_smaller_mode = df_leaderboard["mode_idx"] <= current_idx
             is_selected = is_smaller_mode | (df_leaderboard["mode"].isnull())
 
-            if current_name is not None:
-                is_selected |= df_leaderboard.index == current_name
+    elif isinstance(leaderboard_mode_or_models, Sequence):
+        # check the index of the models
+        is_selected = df_leaderboard.index.isin(leaderboard_mode_or_models)
 
-            df_leaderboard = df_leaderboard[is_selected]
     elif "mode" in df_leaderboard.columns:
         cols_to_print = cols_to_print + ["mode"]
+        is_selected = [True] * len(df_leaderboard)
+
+    if current_name is not None:
+        is_selected |= df_leaderboard.index == current_name
+
+    df_leaderboard = df_leaderboard[is_selected]
+
     print(df_leaderboard[cols_to_print].to_string(float_format="%.2f"))
 
 
