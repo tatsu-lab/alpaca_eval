@@ -14,7 +14,12 @@ import pandas as pd
 
 from . import utils
 
-__all__ = ["RandomSwitchTwoColumnsProcessor", "PaddingForBatchesProcessor", "ChainOfThoughtProcessor"]
+__all__ = [
+    "RandomSwitchTwoColumnsProcessor",
+    "PaddingForBatchesProcessor",
+    "ChainOfThoughtProcessor",
+    "JsonKeysToColumnProcessor",
+]
 
 
 class BaseProcessor(abc.ABC):
@@ -269,6 +274,40 @@ class ChainOfThoughtProcessor(BaseProcessor):
                     first_model: f"output_{preference}",
                     second_model: f"output_{3 - preference}",
                 }
+
+
+class JsonKeysToColumnProcessor(BaseProcessor):
+    r"""Processes the raw completions by extracting the chain of thought as a new column
+    by loading them as a JSON and, if chain of thought is used, adding a dictionary
+    "referenced_models" to better understand which model names correspond to which outputs in the chain of thought.
+    """
+
+    def __init__(self, *args, json_keys_to_keep: list[str], **kwargs):
+        self.json_keys_to_keep = json_keys_to_keep
+        super().__init__(*args, **kwargs)
+
+    @property
+    def other_output_keys_to_keep(self):
+        return self.json_keys_to_keep
+
+    def preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
+        return df_to_annotate
+
+    @property
+    def _tmp_col(self):
+        return "json_" + self.completion_column
+
+    def postprocess(self, df_annotated: pd.DataFrame) -> pd.DataFrame:
+        """Load the raw completion as a JSON and add the referenced models to better understand chain of thought."""
+        df_annotated = df_annotated.copy()
+
+        if self.completion_column in df_annotated:
+            df_annotated[self._tmp_col] = df_annotated[self.completion_column].apply(_try_json_load)
+            for key in self.json_keys_to_keep:
+                df_annotated[key] = df_annotated[self._tmp_col].apply(lambda x: x.get(key, None))
+            df_annotated = df_annotated.drop(columns=[self._tmp_col])
+
+        return df_annotated
 
 
 def _try_json_load(el):
