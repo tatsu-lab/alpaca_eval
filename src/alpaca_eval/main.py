@@ -1,7 +1,7 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Callable, Literal, Optional, Union
+from typing import Any, Callable, Literal, Optional, Sequence, Union
 
 import fire
 import pandas as pd
@@ -22,7 +22,7 @@ def evaluate(
     output_path: Optional[Union[AnyPath, str]] = "auto",
     precomputed_leaderboard: Optional[Union[str, AnyPath, AnyData]] = "auto",
     is_overwrite_leaderboard: bool = False,
-    leaderboard_mode_to_print: Optional[str] = "minimal",
+    leaderboard_mode_to_print: Optional[Union[str, Sequence[str]]] = "minimal",
     current_leaderboard_mode: str = "community",
     is_return_instead_of_print: bool = False,
     fn_metric: Union[str, callable] = "pairwise_to_winrate",
@@ -68,9 +68,10 @@ def evaluate(
     is_overwrite_leaderboard : bool, optional
         Whether to overwrite the leaderboard if the model is already in it.
 
-    leaderboard_mode_to_print : {"minimal", "verified", "community", None}, optional
+    leaderboard_mode_to_print : {"minimal", "verified", "community", None} or list, optional
         The mode of the leaderboard to use. Only used if the precomputed leaderboard has a column `mode`, in which case
-        it will filter the leaderboard by this mode. If None keeps all.
+        it will filter the leaderboard by this mode. If None keeps all. If a list, will print all the models in the
+        list.
 
     current_leaderboard_mode : {"minimal", "verified", "community"}, optional
         The mode of the leaderboard for the current method.
@@ -191,7 +192,7 @@ def evaluate(
             df_leaderboard,
             leaderboard_mode_to_print,
             current_name=name,
-            cols_to_print=["win_rate", "standard_error", "n_total", "avg_length"],  #
+            cols_to_print=["win_rate", "standard_error", "n_total", "avg_length"],
         )
 
 

@@ -85,7 +85,7 @@ class BaseAnnotator(abc.ABC):
     def __init__(
         self,
         primary_keys: Sequence[str],
-        annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = "claude",
+        annotators_config: Union[utils.AnyPath, list[dict[str, Any]]] = constants.DEFAULT_ANNOTATOR_CONFIG,
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
         other_output_keys_to_keep: Sequence[str] = (
