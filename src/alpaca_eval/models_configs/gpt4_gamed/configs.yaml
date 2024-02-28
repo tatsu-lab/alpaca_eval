@@ -4,5 +4,5 @@ gpt4_gamed:
   completions_kwargs:
     model_name: "gpt-4"
     max_tokens: 4096
-  pretty_name: "GPT-4 (Gamed)"
+  pretty_name: "GPT-4 (Adversarial)"
   # see postprocess.py for actual code used for processing the outputs of gpt4
