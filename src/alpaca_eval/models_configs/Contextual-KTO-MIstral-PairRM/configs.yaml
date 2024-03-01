@@ -1,0 +1,18 @@
+Contextual-KTO-Mistral-PairRM: # this should be the same as the name as the current directory
+  prompt_template: "Contextual-KTO-Mistral-PairRM/prompt.txt" # what prompt should be used for this model
+  fn_completions: "vllm_local_completions"
+  completions_kwargs: # parameters to the completion function
+    # model_name: "ContextualAI/Contextual-KTO-Mistral-PairRM"
+    model_name: "/data/models/yi34_kto_pairrm/kto_mistral7b_instruct_v2_snorkel_pairrm_iter3_b0.1/LATEST/"
+    model_kwargs:
+      torch_dtype: 'bfloat16'
+      tokenizer_mode: "auto"
+      trust_remote_code: True
+    max_new_tokens: 2048  # 4096
+    temperature: 1.0
+    top_p: 0.95
+    do_sample: True
+    stop_token_ids: [2]
+    batch_size: 900
+  pretty_name: "Contextual (KTO-Mistral-PairRM)" # name in the leaderboard
+  # link: "https://huggingface.co/ContextualAI/Contextual-KTO-Mistral-PairRM" # link to the model's repo/information in the leaderboard
