@@ -8,7 +8,8 @@ Qwen1.5-72B-Chat:
     num_procs: 8
     max_tokens: 3500
     top_p: 0.8
+    price_per_token: 9e-7
     client_kwargs:
       base_url: "https://api.together.xyz/v1"
   pretty_name: "Qwen1.5 72B Chat"
-  link: "https://huggingface.co/collections/Qwen/qwen15-65c0a2f577b1ecb76d786524"
+  link: "https://huggingface.co/Qwen/Qwen1.5-72B-Chat"
