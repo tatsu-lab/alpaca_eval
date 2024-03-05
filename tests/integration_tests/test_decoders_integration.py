@@ -31,8 +31,9 @@ def test_openai_completions_integration():
 
 @pytest.mark.slow
 def test_anthropic_completions_integration():
-    prompts = _get_formatted_prompts("claude")
-    results = anthropic_completions(prompts)
+    model_name = "claude-3-sonnet-20240229"
+    prompts = _get_formatted_prompts(model_name)
+    results = anthropic_completions(prompts, model_name=model_name)
     assert len(results["completions"]) == len(prompts)
     assert "2" in results["completions"][0]
     assert "4" in results["completions"][1]
