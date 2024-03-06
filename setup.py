@@ -59,7 +59,7 @@ setuptools.setup(
         "scipy",
         "huggingface_hub",
         "patsy",
-        "sklearn",
+        "scikit-learn",
     ],
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
