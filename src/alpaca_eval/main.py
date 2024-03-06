@@ -28,7 +28,7 @@ def evaluate(
     fn_metric: Union[str, callable] = "get_length_controlled_winrate" if constants.IS_ALPACA_EVAL_2 else "get_winrate",
     metric_kwargs: Optional[dict[str, Any]] = None,
     is_recompute_metrics_only: bool = False,
-    sort_by: str = "length_controlled_winrate",
+    sort_by: str = "length_controlled_winrate" if constants.IS_ALPACA_EVAL_2 else "win_rate",
     is_cache_leaderboard: Optional[bool] = None,
     max_instances: Optional[int] = None,
     annotation_kwargs: Optional[dict[str, Any]] = None,
