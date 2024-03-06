@@ -2,22 +2,12 @@ import abc
 import logging
 from dataclasses import dataclass
 from numbers import Number
-from typing import Sequence, Union
 
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 
 from alpaca_eval.utils import validate_alpacaeval_preference
-
-
-def pairwise_to_winrate(preferences: Union[pd.Series, Sequence]) -> dict[str, float]:
-    """Extract head2head metrics (n_wins, n_counts, win_rate) from a sequence preference.
-    This assumes that the preference is encoded as 0 or 1.5 for draw, 1 for base win, 2 when the model to compare wins.
-    """
-    out = AbsoluteScoringRule().describe_head2head(preferences)
-    out["discrete_win_rate"] = ZeroOneScoringRule().describe_head2head(preferences)["win_rate"]
-    return out
 
 
 @dataclass
@@ -50,8 +40,6 @@ class BaseScoringRule(abc.ABC):
 
     def generalized_win_rate(self, predictions: npt.ArrayLike) -> float:
         """Compute the generalized win rate of the prediction."""
-        # predictions = self.preprocess_predictions(predictions)
-        # return (predictions - 1).mean() * 100
         return self.describe_head2head(predictions)["win_rate"]
 
     def describe_head2head(self, predictions: npt.ArrayLike) -> dict[str, float]:
