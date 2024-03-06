@@ -394,7 +394,7 @@ def get_precomputed_leaderboard(precomputed_leaderboard, reference_outputs, anno
     return leaderboard, precomputed_leaderboard
 
 
-def get_output_path(output_path, model_outputs, name, dflt_dir="results"):
+def get_output_path(output_path, model_outputs, name, dflt_dir="results", annotators_config=None):
     if output_path == "auto":
         if model_outputs is None:
             output_path = None
@@ -413,11 +413,18 @@ def get_output_path(output_path, model_outputs, name, dflt_dir="results"):
     if output_path is not None:
         output_path = Path(output_path)
         output_path.mkdir(exist_ok=True, parents=True)
+
+        if isinstance(annotators_config, str) and "/" not in annotators_config:
+            output_path = Path(output_path) / annotators_config
+            output_path.mkdir(exist_ok=True, parents=True)
+
     return output_path
 
 
 def print_leaderboard(df_leaderboard, leaderboard_mode_or_models, cols_to_print, current_name=None):
     cols_to_print = list(cols_to_print)
+    # make sure no duplicates and keep in order
+    cols_to_print = list(dict.fromkeys(cols_to_print))
 
     if isinstance(leaderboard_mode_or_models, str):
         if "mode" in df_leaderboard.columns:
