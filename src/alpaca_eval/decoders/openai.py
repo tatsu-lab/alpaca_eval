@@ -113,8 +113,9 @@ def openai_completions(
     if is_strip:
         prompts = [p.strip() for p in prompts]
 
-    is_chat = decoding_kwargs.pop("requires_chatml", _requires_chatml(model_name))
-    if is_chat:
+    requires_chatml = decoding_kwargs.pop("requires_chatml", _requires_chatml(model_name))
+    decoding_kwargs["is_chat"] = decoding_kwargs.get("is_chat", requires_chatml)
+    if requires_chatml:
         prompts = [utils.prompt_to_chatml(prompt) for prompt in prompts]
         num_procs = num_procs or 2
         batch_size = batch_size or 1
@@ -136,7 +137,7 @@ def openai_completions(
 
     inputs = zip(prompt_batches, max_tokens)
 
-    kwargs = dict(model=model_name, is_chat=is_chat, **decoding_kwargs)
+    kwargs = dict(model=model_name, **decoding_kwargs)
     kwargs_to_log = {k: v for k, v in kwargs.items() if "api_key" not in k}
     logging.info(f"Kwargs to completion: {kwargs_to_log}. num_procs={num_procs}")
 
