@@ -5,6 +5,7 @@ claude_2:
     model_name: "claude-2"
     max_tokens_to_sample: 50
     temperature: 0
+    client_function_name: "completions"
   completion_parser_kwargs:
     outputs_to_match:
       1: '(?:^|\n) ?Output \(a\)'
