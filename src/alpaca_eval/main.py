@@ -25,7 +25,7 @@ def evaluate(
     leaderboard_mode_to_print: Optional[Union[str, Sequence[str]]] = "minimal",
     current_leaderboard_mode: str = "community",
     is_return_instead_of_print: bool = False,
-    fn_metric: Union[str, callable] = "get_length_controlled_winrate",
+    fn_metric: Union[str, callable] = "get_length_controlled_winrate" if constants.IS_ALPACA_EVAL_2 else "get_winrate",
     metric_kwargs: Optional[dict[str, Any]] = None,
     is_recompute_metrics_only: bool = False,
     sort_by: str = "length_controlled_winrate",
