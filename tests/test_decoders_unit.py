@@ -35,13 +35,15 @@ def test_openai_completions(mocker, mock_openai_completion):
 
 
 def test_anthropic_completions(mocker):
-    mock_response = SimpleNamespace(completion=MOCKED_COMPLETION)
+    mock_response = dict(text=MOCKED_COMPLETION)
 
     mocker.patch(
         "alpaca_eval.decoders.anthropic._anthropic_completion_helper",
         return_value=mock_response,
     )
-    result = anthropic_completions(["Prompt 1", "Prompt 2"], num_procs=1)
+    result = anthropic_completions(
+        ["<|im_start|>user\nPrompt 1\n<|im_end|>", "<|im_start|>user\nPrompt 2\n<|im_end|>"], num_procs=1
+    )
     _run_all_asserts_completions(result)
 
 

@@ -9,7 +9,6 @@ from typing import Optional, Sequence
 import requests
 
 from .. import utils
-from .openai import _prompt_to_chatml
 
 __all__ = ["jina_chat_completions"]
 
@@ -37,7 +36,7 @@ def jina_chat_completions(
     else:
         logging.info(f"Using `jina_chat_completions` on {n_examples} prompts.")
 
-    prompts = [_prompt_to_chatml(prompt.strip()) for prompt in prompts]
+    prompts = [utils.prompt_to_chatml(prompt.strip()) for prompt in prompts]
     num_processes = min(multiprocessing.cpu_count(), num_procs)
     with utils.Timer() as t:
         with multiprocessing.Pool(processes=num_processes) as pool:
