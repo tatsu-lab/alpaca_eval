@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 import fire
@@ -6,7 +7,7 @@ from scipy.stats import pearsonr, spearmanr
 
 from alpaca_eval import analyze, annotators, constants
 from alpaca_eval import main as alpaca_main
-from alpaca_eval import metrics, utils
+from alpaca_eval import utils
 from alpaca_eval.types import AnyPath
 
 
@@ -97,6 +98,33 @@ def make_leaderboard_like(leaderboard_to_copy: Optional[AnyPath], **kwargs):
 
     print("Comparison between the leaderboards:")
     compare_leaderboards(leaderboard_to_copy, leaderboard_new)
+
+
+def run_all_length_corrected_winrates(**kwargs):
+    # load the leaderboard for AlpacaEval
+    for is_alpaca_eval_2 in [False]:  # True,
+        if is_alpaca_eval_2:
+            lb_path = constants.ALPACAEVAL_2_LEADERBOARD_PATHS / f"{constants.ANNOTATOR_CONFIG_AE2}_leaderboard.csv"
+            ref_outputs = constants.ALPACAEVAL_REFERENCE_OUTPUTS_2
+            annotator = constants.ANNOTATOR_CONFIG_AE2
+        else:
+            lb_path = constants.ALPACAEVAL_1_LEADERBOARD_PATHS / f"{constants.ANNOTATOR_CONFIG_AE1}_leaderboard.csv"
+            ref_outputs = constants.ALPACAEVAL_REFERENCE_OUTPUTS_1
+            annotator = constants.ANNOTATOR_CONFIG_AE1
+
+        lb = utils.load_or_convert_to_dataframe(lb_path)
+        for m in lb.index:
+            try:
+                alpaca_main.evaluate(
+                    model_outputs=f"results/{m}/model_outputs.json",
+                    reference_outputs=ref_outputs,
+                    annotators_config=annotator,
+                    is_recompute_metrics_only=True,
+                    name=m,
+                    **kwargs,
+                )
+            except:
+                logging.exception(f"Error while computing the length corrected winrate for {m}")
 
 
 def main(task, **kwargs):

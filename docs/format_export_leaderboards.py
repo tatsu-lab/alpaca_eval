@@ -11,7 +11,14 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
     df = load_or_convert_to_dataframe(leaderboard_file)
     df["link"] = ""
     df["samples"] = ""
-    df = df[["win_rate", "avg_length", "link", "samples", "mode"]]
+    cols_to_keep = ["win_rate", "avg_length", "link", "samples", "mode"]
+    if "length_controlled_winrate" in df.columns:
+        cols_to_keep = ["length_controlled_winrate"] + cols_to_keep
+    df = df[cols_to_keep]
+
+    # drop mode == 'dev'
+    df = df[df["mode"] != "dev"]
+
     df = df.rename(columns={"mode": "filter"})
     df = df.reset_index(names="name")
     for idx in range(len(df)):
@@ -36,7 +43,13 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
             df.loc[
                 idx, "samples"
             ] = f"https://github.com/tatsu-lab/alpaca_eval/blob/main/results/{informal_name}/model_outputs.json"
-    df = df.sort_values(by=["win_rate"], ascending=False)
+
+    # if "length_controlled_winrate" never nan then we can use it as the main metric
+    if "length_controlled_winrate" in cols_to_keep and df["length_controlled_winrate"].notna().all():
+        df = df.sort_values(by=["length_controlled_winrate"], ascending=False)
+    else:
+        df = df.sort_values(by=["win_rate"], ascending=False)
+
     save_dir = Path("docs") / leaderboard_file.parent.name
     save_dir.mkdir(exist_ok=True, parents=True)
     df.to_csv(save_dir / leaderboard_file.name, index=False)

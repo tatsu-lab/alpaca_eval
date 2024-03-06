@@ -58,6 +58,8 @@ setuptools.setup(
         "fire",
         "scipy",
         "huggingface_hub",
+        "patsy",
+        "sklearn",
     ],
     extras_require={
         "analysis": PACKAGES_ANALYSIS,
