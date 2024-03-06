@@ -168,7 +168,7 @@ def _random_mode(s, available_modes=None, favorite_mode=None, seed=123, is_dropn
     Example
     -------
     >>> import pandas as pd
-    >>> from alpaca_eval.metrics import _random_mode
+    >>> from alpaca_eval.metrics.helpers import _random_mode
     >>> _random_mode(pd.Series([1.0,2.0,1.0]))
     1.0
     >>> _random_mode(pd.Series([1.0,2.0])) in [1.0, 2.0]
