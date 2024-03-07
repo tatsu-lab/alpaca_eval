@@ -1,15 +1,15 @@
-Contextual-KTO-Mistral-PairRM: # this should be the same as the name as the current directory
+Contextual-KTO-Mistral-PairRM:
   prompt_template: "Contextual-KTO-Mistral-PairRM/prompt.txt"
-  fn_completions: "vllm_local_completions"
+  fn_completions: "openai_completions"
   completions_kwargs:
     model_name: "ContextualAI/Contextual_KTO_Mistral_PairRM"
-    model_kwargs:
-      torch_dtype: 'bfloat16'
-      tokenizer_mode: "auto"
-      trust_remote_code: True
-    max_new_tokens: 2048
+    requires_chatml: True
     temperature: 0.7
+    num_procs: 8
+    is_strip: False
+    max_tokens: 2048
     top_p: 0.95
-    batch_size: 900
-  pretty_name: "Contextual AI (KTO-Mistral-PairRM)" # name in the leaderboard
+    client_kwargs:
+      base_url: "https://vr74xanx2jimu6ae.us-east-1.aws.endpoints.huggingface.cloud/v1/"
+  pretty_name: "Contextual AI (KTO-Mistral-PairRM)"
   link: "https://huggingface.co/ContextualAI/Contextual_KTO_Mistral_PairRM" # link to the model's repo/information in the leaderboard
