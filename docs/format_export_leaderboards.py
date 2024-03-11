@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 from alpaca_eval.constants import MODELS_CONFIG_DIR, PRECOMPUTED_LEADERBOARDS
+from alpaca_eval.metrics.glm_winrate import get_is_extreme_changes
 from alpaca_eval.utils import load_configs, load_or_convert_to_dataframe
 
 CURRENT_DIR = Path(__file__).parents[1]
@@ -49,6 +50,20 @@ for leaderboard_file in PRECOMPUTED_LEADERBOARDS.values():
         df = df.sort_values(by=["length_controlled_winrate"], ascending=False)
     else:
         df = df.sort_values(by=["win_rate"], ascending=False)
+
+    # run get_is_extreme_changes on each row where length_controlled_winrate is not nan to avoid merging PRs
+    # where the length controlled results seem very suspicious
+    if "length_controlled_winrate" in cols_to_keep:
+        idx_notna = df["length_controlled_winrate"].notna()
+        arr_is_extreme = df[idx_notna].apply(
+            lambda row: get_is_extreme_changes(row["win_rate"], row["length_controlled_winrate"], min_warn=False),
+            axis=1,
+        )
+        if arr_is_extreme.any():
+            raise ValueError(
+                f"Found extreme changes in the length controlled winrate. Please check the following rows: "
+                f"{df[idx_notna][arr_is_extreme][['name', 'win_rate','length_controlled_winrate']]}"
+            )
 
     save_dir = Path("docs") / leaderboard_file.parent.name
     save_dir.mkdir(exist_ok=True, parents=True)
