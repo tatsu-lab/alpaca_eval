@@ -16,6 +16,7 @@ GPT-4 0613 (verbose),23.23736004346385,1473,,https://github.com/tatsu-lab/alpaca
 GPT-4 Turbo (concise),22.92019444047205,1136,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview_concise/model_outputs.json,dev
 GPT-4 0314,22.07325892871952,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
 Mistral Medium,21.855772543461345,1500,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-medium/model_outputs.json,minimal
+Samba CoE v0.2,21.847378669271283,1469,https://huggingface.co/spaces/sambanovasystems/Samba-CoE-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.2/model_outputs.json,community
 XwinLM 70b V0.1,21.812957073994184,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
 InternLM2 Chat 20B,21.74915450056264,2373,https://huggingface.co/internlm/internlm2-chat-20b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-20b-ppo/model_outputs.json,community
 Mistral Large (24/02),21.438775981285723,1362,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-large-2402/model_outputs.json,verified
@@ -26,6 +27,7 @@ Gemini Pro,18.1776445406489,1456,,https://github.com/tatsu-lab/alpaca_eval/blob/
 XwinLM 13b V0.1,17.427934750214753,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 Claude 2,17.188240356594065,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
 Claude,16.98534361252407,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,verified
+Samba CoE v0.1,16.835501870062114,1316,https://huggingface.co/spaces/sambanovasystems/Samba-CoE-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
 Claude Instant 1.2,16.127399621587912,1112,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-instant-1.2/model_outputs.json,community
 Mistral-7B-ReMax-v0.1,15.999331369052298,1478,https://huggingface.co/ziniuli/Mistral-7B-ReMax-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-ReMax-v0.1/model_outputs.json,community
 Tulu 2+DPO 70B,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
