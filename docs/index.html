@@ -73,7 +73,7 @@
 
         th:first-child,
         td:first-child {
-            width: 70%;
+            width: 60%;
             padding-left: 30px;
             text-align: left;
         }
@@ -86,7 +86,7 @@
 
         th:last-child,
         td:last-child {
-            width: 15%;
+            width: 17%;
             padding-right: 30px;
         }
 
@@ -173,7 +173,7 @@
 <!--        </small>-->
 <!--        <br>-->
         <small id="caution" style="color: #8C1515;">
-            Caution: GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs.
+            Caution:  GPT-4 may favor models that were fine-tuned on its outputs. Debiased win rates only control for length bias.
         </small>
         <br>
         <a href="https://github.com/tatsu-lab/alpaca_eval">
@@ -211,9 +211,9 @@
 
     <table id="leaderboard">
         <tr>
-            <th>Model Name</th>
-            <th>Win Rate</th>
-            <th>Length</th>
+            <th><br>Model Name</th>
+            <th>Debiased<br>Win Rate</th>
+            <th>Raw<br>Win Rate</th>
         </tr>
     </table>
 
@@ -345,8 +345,15 @@
                                 nameTd.appendChild(samplesLink);
                             }
 
-                            winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
-                            lenWinRateTd.textContent = Number(row['length_controlled_winrate']).toFixed(2) + '%';
+                            winRateTd.textContent = Number(row['win_rate']).toFixed(1) + '%';
+
+                            debiasedWinRate = Number(row['length_controlled_winrate'])
+                            if (Number.isNaN(debiasedWinRate)) {
+                                lenWinRateTd.textContent = '';
+                            } else {
+                                lenWinRateTd.textContent = debiasedWinRate.toFixed(1) + '%';
+                            }
+                            //lenWinRateTd.textContent = Number(row['length_controlled_winrate']).toFixed(1) + '%';
                             //lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
 
 
