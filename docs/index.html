@@ -314,7 +314,7 @@
             complete: function (results) {
                 console.log(results.data);
                 results.data.forEach(row => {
-                    if (row['name'] || row['win_rate'] || row['avg_length']) {
+                    if (row['name'] || row['win_rate'] || row['length_controlled_winrate']) { //|| row['avg_length']
                         let filter = row['filter'];
 
                         if ((communityRadio.checked && (filter === 'verified' || filter === 'minimal' || filter === 'community')) ||
@@ -323,7 +323,8 @@
                             const tr = document.createElement('tr');
                             const nameTd = document.createElement('td');
                             const winRateTd = document.createElement('td');
-                            const lengthTd = document.createElement('td');
+                            //const lengthTd = document.createElement('td');
+                            const lenWinRateTd = document.createElement('td');
 
                             if (row['link'] && row['link'].trim() !== '') {
                                 const a = document.createElement('a');
@@ -345,11 +346,14 @@
                             }
 
                             winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
-                            lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
+                            lenWinRateTd.textContent = Number(row['length_controlled_winrate']).toFixed(2) + '%';
+                            //lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
+
 
                             tr.appendChild(nameTd);
+                            tr.appendChild(lenWinRateTd);
                             tr.appendChild(winRateTd);
-                            tr.appendChild(lengthTd);
+                            //tr.appendChild(lengthTd);
 
                             table.appendChild(tr);
                         }
