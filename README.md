@@ -5,57 +5,24 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
+
+**AlpacaEval 2.0 with length-controlled win-rates** has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$5** of OpenAI credits run. Our goal is to have a benchmark for chat LLMs that is: fast, cheap, and highly correlated with humans. Here's a comparison with other benchmarks:
+
+---
+
+Updates:
+
+:tada: **Length-corrected Win Rates** are out and used by default! The raw win rates are still shown on the website and the CLI. More details [here](#alpacaeval-20).
+
 :tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpacaeval-20). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
 
 ---
 
-Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
-time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
-replicable, and validated against 20K human annotations.
-It is particularly useful for model development.
-Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations) like the preference for longer outputs.
-AlpacaEval provides the following:
-
-- [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
-  evaluation set. **Caution**: Automatic evaluators (e.g. GPT-4) may be biased towards models that generate longer outputs and/or that were fine-tuned on the model underlying the evaluator (e.g. GPT-4).
-- [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
-  annotations). We evaluate a
-  model by
-  measuring the fraction of times a powerful LLM (e.g. GPT-4) prefers the outputs from that model
-  over
-  outputs from a reference model. Our evaluators enable caching and output randomization by default.
-- [**Toolkit for building automatic evaluators**](#analysis): a simple interface for
-  building advanced automatic evaluators (e.g. with caching, batching, or multi-annotators) and analyzing them (quality,
-  price, speed, statistical power, bias, variance etc).
-- [**Human evaluation data**](#data-release): 20K human preferences between a given and reference model
-  on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
-  evaluation set. 2.5K of these are cross-annotations (4 humans annotating the same 650 examples).
-- [**AlpacaEval dataset**](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_eval.json): a simplification
-  of [AlpacaFarm's](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "inputs" are merged into one field, and reference outputs are longer. [Details here](#data-release).
-
-<details>
-  <summary><b>When to use and not use AlpacaEval?</b></summary>
-
-**When to use AlpacaEval?**
-Our automatic evaluator is a quick and cheap proxy for human evaluation of simple
-instruction-following tasks.
-It is useful if you
-have to run many evaluations quickly, e.g., during model development.
-
-**When not to use AlpacaEval?**
-As any other automatic evaluator, AlpacaEval should **not replace human evaluation in
-high-stake decision-making**, e.g., to decide on model release. In particular, AlpacaEval is limited by the fact
-that (1) the instructions in the eval set might not be representative of advanced usage of LLMs; (2) automatic
-evaluators may have biases such as favoring style over
-factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
-Details in [limitations](#limitations).
-
-</details>
-
 <details open>
   <summary><b>Table of Contents</b></summary>
 
-1. [Quick Start](#quick-start)
+1. [Overview](#overview)
+2. [Quick Start](#quick-start)
 2. [Leaderboards and how to interpret them](#leaderboards-and-how-to-interpret-them)
     - [Models](#models)
     - [Evaluators](#evaluators)
@@ -82,6 +49,56 @@ Details in [limitations](#limitations).
     - [Major updates](#major-updates)
 
 </details>
+
+# Overview
+
+
+Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
+time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
+replicable, and validated against 20K human annotations.
+It is particularly useful for model development.
+Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations) like the preference for longer outputs.
+AlpacaEval provides the following:
+
+- [**Leaderboard**](https://tatsu-lab.github.io/alpaca_eval/): a leaderboard of common models on the AlpacaEval
+  evaluation set. **Caution**: Automatic evaluators (e.g. GPT-4) may be biased towards models that generate longer outputs and/or that were fine-tuned on the model underlying the evaluator (e.g. GPT-4).
+- [**Automatic evaluator**](#evaluators): an automatic evaluator that has high agreement with humans (validated on 20K
+  annotations). We evaluate a
+  model by
+  measuring the fraction of times a powerful LLM (e.g. GPT-4) prefers the outputs from that model
+  over
+  outputs from a reference model. Our evaluators enable caching and output randomization by default.
+- [**Toolkit for building automatic evaluators**](#analysis): a simple interface for
+  building advanced automatic evaluators (e.g. with caching, batching, or multi-annotators) and analyzing them (quality,
+  price, speed, statistical power, bias, variance etc).
+- [**Human evaluation data**](#data-release): 20K human preferences between a given and reference model
+  on the [AlpacaFarm](https://github.com/tatsu-lab/alpaca_farm/tree/main)
+  evaluation set. 2.5K of these are cross-annotations (4 humans annotating the same 650 examples).
+- [**AlpacaEval dataset**](https://huggingface.co/datasets/tatsu-lab/alpaca_eval/blob/main/alpaca_eval.json): a simplification
+  of [AlpacaFarm's](https://github.com/tatsu-lab/alpaca_farm/tree/main) evaluation set, where "instructions" and "inputs" are merged into one field, and reference outputs are longer. [Details here](#data-release).
+
+
+
+
+<details>
+  <summary><b>When to use and not use AlpacaEval?</b></summary>
+
+**When to use AlpacaEval?**
+Our automatic evaluator is a quick and cheap proxy for human evaluation of simple
+instruction-following tasks.
+It is useful if you
+have to run many evaluations quickly, e.g., during model development.
+
+**When not to use AlpacaEval?**
+As any other automatic evaluator, AlpacaEval should **not replace human evaluation in
+high-stake decision-making**, e.g., to decide on model release. In particular, AlpacaEval is limited by the fact
+that (1) the instructions in the eval set might not be representative of advanced usage of LLMs; (2) automatic
+evaluators may have biases such as favoring style over
+factuality of the answer; and (3) AlpacaEval does not measure the risks that a model could cause.
+Details in [limitations](#limitations).
+
+</details>
+
 
 # Quick Start
 
@@ -605,7 +622,10 @@ see [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/de
 
 </details>
 
-## Making a new leaderboard
+
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Making a new leaderboard</h2></summary>
 
 <details>
   <summary><code>>>> alpaca_eval make_leaderboard -- --help</code></summary>
@@ -681,7 +701,10 @@ where:
   default, the reference outputs are the 003 outputs on AlpacaEval set.
 - `annotators_config`: The path to the annotator's config file. Defaults to `alpaca_eval_gpt4`.
 
-## Making a new evaluator
+</details>
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Making a new evaluator</h2></summary>
 
 <details>
   <summary><code>>>> alpaca_eval analyze_evaluators -- --help</code></summary>
@@ -823,6 +846,8 @@ evaluation.
 If you want a cheaper evaluation you can use a single seed using `--is_single_annotator True` which will skip the
 estimation of bias and variance.
 
+</details>
+
 # Contributing
 
 We are accepting PRs for new models, evaluators, and eval sets, in addition to bug fixes.
@@ -834,8 +859,7 @@ wish to ask help from the community.
 
 To get started, please first fork the repo, and install the package from source `pip install -e .`
 
-<details>
-  <summary><h2 tabindex="-1" dir="auto">Contributing a model</h2></summary>
+## Contributing a model
 
 First, you'll need to add a model config definition in the [models_configs](src/alpaca_eval/models_configs/) folder. As
 an example, you can look at
@@ -892,8 +916,6 @@ A verified result in AlpacaEval indicates that a core maintainer has decoded the
 
 Note that we will not re-evaluate the same model. Due to sampling variance, the results might slightly differ from your initial ones. We will replace your previous community results with the verified ones. 
 
-
-</details>
 
 </details>
 
@@ -978,7 +1000,7 @@ Those can broadly be clustered into 3 categories:
    gap between the open models and OpenAI models than other leaderboards (
    e.g. [lmsys](https://lmsys.org/blog/2023-03-30-vicuna/)).
 
-2. **Biases of automatic annotators**: the automatic annotators seem to have implicit biases. In particular, we found
+2. **Biases of automatic annotators**: the raw automatic annotators seem to have implicit biases. In particular, we found
    that they tend to prefer longer outputs and outputs that contain lists (e.g. 0.68 / 0.69 for `alpaca_eval_gpt4`
    and 0.62 / 0.58 for `claude`).
    Although we found that humans have similar biases (0.64 / 0.61), we believe that this could be more of a limitation
@@ -987,7 +1009,7 @@ Those can broadly be clustered into 3 categories:
    of the output than its content (e.g. factuality).
    Finally, we found that automatic evaluators tend to prefer outputs from models that are similar (likely trained on
    the same data) as suggested by the big difference between ChatGPT/GPT4 on `claude`'s and `alpaca_eval_gpt4`'s
-   leaderboard.
+   leaderboard. Note that the length bias is partially mitigated in our length-controlled win-rates.
 3. **Lack of safety evaluation**: importantly, AlpacaEval only evaluates the instruction-following capabilities of
    models rather than the harm that they could cause (e.g. toxic behavior or bias). As a result the small gap between
    current ChatGPT and the best open source models **should not** be interpreted as if that the latter are ready to be
@@ -1108,7 +1130,14 @@ colab notebook above.
 
 # Citation
 
-Please consider citing the repo if you used the automatic annotators, code, or results.
+Please consider citing the following depending on what you are using and referring to:
+- **Code, results, and general benchmark**: `alpaca_eval` (this repo). Specify whether you are using AlpacaEval or AlpacaEval 2.0. For length-corrected win-rates see below.
+- **Length corrected (debiased) win-rates**: `alpaca_eval_length`.
+- **Human annotations**: `dubois2023alpacafarm` ([AlpacaFarm](https://arxiv.org/abs/2305.14387))
+- **AlpacaEval evaluation set**: `alpaca_eval`  and [self-instruct](https://github.com/yizhongw/self-instruct),
+[open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test).
+
+Here are the bibtex entries:
 
 ```
 @misc{alpaca_eval,
@@ -1121,9 +1150,16 @@ Please consider citing the repo if you used the automatic annotators, code, or r
 }
 ```
 
-Make sure to specify whether you are using AlpacaEval or AlpacaEval 2.0.
-If you used our human annotation data, please also consider citing the [AlpacaFarm](https://arxiv.org/abs/2305.14387)
-paper:
+```
+@misc{alpaca_eval_length,
+  author = {Yann Dubois and  and Tatsunori B. Hashimoto },
+  title = {Length-Corrected AlpacaEval: A Simple Debiasing of Automatic Evaluators},
+  year = {2024},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/tatsu-lab/alpaca_eval}}
+}
+```
 
 ```
 @misc{dubois2023alpacafarm,
@@ -1136,11 +1172,15 @@ paper:
 }
 ```
 
-If you use the AlpacaEval evaluation set, please cite each of the constituent
-datasets: [self-instruct](https://github.com/yizhongw/self-instruct),
-[open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test).
-
 # More information
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Length Controlled Win Rates</h2></summary>
+
+Length controlled win-rates are a debiased version of the win-rates that control for the length of the outputs. They are
+
+</details>
+
 
 <details>
   <summary><h2 tabindex="-1" dir="auto">AlpacaEval 2.0</h2></summary>
@@ -1307,6 +1347,7 @@ You can check the `raw_annotations["concise_explanation]` column in `annotations
 <details>
   <summary><h2 tabindex="-1" dir="auto">Major updates</h2></summary>
 
+- 12th March 2024: updated to use length-controlled win-rates. This is a debiased version of the win-rates that control for the length of the outputs. 
 - 3rd January 2024: updated to AlpacaEval 2.0, which uses GPT4-turbo as baseline and annotator.
 - 2nd January 2024: added Azure API and more general way of setting client configs. See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/client_configs/README.md)
 - 19th June 2023: add leaderboard `chatgpt_fn` that anyone can use (no waiting lists).
