@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Optional, Sequence, Union
 
@@ -32,6 +33,7 @@ def get_length_controlled_winrate(
     save_weights_dir: Optional[Path] = Path(__file__).parent / "weights",
     baseline: Optional[str] = None,
     is_add_glm_preference_inplace: bool = True,
+    is_warn_extreme_changes: bool = True,
 ) -> dict[str, float]:
     """Extract head2head metrics (n_wins, n_counts, win_rate) from a sequence preference, and also predict the length
     controlled winrate using a GLM.
@@ -52,6 +54,9 @@ def get_length_controlled_winrate(
 
     is_add_glm_preference_inplace : bool, optional
         Whether to add the GLM preference to the annotations inplace. Only possible if annotations is a DataFrame.
+
+    is_warn_extreme_changes : bool, optional
+        Warn if the length controlled win rate is very different from the raw one.
     """
     glm_info = GLM_INFO[glm_name]
 
@@ -109,6 +114,12 @@ def get_length_controlled_winrate(
             glm_name=glm_name,
         )
 
+    if is_warn_extreme_changes and get_is_extreme_changes(metrics["win_rate"], metrics["length_controlled_winrate"]):
+        logging.warning(
+            f"Length controlled win rate is very different from the raw one: {metrics['length_controlled_winrate']:.1f}"
+            f"% vs {metrics['win_rate']:.1f}%. This might be a sign of failure of the GLM."
+        )
+
     return metrics
 
 
@@ -156,6 +167,16 @@ def predict_winrate(
         + delta_weights["instruction_difficulty"] * instruction_difficulty
     )
     return p.mean()
+
+
+def get_is_extreme_changes(prev_winrate, new_winrate, abs_diff=10, rel_diff=4, min_warn=True, max_warn=True):
+    """Whether the win-rate changed by more than abs_diff or rel_diff.  E.g. if  abs_diff=7, rel_diff=4 and old win
+    rate is 20, this will return true if the new win rate is <10 (i.e. min(20-20/4, 20-10)) or > 40 (i.e. 20+(100-20)/2)
+    Or if the old win rate is 50 and we predict <37.5 or >62.5.
+    """
+    too_small = new_winrate < min(prev_winrate - (prev_winrate / rel_diff), prev_winrate - abs_diff)
+    too_large = new_winrate > max(prev_winrate + ((100 - prev_winrate) / rel_diff), prev_winrate + abs_diff)
+    return (too_small and min_warn) or (too_large and max_warn)
 
 
 def _logistic(x):
