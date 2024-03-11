@@ -102,9 +102,8 @@ def huggingface_local_completions(
     if batch_size == 1:
         try:
             model = model.to_bettertransformer()
-        except NotImplementedError:
-            pass
-        except AttributeError:
+        except:
+            # could be not implemented or natively supported
             pass
 
     logging.info(f"Model memory: {model.get_memory_footprint() / 1e9} GB")
