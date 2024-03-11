@@ -151,6 +151,10 @@ PRECOMPUTED_LEADERBOARDS = {
     / f"{ANNOTATOR_CONFIG_AE2}_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "weighted_alpaca_eval_gpt4_turbo"): ALPACAEVAL_2_LEADERBOARD_PATHS
     / f"weighted_alpaca_eval_gpt4_turbo_leaderboard.csv",
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "mistral-large-2402_ranking"): ALPACAEVAL_2_LEADERBOARD_PATHS
+    / f"mistral-large-2402_ranking_leaderboard.csv",
+    (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "claude_3_opus_ranking"): ALPACAEVAL_2_LEADERBOARD_PATHS
+    / f"claude_3_opus_ranking_leaderboard.csv",
     # (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "alpaca_eval_cot_gpt4_turbo_fn"): ALPACAEVAL_2_LEADERBOARD_PATHS
     # / f"alpaca_eval_cot_gpt4_turbo_fn_leaderboard.csv",
 }
