@@ -7,6 +7,7 @@ PairRM 0.4B+Yi-34B-Chat (best-of-16),31.24128294682124,2195,https://huggingface.
 Snorkel (Mistral-PairRM-DPO),30.2200527006216,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
 Yi 34B Chat,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,minimal
 Claude 3 Opus (02/29),29.04176413416587,1388,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-opus-20240229/model_outputs.json,verified
+Samba CoE v0.2 (best-of-16),26.98825431853261,1578,https://huggingface.co/spaces/sambanovasystems/Samba-CoE-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.2-best-of-16/model_outputs.json,community
 Qwen1.5 72B Chat,26.49828339573589,1549,https://huggingface.co/Qwen/Qwen1.5-72B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-72B-Chat/model_outputs.json,community
 Claude 3 Sonnet (02/29),25.556325292273296,1420,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-sonnet-20240229/model_outputs.json,verified
 Mixtral 8x7B v0.1 (verbose),24.61406305014672,2083,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1_verbose/model_outputs.json,dev
