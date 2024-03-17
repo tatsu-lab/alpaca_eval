@@ -6,7 +6,7 @@
 [![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
 
-**AlpacaEval 2.0 with length-controlled win-rates** has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$5** of OpenAI credits run. Our goal is to have a benchmark for chat LLMs that is: fast, cheap, and highly correlated with humans. Here's a comparison with other benchmarks:
+**AlpacaEval 2.0 with length-controlled win-rates** has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$10** of OpenAI credits run and running in less than 3 minutes. Our goal is to have a benchmark for chat LLMs that is: fast (< 5min), cheap (< $10), and highly correlated with humans (0.98). Here's a comparison with other benchmarks:
 
 ![chat_correlations.png](notebooks%2Fchat_correlations.png)
 
@@ -1135,7 +1135,7 @@ colab notebook above.
 
 Please consider citing the following depending on what you are using and referring to:
 - **Code, results, and general benchmark**: `alpaca_eval` (this repo). Specify whether you are using AlpacaEval or AlpacaEval 2.0. For length-controlled win-rates see below.
-- **Length controlled (debiased) win-rates**: `alpaca_eval_length`.
+- **Length-controlled (LC) win rates**: `alpaca_eval_length`.
 - **Human annotations**: `dubois2023alpacafarm` ([AlpacaFarm](https://arxiv.org/abs/2305.14387))
 - **AlpacaEval evaluation set**: `alpaca_eval`  and [self-instruct](https://github.com/yizhongw/self-instruct),
 [open-assistant](https://huggingface.co/datasets/OpenAssistant/oasst1/viewer/OpenAssistant--oasst1/validation), [vicuna](https://lmsys.org/blog/2023-03-30-vicuna/), [koala](https://github.com/arnav-gudibande/koala-test-set), [hh-rlhf](https://huggingface.co/datasets/Anthropic/hh-rlhf/viewer/Anthropic--hh-rlhf/test).
@@ -1180,12 +1180,12 @@ Here are the bibtex entries:
 <details>
   <summary><h2 tabindex="-1" dir="auto">Length-Controlled Win Rates</h2></summary>
 
-Length controlled win-rates are a debiased version of the win-rates that control for the length of the outputs.
+Length controlled (LC) win-rates are a debiased version of the win-rates that control for the length of the outputs.
 
 The main idea is that for each model we will fit a logistic regression to  predict the preference of the autoannotator given: (1) the instruction, (2) the model, and (3) the difference of length between the baseline and model output. 
 Given such a logistic regression we can then try to predict the counterfactual "what would the preference be if the model's output had the same length as the baseline" by setting the length difference to 0.
 By averaging over this length-controlled preference, we then obtain the length-controlled win-rate.
-The exact form of the logistic regression is taken such that the interpretation of debiased win-rates is similar to the raw win rates, for example for any model `m1` and `m2` we have `win_rate(m1, m2) = 1 - win_rate(m2, m1) \in [0,100]` and `win_rate(m1, m1) = 0.5`. 
+The exact form of the logistic regression is taken such that the interpretation of LC win rates is similar to the raw win rates, for example for any model `m1` and `m2` we have `win_rate(m1, m2) = 1 - win_rate(m2, m1) \in [0,100]` and `win_rate(m1, m1) = 0.5`. 
 Length controlled win-rates increase the correlation between AlpacaEval's leaderboard and Chat Arena from **0.93 to 0.98 Spearman correlation, while significantly decreasing the length gameability of the annotator**.
 For more information and results about length controlled win-rates see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/length_correction.ipynb).
 
@@ -1359,7 +1359,7 @@ You can check the `raw_annotations["concise_explanation]` column in `annotations
 <details>
   <summary><h2 tabindex="-1" dir="auto">Major updates</h2></summary>
 
-- 12th March 2024: updated to use length-controlled win-rates. This is a debiased version of the win-rates that control for the length of the outputs. 
+- 12th March 2024: updated to use length-controlled (LC) win rates. This is a debiased version of the win-rates that control for the length of the outputs. 
 - 3rd January 2024: updated to AlpacaEval 2.0, which uses GPT4-turbo as baseline and annotator.
 - 2nd January 2024: added Azure API and more general way of setting client configs. See [here](https://github.com/tatsu-lab/alpaca_eval/tree/main/client_configs/README.md)
 - 19th June 2023: add leaderboard `chatgpt_fn` that anyone can use (no waiting lists).
