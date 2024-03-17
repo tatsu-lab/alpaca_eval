@@ -102,29 +102,38 @@ def make_leaderboard_like(leaderboard_to_copy: Optional[AnyPath], **kwargs):
 
 def run_all_length_corrected_winrates(**kwargs):
     # load the leaderboard for AlpacaEval
-    for is_alpaca_eval_2 in [False]:  # True,
-        if is_alpaca_eval_2:
-            lb_path = constants.ALPACAEVAL_2_LEADERBOARD_PATHS / f"{constants.ANNOTATOR_CONFIG_AE2}_leaderboard.csv"
-            ref_outputs = constants.ALPACAEVAL_REFERENCE_OUTPUTS_2
-            annotator = constants.ANNOTATOR_CONFIG_AE2
-        else:
-            lb_path = constants.ALPACAEVAL_1_LEADERBOARD_PATHS / f"{constants.ANNOTATOR_CONFIG_AE1}_leaderboard.csv"
-            ref_outputs = constants.ALPACAEVAL_REFERENCE_OUTPUTS_1
-            annotator = constants.ANNOTATOR_CONFIG_AE1
+    for is_alpaca_eval_2 in [True, False]:
+        for annotator in [
+            "mistral-large-2402_ranking",
+            "claude_3_opus_ranking",
+            constants.ANNOTATOR_CONFIG_AE2,
+            constants.ANNOTATOR_CONFIG_AE1,
+        ]:
+            if is_alpaca_eval_2:
+                lb_path = constants.ALPACAEVAL_2_LEADERBOARD_PATHS / f"{annotator}_leaderboard.csv"
+                ref_outputs = constants.ALPACAEVAL_REFERENCE_OUTPUTS_2
+                if not lb_path.exists():
+                    break
 
-        lb = utils.load_or_convert_to_dataframe(lb_path)
-        for m in lb.index:
-            try:
-                alpaca_main.evaluate(
-                    model_outputs=f"results/{m}/model_outputs.json",
-                    reference_outputs=ref_outputs,
-                    annotators_config=annotator,
-                    is_recompute_metrics_only=True,
-                    name=m,
-                    **kwargs,
-                )
-            except:
-                logging.exception(f"Error while computing the length corrected winrate for {m}")
+            else:
+                if annotator != constants.ANNOTATOR_CONFIG_AE1:
+                    break
+                lb_path = constants.ALPACAEVAL_1_LEADERBOARD_PATHS / f"{annotator}_leaderboard.csv"
+                ref_outputs = constants.ALPACAEVAL_REFERENCE_OUTPUTS_1
+
+            lb = utils.load_or_convert_to_dataframe(lb_path)
+            for m in lb.index:
+                try:
+                    alpaca_main.evaluate(
+                        model_outputs=f"results/{m}/model_outputs.json",
+                        reference_outputs=ref_outputs,
+                        annotators_config=annotator,
+                        is_recompute_metrics_only=True,
+                        name=m,
+                        **kwargs,
+                    )
+                except:
+                    logging.exception(f"Error while computing the length corrected winrate for {m}")
 
 
 def main(task, **kwargs):

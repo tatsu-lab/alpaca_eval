@@ -155,6 +155,8 @@ PRECOMPUTED_LEADERBOARDS = {
     / f"mistral-large-2402_ranking_leaderboard.csv",
     (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "claude_3_opus_ranking"): ALPACAEVAL_2_LEADERBOARD_PATHS
     / f"claude_3_opus_ranking_leaderboard.csv",
+    # (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "gpt-3.5-turbo-1106_ranking"): ALPACAEVAL_2_LEADERBOARD_PATHS
+    # / f"gpt-3.5-turbo-1106_ranking_leaderboard.csv",
     # (str(ALPACAEVAL_REFERENCE_OUTPUTS_2), "alpaca_eval_cot_gpt4_turbo_fn"): ALPACAEVAL_2_LEADERBOARD_PATHS
     # / f"alpaca_eval_cot_gpt4_turbo_fn_leaderboard.csv",
 }
@@ -206,48 +208,6 @@ MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
     "alpaca-7b",
 ]
 
-# Feb 2, 2024
-# maps models to Arena Elo rating
-CHATBOT_ARENA_LEADERBOARD = {
-    "gpt4_1106_preview": 1252,
-    "claude-3-opus-20240229": 1233,
-    "gpt4_0314": 1185,
-    "claude-3-sonnet-20240229": 1180,
-    "gpt4_0613": 1161,
-    "mistral-large-2402": 1155,
-    "mistral-medium": 1147,
-    "Qwen1.5-72B-Chat": 1146,
-    "claude": 1146,
-    "claude-2": 1127,
-    "claude-2.1": 1117,
-    "Mixtral-8x7B-Instruct-v0.1": 1116,
-    "gpt-3.5-turbo-0613": 1115,
-    "Yi-34B-Chat": 1115,
-    "gemini-pro": 1112,
-    "claude-instant-1.2": 1105,
-    "gpt-3.5-turbo-0301": 1103,
-    "wizardlm-70b": 1103,
-    "tulu-2-dpo-70b": 1099,
-    "vicuna-33b-v1.3": 1090,
-    "Starling-LM-7B-alpha": 1085,
-    "deepseek-llm-67b-chat": 1082,
-    "llama-2-70b-chat-hf": 1082,
-    "OpenHermes-2.5-Mistral-7B": 1073,
-    "gpt-3.5-turbo-1106": 1069,
-    "dolphin-2.2.1-mistral-7b": 1065,
-    "wizardlm-13b-v1.2": 1058,
-    "zephyr-7b-beta": 1051,
-    "llama-2-13b-chat-hf": 1042,
-    "vicuna-13b-v1.5": 1040,
-    "zephyr-7b-alpha": 1037,
-    "Qwen-14B-Chat": 1034,
-    "guanaco-33b": 1032,
-    "llama-2-7b-chat-hf": 1024,
-    "vicuna-7b-v1.5": 1005,
-    # older models
-    "chatglm2-6b": 930,
-    "oasst-sft-pythia-12b": 897,
-}
 
 EVALUATORS_LEADERBOARD_COLS_TO_PRINT = EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE[:8]
 

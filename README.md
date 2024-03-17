@@ -8,7 +8,8 @@
 
 **AlpacaEval 2.0 with length-controlled win-rates** has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$10** of OpenAI credits run and running in less than 3 minutes. Our goal is to have a benchmark for chat LLMs that is: fast (< 5min), cheap (< $10), and highly correlated with humans (0.98). Here's a comparison with other benchmarks:
 
-![chat_correlations.png](notebooks%2Fchat_correlations.png)
+![chat_correlations.png](notebooks%2Ffigures%2Fchat_correlations.png)
+
 
 ---
 
@@ -1040,14 +1041,66 @@ instructions where Alpaca "performs" better than better model; and
 
 # Additional analysis and plots
 
-AlpacaEval provides a few visualization tools to help you analyze and improve your automatic evaluation pipeline. We
-briefly explain
-them here and provide
-notebooks for more analysis. 
-For a description of all the metrics we consider
-refer to [How exactly are those metrics computed?](https://github.com/tatsu-lab/alpaca_eval#evaluators)
+**Caution**: all the following results are about AlpacaEval 1.0 and have not been updated since
 
-## Analyzing an evaluator
+[//]: # (AlpacaEval provides a few visualization tools to help you analyze and improve your automatic evaluation pipeline. We)
+
+[//]: # (briefly explain)
+
+[//]: # (them here and provide)
+
+[//]: # (notebooks for more analysis. )
+
+[//]: # (For a description of all the metrics we consider)
+
+[//]: # (refer to [How exactly are those metrics computed?]&#40;https://github.com/tatsu-lab/alpaca_eval#evaluators&#41;)
+
+## Length-controlled AlpacaEval (LCAE)
+
+
+**Length-controlled AlpacaEval Visualizations:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/figured_length_controlled.ipynb)
+
+**Length-controlled AlpacaEval Development:**
+[![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/length_controlled.ipynb)
+
+The notebook shows different options that we considered for mitigating the length bias of automatic annotators. 
+
+Here we briefly summarize the main results. Namely:
+- **LCAE increases the correlation with Chat Arena to 0.98** from 0.94 for AlpacaEval 2.0. This makes LCAE the most highly correlated benchmark with Chat Arena as seen in the plot below.
+
+
+<p float="left" align="middle">
+<img src="figures/chat_correlations.png" alt="LC AlpacaEval is the most highly correlated benchmark with Chat Arena." width="500"/>
+</p>
+
+- **LCAE decreases length gameability** one of the major issues of AlpacaEval is that you can increase your win-rate by increasing the length of your outputs. For example, in AlpacaEval 2.0 the win-rate for the baseline (50%) increases to 64% when prompted to “give as much detail as possible” and decreases to 23% when prompted to “be as concise as possible while still providing all the necessary information to answer the question”. More generally the relative length gameability was ~21% for AlpacaEval and decreases to ~6% for LCAE, so it's 3x less gameable through prompt length. This is shown in the plot below.  
+
+
+<p float="left" align="middle">
+<img src="figures/length_gameability.png" alt="LC AlpacaEval decreases length gameability of the benchmark." width="500"/>
+</p>
+
+- **We can predict performance for different baselines** One other benefit of using a GLM for controlling for length bias. Is that we now have a model that can predict the win-rate of a model for different baselines. In particular, our GLM has many nice properties, for example `win_rate(m,b) = 1 - win_rate(b,m) \in [0,1]` and `win_rate(m,m) = 0.5`. This is shown in the plot below.
+
+
+<p float="left" align="middle">
+<img src="figures/different_baselines.png" alt="Predicted win rate for different baselines" width="500"/>
+</p>
+
+
+Finally, note that we are only controlling for length bias. There are other known biases that we are not controlling for, such as the fact that auto-annotators prefer outputs similar to their model. Although we could control for that, in practice we have found that to be less of an issue than length bias. For two reasons (1) this mostly a single model in the leaderboard because fine-tuning on outputs from the auto-annotator doesn't seem to have doesn't seem to impact the win-rate as much, and (2) the bias is actually less strong that what one could think. For example we show below a subset of the leaderboards auto-annotated by three different models, and we see that the ranking of models is exactly the same. In particular, `claude-3-opus` prefers `gpt4_preview`, and `mistral-large` prefers the former two.
+
+<p float="left" align="middle">
+<img src="figures/annotator_bias.png" alt="Leaderboard by different auto-annotators" width="500"/>
+</p>
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Analyzing an evaluator</h2></summary>
+
+[//]: # (## Analyzing an evaluator)
+
+**Caution**: all the following results are about AlpacaEval 1.0 and have not been updated since
 
 **Analyzing evaluators:**
 [![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb)
@@ -1086,7 +1139,14 @@ For the code and more analysis,
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_annotators.ipynb), or the
 colab notebook above.
 
-## Analyzing an eval set
+</details>
+
+<details>
+  <summary><h2 tabindex="-1" dir="auto">Analyzing an eval set</h2></summary>
+
+[//]: # (## Analyzing an eval set)
+
+**Caution**: all the following results are about AlpacaEval 1.0 and have not been updated since.
 
 **Making evaluation sets:**
 [![analyzing an evaluator](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb)
@@ -1130,6 +1190,8 @@ The exact reason should be analyzed in future work.
 For the code and more analysis
 see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/analyzing_evalset.ipynb), or the
 colab notebook above.
+
+</details>
 
 # Citation
 
