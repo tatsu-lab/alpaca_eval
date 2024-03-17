@@ -50,6 +50,7 @@ PairRM 0.4B+Zephyr 7B Beta (best-of-16),12.841278255668827,1487,https://huggingf
 GPT 3.5 Turbo 1106 (concise),12.763169810361555,1058,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-1106_verbose/model_outputs.json,dev
 Vicuna 33B v1.3,12.70594792156943,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 DEITA 7B v1.0,12.646639472549904,1417,https://github.com/hkust-nlp/deita,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deita-7b-v1.0/model_outputs.json,community
+Mistral-ORPO-Beta,12.565408794446087,1636,https://huggingface.co/kaist-ai/mistral-orpo-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-orpo-beta/model_outputs.json,community
 DeepSeek LLM 67B Chat,12.093422264943865,1151,https://huggingface.co/deepseek-ai/deepseek-llm-67b-chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deepseek-llm-67b-chat/model_outputs.json,community
 WizardLM 13B V1.2,12.02748034290454,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
 UltraLM 13B (best-of-16),11.307314947672785,1980,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-best-of-16/model_outputs.json,community

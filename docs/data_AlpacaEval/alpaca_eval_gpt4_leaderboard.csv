@@ -21,6 +21,7 @@ XwinLM 13b V0.1,91.76029963,1894,https://github.com/Xwin-LM/Xwin-LM,https://gith
 UltraLM 13B (best-of-16),91.54228856,1980,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-best-of-16/model_outputs.json,community
 CUT 13B,91.35572139303484,1637,https://github.com/wwxu21/CUT,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cut-13b/model_outputs.json,community
 Claude 2,91.35572139,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,minimal
+Mistral-ORPO-Beta,91.15815691158156,1636,https://huggingface.co/kaist-ai/mistral-orpo-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-orpo-beta/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 13B (best-of-16),91.055900621118,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
 Cohere Command,90.62111801242236,1983,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cohere/model_outputs.json,verified
 Zephyr 7B Beta,90.5977584059776,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
