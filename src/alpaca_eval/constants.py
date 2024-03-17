@@ -216,6 +216,7 @@ CHATBOT_ARENA_LEADERBOARD = {
     "gpt4_0613": 1161,
     "mistral-large-2402": 1155,
     "mistral-medium": 1147,
+    "Qwen1.5-72B-Chat": 1146,
     "claude": 1146,
     "claude-2": 1127,
     "claude-2.1": 1117,
