@@ -42,11 +42,11 @@ def plot_heatmap_diff_baseline(models):
     g = sns.heatmap(
         _predicted_winrate_matrix(models),
         annot=True,
-        fmt=".2f",
+        fmt=".0f",
         linewidth=0.5,
         cmap="RdBu_r",
         vmin=0,
-        vmax=1,
+        vmax=100,
         cbar=True,
         square=True,
     )
@@ -62,7 +62,7 @@ def show_length_gameability(df):
     """SHow the length gameability of two metrics."""
     lb_cv_ae = _get_lb_concise_verbose(df, "win_rate")
     lb_cv_lcae = _get_lb_concise_verbose(df, "length_controlled_winrate")
-    merged_df = pd.concat([lb_cv_ae, lb_cv_lcae], axis=1, keys=["AlpacaEval", "Length-corrected AlpacaEval"])
+    merged_df = pd.concat([lb_cv_ae, lb_cv_lcae], axis=1, keys=["AlpacaEval", "Length-controlled AlpacaEval"])
     styles = [
         {"selector": "thead tr:first-child th", "props": [("text-align", "center")]},
         {"selector": "thead tr:last-child th:last-child", "props": [("border-right", "none")]},
@@ -80,17 +80,17 @@ def show_length_gameability(df):
         ).max(),
         (
             abs(
-                merged_df[("Length-corrected AlpacaEval", "concise")]
-                - merged_df[("Length-corrected AlpacaEval", "standard")]
+                merged_df[("Length-controlled AlpacaEval", "concise")]
+                - merged_df[("Length-controlled AlpacaEval", "standard")]
             )
-            / merged_df[("Length-corrected AlpacaEval", "standard")]
+            / merged_df[("Length-controlled AlpacaEval", "standard")]
         ).max(),
         (
             abs(
-                merged_df[("Length-corrected AlpacaEval", "verbose")]
-                - merged_df[("Length-corrected AlpacaEval", "standard")]
+                merged_df[("Length-controlled AlpacaEval", "verbose")]
+                - merged_df[("Length-controlled AlpacaEval", "standard")]
             )
-            / merged_df[("Length-corrected AlpacaEval", "standard")]
+            / merged_df[("Length-controlled AlpacaEval", "standard")]
         ).max(),
     )
     styled_df = (
@@ -106,10 +106,11 @@ def plot_benchmark_correlations(
     n_min_models=25,
     title="Chat Arena Spearman correlation",
     cmap_name="YlGnBu",
+    is_drop_alpaca=True,
     **kwargs,
 ):
     """Plot the benchmark correlations."""
-    df_corr = _get_benchmark_correlations(n_min_models=n_min_models)
+    df_corr = _get_benchmark_correlations(n_min_models=n_min_models, is_drop_alpaca=is_drop_alpaca)
 
     # Generate a custom diverging colormap
     if _is_color_brewer_cmap(cmap_name):
@@ -161,69 +162,61 @@ def plot_benchmark_correlations(
     return f
 
 
-def save_fig(fig: Any, filename: Union[str, bytes, os.PathLike], dpi: int = 300, is_tight: bool = True) -> None:
-    """General function for many different types of figures."""
+def show_new_lb(lb, column, n=None, n_tail=None, is_rm_rank_columns=True):
+    col_win_rate_gain = "Win Rate Gain"
+    col_rank_gain = "Rank Gain"
+    col_new_win_rate = "New Win Rate"
+    col_win_rate = "Win Rate"
 
-    # order matters ! and don't use elif!
-    if isinstance(fig, sns.FacetGrid):
-        fig = fig.fig
-
-    if isinstance(fig, plt.Artist):  # any type of axes
-        fig = fig.get_figure()
-
-    if isinstance(fig, plt.Figure):
-        plt_kwargs = {}
-        if is_tight:
-            plt_kwargs["bbox_inches"] = "tight"
-
-        fig.savefig(filename, dpi=dpi, **plt_kwargs)
-        plt.close(fig)
-    else:
-        raise ValueError(f"Unknown figure type {type(fig)}")
-
-
-def show_new_lb(lb, column, n=None):
     delta_lb = lb.copy()
     delta_lb["new_win_rate"] = delta_lb[column]
     delta_lb = delta_lb[["avg_length", "win_rate", "new_win_rate"]]
-    delta_lb["delta_win_rate"] = delta_lb["new_win_rate"] - delta_lb["win_rate"]
+    delta_lb.columns = ["Length", col_win_rate, col_new_win_rate]
+    delta_lb[col_win_rate_gain] = delta_lb[col_new_win_rate] - delta_lb[col_win_rate]
 
-    rank_win_rate = delta_lb["win_rate"].sort_values(ascending=False).to_frame()
+    rank_win_rate = delta_lb[col_win_rate].sort_values(ascending=False).to_frame()
     rank_win_rate["rank"] = range(len(rank_win_rate))
     delta_lb["rank_win_rate"] = rank_win_rate.loc[delta_lb.index, "rank"]
 
-    rank_new_win_rate = delta_lb["new_win_rate"].sort_values(ascending=False).to_frame()
+    rank_new_win_rate = delta_lb[col_new_win_rate].sort_values(ascending=False).to_frame()
     rank_new_win_rate["rank"] = range(len(rank_new_win_rate))
     delta_lb["rank_new_win_rate"] = rank_new_win_rate.loc[delta_lb.index, "rank"]
 
-    delta_lb["delta_rank"] = delta_lb["rank_win_rate"] - delta_lb["rank_new_win_rate"]
+    delta_lb[col_rank_gain] = delta_lb["rank_win_rate"] - delta_lb["rank_new_win_rate"]
+
+    if is_rm_rank_columns:
+        delta_lb = delta_lb.drop(columns=["rank_win_rate", "rank_new_win_rate"])
 
     if n is not None:
-        delta_lb = pd.concat([delta_lb.head(n), delta_lb.tail(n)], axis=0)
+        if n_tail == 0:
+            delta_lb = delta_lb.head(n)
+        else:
+            n_tail = n_tail or n
+            delta_lb = pd.concat([delta_lb.head(n), delta_lb.tail(n_tail)], axis=0)
 
     format_dict = {col: "{:.1f}" for col in delta_lb.columns if delta_lb[col].dtype == "float64"}
 
     styled_delta_lb = (
         delta_lb.style.background_gradient(
-            subset=["delta_win_rate"],
+            subset=[col_win_rate_gain],
             cmap="RdBu_r",
             low=0.5,
             high=0.5,
-            vmin=-delta_lb["delta_win_rate"].abs().max(),
-            vmax=delta_lb["delta_win_rate"].abs().max(),
+            vmin=-delta_lb[col_win_rate_gain].abs().max(),
+            vmax=delta_lb[col_win_rate_gain].abs().max(),
         )
         .background_gradient(
-            subset=["delta_rank"],
+            subset=[col_rank_gain],
             cmap="RdBu_r",
             low=0.5,
             high=0.5,
-            vmin=-delta_lb["delta_rank"].abs().max(),
-            vmax=delta_lb["delta_rank"].abs().max(),
+            vmin=-delta_lb[col_rank_gain].abs().max(),
+            vmax=delta_lb[col_rank_gain].abs().max(),
         )
         .format(format_dict)
     )
 
-    if n is not None:
+    if n is not None and n_tail:
         separator_styles = [{"selector": f".row{n-1}", "props": [("border-bottom", "1.5px solid black")]}]
         styled_delta_lb = styled_delta_lb.set_table_styles(separator_styles)
 
@@ -634,7 +627,7 @@ def save_fig(fig, filename, dpi=500, is_tight=True):
         fig.savefig(filename, **plt_kwargs)
         plt.close(fig)
 
-    elif isinstance(fig, pd.io.formats.style.Styler):
+    elif isinstance(fig, (pd.io.formats.style.Styler, pd.DataFrame)):
         try:
             import dataframe_image as dfi
         except:
@@ -851,13 +844,16 @@ def _get_ttest_df(df, n_samples=None, random_state=123, sorted_idx=None):
     # should be in the middle
 
 
-def _get_benchmark_correlations(n_min_models=25, filename=constants.BASE_DIR / "notebooks/benchmarks.csv"):
+def _get_benchmark_correlations(
+    n_min_models=25, filename=constants.BASE_DIR / "notebooks/benchmarks.csv", is_drop_alpaca=True
+):
     """Get the spearman correlation between the benchmarks."""
     min_periods = n_min_models - 1
     df = pd.read_csv(filename, index_col=0)
 
     df.columns = [c.split("\n")[0] for c in df.columns]
-    df = df.drop(columns=["AlpacaEval 2.0", "AlpacaEval 1.0"])
+    if is_drop_alpaca:
+        df = df.drop(columns=["AlpacaEval 2.0", "AlpacaEval 1.0"])
     df_corr = df.corr(method="spearman", min_periods=min_periods).dropna(how="all", axis=0).dropna(how="all", axis=1)
     # order by performance
     df_corr = df.loc[:, df_corr["Arena Elo"].sort_values(ascending=False).index].corr(
@@ -907,7 +903,7 @@ def _color_coding(row, max_diff):
         get_color(row[("AlpacaEval", "concise")], row[("AlpacaEval", "standard")]),
         "",
         get_color(row[("AlpacaEval", "verbose")], row[("AlpacaEval", "standard")]),
-        get_color(row[("Length-corrected AlpacaEval", "concise")], row[("Length-corrected AlpacaEval", "standard")]),
+        get_color(row[("Length-controlled AlpacaEval", "concise")], row[("Length-controlled AlpacaEval", "standard")]),
         "",
-        get_color(row[("Length-corrected AlpacaEval", "verbose")], row[("Length-corrected AlpacaEval", "standard")]),
+        get_color(row[("Length-controlled AlpacaEval", "verbose")], row[("Length-controlled AlpacaEval", "standard")]),
     ]

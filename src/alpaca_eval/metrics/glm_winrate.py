@@ -378,4 +378,4 @@ def _predicted_winrate_matrix(
                 delta_weights["not_gamed_baseline.astype(float)"]
                 + delta_weights["instruction_difficulty"] * instruction_difficulty
             ).mean()
-    return pd.DataFrame(winrate_matrix)
+    return pd.DataFrame(winrate_matrix) * 100
