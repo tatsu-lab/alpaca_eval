@@ -4,4 +4,4 @@ gpt4_1106_preview_verbose:
   completions_kwargs:
     model_name: "gpt-4-1106-preview"
     max_tokens: 4096
-  pretty_name: "GPT-4 Turbo (verbose)"
+  pretty_name: "GPT-4 Preview (verbose)"

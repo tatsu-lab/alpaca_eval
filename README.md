@@ -17,7 +17,7 @@ Updates:
 
 :tada: **Length-controlled Win Rates** are out and used by default! This increases the correlation with ChatBot Arena from 0.93 to 0.98, while significantly decreasing length gameability. The raw win rates are still shown on the website and the CLI. More details [here](#length-controlled-win-rates).
 
-:tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 turbo as baseline. More details [here](#alpacaeval-20). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
+:tada: **AlpacaEval 2.0** is out and used by default! We improved the auto-annotator (better and cheaper) and use GPT-4 preview as baseline. More details [here](#alpacaeval-20). For the old version, set your environment variable `IS_ALPACA_EVAL_2=False`.
 
 ---
 
@@ -1252,6 +1252,13 @@ Length controlled win-rates increase the correlation between AlpacaEval's leader
 For more information and results about length controlled win-rates see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/length_correction.ipynb).
 
 This idea of estimating the controlled direct effect, by predicting the outcome while conditioning on the mediator (the length difference), is common in statistical inference.
+
+To get LC win rates on previously annotated models, you can use the following command:
+
+```bash
+pip install -U alpaca_eval
+alpaca_eval --model_outputs … --is_recompute_metrics_only True
+```
 
 </details>
 

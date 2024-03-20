@@ -169,7 +169,7 @@
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
 <!--        <small id="alpaca_eval_info" style="color: #777;">-->
-<!--            Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo-->
+<!--            Baseline: GPT-4 Preview &nbsp; | &nbsp; Auto-annotator: GPT-4 Preview-->
 <!--        </small>-->
 <!--        <br>-->
         <small id="caution" style="color: #8C1515;">
@@ -205,7 +205,7 @@
 
     <div class="container" style="text-align: center; margin-bottom: 10px; margin-top: -10px;">
         <small id="alpaca_eval_info" style="color: #777;">
-            Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo
+            Baseline: GPT-4 Preview &nbsp; | &nbsp; Auto-annotator: GPT-4 Preview
         </small>
     </div>
 
@@ -233,7 +233,7 @@
             <a href="https://crfm.stanford.edu/2023/05/22/alpaca-farm.html">AlpacaFarm</a>
             evaluation set,
             which tests the ability of models to follow general user instructions.
-            These responses are then compared to reference responses (Davinci003 for AlpacaEval, GPT-4 Turbo for AlpacaEval 2.0) by
+            These responses are then compared to reference responses (Davinci003 for AlpacaEval, GPT-4 Preview for AlpacaEval 2.0) by
             the provided GPT-4 based auto-annotators,
             which results in the win rates presented above.
             AlpacaEval displays a high agreement rate with ground truth human annotations,
@@ -373,7 +373,7 @@
     function updateInfoMessage(version) {
         let infoText;
         if (version === 'alpaca_eval_2') {
-            infoText = 'Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo';
+            infoText = 'Baseline: GPT-4 Preview &nbsp; | &nbsp; Auto-annotator: GPT-4 Preview';
         } else if (version === 'alpaca_eval') {
             infoText = 'Baseline: Davinci003 &nbsp; | &nbsp; Auto-annotator: GPT-4';
         }
