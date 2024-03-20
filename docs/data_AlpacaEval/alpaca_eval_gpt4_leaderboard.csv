@@ -1,5 +1,5 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
-GPT-4 Preview,89.85849210429464,97.69900497512438,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview/model_outputs.json,minimal
+GPT-4 Perview,89.85849210429464,97.69900497512438,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview/model_outputs.json,minimal
 XwinLM 70b V0.3,94.01522563893708,97.636815920398,2113,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.3/model_outputs.json,community
 Mistral Medium,91.54314285144824,96.83229813664596,1500,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-medium/model_outputs.json,minimal
 XwinLM 70b V0.1,,95.56803995,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
