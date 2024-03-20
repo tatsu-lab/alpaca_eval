@@ -8,7 +8,7 @@
 
 **AlpacaEval 2.0 with length-controlled win-rates** has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$10** of OpenAI credits run and running in less than 3 minutes. Our goal is to have a benchmark for chat LLMs that is: fast (< 5min), cheap (< $10), and highly correlated with humans (0.98). Here's a comparison with other benchmarks:
 
-![chat_correlations.png](notebooks%2Ffigures%2Fchat_correlations.png)
+![chat_correlations.png](figures%2Fchat_correlations.png)
 
 
 ---
