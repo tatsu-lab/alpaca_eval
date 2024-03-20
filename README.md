@@ -1218,7 +1218,7 @@ Here are the bibtex entries:
 
 ```
 @misc{alpaca_eval_length,
-  author = {Yann Dubois and  and Tatsunori B. Hashimoto },
+  author = {Yann Dubois and Balazs Galambosi and Percy Liang and Tatsunori B. Hashimoto },
   title = {Length-Corrected AlpacaEval: A Simple Debiasing of Automatic Evaluators},
   year = {2024},
   publisher = {GitHub},
