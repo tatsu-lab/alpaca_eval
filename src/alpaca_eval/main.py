@@ -25,8 +25,10 @@ def evaluate(
     leaderboard_mode_to_print: Optional[Union[str, Sequence[str]]] = "minimal",
     current_leaderboard_mode: str = "community",
     is_return_instead_of_print: bool = False,
-    fn_metric: Union[str, callable] = "pairwise_to_winrate",
-    sort_by: str = "win_rate",
+    fn_metric: Union[str, callable] = "get_length_controlled_winrate" if constants.IS_ALPACA_EVAL_2 else "get_winrate",
+    metric_kwargs: Optional[dict[str, Any]] = None,
+    is_recompute_metrics_only: bool = False,
+    sort_by: str = "length_controlled_winrate" if constants.IS_ALPACA_EVAL_2 else "win_rate",
     is_cache_leaderboard: Optional[bool] = None,
     max_instances: Optional[int] = None,
     annotation_kwargs: Optional[dict[str, Any]] = None,
@@ -80,9 +82,16 @@ def evaluate(
         Whether to return the metrics instead of printing the results.
 
     fn_metric : str or callable, optional
-        The function or function name in `metrics.py` that will be used to convert preference to metrics. The function
-        should take a sequence of preferences (0 for draw, 1 for base win, 2 when the model to compare wins) and return
-        a dictionary of metrics and the key by which to sort the leaderboard.
+        The function or function name in `metrics` that will be used to convert preference to metrics. The function
+        should take a sequence of dict annotations. Each dict has a preference key (1.5 for draw, 1 for base win,
+        2 when the model to compare wins) and return a dictionary of metrics and the key by which to sort the
+        leaderboard. Common choices: `get_winrate`, `get_length_controlled_winrate`, `get_length_controlled_elo`.
+
+    metric_kwargs : dict, optional
+        Additional arguments to pass to `fn_metric`.
+
+    is_recompute_metrics_only : bool, optional
+        Whether to recompute the metrics. Useful if all you want to recompute the metrics without reannotating.
 
     sort_by : str, optional
         The key by which to sort the leaderboard.
@@ -123,38 +132,56 @@ def evaluate(
         reference_outputs = utils.load_or_convert_to_dataframe(reference_outputs)
         name = utils.get_generator_name(name, model_outputs)
 
-        if (name not in leaderboard) or is_overwrite_leaderboard:
+        if (name not in leaderboard) or is_overwrite_leaderboard or is_recompute_metrics_only:
             logging.info(f"Evaluating the {name} outputs.")
 
-            if max_instances is not None:
-                # first we shuffle both outputs with a fix seed => more representative
-                if len(model_outputs) != len(reference_outputs):
-                    logging.warning(
-                        "model_outputs and reference_outputs have different lengths, so we cannot shuffle before taking the first max_instances."
-                    )
-                else:
-                    seed = 123
-                    model_outputs = model_outputs.sample(frac=1, random_state=seed)
-                    reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
+            if not is_recompute_metrics_only:
+                leaderboard[name] = {}
+                if max_instances is not None:
+                    # first we shuffle both outputs with a fix seed => more representative
+                    if len(model_outputs) != len(reference_outputs):
+                        logging.warning(
+                            "model_outputs and reference_outputs have different lengths, so we cannot shuffle before taking the first max_instances."
+                        )
+                    else:
+                        seed = 123
+                        model_outputs = model_outputs.sample(frac=1, random_state=seed)
+                        reference_outputs = reference_outputs.sample(frac=1, random_state=seed)
 
-                model_outputs = model_outputs[:max_instances]
-                reference_outputs = reference_outputs[:max_instances]
+                    model_outputs = model_outputs[:max_instances]
+                    reference_outputs = reference_outputs[:max_instances]
 
-            annotator = Annotator(annotators_config=annotators_config, **annotator_kwargs)
-            annotations = annotator.annotate_head2head(
-                outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
-            )
+                annotator = Annotator(annotators_config=annotators_config, **annotator_kwargs)
+                annotations = annotator.annotate_head2head(
+                    outputs_1=reference_outputs, outputs_2=model_outputs, **annotation_kwargs
+                )
 
+                leaderboard[name]["mode"] = current_leaderboard_mode
+                leaderboard[name]["avg_length"] = int(model_outputs["output"].str.len().mean())
+
+            else:
+                # load previously computed annotations so that we can recompute metrics
+                assert output_path is not None and name in leaderboard
+                output_path = utils.get_output_path(
+                    output_path, arg_model_outputs, name, annotators_config=annotators_config
+                )
+                annotations = pd.read_json(output_path / "annotations.json")
+
+            # Note: I'm using _ to make clear that we may change the annotations in-place. This is bad practice
+            # but gives much more control for saving annotations with desired metrics. E.g. that's how we save
+            # "glm_preference" in the annotations
+            # TODO: change this and use classes
             if isinstance(fn_metric, str):
-                fn_metric = getattr(metrics, fn_metric)
+                fn_metric_ = getattr(metrics, fn_metric)
+            else:
+                fn_metric_ = fn_metric
 
-            leaderboard[name] = fn_metric(preferences=[a["preference"] for a in annotations])
-            leaderboard[name]["mode"] = current_leaderboard_mode
-            leaderboard[name]["avg_length"] = int(model_outputs["output"].str.len().mean())
+            leaderboard[name].update(fn_metric_(annotations, **(metric_kwargs or {})))
+
         else:
             logging.info(f"Skipping evaluation of {name} as it is already in the precomputed leaderboard.")
 
-    output_path = utils.get_output_path(output_path, arg_model_outputs, name)
+    output_path = utils.get_output_path(output_path, arg_model_outputs, name, annotators_config=annotators_config)
 
     df_leaderboard = pd.DataFrame.from_dict(leaderboard, orient="index").sort_values(by=sort_by, ascending=False)
     df_leaderboard = df_leaderboard[
@@ -162,9 +189,6 @@ def evaluate(
     ]
 
     if output_path is not None:
-        if isinstance(annotators_config, str) and "/" not in annotators_config:
-            output_path = Path(output_path) / annotators_config
-            output_path.mkdir(exist_ok=True, parents=True)
         logging.info(f"Saving all results to {output_path}")
         df_leaderboard.to_csv(output_path / "leaderboard.csv")
         if annotations is not None:
@@ -192,7 +216,7 @@ def evaluate(
             df_leaderboard,
             leaderboard_mode_to_print,
             current_name=name,
-            cols_to_print=["win_rate", "standard_error", "n_total", "avg_length"],
+            cols_to_print=[sort_by, "win_rate", "standard_error", "n_total", "avg_length"],
         )
 
 

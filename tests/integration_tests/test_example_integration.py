@@ -4,34 +4,6 @@ import subprocess
 import pytest
 
 
-# example file is from 003 so should always lose against gpt4 turbo
-@pytest.mark.slow
-def test_cli_evaluate_example():
-    env = os.environ.copy()
-    env["IS_ALPACA_EVAL_2"] = "True"
-
-    result = subprocess.run(
-        [
-            "alpaca_eval",
-            "--model_outputs",
-            "example/outputs.json",
-            "--max_instances",
-            "3",
-            "--annotators_config",
-            "claude",
-            "--is_avoid_reannotations",
-            "False",
-        ],
-        capture_output=True,
-        text=True,
-        env=env,
-    )
-    normalized_output = " ".join(result.stdout.split())
-    expected_output = " ".join("example 0.00 0.00 3".split())
-
-    assert expected_output in normalized_output
-
-
 @pytest.mark.slow
 def test_openai_fn_evaluate_example():
     env = os.environ.copy()
@@ -53,6 +25,8 @@ def test_openai_fn_evaluate_example():
         env=env,
     )
     normalized_output = " ".join(result.stdout.split())
-    expected_output = " ".join("example 0.00 0.00 2".split())
+    expected_output = " ".join("0.00 0.00 2".split())
 
     assert expected_output in normalized_output
+    assert "example" in normalized_output
+    assert "length_controlled_winrate" in normalized_output

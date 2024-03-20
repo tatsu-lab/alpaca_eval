@@ -73,7 +73,7 @@
 
         th:first-child,
         td:first-child {
-            width: 70%;
+            width: 60%;
             padding-left: 30px;
             text-align: left;
         }
@@ -86,7 +86,7 @@
 
         th:last-child,
         td:last-child {
-            width: 15%;
+            width: 17%;
             padding-right: 30px;
         }
 
@@ -169,11 +169,11 @@
         <br>
         <h2>An Automatic Evaluator for Instruction-following Language Models</h2>
 <!--        <small id="alpaca_eval_info" style="color: #777;">-->
-<!--            Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo-->
+<!--            Baseline: GPT-4 Preview &nbsp; | &nbsp; Auto-annotator: GPT-4 Preview-->
 <!--        </small>-->
 <!--        <br>-->
         <small id="caution" style="color: #8C1515;">
-            Caution: GPT-4 may favor models with longer outputs and/or those that were fine-tuned on GPT-4 outputs.
+            <b> Length-controlled</b> (LC) win rates alleviate length biases of GPT-4, but it may favor models finetuned on its outputs.
         </small>
         <br>
         <a href="https://github.com/tatsu-lab/alpaca_eval">
@@ -205,15 +205,15 @@
 
     <div class="container" style="text-align: center; margin-bottom: 10px; margin-top: -10px;">
         <small id="alpaca_eval_info" style="color: #777;">
-            Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo
+            Baseline: GPT-4 Preview &nbsp; | &nbsp; Auto-annotator: GPT-4 Preview
         </small>
     </div>
 
     <table id="leaderboard">
         <tr>
-            <th>Model Name</th>
+            <th><br>Model Name</th>
+            <th>LC Win Rate</th>
             <th>Win Rate</th>
-            <th>Length</th>
         </tr>
     </table>
 
@@ -233,7 +233,7 @@
             <a href="https://crfm.stanford.edu/2023/05/22/alpaca-farm.html">AlpacaFarm</a>
             evaluation set,
             which tests the ability of models to follow general user instructions.
-            These responses are then compared to reference responses (Davinci003 for AlpacaEval, GPT-4 Turbo for AlpacaEval 2.0) by
+            These responses are then compared to reference responses (Davinci003 for AlpacaEval, GPT-4 Preview for AlpacaEval 2.0) by
             the provided GPT-4 based auto-annotators,
             which results in the win rates presented above.
             AlpacaEval displays a high agreement rate with ground truth human annotations,
@@ -314,7 +314,7 @@
             complete: function (results) {
                 console.log(results.data);
                 results.data.forEach(row => {
-                    if (row['name'] || row['win_rate'] || row['avg_length']) {
+                    if (row['name'] || row['win_rate'] || row['length_controlled_winrate']) { //|| row['avg_length']
                         let filter = row['filter'];
 
                         if ((communityRadio.checked && (filter === 'verified' || filter === 'minimal' || filter === 'community')) ||
@@ -323,7 +323,8 @@
                             const tr = document.createElement('tr');
                             const nameTd = document.createElement('td');
                             const winRateTd = document.createElement('td');
-                            const lengthTd = document.createElement('td');
+                            //const lengthTd = document.createElement('td');
+                            const lenWinRateTd = document.createElement('td');
 
                             if (row['link'] && row['link'].trim() !== '') {
                                 const a = document.createElement('a');
@@ -344,12 +345,22 @@
                                 nameTd.appendChild(samplesLink);
                             }
 
-                            winRateTd.textContent = Number(row['win_rate']).toFixed(2) + '%';
-                            lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
+                            winRateTd.textContent = Number(row['win_rate']).toFixed(1) + '%';
+
+                            LCWinRate = Number(row['length_controlled_winrate'])
+                            if (Number.isNaN(LCWinRate)) {
+                                lenWinRateTd.textContent = '';
+                            } else {
+                                lenWinRateTd.textContent = LCWinRate.toFixed(1) + '%';
+                            }
+                            //lenWinRateTd.textContent = Number(row['length_controlled_winrate']).toFixed(1) + '%';
+                            //lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
+
 
                             tr.appendChild(nameTd);
+                            tr.appendChild(lenWinRateTd);
                             tr.appendChild(winRateTd);
-                            tr.appendChild(lengthTd);
+                            //tr.appendChild(lengthTd);
 
                             table.appendChild(tr);
                         }
@@ -362,7 +373,7 @@
     function updateInfoMessage(version) {
         let infoText;
         if (version === 'alpaca_eval_2') {
-            infoText = 'Baseline: GPT-4 Turbo &nbsp; | &nbsp; Auto-annotator: GPT-4 Turbo';
+            infoText = 'Baseline: GPT-4 Preview &nbsp; | &nbsp; Auto-annotator: GPT-4 Preview';
         } else if (version === 'alpaca_eval') {
             infoText = 'Baseline: Davinci003 &nbsp; | &nbsp; Auto-annotator: GPT-4';
         }

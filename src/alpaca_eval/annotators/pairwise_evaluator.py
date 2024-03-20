@@ -217,8 +217,8 @@ class PairwiseAnnotatorLocal(BaseAnnotator):
         )
 
         for c in other_same_cols:
-            # if the columns are the same, we can drop the _2
-            if df_to_annotate[c + "_1"].equals(df_to_annotate[c + "_2"]):
+            # if the columns are the same, we can drop the _2. but dont' skip for generator and output
+            if c not in ["generator", "output"] and df_to_annotate[c + "_1"].equals(df_to_annotate[c + "_2"]):
                 df_to_annotate = df_to_annotate.drop(columns=c + "_2").rename(columns={c + "_1": c})
 
         if is_ordered:
