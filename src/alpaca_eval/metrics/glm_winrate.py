@@ -73,8 +73,8 @@ def get_length_controlled_winrate(
     df = utils.convert_to_dataframe(annotations)
 
     if save_weights_dir == "auto":
-        assert len(annotations["annotator"].unique()) == 1
-        save_weights_dir = Path(__file__).parent / "weights" / annotations["annotator"].unique()[0]
+        assert len(df["annotator"].unique()) == 1
+        save_weights_dir = Path(__file__).parent / "weights" / df["annotator"].unique()[0]
 
     assert len(df["generator_2"].unique()) == 1
     model_name = list(df["generator_2"].unique())[0]
