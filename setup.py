@@ -35,7 +35,7 @@ PACKAGES_LOCAL = [
 ]
 PACKAGES_ALL_API = [
     "anthropic>=0.18",
-    "cohere",
+    "cohere<5.0.0a0",
     "replicate",
     "boto3>=1.28.58",
     "google-generativeai",
