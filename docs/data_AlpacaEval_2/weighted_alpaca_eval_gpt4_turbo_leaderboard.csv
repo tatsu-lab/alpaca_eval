@@ -26,7 +26,7 @@ Gemini Pro,24.38177610802152,18.177644540571432,1456,,https://github.com/tatsu-l
 Mixtral 8x7B v0.1,23.68848260134481,18.25531762637268,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
 Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://huggingface.co/spaces/sambanovasystems/Samba-CoE-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
-GPT 3.5 Turbo 0613,22.720189163383225,14.13239070746584,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
+GPT 3.5 Turbo 0613,22.720189163383225,14.13239070746584,1328,,,verified
 GPT 3.5 Turbo 0613,22.35251298054288,14.09579857390062,1331,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0613/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),21.428403975507223,18.638962967441,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Tulu 2+DPO 70B,21.238610038371124,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
