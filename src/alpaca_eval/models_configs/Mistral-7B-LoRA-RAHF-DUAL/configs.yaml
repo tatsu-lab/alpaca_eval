@@ -1,0 +1,13 @@
+Liuwenhao2022/Mistral-7B-LoRA-RAHF-DUAL:
+  prompt_template: "Mixtral-8x7B-Instruct-v0.1/togetherai_prompt.txt" # together already deals with prompt
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "Liuwenhao2022/Liuwenhao2022/Mistral-7B-LoRA-RAHF-DUAL"
+    max_new_tokens: 768
+    repetition_penalty: 1.2
+    requires_chatml: True
+    model_kwargs:
+      torch_dtype: 'bfloat16'
+      trust_remote_code: True
+  pretty_name: "Liuwenhao2022/Mistral-7B-LoRA-RAHF-DUAL"
+  link: "https://huggingface.co/Liuwenhao2022/Liuwenhao2022/Mistral-7B-LoRA-RAHF-DUAL"
