@@ -10,4 +10,4 @@ Samba-CoE-v0.2:
     top_p: 0.1
     do_sample: True
   pretty_name: "Samba CoE v0.2"
-  link: "https://huggingface.co/spaces/sambanovasystems/Samba-CoE-v0.1"
+  link: "https://coe-1.cloud.snova.ai/"
