@@ -347,11 +347,10 @@
 
                             winRateTd.textContent = Number(row['win_rate']).toFixed(1) + '%';
 
-                            LCWinRate = Number(row['length_controlled_winrate'])
-                            if (Number.isNaN(LCWinRate)) {
-                                lenWinRateTd.textContent = '';
+                            if (row['length_controlled_winrate'] === '') {
+                                lenWinRateTd.textContent = 'N/A';
                             } else {
-                                lenWinRateTd.textContent = LCWinRate.toFixed(1) + '%';
+                                lenWinRateTd.textContent = Number(row['length_controlled_winrate']).toFixed(1) + '%';
                             }
                             //lenWinRateTd.textContent = Number(row['length_controlled_winrate']).toFixed(1) + '%';
                             //lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
