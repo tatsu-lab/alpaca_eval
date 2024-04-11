@@ -6,7 +6,7 @@
 [![discord](https://img.shields.io/badge/discord-server-blue?logo=discord&logoColor=white)](https://discord.gg/GJMxJSVZZM)
 
 
-**AlpacaEval 2.0 with length-controlled win-rates** has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$10** of OpenAI credits run and running in less than 3 minutes. Our goal is to have a benchmark for chat LLMs that is: fast (< 5min), cheap (< $10), and highly correlated with humans (0.98). Here's a comparison with other benchmarks:
+**AlpacaEval 2.0 with length-controlled win-rates** ([paper](https://arxiv.org/abs/2404.04475)) has a spearman correlation of **0.98** with [ChatBot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) while costing less than **$10** of OpenAI credits run and running in less than 3 minutes. Our goal is to have a benchmark for chat LLMs that is: fast (< 5min), cheap (< $10), and highly correlated with humans (0.98). Here's a comparison with other benchmarks:
 
 <p float="left" align="middle">
 <img src="figures/chat_correlations_no_ae.png" alt="LC AlpacaEval is the most highly correlated benchmark with Chat Arena." width="500"/>
@@ -1217,13 +1217,11 @@ Here are the bibtex entries:
 ```
 
 ```
-@misc{alpaca_eval_length,
-  author = {Yann Dubois and Balazs Galambosi and Percy Liang and Tatsunori B. Hashimoto },
-  title = {Length-Corrected AlpacaEval: A Simple Debiasing of Automatic Evaluators},
-  year = {2024},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/tatsu-lab/alpaca_eval}}
+@article{dubois2024length,
+  title={Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators},
+  author={Dubois, Yann and Galambosi, Bal{\'a}zs and Liang, Percy and Hashimoto, Tatsunori B},
+  journal={arXiv preprint arXiv:2404.04475},
+  year={2024}
 }
 ```
 
