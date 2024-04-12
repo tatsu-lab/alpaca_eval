@@ -4,4 +4,4 @@ gpt4_1106_preview:
   completions_kwargs:
     model_name: "gpt-4-1106-preview"
     max_tokens: 4096
-  pretty_name: "GPT-4 Preview"
+  pretty_name: "GPT-4 Preview (11/06)"
