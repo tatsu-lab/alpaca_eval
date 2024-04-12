@@ -7,11 +7,11 @@ PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),85.58824844769076,95.39800995024876,1607
 GPT-4,86.51018625518144,95.27950310559004,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 Tulu 2+DPO 70B,84.25730016896037,95.03105590062113,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,community
 Mixtral 8x7B v0.1,82.59666180688257,94.78260869565216,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
-GPT-4 0314,85.334647371383,94.78260869565216,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
+GPT-4 (03/14),85.334647371383,94.78260869565216,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
 Mistral-7B-ReMax-v0.1,,94.39601494396015,1478,https://huggingface.co/ziniuli/Mistral-7B-ReMax-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-ReMax-v0.1/model_outputs.json,community
 Yi 34B Chat,76.35646640775717,94.08468244084682,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,verified
-GPT-4 0613,81.38159399734118,93.78109452736318,1140,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613/model_outputs.json,verified
-GPT 3.5 Turbo 0613,81.73910844041163,93.41614906832298,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
+GPT-4 (06/13),81.38159399734118,93.78109452736318,1140,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613/model_outputs.json,verified
+GPT 3.5 Turbo (06/13),81.73910844041163,93.41614906832298,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
 PairRM 0.4B+Zephyr 7B Beta (best-of-16),84.7091351498575,93.40796019900498,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
 UltraLM 13B V2.0 (best-of-16),76.29672881234201,92.79503105590062,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
 Mistral 7B v0.2,82.98089782565651,92.77708592777088,1676,https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-Instruct-v0.2/model_outputs.json,minimal
@@ -27,7 +27,7 @@ Cohere Command,61.87530037843918,90.62111801242236,1983,,https://github.com/tats
 Zephyr 7B Beta,76.29202319983864,90.5977584059776,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
 DEITA 7B v1.0,71.13305243806445,90.06211180124224,1417,https://github.com/hkust-nlp/deita,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deita-7b-v1.0/model_outputs.json,community
 OpenChat V3.1 13B,,89.49004975,1484,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
-GPT 3.5 Turbo 0301,79.17893267677465,89.36567164179104,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0301/model_outputs.json,verified
+GPT 3.5 Turbo (03/01),79.17893267677465,89.36567164179104,827,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0301/model_outputs.json,verified
 Evo v2 7B,72.09602817675409,89.35242839352429,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 WizardLM 13B V1.2,,89.16562889,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
 Vicuna 33B v1.3,,88.99253731,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
@@ -41,7 +41,7 @@ Claude 2.1,65.9557674840558,87.0807453416149,1096,,https://github.com/tatsu-lab/
 OpenBuddy-LLaMA-65B-v8,,86.53366584,1162,https://huggingface.co/OpenBuddy/openbuddy-llama-65b-v8-bf16,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openbuddy-llama-65b-v8/model_outputs.json,community
 WizardLM 13B V1.1,,86.31840796,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
 UltraLM 13B V2.0,63.77774668548318,86.28428927680798,1399,https://github.com/thunlp/UltraChat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0/model_outputs.json,community
-GPT 3.5 Turbo 1106,75.55853548412969,86.25621890547264,796,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-1106/model_outputs.json,verified
+GPT 3.5 Turbo (11/06),75.55853548412969,86.25621890547264,796,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-1106/model_outputs.json,verified
 Zephyr 7B Alpha,73.46973908236046,85.7587064676617,1302,https://huggingface.co/HuggingFaceH4/zephyr-7b-alpha,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-alpha/model_outputs.json,community
 OpenChat V2 13B,,84.9689441,1564,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-13b/model_outputs.json,community
 Tulu 2+DPO 7B,77.85355333126851,84.22360248447205,1663,https://huggingface.co/allenai/tulu-2-dpo-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-7b/model_outputs.json,community

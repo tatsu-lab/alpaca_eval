@@ -4,4 +4,4 @@ gpt-3.5-turbo-1106:
   completions_kwargs:
     model_name: "gpt-3.5-turbo-1106"
     max_tokens: 4096
-  pretty_name: "GPT 3.5 Turbo 1106"
+  pretty_name: "GPT 3.5 Turbo (11/06)"

@@ -4,4 +4,4 @@ gpt4_0314:
   completions_kwargs:
     model_name: "gpt-4-0314"
     max_tokens: 4096
-  pretty_name: "GPT-4 0314"
+  pretty_name: "GPT-4 (03/14)"
