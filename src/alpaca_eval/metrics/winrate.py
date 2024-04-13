@@ -25,4 +25,4 @@ def pairwise_to_winrate(preferences: Union[pd.DataFrame, Sequence]) -> dict[str,
     """Extract head2head metrics (n_wins, n_counts, win_rate) from a sequence preference.
     This assumes that the preference is encoded as 0 or 1.5 for draw, 1 for base win, 2 when the model to compare wins.
     """
-    return get_winrate(annotations=[dict(preferences=p) for p in preferences])
+    return get_winrate(annotations=[dict(preference=p) for p in preferences])
