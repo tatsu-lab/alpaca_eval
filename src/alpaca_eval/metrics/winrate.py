@@ -14,7 +14,7 @@ def get_winrate(annotations: Union[pd.DataFrame, Sequence]) -> dict[str, float]:
     This assumes that the preference is encoded as 0 or 1.5 for draw, 1 for base win, 2 when the model to compare wins.
     """
     annotations = utils.convert_to_dataframe(annotations)
-    preferences = annotations["preference"]
+    preferences = annotations["preferences"]
     out = AbsoluteScoringRule().describe_head2head(preferences)
     out["discrete_win_rate"] = ZeroOneScoringRule().describe_head2head(preferences)["win_rate"]
     return out
