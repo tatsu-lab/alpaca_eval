@@ -1248,7 +1248,7 @@ Given such a logistic regression we can then try to predict the counterfactual "
 By averaging over this length-controlled preference, we then obtain the length-controlled win-rate.
 The exact form of the logistic regression is taken such that the interpretation of LC win rates is similar to the raw win rates, for example for any model `m1` and `m2` we have `win_rate(m1, m2) = 1 - win_rate(m2, m1) \in [0,100]` and `win_rate(m1, m1) = 0.5`. 
 Length controlled win-rates increase the correlation between AlpacaEval's leaderboard and Chat Arena from **0.93 to 0.98 Spearman correlation, while significantly decreasing the length gameability of the annotator**.
-For more information and results about length controlled win-rates see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/length_correction.ipynb).
+For more information and results about length controlled win-rates see [this notebook](https://github.com/tatsu-lab/alpaca_eval/blob/main/notebooks/length_controlled.ipynb).
 
 This idea of estimating the controlled direct effect, by predicting the outcome while conditioning on the mediator (the length difference), is common in statistical inference.
 
