@@ -40,12 +40,12 @@ default:
     - api_key: "<your OpenAI API key here>"
       organization: "<your 2nd organization ID>"
 
-gpt-4-turbo: # only when using `model_name: gpt-4-turbo` which is AlpacaEval2's model name
+gpt-4-1106-preview: # only when using `model_name: gpt-4-1106-preview` which is AlpacaEval2's model name
     - "default" # this will append all the `default` configs
     
     - client_class: "openai.AzureOpenAI" # doesn't use the `openai.OpenAI` client class
       # the following are passed to the `AzureOpenAI` client class
-      azure_deployment: "gpt-4-turbo" # name of the latest GPT-4 turbo on azure change as needed
+      azure_deployment: "gpt-4-1106" # name of the latest GPT-4 turbo on azure change as needed
       api_key: "<your Azure OpenAI API key here>"
       azure_endpoint: "<your Azure OpenAI API base here>"
       api_version: "2024-03-01-preview"
