@@ -275,7 +275,7 @@ class Analyzer:
         is_add_generator = annotations_2 == "gold_crossannotations"
         annotations_2 = self._get_annotations(annotations_2)
 
-        if is_add_generator:
+        if "generator" not in annotations_2.columns and is_add_generator:
             # TODO clean: following is because we don't save generator in HF crossannotation dataset => reconstructs it.
             # takes only eval set for the leaderboard
             merge_kwargs = dict(right=self.df_gold_annotations[self.keys + ["generator"]], on=self.keys)
