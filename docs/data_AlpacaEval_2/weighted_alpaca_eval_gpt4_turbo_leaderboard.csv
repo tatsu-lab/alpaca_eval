@@ -1,18 +1,19 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
-GPT-4 Preview (01/25),52.71305126323133,51.22356403608144,2018,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-0125-preview/model_outputs.json,verified
-GPT-4 Turbo (04/09),51.9269770895354,42.6755010801893,1802,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-turbo-2024-04-09/model_outputs.json,minimal
+GPT-4 Turbo (04/09),55.01530093647852,46.11526538763708,1802,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-turbo-2024-04-09/model_outputs.json,minimal
 GPT-4 Preview (11/06),50.0,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview/model_outputs.json,minimal
-Nanbeige Plus Chat v0.1,43.608589528036624,56.20975631566994,2587,https://huggingface.co/spaces/Nanbeige/Nanbeige-Plus-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige-Plus-Chat-v0.1/model_outputs.json,community
+Nanbeige Plus Chat v0.1,44.45966240337981,56.70300973017392,2587,https://huggingface.co/spaces/Nanbeige/Nanbeige-Plus-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige-Plus-Chat-v0.1/model_outputs.json,community
 Aligner 2B+Claude 3 Opus,41.823071715247664,34.46337362321739,1669,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_claude-3-opus-20240229/model_outputs.json,community
-Claude 3 Opus (02/29),40.39177606350116,29.04176413403727,1388,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-opus-20240229/model_outputs.json,minimal
-GPT-4,38.12808974440021,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
+Claude 3 Opus (02/29),40.5095080124761,29.10526953334248,1388,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-opus-20240229/model_outputs.json,minimal
+GPT-4,38.12808974440021,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,verified
 Aligner 2B+Qwen1.5 72B Chat,36.725868878524274,31.773037737123104,1812,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_qwen1.5-72b-chat/model_outputs.json,community
 Qwen1.5 72B Chat,36.571754111987296,26.49828339562733,1549,https://huggingface.co/Qwen/Qwen1.5-72B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-72B-Chat/model_outputs.json,community
 GPT-4 (03/14),35.30706121640206,22.073258928708075,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
 Ein 70B v0.1,35.029054008520646,24.84472049689441,1467,https://huggingface.co/SF-Foundation/EinBase-70B-v0.1-full,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Ein-70B-v0.1/model_outputs.json,community
-Claude 3 Sonnet (02/29),34.87247436243302,25.556325292273296,1420,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-sonnet-20240229/model_outputs.json,verified
-Mistral Large (24/02),32.65207998531868,21.43877598137888,1362,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-large-2402/model_outputs.json,minimal
+Claude 3 Sonnet (02/29),34.87247436243302,25.556325292273296,1420,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-sonnet-20240229/model_outputs.json,minimal
+Llama 3 70B Instruct,34.42459717459881,33.17785695886864,1919,https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-70B-Instruct/model_outputs.json,minimal
+Mistral Large (24/02),32.65207998531868,21.43877598137888,1362,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-large-2402/model_outputs.json,verified
 Samba CoE v0.2 (best-of-16),31.506544268148147,26.988254318335404,1578,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.2-best-of-16/model_outputs.json,community
+Mixtral 8x22B v0.1,30.878810294279383,22.21017054750302,1445,https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x22B-Instruct-v0.1/model_outputs.json,verified
 GPT-4 (06/13),30.18332231673423,15.75503808763975,1140,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613/model_outputs.json,verified
 Snorkel (Mistral-PairRM-DPO+best-of-16),29.974321613074405,34.8601328912795,2616,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO-best-of-16/model_outputs.json,community
 Contextual AI (KTO-Mistral-PairRM),29.705808939683976,33.227355200024846,2521,https://huggingface.co/ContextualAI/Contextual_KTO_Mistral_PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Contextual-KTO-Mistral-PairRM/model_outputs.json,verified
@@ -24,15 +25,16 @@ Claude,27.289504443727107,16.98534361236025,1082,,https://github.com/tatsu-lab/a
 Yi 34B Chat,27.19054787762733,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,verified
 Snorkel (Mistral-PairRM-DPO),26.39144645733206,30.220052700671644,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
 Claude Instant 1.2,25.61225902543337,16.12739962159006,1112,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-instant-1.2/model_outputs.json,community
-DBRX Instruct,25.375449740444477,18.44834898407453,1450,https://huggingface.co/databricks/dbrx-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dbrx-instruct/model_outputs.json,verified
+DBRX Instruct,25.37544974044448,18.44834898407453,1450,https://huggingface.co/databricks/dbrx-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dbrx-instruct/model_outputs.json,verified
 Claude 2.1,25.251943886133027,15.733506736409938,1096,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2.1/model_outputs.json,verified
 Nanbeige2 8B Chat,25.24207090175315,39.35450207219922,2709,https://huggingface.co/Nanbeige/Nanbeige2-8B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige2-8B-Chat/model_outputs.json,community
 XwinLM 70b V0.1,24.649686057119272,21.812957073875776,1775,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-70b-v0.1/model_outputs.json,community
-Gemini Pro,24.38177610802152,18.177644540571432,1456,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemini-pro/model_outputs.json,community
+Gemini Pro,24.38177610802152,18.177644540571432,1456,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemini-pro/model_outputs.json,minimal
 Mixtral 8x7B v0.1,23.68848260134481,18.25531762637268,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
 Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
+Llama 3 8B Instruct,22.918784673210016,22.56990260938061,1899,https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-8B-Instruct/model_outputs.json,minimal
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
-GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,,verified
+GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
 GPT 3.5 Turbo (06/13),22.35251298054288,14.09579857390062,1331,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0613/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),21.428403975507223,18.638962967441,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Tulu 2+DPO 70B,21.238610038371124,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
@@ -54,7 +56,7 @@ Humpback LLaMa2 70B,16.249164231428974,10.121771502645965,1107,https://arxiv.org
 OpenHermes-2.5-Mistral (7B),16.248577696674843,10.340415705751552,1107,https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/OpenHermes-2.5-Mistral-7B/model_outputs.json,verified
 DEITA 7B v1.0,16.05901353966741,12.646639472385097,1417,https://github.com/hkust-nlp/deita,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deita-7b-v1.0/model_outputs.json,community
 JinaChat,15.866004049505932,7.786130393366459,676,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/jina-chat/model_outputs.json,community
-TempNet-LLaMA2-Chat-70B-v0.1,15.831162778430024,15.051894420220444,1830,https://github.com/zhqiu/TempNet,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/TempNet-LLaMA2-Chat-70B-v0.1/model_outputs.json,minimal
+TempNet-LLaMA2-Chat-70B-v0.1,15.831162778430024,15.051894420220444,1830,https://github.com/zhqiu/TempNet,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/TempNet-LLaMA2-Chat-70B-v0.1/model_outputs.json,community
 CausalLM-14B,15.72032518895564,11.146160869950313,1391,https://huggingface.co/CausalLM/14B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/causallm-14b/model_outputs.json,community
 PairRM 0.4B+Zephyr 7B Beta (best-of-16),15.529867294986612,12.84127825562733,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
 Mistral-ORPO-Beta,14.716749430705242,12.565408794559003,1636,https://huggingface.co/kaist-ai/mistral-orpo-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-orpo-beta/model_outputs.json,community
@@ -118,7 +120,7 @@ Alpaca Farm PPO Human 7B,6.418603294911531,4.100426814981367,803,https://hugging
 Vicuna 7B,6.277217738516609,4.16261116226087,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b/model_outputs.json,verified
 Alpaca 7B,5.875487163278986,2.591450540223603,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-7b/model_outputs.json,minimal
 Phi-2 SFT,5.853787690603355,3.977567775217392,1068,https://huggingface.co/lxuechen/phi-2-sft,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/phi-2-sft/model_outputs.json,verified
-TempNet-LLaMA2-Chat-7B-v0.1,5.739613836715224,5.430143264670806,1512,https://github.com/zhqiu/TempNet,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/TempNet-LLaMA2-Chat-7B-v0.1/model_outputs.json,minimal
+TempNet-LLaMA2-Chat-7B-v0.1,5.739613836715224,5.430143264670806,1512,https://github.com/zhqiu/TempNet,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/TempNet-LLaMA2-Chat-7B-v0.1/model_outputs.json,community
 MiniChat 3B,5.729332875896306,3.0071507063602487,868,https://huggingface.co/GeneZC/MiniChat-3B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/minichat-3b/model_outputs.json,community
 Guanaco 33B,5.690019090866207,5.002493724956522,1311,https://huggingface.co/timdettmers/guanaco-33b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/guanaco-33b/model_outputs.json,verified
 Falcon 40B Instruct,5.6075325447394455,3.3429188224720505,662,https://huggingface.co/tiiuae/falcon-40b-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/falcon-40b-instruct/model_outputs.json,verified

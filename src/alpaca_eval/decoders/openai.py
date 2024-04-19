@@ -298,7 +298,7 @@ def _get_price_per_token(model, price_per_token=None):
     if price_per_token is not None:
         return float(price_per_token)
     if "gpt-4-turbo" in model:
-        return 0.001 / 1000
+        return 0.01 / 1000
     elif "gpt-4-1106" in model:
         return (
             0.01 / 1000
