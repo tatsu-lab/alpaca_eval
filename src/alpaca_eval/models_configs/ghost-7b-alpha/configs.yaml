@@ -5,11 +5,7 @@ ghost-7b-alpha:
     model_name: "ghost-x/ghost-7b-alpha"
     model_kwargs:
       torch_dtype: 'bfloat16'
-      device_map: 'cuda'
     max_new_tokens: 4096
-    temperature: 0.2
-    top_k: 50
-    top_p: 1
-    do_sample: true
+    do_sample: false
   pretty_name: "Ghost 7B Alpha"
   link: "https://huggingface.co/ghost-x/ghost-7b-alpha"
