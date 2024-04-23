@@ -10,7 +10,7 @@ Qwen1.5 72B Chat,36.571754111987296,26.49828339562733,1549,https://huggingface.c
 GPT-4 (03/14),35.30706121640206,22.073258928708075,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
 Ein 70B v0.1,35.029054008520646,24.84472049689441,1467,https://huggingface.co/SF-Foundation/EinBase-70B-v0.1-full,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Ein-70B-v0.1/model_outputs.json,community
 Claude 3 Sonnet (02/29),34.87247436243302,25.556325292273296,1420,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-sonnet-20240229/model_outputs.json,minimal
-FsfairX-Zephyr-Chat-v0.1,34.78744762311656,35.94648644102434,2275,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/FsfairX-Zephyr-Chat-v0.1/model_outputs.json,community
+FsfairX-Zephyr-Chat-v0.1,34.78744762311656,35.94648644102434,2275,https://huggingface.co/sfairXC/FsfairX-Zephyr-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/FsfairX-Zephyr-Chat-v0.1/model_outputs.json,community
 Llama 3 70B Instruct,34.42459717459881,33.17785695886864,1919,https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-70B-Instruct/model_outputs.json,minimal
 Mistral Large (24/02),32.65207998531868,21.43877598137888,1362,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-large-2402/model_outputs.json,verified
 Samba CoE v0.2 (best-of-16),31.506544268148147,26.988254318335404,1578,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.2-best-of-16/model_outputs.json,community
@@ -35,7 +35,7 @@ Mixtral 8x7B v0.1,23.68848260134481,18.25531762637268,1465,https://huggingface.c
 Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 Llama 3 8B Instruct,22.918784673210016,22.56990260938061,1899,https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-8B-Instruct/model_outputs.json,minimal
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
-GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,,verified
+GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
 GPT 3.5 Turbo (06/13),22.35251298054288,14.09579857390062,1331,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0613/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),21.428403975507223,18.638962967441,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Tulu 2+DPO 70B,21.238610038371124,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
@@ -117,6 +117,7 @@ Alpaca Farm PPO Sim (GPT-4) 7B,7.121808101560879,3.450341987080745,511,https://h
 UltraLM 13B,7.108191361311167,5.074590380484472,1087,https://github.com/thunlp/UltraChat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b/model_outputs.json,community
 Baize-v2 13B,7.012247205044542,4.590545330645964,930,https://huggingface.co/project-baize/baize-v2-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/baize-v2-13b/model_outputs.json,community
 Recycled WizardLM 7B V1.0,6.9014773220018215,6.632749960459629,1494,https://github.com/tianyi-lab/Reflection_Tuning,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/recycled-wizardlm-7b-v1.0/model_outputs.json,community
+Ghost 7B Alpha,6.851138067048422,6.111136224334925,1681,https://huggingface.co/ghost-x/ghost-7b-alpha,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ghost-7b-alpha/model_outputs.json,community
 Alpaca Farm PPO Human 7B,6.418603294911531,4.100426814981367,803,https://huggingface.co/tatsu-lab/alpaca-farm-ppo-human-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-farm-ppo-human/model_outputs.json,verified
 Vicuna 7B,6.277217738516609,4.16261116226087,1044,https://huggingface.co/lmsys/vicuna-7b-delta-v1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-7b/model_outputs.json,verified
 Alpaca 7B,5.875487163278986,2.591450540223603,396,https://huggingface.co/tatsu-lab/alpaca-7b-wdiff,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/alpaca-7b/model_outputs.json,minimal
