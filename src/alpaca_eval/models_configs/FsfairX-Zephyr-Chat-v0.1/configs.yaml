@@ -11,3 +11,4 @@ FsfairX-Zephyr-Chat-v0.1:
     batch_size: 64
     do_sample: True
   pretty_name: "FsfairX-Zephyr-Chat-v0.1"
+  link: "https://huggingface.co/sfairXC/FsfairX-Zephyr-Chat-v0.1"
