@@ -2,6 +2,7 @@ name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
 GPT-4 Turbo (04/09),55.01530093647852,46.11526538763708,1802,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-turbo-2024-04-09/model_outputs.json,minimal
 GPT-4 Preview (11/06),50.0,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview/model_outputs.json,minimal
 Nanbeige Plus Chat v0.1,44.45966240337981,56.70300973017392,2587,https://huggingface.co/spaces/Nanbeige/Nanbeige-Plus-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige-Plus-Chat-v0.1/model_outputs.json,community
+Qwen1.5 110B Chat,43.90555221078692,33.77709527565118,1631,https://huggingface.co/Qwen/Qwen1.5-110B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-110B-Chat/model_outputs.json,community
 Aligner 2B+Claude 3 Opus,41.823071715247664,34.46337362321739,1669,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_claude-3-opus-20240229/model_outputs.json,community
 Claude 3 Opus (02/29),40.5095080124761,29.10526953334248,1388,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-opus-20240229/model_outputs.json,minimal
 GPT-4,38.12808974440021,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,verified
@@ -35,7 +36,7 @@ Mixtral 8x7B v0.1,23.68848260134481,18.25531762637268,1465,https://huggingface.c
 Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 Llama 3 8B Instruct,22.918784673210016,22.56990260938061,1899,https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-8B-Instruct/model_outputs.json,minimal
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
-GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
+GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,,verified
 GPT 3.5 Turbo (06/13),22.35251298054288,14.09579857390062,1331,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0613/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),21.428403975507223,18.638962967441,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Tulu 2+DPO 70B,21.238610038371124,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
