@@ -263,7 +263,7 @@ class Analyzer:
             corresponding gold annotations.
 
         groupby: list[str], optional
-            Columns to groupby for computing the ldeaderboard.
+            Columns to groupby for computing the leaderboard.
 
         Returns
         -------
