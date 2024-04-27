@@ -307,8 +307,13 @@ class Analyzer:
             left_index=True,
             right_index=True,
         )
-        s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
-        r = pearsonr(df["win_rate_2"], df["win_rate_1"]).statistic
+        try:
+            s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
+            r = pearsonr(df["win_rate_2"], df["win_rate_1"]).statistic
+        except ValueError:
+            logging.warning("Could not compute correlations. This issue may be due to a lack of different generators models in the data (see 'generator' column).")
+            s = np.nan
+            r = np.nan
 
         return dict(spearman=s, pearson=r)
 
