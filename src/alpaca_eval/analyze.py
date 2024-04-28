@@ -263,7 +263,7 @@ class Analyzer:
             corresponding gold annotations.
 
         groupby: list[str], optional
-            Columns to groupby for computing the ldeaderboard.
+            Columns to groupby for computing the leaderboard.
 
         Returns
         -------
@@ -307,8 +307,19 @@ class Analyzer:
             left_index=True,
             right_index=True,
         )
-        s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
-        r = pearsonr(df["win_rate_2"], df["win_rate_1"]).statistic
+        try:
+            s = spearmanr(df["win_rate_2"], df["win_rate_1"]).statistic
+            r = pearsonr(df["win_rate_2"], df["win_rate_1"]).statistic
+        except ValueError:
+            logging.warning(
+                (
+                    "Could not compute correlations. This issue may be due to a lack of different "
+                    f"values of the column data is grouped by (using {groupby} column of dataset). "
+                    f"The computation failed for the following dataframe:\n{df}"
+                ),
+            )
+            s = np.nan
+            r = np.nan
 
         return dict(spearman=s, pearson=r)
 
