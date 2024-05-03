@@ -892,10 +892,11 @@ Concretely you should do something like:
 3. Make a model config at `src/alpaca_eval/models_configs/<model_name>` and evaluate it `evaluate_from_model --model_configs '<model_name>'`
 4. Add the model configs, output, and leaderboard entry to the forked repository
 ```sh
-git add src/alpaca_eval/models_configs/<model_name>
-git add src/alpaca_eval/leaderboards/ 
-git add -f results/<model_name>/model_outputs.json
-git add -f results/<model_name>/*/annotations.json
+git add src/alpaca_eval/models_configs/<model_name> # add the model config
+git add src/alpaca_eval/leaderboards/ # add the actual leaderboard entry
+git add src/alpaca_eval/metrics/weights # add the weights for LC
+git add -f results/<model_name>/model_outputs.json # force add the outputs on the dataset
+git add -f results/<model_name>/*/annotations.json # force add the evaluations from the annotators
 git commit -m "Add <model_name> to AlpacaEval"
 git push
 ``` 
