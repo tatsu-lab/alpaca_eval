@@ -11,7 +11,7 @@ GPT-4 (03/14),85.334647371383,94.78260869565216,1371,,https://github.com/tatsu-l
 Mistral-7B-ReMax-v0.1,,94.39601494396015,1478,https://huggingface.co/ziniuli/Mistral-7B-ReMax-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-ReMax-v0.1/model_outputs.json,community
 Yi 34B Chat,76.35646640775717,94.08468244084682,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,verified
 GPT-4 (06/13),81.38159399734118,93.78109452736318,1140,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0613/model_outputs.json,verified
-GPT 3.5 Turbo (06/13),81.73910844041163,93.41614906832298,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
+GPT 3.5 Turbo (06/13),81.73910844041163,93.41614906832298,1328,,,verified
 PairRM 0.4B+Zephyr 7B Beta (best-of-16),84.7091351498575,93.40796019900498,1487,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-zephyr-7b-beta/model_outputs.json,community
 UltraLM 13B V2.0 (best-of-16),76.29672881234201,92.79503105590062,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
 Mistral 7B v0.2,82.98089782565651,92.77708592777088,1676,https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-Instruct-v0.2/model_outputs.json,minimal
