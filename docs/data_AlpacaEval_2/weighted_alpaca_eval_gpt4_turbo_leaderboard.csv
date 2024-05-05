@@ -16,6 +16,7 @@ Claude 3 Sonnet (02/29),34.87247436243302,25.556325292273296,1420,,https://githu
 FsfairX-Zephyr-Chat-v0.1,34.78744762311656,35.94648644102434,2275,https://huggingface.co/sfairXC/FsfairX-Zephyr-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/FsfairX-Zephyr-Chat-v0.1/model_outputs.json,community
 Llama 3 70B Instruct,34.42459717459881,33.17785695886864,1919,https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-70B-Instruct/model_outputs.json,minimal
 Mistral Large (24/02),32.65207998531868,21.43877598137888,1362,https://mistral.ai/news/la-plateforme/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/mistral-large-2402/model_outputs.json,verified
+ExPO + SPPO-Mistral7B-PairRM,31.822321960655582,35.4431306716895,2288,https://huggingface.co/chujiezheng/Mistral7B-PairRM-SPPO-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/SPPO-Mistral7B-PairRM-ExPO/model_outputs.json,community
 Samba CoE v0.2 (best-of-16),31.506544268148147,26.988254318335404,1578,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.2-best-of-16/model_outputs.json,community
 Mixtral 8x22B v0.1,30.878810294279383,22.21017054750302,1445,https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x22B-Instruct-v0.1/model_outputs.json,verified
 SPPO-Mistral7B-PairRM,30.494137965217423,32.2453123637764,2114,https://huggingface.co/UCLA-AGI/Mistral7B-PairRM-SPPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/SPPO-Mistral7B-PairRM/model_outputs.json,community
@@ -27,8 +28,11 @@ Mistral Medium,28.614337401726104,21.855772543652176,1500,https://mistral.ai/new
 Claude 2,28.155196141629148,17.188240356708075,1069,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2/model_outputs.json,verified
 Samba CoE v0.2,27.62426735006872,21.847378669267083,1469,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.2/model_outputs.json,community
 Claude,27.289504443727107,16.98534361236025,1082,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude/model_outputs.json,verified
+ExPO + InternLM2 Chat 20B,27.225759480731792,46.185367468861,3335,https://huggingface.co/chujiezheng/internlm2-chat-20b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-20b-ExPO/model_outputs.json,community
 Yi 34B Chat,27.19054787762733,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,verified
+ExPO + Starling LM 7B beta,26.411156713811028,29.600851847906423,2215,https://huggingface.co/chujiezheng/Starling-LM-7B-beta-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Starling-LM-7B-beta-ExPO/model_outputs.json,community
 Snorkel (Mistral-PairRM-DPO),26.39144645733206,30.220052700671644,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
+ExPO + Tulu-2-DPO-70B,25.72330817134933,22.980619706104974,1738,https://huggingface.co/chujiezheng/tulu-2-dpo-70b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b-ExPO/model_outputs.json,community
 Claude Instant 1.2,25.61225902543337,16.12739962159006,1112,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-instant-1.2/model_outputs.json,community
 DBRX Instruct,25.37544974044448,18.44834898407453,1450,https://huggingface.co/databricks/dbrx-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dbrx-instruct/model_outputs.json,verified
 Claude 2.1,25.251943886133027,15.733506736409938,1096,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2.1/model_outputs.json,verified
@@ -41,10 +45,12 @@ Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https:/
 Llama 3 8B Instruct,22.918784673210016,22.56990260938061,1899,https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-8B-Instruct/model_outputs.json,minimal
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
 GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,,verified
+ExPO + InternLM2 Chat 7B,22.66748024879648,28.067817437082898,2390,https://huggingface.co/chujiezheng/internlm2-chat-7b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-7b-ExPO/model_outputs.json,community
 GPT 3.5 Turbo (06/13),22.35251298054288,14.09579857390062,1331,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0613/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),21.428403975507223,18.638962967441,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 Tulu 2+DPO 70B,21.238610038371124,15.982854374136648,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,verified
 Mistral-7B-ReMax-v0.1,20.55136770233589,15.999331369031056,1478,https://huggingface.co/ziniuli/Mistral-7B-ReMax-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-ReMax-v0.1/model_outputs.json,community
+ExPO + Starling LM 7B alpha,19.4741654606294,18.17975592036216,1821,https://huggingface.co/chujiezheng/Starling-LM-7B-alpha-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Starling-LM-7B-alpha-ExPO/model_outputs.json,community
 GPT 3.5 Turbo (11/06),19.30058903498905,9.177964561962735,796,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-1106/model_outputs.json,verified
 LMCocktail-10.7B-v1,18.950710386651053,13.153430917391304,1203,https://huggingface.co/Yhyu13/LMCocktail-10.7B-v1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/LMCocktail-10.7B-v1/model_outputs.json,community
 InternLM2 Chat 20B,18.748739485433603,21.74915450048448,2373,https://huggingface.co/internlm/internlm2-chat-20b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-20b-ppo/model_outputs.json,community
@@ -52,6 +58,7 @@ GPT 3.5 Turbo (03/01),18.09324155198033,9.622453295105588,827,,https://github.co
 XwinLM 13b V0.1,17.918937898189796,17.42793475019876,1894,https://github.com/Xwin-LM/Xwin-LM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/xwinlm-13b-v0.1/model_outputs.json,community
 DeepSeek LLM 67B Chat,17.843384089909343,12.093422264919258,1151,https://huggingface.co/deepseek-ai/deepseek-llm-67b-chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/deepseek-llm-67b-chat/model_outputs.json,community
 GPT-3.5,17.72780108286588,8.462446504415423,1018,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt35_turbo_instruct/model_outputs.json,community
+ExPO + Tulu-2-DPO-13B,17.591404469940848,15.551405429399557,1649,https://huggingface.co/chujiezheng/tulu-2-dpo-13b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-13b-ExPO/model_outputs.json,community
 WizardLM 70B,17.575060737493747,14.383896086782608,1545,https://huggingface.co/WizardLM/WizardLM-70B-V1.0,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-70b/model_outputs.json,community
 Vicuna 33B v1.3,17.574575310874923,12.705947921540371,1479,https://huggingface.co/lmsys/vicuna-33b-v1.3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/vicuna-33b-v1.3/model_outputs.json,verified
 PairRM 0.4B+Tulu 2+DPO 13B (best-of-16),17.40520369795085,13.831901016757762,1454,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-13b/model_outputs.json,community
@@ -72,7 +79,9 @@ LLaMA2 Chat 70B,14.689648588392544,13.88825834374378,1790,https://ai.meta.com/ll
 OpenChat V3.1 13B,14.50338795683784,11.082230489416148,1484,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v3.1-13b/model_outputs.json,community
 WizardLM 13B V1.2,14.462590694316631,12.027480342770186,1635,https://huggingface.co/WizardLM/WizardLM-13B-V1.2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.2/model_outputs.json,community
 UltraLM 13B V2.0 (best-of-16),14.198987566645036,13.853373471242236,1720,https://huggingface.co/openbmb/UltraRM-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ultralm-13b-v2.0-best-of-16/model_outputs.json,community
+ExPO + Zephyr 7B Beta,14.001211980232686,11.06111683239833,1405,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta-ExPO/model_outputs.json,community
 WizardLM 13B V1.1,13.91572059284851,11.233909572857142,1525,https://huggingface.co/WizardLM/WizardLM-13B-V1.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/wizardlm-13b-v1.1/model_outputs.json,community
+ExPO + Zephyr 7B Alpha,13.573089356781388,10.55935434569986,1248,https://huggingface.co/HuggingFaceH4/zephyr-7b-alpha,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-alpha-ExPO/model_outputs.json,community
 Zephyr 7B Beta,13.203198493136666,10.992885755354038,1444,https://huggingface.co/HuggingFaceH4/zephyr-7b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/zephyr-7b-beta/model_outputs.json,community
 Dolphin 2.2.1 Mistral 7B,13.121477650433736,9.039799728223604,1130,https://huggingface.co/cognitivecomputations/dolphin-2.2.1-mistral-7b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dolphin-2.2.1-mistral-7b/model_outputs.json,community
 Humpback LLaMa 65B,12.799859995893623,9.425139047801242,1232,https://arxiv.org/abs/2308.06259,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/humpback-llama-65b/model_outputs.json,community
@@ -82,6 +91,7 @@ Qwen 14B Chat,12.378741790737235,7.502333484720497,1013,https://huggingface.co/Q
 GPT-4 (Adversarial),12.188764057640531,3.7383373713788814,68,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_gamed/model_outputs.json,community
 CUT 13B,12.154781753927743,10.779089202496897,1637,https://github.com/wwxu21/CUT,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/cut-13b/model_outputs.json,community
 OpenChat V2-W 13B,12.03042777097436,9.615344158447204,1566,https://github.com/imoneoi/openchat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openchat-v2-w-13b/model_outputs.json,community
+ExPO + Tulu-2-DPO-7B,11.675059099417426,11.529221038762383,1742,https://huggingface.co/chujiezheng/tulu-2-dpo-7b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-7b-ExPO/model_outputs.json,community
 Tulu 2+DPO 13B,11.554479428088396,10.119788388347828,1614,https://huggingface.co/allenai/tulu-2-dpo-13b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-13b/model_outputs.json,community
 Claude2 Alpaca 13B,11.498898213160734,7.437351324770187,1127,https://github.com/Lichang-Chen/claude2-alpaca,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude2-alpaca-13b/model_outputs.json,community
 Minotaur 13B,11.46525131683203,5.738963669079602,881,https://huggingface.co/openaccess-ai-collective/minotaur-13b-fixed,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/minotaur-13b/model_outputs.json,community
