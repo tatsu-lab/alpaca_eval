@@ -1,5 +1,6 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
 GPT-4 Turbo (04/09),55.01530093647852,46.11526538763708,1802,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-turbo-2024-04-09/model_outputs.json,minimal
+Yi-Large Preview,52.64109457237405,57.743214871913054,2317,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/yi-large-preview/model_outputs.json,community
 Storm-7B (num_beams=10),51.76986749912786,55.39223031175099,2582,https://huggingface.co/jieliu/Storm-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Storm-7B-num-beams-10/model_outputs.json,community
 GPT-4 Preview (11/06),50.0,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview/model_outputs.json,minimal
 Storm-7B,48.90648220146071,52.47113499955521,2788,https://huggingface.co/jieliu/Storm-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Storm-7B/model_outputs.json,community
@@ -32,7 +33,7 @@ ExPO + InternLM2 Chat 20B,27.225759480731792,46.185367468861,3335,https://huggin
 Yi 34B Chat,27.19054787762733,29.65994671879504,2123,https://huggingface.co/01-ai/Yi-34B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Yi-34B-Chat/model_outputs.json,verified
 ExPO + Starling LM 7B beta,26.411156713811028,29.600851847906423,2215,https://huggingface.co/chujiezheng/Starling-LM-7B-beta-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Starling-LM-7B-beta-ExPO/model_outputs.json,community
 Snorkel (Mistral-PairRM-DPO),26.39144645733206,30.220052700671644,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
-ExPO + Tulu-2-DPO-70B,25.72330817134933,22.980619706104974,1738,https://huggingface.co/chujiezheng/tulu-2-dpo-70b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b-ExPO/model_outputs.json,community
+ExPO + Tulu-2-DPO-70B,25.72330817134933,22.98061970610497,1738,https://huggingface.co/chujiezheng/tulu-2-dpo-70b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b-ExPO/model_outputs.json,community
 Claude Instant 1.2,25.61225902543337,16.12739962159006,1112,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-instant-1.2/model_outputs.json,community
 DBRX Instruct,25.37544974044448,18.44834898407453,1450,https://huggingface.co/databricks/dbrx-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dbrx-instruct/model_outputs.json,verified
 Claude 2.1,25.251943886133027,15.733506736409938,1096,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2.1/model_outputs.json,verified
