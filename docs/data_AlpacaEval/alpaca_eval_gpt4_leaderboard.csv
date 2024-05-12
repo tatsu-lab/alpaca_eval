@@ -6,6 +6,7 @@ XwinLM 70b V0.1,,95.56803995,1775,https://github.com/Xwin-LM/Xwin-LM,https://git
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),85.58824844769076,95.39800995024876,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
 GPT-4,86.51018625518144,95.27950310559004,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,minimal
 Tulu 2+DPO 70B,84.25730016896037,95.03105590062113,1418,https://huggingface.co/allenai/tulu-2-dpo-70b,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b/model_outputs.json,community
+Mistral-7B+RAHF-DUAL+LoRA,83.35673751418108,94.90683229813664,1635,https://huggingface.co/Liuwenhao2022/Mistral-7B-LoRA-RAHF-DUAL,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B+RAHF-DUAL+LoRA/model_outputs.json,community
 Mixtral 8x7B v0.1,82.59666180688257,94.78260869565216,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
 GPT-4 (03/14),85.334647371383,94.78260869565216,1371,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_0314/model_outputs.json,verified
 Mistral-7B-ReMax-v0.1,,94.39601494396015,1478,https://huggingface.co/ziniuli/Mistral-7B-ReMax-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mistral-7B-ReMax-v0.1/model_outputs.json,community
