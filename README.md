@@ -912,7 +912,7 @@ See [this config](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_
 <img align="center" alt="verified.png" src="figures/verified.png" width="500"/>
 </p>
 
-A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources (time/GPU/money) to verify all models. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
+A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources to verify all the models and so we will only do that for models that are in the top-10 of the leaderboard. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
 
 1. Contact `@yann` or `@rtaori` on Discord, or email us if you have our email, providing a brief rationale for why your model should be verified.
 2. Await our response and approval before proceeding.
