@@ -105,6 +105,7 @@ def get_length_controlled_winrate(
         annotations["glm_preference"] = predicted_preferences
 
     metrics["length_controlled_winrate"] = predicted_preferences.mean() * 100
+    metrics["lc_standard_error"] = pd.Series(predicted_preferences).sem() * 100
 
     if save_weights_dir is not None:
         save_weights_dir = Path(save_weights_dir) / glm_name
