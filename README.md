@@ -565,6 +565,7 @@ eval_set = datasets.load_dataset("tatsu-lab/alpaca_eval", "alpaca_eval")["eval"]
 for example in eval_set:
     # generate here is a placeholder for your models generations
     example["output"] = generate(example["instruction"])
+    example["generator"] = "my_model" # name of your model
 ```
 
 if your model is a HuggingFace model or from a standard API provider (OpenAI, Anthropic, Cohere). Then you can

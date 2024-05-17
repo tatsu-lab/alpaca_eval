@@ -46,7 +46,7 @@ Mixtral 8x7B v0.1,23.68848260134481,18.25531762637268,1465,https://huggingface.c
 Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
 Llama 3 8B Instruct,22.91878467313347,22.56990260931677,1899,https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-8B-Instruct/model_outputs.json,minimal
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
-GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,,verified
+GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-16k-0613/model_outputs.json,verified
 ExPO + InternLM2 Chat 7B,22.66748024879648,28.067817437082898,2390,https://huggingface.co/chujiezheng/internlm2-chat-7b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/internlm2-chat-7b-ExPO/model_outputs.json,community
 GPT 3.5 Turbo (06/13),22.35251298054288,14.09579857390062,1331,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-3.5-turbo-0613/model_outputs.json,community
 PairRM 0.4B+Tulu 2+DPO 70B (best-of-16),21.428403975507223,18.638962967441,1607,https://huggingface.co/llm-blender/PairRM,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/pairrm-tulu-2-70b/model_outputs.json,community
