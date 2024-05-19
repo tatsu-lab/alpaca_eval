@@ -116,7 +116,7 @@ def _google_completion_helper(
                     "HARM_CATEGORY_SEXUALLY_EXPLICIT": "block_none",
                 },
             )
-            text = response.text
+            text = response.candidates[0].content.parts[0].text
             # num_tokens = model.count_tokens(text)
 
             return text
