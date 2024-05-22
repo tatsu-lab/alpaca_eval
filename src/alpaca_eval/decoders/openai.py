@@ -3,10 +3,10 @@ import functools
 import json
 import logging
 import math
-import multiprocessing
 import os
 import random
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Optional, Sequence, Union
 
 import numpy as np
@@ -148,11 +148,11 @@ def openai_completions(
                 for inp in tqdm.tqdm(inputs, desc="prompt_batches", total=len(prompts))
             ]
         else:
-            with multiprocessing.Pool(num_procs) as p:
+            with ThreadPoolExecutor(max_workers=num_procs) as p:
                 partial_completion_helper = functools.partial(_openai_completion_helper, **kwargs)
                 completions = list(
                     tqdm.tqdm(
-                        p.imap(partial_completion_helper, inputs),
+                        p.map(partial_completion_helper, inputs),
                         desc="prompt_batches",
                         total=len(prompts),
                     )

@@ -1,9 +1,9 @@
 import copy
 import functools
 import logging
-import multiprocessing
 import random
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Sequence, Union
 
 import anthropic
@@ -77,11 +77,11 @@ def anthropic_completions(
         if num_procs == 1:
             responses = [_anthropic_completion_helper(inp, **kwargs) for inp in tqdm.tqdm(inputs, desc="prompts")]
         else:
-            with multiprocessing.Pool(num_procs) as p:
+            with ThreadPoolExecutor(max_workers=num_procs) as p:
                 partial_completion_helper = functools.partial(_anthropic_completion_helper, **kwargs)
                 responses = list(
                     tqdm.tqdm(
-                        p.imap(partial_completion_helper, inputs),
+                        p.map(partial_completion_helper, inputs),
                         desc="prompts",
                         total=len(prompts),
                     )
