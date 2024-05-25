@@ -1,4 +1,5 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
+Aligner 2B+GPT-4 Turbo (04/09),58.33130206276722,46.77089325668323,1370,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_gpt-4-turbo-2024-04-09/model_outputs.json,community
 GPT-4 Omni (05/13),57.45682883335095,51.32757578249279,1873,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4o-2024-05-13/model_outputs.json,minimal
 GPT-4 Turbo (04/09),55.01530093647852,46.11526538763708,1802,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-turbo-2024-04-09/model_outputs.json,minimal
 Yi-Large Preview,51.894415134099546,57.46724251946292,2335,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/yi-large-preview/model_outputs.json,verified
