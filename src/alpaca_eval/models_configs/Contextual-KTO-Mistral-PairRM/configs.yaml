@@ -4,7 +4,7 @@ Contextual-KTO-Mistral-PairRM: # this should be the same as the name as the curr
   completions_kwargs:
     model_name: "ContextualAI/Contextual_KTO_Mistral_PairRM"
     model_kwargs:
-      torch_dtype: 'bfloat16'
+      dtype: 'bfloat16'
       tokenizer_mode: "auto"
       trust_remote_code: True
     max_new_tokens: 2048

@@ -4,7 +4,7 @@ Starling-LM-7B-alpha-ExPO:
   completions_kwargs:
     model_name: "chujiezheng/Starling-LM-7B-alpha-ExPO"
     model_kwargs:
-      torch_dtype: 'bfloat16'
+      dtype: 'bfloat16'
       tokenizer_mode: 'auto'
     max_new_tokens: 2048
     do_sample: True

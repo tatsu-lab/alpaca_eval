@@ -4,8 +4,8 @@ phi-2:
   completions_kwargs:
     model_name: "microsoft/phi-2"
     model_kwargs:
-      torch_dtype: "float16"
-      tp: 1
+      dtype: "float16"
+      tensor_parallel_size: 1
       tokenizer_mode: "auto"
       trust_remote_code: True
     max_new_tokens: 2048

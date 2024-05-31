@@ -4,8 +4,8 @@ tulu-2-dpo-70b:
   completions_kwargs:
     model_name: "allenai/tulu-2-dpo-70b"
     model_kwargs:
-      torch_dtype: 'bfloat16'
-      tp: 2 # you need at least 2 A100 80GB GPUs to run this model
+      dtype: 'bfloat16'
+      tensor_parallel_size: 2 # you need at least 2 A100 80GB GPUs to run this model
     max_new_tokens: 7500
     temperature: 0.0
     top_p: 1.0
