@@ -17,7 +17,7 @@ def vllm_local_completions(
     model_name: str,
     max_new_tokens: int,
     do_sample: bool = False,
-    batch_size: int = 1,
+    batch_size: int | None = None,  # default of vllm is 256
     model_kwargs=None,
     **decoding_kwargs,
 ) -> dict[str, list]:
@@ -38,7 +38,7 @@ def vllm_local_completions(
         Whether to use sampling for decoding.
 
     batch_size : int, optional
-        Batch size to use for decoding.
+        Batch size to use for decoding. If None uses the default batch size of vllm.
 
     model_kwargs : dict, optional
         Additional kwargs to pass to `vllm.LLM` constructor.
@@ -60,6 +60,8 @@ def vllm_local_completions(
         llmModelName = model_name
 
     logging.info(f"Sampling kwargs: {decoding_kwargs}")
+    if batch_size is not None:
+        decoding_kwargs["max_num_seqs"] = batch_size
     sampling_params = SamplingParams(max_tokens=max_new_tokens, **decoding_kwargs)
     if do_sample:
         sampling_params.use_beam_search = True
