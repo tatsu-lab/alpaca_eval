@@ -4,7 +4,7 @@ deita-7b-v1.0:
   completions_kwargs:
     model_name: "hkust-nlp/deita-7b-v1.0"
     model_kwargs:
-      torch_dtype: 'bfloat16'
+      dtype: 'bfloat16'
     max_new_tokens: 2048
     temperature: 0.7
     top_p: 1.0

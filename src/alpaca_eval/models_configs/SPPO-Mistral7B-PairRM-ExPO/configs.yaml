@@ -4,7 +4,7 @@ SPPO-Mistral7B-PairRM-ExPO:
   completions_kwargs:
     model_name: "chujiezheng/Mistral7B-PairRM-SPPO-ExPO"
     model_kwargs:
-      torch_dtype: 'bfloat16'
+      dtype: 'bfloat16'
       tokenizer_mode: 'auto'
     max_new_tokens: 2048
     do_sample: True

@@ -4,8 +4,8 @@ pairrm-Yi-34B-Chat:
   completions_kwargs:
     model_name: "01-ai/Yi-34b-Chat"
     model_kwargs:
-      torch_dtype: "bfloat16"
-      tp: 4
+      dtype: "bfloat16"
+      tensor_parallel_size: 4
       tokenizer_mode: "slow"
     max_new_tokens: 3500
     temperature: 0.3

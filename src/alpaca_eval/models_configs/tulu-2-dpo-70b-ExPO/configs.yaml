@@ -4,9 +4,9 @@ tulu-2-dpo-70b-ExPO:
   completions_kwargs:
     model_name: "chujiezheng/tulu-2-dpo-70b-ExPO"
     model_kwargs:
-      torch_dtype: 'bfloat16'
+      dtype: 'bfloat16'
       tokenizer_mode: 'auto'
-      tp: 2 # you need at least 2 A100 80GB GPUs to run this model
+      tensor_parallel_size: 2 # you need at least 2 A100 80GB GPUs to run this model
     max_new_tokens: 2048
     do_sample: True
     seed: 42

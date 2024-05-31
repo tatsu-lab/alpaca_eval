@@ -4,7 +4,7 @@ SPPO-Mistral7B-PairRM: # this should be the same as the name as the current dire
   completions_kwargs:
     model_name: "UCLA-AGI/Mistral7B-PairRM-SPPO"
     model_kwargs:
-      torch_dtype: 'bfloat16'
+      dtype: 'bfloat16'
       tokenizer_mode: "auto"
       trust_remote_code: True
     max_new_tokens: 2048

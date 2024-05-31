@@ -4,8 +4,8 @@ LMCocktail-10.7B-v1:
   completions_kwargs:
     model_name: "Yhyu13/LMCocktail-10.7B-v1"
     model_kwargs:
-      torch_dtype: 'float16'
-      tp: 2
+      dtype: 'float16'
+      tensor_parallel_size: 2
     max_new_tokens: 2048
     temperature: 0.7
     top_p: 1.0

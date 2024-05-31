@@ -287,9 +287,10 @@ def evaluate_from_model(
         logging.info("cannot use `chunksize` with max_instances. Setting `chunksize` to None.")
         chunksize = None
 
-    model_configs = utils.load_configs(model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+    base_dir = Path(kwargs.get("base_dir", constants.MODELS_CONFIG_DIR))
+    model_configs = utils.load_configs(model_configs, relative_to=base_dir)
     if reference_model_configs is not None:
-        reference_model_configs = utils.load_configs(reference_model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+        reference_model_configs = utils.load_configs(reference_model_configs, relative_to=base_dir)
 
     if output_path == "auto":
         output_path = Path("results") / list(model_configs.keys())[0]
@@ -321,7 +322,7 @@ def evaluate_from_model(
         if len(curr_outputs) > 0:
             prompts, _ = utils.make_prompts(
                 curr_outputs,
-                template=utils.read_or_return(constants.MODELS_CONFIG_DIR / configs["prompt_template"]),
+                template=utils.read_or_return(base_dir / configs["prompt_template"]),
             )
             fn_completions = decoders.get_fn_completions(configs["fn_completions"])
             completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])["completions"]

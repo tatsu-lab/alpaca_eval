@@ -17,9 +17,9 @@ def vllm_local_completions(
     model_name: str,
     max_new_tokens: int,
     do_sample: bool = False,
-    batch_size: int = 1,
+    batch_size: int | None = None,  # default of vllm is 256
     model_kwargs=None,
-    **kwargs,
+    **decoding_kwargs,
 ) -> dict[str, list]:
     """Decode locally using vllm transformers pipeline.
 
@@ -31,47 +31,43 @@ def vllm_local_completions(
     model_name : str, optional
         Name of the model (repo on hugging face hub)  to use for decoding.
 
+    max_new_tokens : int
+        Maximum number of tokens to generate for each prompt.
+
     do_sample : bool, optional
         Whether to use sampling for decoding.
 
     batch_size : int, optional
-        Batch size to use for decoding. This currently does not work well with to_bettertransformer.
+        Batch size to use for decoding. If None uses the default batch size of vllm.
 
     model_kwargs : dict, optional
-        Additional kwargs to pass to from_pretrained.
+        Additional kwargs to pass to `vllm.LLM` constructor.
 
-    kwargs :
+    decoding_kwargs :
         Additional kwargs to SamplingParams
     """
+    assert batch_size == 1, "vllm_local_completions only supports batch_size=1"
     global llm, llmModelName
-    tp = 1
-    if "tp" in model_kwargs:
-        tp = model_kwargs["tp"]
-    tokenizer_mode = model_kwargs.get("tokenizer_mode", "auto")
-    trust_remote_code = model_kwargs.get("trust_remote_code", False)
-    if llm is None:
-        logging.info("vllm: loading model: %s, tp=%d, trust_remote_code=%d", model_name, tp, trust_remote_code)
-        llm = LLM(
-            model=model_name,
-            tokenizer=model_name,
-            tokenizer_mode=tokenizer_mode,
-            tensor_parallel_size=tp,
-            trust_remote_code=trust_remote_code,
-        )
-        llmModelName = model_name
-    if model_name != llmModelName:
-        assert False, "vllm_local_completions can only be used with a single model"
+    model_kwargs = model_kwargs or {}
 
-    sampling_params = SamplingParams(max_tokens=max_new_tokens, **kwargs)
+    if model_name != llmModelName:
+        logging.info(f"vllm already loaded model: {llmModelName} but requested {model_name}. Let's switch...")
+        llm = None
+
+    if llm is None:
+        logging.info(f"vllm: loading model: {model_name}, {model_kwargs}")
+        llm = LLM(model=model_name, tokenizer=model_name, **model_kwargs)
+        llmModelName = model_name
+
+    logging.info(f"Sampling kwargs: {decoding_kwargs}")
+    if batch_size is not None:
+        decoding_kwargs["max_num_seqs"] = batch_size
+    sampling_params = SamplingParams(max_tokens=max_new_tokens, **decoding_kwargs)
     if do_sample:
         sampling_params.use_beam_search = True
-    completions = []
     with utils.Timer() as t:
-        for i in range(0, len(prompts), batch_size):
-            batch = prompts[i : i + batch_size]
-            outputs = llm.generate(batch, sampling_params)
-            for j in range(0, len(batch)):
-                completions.append(outputs[j].outputs[0].text)
+        outputs = llm.generate(prompts, sampling_params)
+    completions = [output.outputs[0].text for output in outputs]
     price = [np.nan] * len(completions)
     avg_time = [t.duration / len(prompts)] * len(completions)
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
