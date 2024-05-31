@@ -46,7 +46,6 @@ def vllm_local_completions(
     decoding_kwargs :
         Additional kwargs to SamplingParams
     """
-    assert batch_size == 1, "vllm_local_completions only supports batch_size=1"
     global llm, llmModelName
     model_kwargs = model_kwargs or {}
 
