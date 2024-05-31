@@ -63,13 +63,9 @@ def vllm_local_completions(
     sampling_params = SamplingParams(max_tokens=max_new_tokens, **decoding_kwargs)
     if do_sample:
         sampling_params.use_beam_search = True
-    completions = []
     with utils.Timer() as t:
-        for i in range(0, len(prompts), batch_size):
-            batch = prompts[i : i + batch_size]
-            outputs = llm.generate(batch, sampling_params)
-            for j in range(0, len(batch)):
-                completions.append(outputs[j].outputs[0].text)
+        outputs = llm.generate(prompts, sampling_params)
+    completions = [output.outputs[0].text for output in outputs]
     price = [np.nan] * len(completions)
     avg_time = [t.duration / len(prompts)] * len(completions)
     return dict(completions=completions, price_per_example=price, time_per_example=avg_time)
