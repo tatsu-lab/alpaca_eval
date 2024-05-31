@@ -41,7 +41,7 @@ def vllm_local_completions(
         Batch size to use for decoding.
 
     model_kwargs : dict, optional
-        Additional kwargs to pass to from_pretrained.
+        Additional kwargs to pass to `vllm.LLM` constructor.
 
     decoding_kwargs :
         Additional kwargs to SamplingParams

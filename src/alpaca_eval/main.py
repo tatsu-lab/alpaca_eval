@@ -287,9 +287,10 @@ def evaluate_from_model(
         logging.info("cannot use `chunksize` with max_instances. Setting `chunksize` to None.")
         chunksize = None
 
-    model_configs = utils.load_configs(model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+    base_dir = kwargs.get("base_dir", constants.MODELS_CONFIG_DIR)
+    model_configs = utils.load_configs(model_configs, relative_to=base_dir)
     if reference_model_configs is not None:
-        reference_model_configs = utils.load_configs(reference_model_configs, relative_to=constants.MODELS_CONFIG_DIR)
+        reference_model_configs = utils.load_configs(reference_model_configs, relative_to=base_dir)
 
     if output_path == "auto":
         output_path = Path("results") / list(model_configs.keys())[0]
