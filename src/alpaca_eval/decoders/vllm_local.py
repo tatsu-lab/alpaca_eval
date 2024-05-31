@@ -49,7 +49,7 @@ def vllm_local_completions(
     global llm, llmModelName
     model_kwargs = model_kwargs or {}
 
-    if model_name != llmModelName:
+    if llm is not None and model_name != llmModelName:
         logging.info(f"vllm already loaded model: {llmModelName} but requested {model_name}. Let's switch...")
         llm = None
 
