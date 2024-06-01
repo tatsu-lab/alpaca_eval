@@ -1,4 +1,4 @@
-zephyr-7b-alpha-ExPO:
+Llama-3-Instruct-8B-SimPO-ExPO:
   prompt_template: "Llama-3-Instruct-8B-SimPO/prompt.txt"
   fn_completions: "vllm_local_completions"
   completions_kwargs:
