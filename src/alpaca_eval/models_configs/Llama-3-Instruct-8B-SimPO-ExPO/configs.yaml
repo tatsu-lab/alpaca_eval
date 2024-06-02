@@ -16,4 +16,4 @@ Llama-3-Instruct-8B-SimPO-ExPO:
     frequency_penalty: 0.1
     batch_size: 1000
   pretty_name: "ExPO + Llama-3-Instruct-8B-SimPO"
-  link: "https://huggingface.co/HuggingFaceH4/Llama-3-Instruct-8B-SimPO-ExPO"
+  link: "https://huggingface.co/chujiezheng/Llama-3-Instruct-8B-SimPO-ExPO"
