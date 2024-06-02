@@ -6,6 +6,7 @@ Yi-Large Preview,51.894415134099546,57.46724251946292,2335,,https://github.com/t
 Storm-7B (num_beams=10),51.76986749912786,55.39223031175099,2582,https://huggingface.co/jieliu/Storm-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Storm-7B-num-beams-10/model_outputs.json,community
 GPT-4 Preview (11/06),50.0,50.0,2049,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4_1106_preview/model_outputs.json,minimal
 Storm-7B,48.90648220146071,52.47113499955521,2788,https://huggingface.co/jieliu/Storm-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Storm-7B/model_outputs.json,community
+ExPO + Llama-3-Instruct-8B-SimPO,45.78021783946177,40.63285400856655,1765,https://huggingface.co/HuggingFaceH4/Llama-3-Instruct-8B-SimPO-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Llama-3-Instruct-8B-SimPO-ExPO/model_outputs.json,community
 Llama-3-Instruct-8B-SimPO,44.65131348921881,40.52977498461182,1825,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Llama-3-Instruct-8B-SimPO/model_outputs.json,community
 Nanbeige Plus Chat v0.1,44.45966240337981,56.70300973017392,2587,https://huggingface.co/spaces/Nanbeige/Nanbeige-Plus-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige-Plus-Chat-v0.1/model_outputs.json,community
 Qwen1.5 110B Chat,43.90555221078692,33.77709527565118,1631,https://huggingface.co/Qwen/Qwen1.5-110B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-110B-Chat/model_outputs.json,community
