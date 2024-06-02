@@ -1386,7 +1386,7 @@ For all models you can find the auto-annotations under `results/<model_name>/*/a
 - `output_2`: the output of the model being evaluated
 - `annotator`: the auto-annotator
 - `preference`: the result of the auto-annotator. This is a float between 1 and 2. Closer to 1 means that the auto-annotator prefers `output_1`, closer to 2 means that it prefers `output_2`. For AlpacaEval 2.0, `preference-1` corresponds to the probability of `output_1` being preferred. For AlpacaEval 1.0, `preference` is 1 if `output_1` is preferred, 2 if `output_2` is preferred, and 1.5 if they are the same. The win rate is always`(preference -1).mean()`.
-- `raw_completion`: the raw output of the auto-annotator. 
+- `raw_completion`: the raw output of the auto-annotator. This is field contains the completions before de-randomization of the order between `output_1` and `output_2`! It is thus much harder to interpret, see below for more information.
 
 **Chain of thought**
 
