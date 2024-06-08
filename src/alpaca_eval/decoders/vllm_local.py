@@ -48,6 +48,8 @@ def vllm_local_completions(
     """
     global llm, llmModelName
     model_kwargs = model_kwargs or {}
+    if batch_size is not None:
+        model_kwargs["max_num_seqs"] = batch_size
 
     if model_name != llmModelName:
         logging.info(f"vllm already loaded model: {llmModelName} but requested {model_name}. Let's switch...")
@@ -59,8 +61,6 @@ def vllm_local_completions(
         llmModelName = model_name
 
     logging.info(f"Sampling kwargs: {decoding_kwargs}")
-    if batch_size is not None:
-        decoding_kwargs["max_num_seqs"] = batch_size
     sampling_params = SamplingParams(max_tokens=max_new_tokens, **decoding_kwargs)
     if do_sample:
         sampling_params.use_beam_search = True
