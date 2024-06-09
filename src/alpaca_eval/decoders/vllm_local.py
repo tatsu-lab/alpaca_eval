@@ -65,13 +65,14 @@ def vllm_local_completions(
 
     if llm is None:
         logging.info(f"vllm: loading model: {model_name}, {model_kwargs}")
-        llm = LLM(model=model_name, tokenizer=model_name, **model_kwargs)
+        # llm = LLM(model=model_name, tokenizer=model_name, **model_kwargs)
         llmModelName = model_name
         if is_chatml_prompt:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     logging.info(f"Sampling kwargs: {decoding_kwargs}")
     sampling_params = SamplingParams(max_tokens=max_new_tokens, **decoding_kwargs)
+    breakpoint()
 
     if is_chatml_prompt:
         # convert the linear prompt to chatml
