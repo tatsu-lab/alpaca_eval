@@ -1,4 +1,4 @@
-Storm-7B-num-beams-10:
+Storm-7B-best-of-64:
   prompt_template: "Storm-7B/prompt.txt"
   fn_completions: null
   completions_kwargs:
