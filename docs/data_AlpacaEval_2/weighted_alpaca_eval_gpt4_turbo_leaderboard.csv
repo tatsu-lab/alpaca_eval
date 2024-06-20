@@ -13,6 +13,7 @@ Llama-3-Instruct-8B-SimPO,44.65131348921881,40.52977498461182,1825,,https://gith
 Nanbeige Plus Chat v0.1,44.45966240337981,56.70300973017392,2587,https://huggingface.co/spaces/Nanbeige/Nanbeige-Plus-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige-Plus-Chat-v0.1/model_outputs.json,community
 Qwen1.5 110B Chat,43.90555221078692,33.77709527565118,1631,https://huggingface.co/Qwen/Qwen1.5-110B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-110B-Chat/model_outputs.json,community
 Aligner 2B+Claude 3 Opus,41.823071715247664,34.46337362321739,1669,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_claude-3-opus-20240229/model_outputs.json,community
+Nanbeige2 16B Chat,40.591286349562864,37.03608605005168,1867,https://huggingface.co/Nanbeige/Nanbeige2-16B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige2-16B-Chat/model_outputs.json,community
 Claude 3 Opus (02/29),40.5095080124761,29.10526953334248,1388,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-opus-20240229/model_outputs.json,minimal
 GPT-4,38.12808974440021,23.576789314782605,1365,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt4/model_outputs.json,verified
 Aligner 2B+Qwen1.5 72B Chat,36.725868878524274,31.773037737123104,1812,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_qwen1.5-72b-chat/model_outputs.json,community
