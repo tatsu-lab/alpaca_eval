@@ -84,6 +84,7 @@ def get_alpaca_eval_data(dataset="alpaca_eval_gpt4_baseline"):
         cache_dir=DEFAULT_CACHE_DIR,
         token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
+        trust_remote_code=True,
     )["eval"]
     return dataset
 
@@ -114,6 +115,7 @@ def ALPACAFARM_GOLD_CROSSANNOTATIONS():
         cache_dir=DEFAULT_CACHE_DIR,
         token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
+        trust_remote_code=True,
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -129,6 +131,7 @@ def ALPACAFARM_GOLD_ANNOTATIONS():
         cache_dir=DEFAULT_CACHE_DIR,
         token=DATASETS_TOKEN,
         download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
+        trust_remote_code=True,
     )["validation"].to_pandas()
 
     # turkers took around 9 min for 15 examples in AlpacaFarm
@@ -226,4 +229,5 @@ def ALPACAFARM_ALL_OUTPUTS():
             cache_dir=DEFAULT_CACHE_DIR,
             token=DATASETS_TOKEN,
             download_mode="force_redownload" if DATASETS_FORCE_DOWNLOAD else None,
+            trust_remote_code=True,
         )["eval"]
