@@ -1,4 +1,5 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
+OpenPipe MoA GPT-4 Turbo,68.37866250336802,63.15493451236265,1856,https://openpipe.ai/blog/mixture-of-agents,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openpipe-moa-gpt-4-turbo-v1/model_outputs.json,community
 Together MoA,65.37996976852163,59.8688062333292,1825,https://github.com/togethercomputer/moa,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Together-MoA/model_outputs.json,community
 Together MoA-Lite,59.1415240989275,56.593045622273294,1968,https://github.com/togethercomputer/moa,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Together-MoA-Lite/model_outputs.json,community
 Aligner 2B+GPT-4 Turbo (04/09),58.33130206276722,46.77089325668323,1370,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_gpt-4-turbo-2024-04-09/model_outputs.json,community
