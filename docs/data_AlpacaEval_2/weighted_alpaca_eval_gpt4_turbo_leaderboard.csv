@@ -46,6 +46,7 @@ ExPO + Starling LM 7B beta,26.411156713811028,29.600851847906423,2215,https://hu
 Snorkel (Mistral-PairRM-DPO),26.39144645733206,30.220052700671644,2736,https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Snorkel-Mistral-PairRM-DPO/model_outputs.json,community
 ExPO + Tulu-2-DPO-70B,25.72330817134933,22.98061970610497,1738,https://huggingface.co/chujiezheng/tulu-2-dpo-70b-ExPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/tulu-2-dpo-70b-ExPO/model_outputs.json,community
 Claude Instant 1.2,25.61225902543337,16.12739962159006,1112,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-instant-1.2/model_outputs.json,community
+Infinity-Instruct-3M-0613-Mistral-7B,25.501557794727287,15.747828130770788,1180,https://huggingface.co/BAAI/Infinity-Instruct-3M-0613-Mistral-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Infinity-Instruct-3M-0613-Mistral-7B/model_outputs.json,community
 DBRX Instruct,25.37544974044448,18.44834898407453,1450,https://huggingface.co/databricks/dbrx-instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/dbrx-instruct/model_outputs.json,verified
 Claude 2.1,25.251943886133027,15.733506736409938,1096,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-2.1/model_outputs.json,verified
 Nanbeige2 8B Chat,25.24207090175315,39.35450207219922,2709,https://huggingface.co/Nanbeige/Nanbeige2-8B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige2-8B-Chat/model_outputs.json,community
