@@ -5,7 +5,7 @@ gemma-2-9b-it-SimPO:
     max_new_tokens: 4096
     model_kwargs:
       torch_dtype: bfloat16
-    model_name: /scratch/gpfs/mengzhou/space17/v2/ae2_submission/gemma-2-9b-it-SimPO
+    model_name: princeton-nlp/gemma-2-9b-it-SimPO
     stop_token_ids:
     - 1
     - 107
