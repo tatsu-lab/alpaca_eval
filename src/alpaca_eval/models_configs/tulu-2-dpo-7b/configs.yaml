@@ -9,7 +9,7 @@ tulu-2-dpo-7b:
     max_new_tokens: 7500
     temperature: 0.0
     top_p: 1.0
-    do_sample: False
+    use_beam_search: False
     batch_size: 800
   pretty_name: "Tulu 2+DPO 7B"
   link: "https://huggingface.co/allenai/tulu-2-dpo-7b"

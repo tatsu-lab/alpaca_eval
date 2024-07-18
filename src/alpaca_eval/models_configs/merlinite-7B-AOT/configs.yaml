@@ -5,7 +5,7 @@ merlinite-7B-AOT:
     model_name: "merlinite-7B-AOT"
     model_kwargs:
       torch_dtype: 'bfloat16'
-    do_sample: True
+    use_beam_search: True
     temperature: 0.7
     max_tokens: 2048
     top_p: 0.9

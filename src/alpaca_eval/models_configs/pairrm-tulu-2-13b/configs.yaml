@@ -9,7 +9,7 @@ pairrm-tulu-2-13b:
     max_new_tokens: 7500
     temperature: 0.0
     top_p: 1.0
-    do_sample: False
+    use_beam_search: False
     best_of: 16 # number of completions to generate, using PairRM to select the best one
     batch_size: 800
   pretty_name: "PairRM 0.4B+Tulu 2+DPO 13B (best-of-16)"

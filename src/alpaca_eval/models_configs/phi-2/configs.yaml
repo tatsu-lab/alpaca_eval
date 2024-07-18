@@ -11,6 +11,6 @@ phi-2:
     max_new_tokens: 2048
     temperature: 0.7
     top_p: 1.0
-    do_sample: True
+    use_beam_search: True
   pretty_name: "Phi 2"
   link: "https://huggingface.co/microsoft/phi-2"
