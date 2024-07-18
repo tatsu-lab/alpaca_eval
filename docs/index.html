@@ -71,21 +71,25 @@
             border-bottom: 2px solid #000;
         }
 
-        th:first-child,
-        td:first-child {
-            width: 60%;
+        th.rank, td.rank {
+            width: 9%; /* Adjust as needed */
+            padding-left: 10px; /* Small margin */
+            text-align: left;
+        }
+
+        th.name, td.name {
+            width: 55%;
             padding-left: 30px;
             text-align: left;
         }
 
-        th:not(:first-child),
-        td:not(:first-child) {
+        th:not(.rank):not(.name),
+        td:not(.rank):not(.name) {
             text-align: right;
             padding-right: 10px;
         }
 
-        th:last-child,
-        td:last-child {
+        th.winRate, td.winRate {
             width: 17%;
             padding-right: 30px;
         }
@@ -99,11 +103,14 @@
             padding-bottom: 10px;
         }
 
-        #leaderboard tr th:nth-child(3) {
-            color: #999999;  /* or any other color that you want */
+        #leaderboard tr th.winRate,
+        #leaderboard tr td.winRate {
+            color: #999999;
         }
-        #leaderboard tr td:nth-child(3) {
-            color: #999999;  /* or any other color that you want */
+
+        #leaderboard tr th.rank,
+        #leaderboard tr td.rank {
+            color: #999999;
         }
 
         table tr:nth-child(even) {
@@ -211,9 +218,10 @@
 
     <table id="leaderboard">
         <tr>
-            <th><br>Model Name</th>
-            <th>LC Win Rate</th>
-            <th>Win Rate</th>
+            <th class="rank">Rank</th>
+            <th class="name">Model Name</th>
+            <th class="lenWinRate">LC Win Rate</th>
+            <th class="winRate">Win Rate</th>
         </tr>
     </table>
 
@@ -313,6 +321,7 @@
             header: true,
             complete: function (results) {
                 console.log(results.data);
+                let rank = 0; // Initialize rank counter
                 results.data.forEach(row => {
                     if (row['name'] || row['win_rate'] || row['length_controlled_winrate']) { //|| row['avg_length']
                         let filter = row['filter'];
@@ -321,10 +330,20 @@
                             (verifiedRadio.checked && (filter === 'verified' || filter === 'minimal'))) {
 
                             const tr = document.createElement('tr');
+                            const rankTd = document.createElement('td');
                             const nameTd = document.createElement('td');
                             const winRateTd = document.createElement('td');
                             //const lengthTd = document.createElement('td');
                             const lenWinRateTd = document.createElement('td');
+
+                            rankTd.classList.add('rank');
+                            nameTd.classList.add('name');
+                            winRateTd.classList.add('winRate');
+                            lenWinRateTd.classList.add('lenWinRate');
+
+                            // Set the rank value
+                            rank++;
+                            rankTd.textContent = rank;
 
                             if (row['link'] && row['link'].trim() !== '') {
                                 const a = document.createElement('a');
@@ -335,6 +354,7 @@
                             } else {
                                 nameTd.textContent = row['name'];
                             }
+
 
                             if (row['samples'] && row['samples'].trim() !== '') {
                                 const samplesLink = document.createElement('a');
@@ -356,6 +376,7 @@
                             //lengthTd.textContent = Math.round(Number(row['avg_length'])).toString() ;
 
 
+                            tr.appendChild(rankTd);
                             tr.appendChild(nameTd);
                             tr.appendChild(lenWinRateTd);
                             tr.appendChild(winRateTd);
