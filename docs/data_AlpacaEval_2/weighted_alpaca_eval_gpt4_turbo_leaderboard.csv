@@ -62,6 +62,7 @@ Gemini Pro,24.38177610802152,18.177644540571432,1456,,https://github.com/tatsu-l
 Qwen1.5 14B Chat,23.89664677030536,18.645814361932988,1607,https://huggingface.co/Qwen/Qwen1.5-14B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-14B-Chat/model_outputs.json,verified
 Mixtral 8x7B v0.1,23.68848260134481,18.25531762637268,1465,https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Mixtral-8x7B-Instruct-v0.1/model_outputs.json,minimal
 Evo v2 7B,23.35770570204821,20.834113022583853,1754,https://evolusion.ai,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/evo-v2-7b/model_outputs.json,community
+Ghost 8B Beta (d0x5),23.117114799655457,29.140548966689888,2430,https://ghost-x.org/docs/models/ghost-8b-beta,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/ghost-8b-beta-disl-0x5/model_outputs.json,community
 Llama 3 8B Instruct,22.91878467313347,22.56990260931677,1899,https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Meta-Llama-3-8B-Instruct/model_outputs.json,minimal
 Samba CoE v0.1,22.865837334795227,16.835501870062114,1316,https://coe-1.cloud.snova.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Samba-CoE-v0.1/model_outputs.json,community
 GPT 3.5 Turbo (06/13),22.720189163383225,14.13239070746584,1328,,,verified
