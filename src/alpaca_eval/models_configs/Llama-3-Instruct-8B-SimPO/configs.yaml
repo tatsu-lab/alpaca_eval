@@ -14,3 +14,4 @@ Llama-3-Instruct-8B-SimPO:
   fn_completions: vllm_local_completions
   pretty_name: Llama-3-Instruct-8B-SimPO 
   prompt_template: Llama-3-Instruct-8B-SimPO/prompt.txt
+  link: https://huggingface.co/princeton-nlp/Llama-3-Instruct-8B-SimPO
