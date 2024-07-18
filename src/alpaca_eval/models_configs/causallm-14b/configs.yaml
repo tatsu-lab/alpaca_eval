@@ -8,7 +8,7 @@ causallm-14b:
     max_new_tokens: 2048
     temperature: 0.7
     top_p: 1.0
-    do_sample: False
+    use_beam_search: False
     batch_size: 8
   pretty_name: "CausalLM-14B"
   link: "https://huggingface.co/CausalLM/14B"

@@ -7,7 +7,7 @@ Starling-LM-7B-alpha-ExPO:
       dtype: 'bfloat16'
       tokenizer_mode: 'auto'
     max_new_tokens: 2048
-    do_sample: True
+    use_beam_search: True
     seed: 42
     temperature: 0.7
     top_k: 50

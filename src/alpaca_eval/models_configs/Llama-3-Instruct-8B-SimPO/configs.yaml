@@ -1,7 +1,7 @@
 Llama-3-Instruct-8B-SimPO:
   completions_kwargs:
     batch_size: 900
-    do_sample: true
+    use_beam_search: true
     max_new_tokens: 4096
     model_kwargs:
       dtype: bfloat16
