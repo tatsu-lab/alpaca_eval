@@ -24,6 +24,16 @@ GLM_INFO = {
         "regularize_to_baseline_lambda": 0.2,
         "kwargs": {"n_splits": 5},
     },
+    "length_controlled_noreg": {
+        "formula": "np.tanh(std_delta_len) + instruction_difficulty + not_gamed_baseline.astype(float) - 1",
+        "regularize_to_baseline_lambda": None,
+        "kwargs": {"n_splits": 5},
+    },
+    "length_controlled_minimal": {
+        "formula": "np.tanh(std_delta_len) + not_gamed_baseline.astype(float) - 1",
+        "regularize_to_baseline_lambda": None,
+        "kwargs": {"n_splits": 5},
+    },
 }
 DFLT_WEIGHT_PATH = (
     Path(__file__).parent
