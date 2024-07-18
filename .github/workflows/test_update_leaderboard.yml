@@ -31,3 +31,6 @@ jobs:
 
       - name: Update leaderboard
         run: python docs/format_export_leaderboards.py
+
+      - name: Run check for unwanted PR files
+        run: python docs/check_unwanted_files.py
