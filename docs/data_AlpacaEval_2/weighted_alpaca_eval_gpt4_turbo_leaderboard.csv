@@ -10,6 +10,7 @@ GPT-4 Omni (05/13),57.45682883335095,51.32757578249279,1873,,https://github.com/
 Higgs-Llama-3-70B V2,56.76317433000503,68.63519246435168,2657,https://boson.ai/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/higgs-llama-3-70b-v2/model_outputs.json,community
 GPT-4 Turbo (04/09),55.01530093647852,46.11526538763708,1802,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gpt-4-turbo-2024-04-09/model_outputs.json,minimal
 SPPO-Gemma-2-9B-It-PairRM,53.96983730150777,48.23404468746583,1803,https://huggingface.co/UCLA-AGI/Gemma-2-9B-It-SPPO-Iter3,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/SPPO-Gemma-2-9B-It-PairRM/model_outputs.json,community
+Llama-3-Instruct-8B-WPO-HB-v2,53.37264268894168,57.33198613024009,2472,https://huggingface.co/wzhouad/Llama3-Instruct-8B-WPO-HB-v2,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Llama-3-Instruct-8B-WPO-HB-v2/model_outputs.json,community
 Claude 3.5 Sonnet (06/20),52.36675427146999,40.56021409682828,1488,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-5-sonnet-20240620/model_outputs.json,community
 Yi-Large Preview,51.894415134099546,57.46724251946292,2335,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/yi-large-preview/model_outputs.json,verified
 Storm-7B,50.45110959343775,50.26886905528583,2045,https://huggingface.co/jieliu/Storm-7B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Storm-7B/model_outputs.json,community
