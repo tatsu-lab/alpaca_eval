@@ -18,7 +18,7 @@ authors:
     given-names: "Percy"
   - family-names: "Hashimoto"
     given-names: "Tatsunori B."
-date-released: 2023
+date-released: "2023-05-30"
 repository: "https://github.com/tatsu-lab/alpaca_eval"
 publisher: "GitHub"
 type: "software"
