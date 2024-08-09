@@ -1,4 +1,5 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
+gemma-2-9b-it-WPO-HB,76.72506842726064,77.82503168985093,2285,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-2-9b-it-WPO-HB/model_outputs.json,community
 gemma-2-9b-it-SimPO,72.3508446939842,65.86422561532919,1833,https://huggingface.co/princeton-nlp/gemma-2-9b-it-SimPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-2-9b-it-SimPO/model_outputs.json,community
 OpenPipe MoA GPT-4 Turbo,68.37866250336802,63.15493451236265,1856,https://openpipe.ai/blog/mixture-of-agents,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openpipe-moa-gpt-4-turbo-v1/model_outputs.json,community
 gemma-2-9b-it-DPO,67.6620382198043,65.35922380122982,2016,https://huggingface.co/princeton-nlp/gemma-2-9b-it-DPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-2-9b-it-DPO/model_outputs.json,community
