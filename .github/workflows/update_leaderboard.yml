@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/alpaca_eval/leaderboards/data_AlpacaEval/**'
+      - 'src/alpaca_eval/leaderboards/**'
       - 'results/**'
   workflow_dispatch:
 
