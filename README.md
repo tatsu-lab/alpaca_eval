@@ -1045,7 +1045,6 @@ instructions where Alpaca "performs" better than better model; and
 
 # Additional analysis and plots
 
-**Caution**: all the following results are about AlpacaEval 1.0 and have not been updated since
 
 [//]: # (AlpacaEval provides a few visualization tools to help you analyze and improve your automatic evaluation pipeline. We)
 
