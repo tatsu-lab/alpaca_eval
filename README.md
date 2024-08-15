@@ -41,6 +41,7 @@ Updates:
     - [Contributing a completion function](#contributing-a-completion-function)
 5. [Limitations](#limitations)
 6. [Analysis](#additional-analysis-and-plots)
+    - [Length-controlled AlpacaEval](#length-controlled-alpacaeval-lcae)
     - [Analyzing an evaluator](#analyzing-an-evaluator)
     - [Analyzing an eval set](#analyzing-an-eval-set)
 7. [Citation](#citation)
