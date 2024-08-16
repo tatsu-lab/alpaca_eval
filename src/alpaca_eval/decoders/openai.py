@@ -237,9 +237,14 @@ def _openai_completion_helper(
                     else:
                         choices[i]["text"] = choice.message.content
 
+                    # backward compatibility for function calls # TODO: remove once function calls are removed
                     if choice.message.function_call:
                         # currently we only use function calls to get a JSON object => return raw text of json
                         choices[i]["text"] = choice.message.function_call.arguments
+
+                    if choice.message.tool_calls is not None:
+                        # currently we only use function calls to get a JSON object => return raw text of json
+                        choices[i]["text"] = choice.message.tool_calls[0].function.arguments
 
             else:
                 completion_batch = client.completions.create(prompt=prompt_batch, **curr_kwargs)
