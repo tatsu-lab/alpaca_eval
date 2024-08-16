@@ -290,7 +290,8 @@ def _openai_completion_helper(
 def _requires_chatml(model: str) -> bool:
     """Whether a model requires the ChatML format."""
     # TODO: this should ideally be an OpenAI function... Maybe it already exists?
-    return ("turbo" in model or "gpt-4" in model) and "instruct" not in model
+    not_chatml = ("instruct" in model) or ("gpt-3" in model and "turbo" not in model) or (model.startswith("text-"))
+    return not not_chatml
 
 
 def _get_price_per_token(model, price_per_token=None):
