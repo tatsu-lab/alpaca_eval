@@ -237,9 +237,14 @@ def _openai_completion_helper(
                     else:
                         choices[i]["text"] = choice.message.content
 
+                    # backward compatibility for function calls # TODO: remove once function calls are removed
                     if choice.message.function_call:
                         # currently we only use function calls to get a JSON object => return raw text of json
                         choices[i]["text"] = choice.message.function_call.arguments
+
+                    if choice.message.tool_calls is not None:
+                        # currently we only use function calls to get a JSON object => return raw text of json
+                        choices[i]["text"] = choice.message.tool_calls[0].function.arguments
 
             else:
                 completion_batch = client.completions.create(prompt=prompt_batch, **curr_kwargs)
@@ -290,7 +295,8 @@ def _openai_completion_helper(
 def _requires_chatml(model: str) -> bool:
     """Whether a model requires the ChatML format."""
     # TODO: this should ideally be an OpenAI function... Maybe it already exists?
-    return ("turbo" in model or "gpt-4" in model) and "instruct" not in model
+    not_chatml = ("instruct" in model) or ("gpt-3" in model and "turbo" not in model) or (model.startswith("text-"))
+    return not not_chatml
 
 
 def _get_price_per_token(model, price_per_token=None):
