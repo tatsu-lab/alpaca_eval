@@ -604,7 +604,7 @@ class SingleAnnotator:
     def __init__(
         self,
         prompt_template: types.AnyPath,
-        fn_completion_parser: Optional[Union[Callable, str]] = "regex_parser",
+        fn_completion_parser: Optional[Union[Callable, str]] = None,
         completion_parser_kwargs: Optional[dict[str, Any]] = None,
         fn_completions: Union[Callable, str] = "openai_completions",
         completions_kwargs: Optional[dict[str, Any]] = None,
