@@ -346,6 +346,7 @@ class SinglePairwiseAnnotator(SingleAnnotator):
         random_seed_column: Sequence[str] = ("instruction",),
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_randomize_output_order: bool = True,
+        fn_completion_parser: Optional[Union[Callable, str]] = "regex_parser",
         **kwargs,
     ):
         processors_to_kwargs = processors_to_kwargs or {}
@@ -369,7 +370,11 @@ class SinglePairwiseAnnotator(SingleAnnotator):
             )
 
         super().__init__(
-            *args, annotation_column=annotation_column, processors_to_kwargs=processors_to_kwargs, **kwargs
+            *args,
+            annotation_column=annotation_column,
+            processors_to_kwargs=processors_to_kwargs,
+            fn_completion_parser=fn_completion_parser,
+            **kwargs,
         )
         self.random_seed_column = list(random_seed_column)
 
