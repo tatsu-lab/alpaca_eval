@@ -3,7 +3,7 @@ Meta-Llama-3.1-405B-Instruct-Turbo:
   fn_completions: "openai_completions"
   completions_kwargs:
     model_name: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo"
-    max_tokens: 3072
+    max_tokens: 4096
     requires_chatml: True
     client_kwargs:
       base_url: 'https://api.together.xyz'
