@@ -617,6 +617,9 @@ class SingleAnnotator:
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
         completion_key: str = "completions",
+        # The following two keys are only for the documentation
+        pretty_name: Optional[str] = None,
+        link: Optional[str] = None,
     ):
         self.base_dir = Path(base_dir)
         self.prompt_template = self._get_prompt_template(prompt_template)

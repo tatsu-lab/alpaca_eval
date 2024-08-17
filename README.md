@@ -915,9 +915,9 @@ See [this config](https://github.com/tatsu-lab/alpaca_eval/blob/main/src/alpaca_
 <img align="center" alt="verified.png" src="figures/verified.png" width="500"/>
 </p>
 
-A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources to verify all the models and so we will only do that for models that are in the top-10 of the leaderboard. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
+A verified result in AlpacaEval indicates that a core maintainer has decoded the outputs from the model and performed the evaluation. Unfortunately, we, the AlpacaEval maintainers, lack the resources to verify all the models and so we will only do that for models that are in the top-5 of the leaderboard. We apologize for any inconvenience this may cause and appreciate your understanding. To have your model verified, please follow the steps below:
 
-1. Contact `@yann` or `@rtaori` on Discord, or email us if you have our email, providing a brief rationale for why your model should be verified.
+1. Contact `@yann`  on Discord, or email us if you have our email, providing a brief rationale for why your model should be verified.
 2. Await our response and approval before proceeding.
 3. Prepare a script to decode from your model that does not require a GPU, typically the same script used for your model contribution. It should run using `alpaca_eval evaluate_from_model --model_configs '<your_model_name>'` without requiring a local GPU.
 4. Generate temporary API keys for running the script and share them with us. Specifically, we need the keys for both decoding your model and for evaluation (e.g., OpenAI or Anthropic key).
