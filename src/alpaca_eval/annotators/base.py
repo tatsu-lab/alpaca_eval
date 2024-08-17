@@ -115,9 +115,6 @@ class BaseAnnotator(abc.ABC):
         self.is_reapply_parsing = is_reapply_parsing
 
         # loop over all the base_dirs until you find the annotators_config
-        import pdb
-
-        pdb.set_trace()
         if not isinstance(base_dir, (list, tuple, set)):
             base_dir = [base_dir]
         for d in base_dir:
