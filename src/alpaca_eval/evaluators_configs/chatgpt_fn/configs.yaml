@@ -14,6 +14,7 @@ chatgpt_fn:
         function:
           name: "print_best_model"
           description: "Print the best model given the preferred output."
+          strict: true
           parameters:
             type: "object"
             properties:
