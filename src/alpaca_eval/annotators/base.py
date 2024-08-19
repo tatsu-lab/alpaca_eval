@@ -2,12 +2,15 @@ import abc
 import json
 import logging
 import os
+from datetime import datetime
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence, Type, Union
 
 import numpy as np
 import pandas as pd
+
+import alpaca_eval
 
 from .. import completion_parsers, constants, processors, types, utils
 from ..decoders import get_fn_completions
@@ -50,10 +53,12 @@ class BaseAnnotator(abc.ABC):
         Keys use to distinguish the example.
 
     other_output_keys_to_keep : sequence of str, optional
-        Other output columns to store besides the annotations.
+        Other output columns to store besides the annotations. You can use `{annotation_key}` to refer to the name
+        of the annotation column.
 
     other_input_keys_to_keep : sequence of str, optional
-        Other columns to keep from the input dataframe besides the primary keys.
+        Other columns to keep from the input dataframe besides the primary keys. You can use `{annotation_key}` to refer
+        to the name of the annotation column.
 
     is_store_missing_annotations : bool, optional
         Whether to store missing annotations. If True it avoids trying to reannotate examples that have errors.
@@ -90,9 +95,11 @@ class BaseAnnotator(abc.ABC):
         seed: Optional[int] = 0,
         is_avoid_reannotations: bool = True,
         other_output_keys_to_keep: Sequence[str] = (
-            "price_per_example",
-            "time_per_example",
-            "raw_completion",
+            "{annotation_key}_price_per_example",
+            "{annotation_key}_time_per_example",
+            "{annotation_key}_version",
+            "{annotation_key}_date",
+            "{annotation_key}_raw_completion",
         ),
         other_input_keys_to_keep: Sequence[str] = (),
         is_store_missing_annotations: bool = True,
@@ -126,6 +133,8 @@ class BaseAnnotator(abc.ABC):
         self.annotators = self._initialize_annotators()
         self.df_annotations = None
 
+        other_output_keys_to_keep = [c.format(annotation_key=self.annotation_key) for c in other_output_keys_to_keep]
+        other_input_keys_to_keep = [c.format(annotation_key=self.annotation_key) for c in other_input_keys_to_keep]
         self.other_input_keys_to_keep = self._get_other_input_keys_to_keep(other_input_keys_to_keep)
         self.other_output_keys_to_keep = self._get_other_output_keys_to_keep(other_output_keys_to_keep)
         self.other_keys_to_keep = self.other_output_keys_to_keep + self.other_input_keys_to_keep
@@ -147,6 +156,11 @@ class BaseAnnotator(abc.ABC):
     def annotation_key(self) -> str:
         """How to refer to the annotations, this will be the key for annotations in the output."""
         return "annotation"
+
+    @property
+    def completion_key(self) -> str:
+        """How to refer to the raw completions, this will be the key for raw completions in the output."""
+        return f"{self.annotation_key}_raw_completion"
 
     @property
     def random_seed_keys(self) -> list[str]:
@@ -241,6 +255,7 @@ class BaseAnnotator(abc.ABC):
                 seed=self.seed,
                 base_dir=base_dir,
                 annotation_column=self.annotation_key,
+                completion_column=self.completion_key,
                 **annotator_config,
             )
             for name, annotator_config in annotators_config.items()
@@ -311,8 +326,8 @@ class BaseAnnotator(abc.ABC):
                 ]
                 # if df_to_annotate "raw_completion" is a dict, put it back to a json string so that you can reparse it
                 # TODO: this is for backward compatibility, remove in the future
-                if "raw_completion" in df_to_annotate.columns:
-                    df_to_annotate["raw_completion"] = df_to_annotate["raw_completion"].apply(
+                if self.completion_key in df_to_annotate.columns:
+                    df_to_annotate[self.completion_key] = df_to_annotate[self.completion_key].apply(
                         lambda x: json.dumps(x) if isinstance(x, dict) else x
                     )
 
@@ -583,11 +598,11 @@ class SingleAnnotator:
     annotation_column : str, optional
         Name of the annotation column in the output dataframe.
 
-    is_store_raw_completions : bool, optional
-        Whether to store raw completions at `"raw_completion"` column in the output dataframe. Note that raw_completion
-        will not be modified by the postprocessors. E.g. if we switch the columns output_1 and output_2 in the prompt
-        then the raw completion will show the switched order, which makes interpretation harder. This should
-        nevertheless not be an issue when using reapply_parsing because of seeding.
+    completion_column : str, optional
+        Name of the raw completion column in the output dataframe. If None will not store the raw completions. Note that
+        raw_completion will not be modified by the postprocessors. E.g. if we switch the columns output_1 and output_2
+        in the prompt then the raw completion will show the switched order, which makes interpretation harder. This
+        should nevertheless not be an issue when using reapply_parsing because of seeding.
 
     processors_to_kwargs : Sequence[dict(str, dict)], optional
         A dictionary of BaseProcessor objects to apply for preprocessing the  dataframe before making the prompts and
@@ -613,7 +628,7 @@ class SingleAnnotator:
         batch_size: int = 1,
         base_dir: types.AnyPath = constants.EVALUATORS_CONFIG_DIR,
         annotation_column: str = "annotation",
-        is_store_raw_completions: bool = True,
+        completion_column: Optional[str] = "raw_completion",
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
         completion_key: str = "completions",
@@ -637,7 +652,7 @@ class SingleAnnotator:
         self.is_shuffle = is_shuffle
         self.batch_size = batch_size
         self.annotation_column = annotation_column
-        self.completion_column = "raw_completion" if is_store_raw_completions else None
+        self.completion_column = completion_column
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
@@ -690,6 +705,7 @@ class SingleAnnotator:
             # prompts and completions here will not be the same length as the dataframe due to batching
             prompts, df_to_annotate = self._make_prompts(df_to_annotate)
             completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
+            self._add_metadata_to_completions_(completions)
 
             for k, v in completions.items():
                 if k != "completions":
@@ -761,6 +777,11 @@ class SingleAnnotator:
         if prompt_template is None:
             prompt_template = self.prompt_template
         return utils.make_prompts(df=df_to_annotate, template=prompt_template, batch_size=self.batch_size)
+
+    def _add_metadata_to_completions_(self, completions: dict[str, Any]):
+        """Add metadata to the completions."""
+        completions[f"{self.annotation_column}_date"] = datetime.now().isoformat()
+        completions[f"{self.annotation_column}_version"] = alpaca_eval.__version__
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the examples before annotating. In particular, takes care of all the randomization."""

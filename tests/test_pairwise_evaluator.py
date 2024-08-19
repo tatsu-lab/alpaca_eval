@@ -51,7 +51,7 @@ def single_annotator():
         completion_parser_kwargs=dict(outputs_to_match={1: r"(?:^|\n) ?Output \(a\)", 2: "(?:^|\n) ?Output \(b\)"}),
         is_randomize_output_order=False,
         is_shuffle=False,
-        is_store_raw_completions=False,
+        completion_column=None,
     )
 
 
