@@ -614,6 +614,9 @@ class SingleAnnotator:
 
     completion_key : str, optional
         Key of the output of `fn_completions` to use for parsing the completions into annotations.
+
+    packages_for_which_to_show_version : Sequence[str], optional
+        List of packages for which to show the version in the metadata of the completions.
     """
 
     def __init__(
@@ -632,6 +635,7 @@ class SingleAnnotator:
         processors_to_kwargs: Optional[dict[str, dict]] = None,
         is_add_default_processors: bool = True,
         completion_key: str = "completions",
+        packages_for_which_to_show_version: Optional[Sequence[str]] = ("alpaca_eval",),
         # The following two keys are only for the documentation
         pretty_name: Optional[str] = None,
         link: Optional[str] = None,
@@ -653,6 +657,7 @@ class SingleAnnotator:
         self.batch_size = batch_size
         self.annotation_column = annotation_column
         self.completion_column = completion_column
+        self.packages_for_which_to_show_version = packages_for_which_to_show_version
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
@@ -781,7 +786,10 @@ class SingleAnnotator:
     def _add_metadata_to_completions_(self, completions: dict[str, Any]):
         """Add metadata to the completions."""
         completions[f"{self.annotation_column}_date"] = datetime.now().isoformat()
-        completions[f"{self.annotation_column}_version"] = alpaca_eval.__version__
+        if self.packages_for_which_to_show_version is not None:
+            completions[f"{self.annotation_column}_version"] = " ".join(
+                [f"{p}=={utils.get_package_version(p)}" for p in self.packages_for_which_to_show_version]
+            )
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the examples before annotating. In particular, takes care of all the randomization."""

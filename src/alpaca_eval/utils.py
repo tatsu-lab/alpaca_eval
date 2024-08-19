@@ -648,3 +648,8 @@ def _string_to_dict(to_convert):
     {'name': 'user', 'university': 'stanford'}
     """
     return {s.split("=", 1)[0]: s.split("=", 1)[1] for s in to_convert.split(" ") if len(s) > 0}
+
+
+def get_package_version(package_name: str) -> str:
+    """Get the version of a package."""
+    return pkg_resources.get_distribution(package_name).version
