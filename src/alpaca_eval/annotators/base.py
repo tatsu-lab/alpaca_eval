@@ -107,6 +107,7 @@ class BaseAnnotator(abc.ABC):
         is_raise_if_missing_primary_keys: bool = True,
         annotation_type: Optional[Type] = None,
         is_reapply_parsing: bool = False,
+        **single_annotator_kwargs,
     ):
         logging.info(f"Creating the annotator from `{annotators_config}`.")
         base_dir = base_dir or self.DEFAULT_BASE_DIR
@@ -130,7 +131,7 @@ class BaseAnnotator(abc.ABC):
             if self.annotators_config.exists():
                 break
 
-        self.annotators = self._initialize_annotators()
+        self.annotators = self._initialize_annotators(**single_annotator_kwargs)
         self.df_annotations = None
 
         other_output_keys_to_keep = [c.format(annotation_key=self.annotation_key) for c in other_output_keys_to_keep]
@@ -241,7 +242,7 @@ class BaseAnnotator(abc.ABC):
 
         return annotators_config
 
-    def _initialize_annotators(self) -> dict[str, "SingleAnnotator"]:
+    def _initialize_annotators(self, **kwargs) -> dict[str, "SingleAnnotator"]:
         """Load all the configs and prompts if necessary."""
         annotators_config = utils.load_configs(self.annotators_config)
         try:
@@ -257,6 +258,7 @@ class BaseAnnotator(abc.ABC):
                 annotation_column=self.annotation_key,
                 completion_column=self.completion_key,
                 **annotator_config,
+                **kwargs,
             )
             for name, annotator_config in annotators_config.items()
         }
