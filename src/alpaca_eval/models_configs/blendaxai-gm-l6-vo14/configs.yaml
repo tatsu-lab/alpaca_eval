@@ -1,4 +1,4 @@
-blendaxai-gm-l3-v35:
+blendaxai-gm-l6-vo14:
   prompt_template: "gpt4_1106_preview/chatml_prompt.txt"
   fn_completions: null
   completions_kwargs:
