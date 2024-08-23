@@ -6,4 +6,4 @@ Shopee-SlimMoA-v1:
     model_name: "Shopee-SlimMoA-v1"
     temperature: 0.5
   pretty_name: "Shopee SlimMoA v1"
-  link: ""
+  link: "https://github.com/LLM-Alignment-sh/Shopee-SlimMoA"
