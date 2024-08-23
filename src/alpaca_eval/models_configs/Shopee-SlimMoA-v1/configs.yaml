@@ -1,5 +1,5 @@
 Shopee-SlimMoA-v1:
-  prompt_template: "Shopee-SlimMoA-v1/prompt.txt"
+  prompt_template: "gemma-2-9b-it-DPO/prompt.txt"
   fn_completions: null
   completions_kwargs:
     max_new_tokens: 4096
