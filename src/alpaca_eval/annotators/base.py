@@ -638,6 +638,7 @@ class SingleAnnotator:
         is_add_default_processors: bool = True,
         completion_key: str = "completions",
         packages_for_which_to_show_version: Optional[Sequence[str]] = ("alpaca_eval",),
+        prfx_to_completion_cols: Optional[str] = "{annotation_column}_",
         # The following two keys are only for the documentation
         pretty_name: Optional[str] = None,
         link: Optional[str] = None,
@@ -660,6 +661,9 @@ class SingleAnnotator:
         self.annotation_column = annotation_column
         self.completion_column = completion_column
         self.packages_for_which_to_show_version = packages_for_which_to_show_version
+        if prfx_to_completion_cols is None:
+            prfx_to_completion_cols = ""
+        self.prfx_to_completion_cols = prfx_to_completion_cols.format(annotation_column=annotation_column)
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
@@ -713,9 +717,13 @@ class SingleAnnotator:
             prompts, df_to_annotate = self._make_prompts(df_to_annotate)
             completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
             self._add_metadata_to_completions_(completions)
+            completions = {
+                f"{self.prfx_to_completion_cols}{k}" if k != self.completion_key else k: v
+                for k, v in completions.items()
+            }
 
             for k, v in completions.items():
-                if k != "completions":
+                if k != self.completion_key:
                     if self.batch_size != 1 and (len(df_to_annotate) == len(v) * self.batch_size):
                         v = [el for el in v for _ in range(self.batch_size)]
                     df_to_annotate[k] = v
@@ -758,7 +766,7 @@ class SingleAnnotator:
             return name
 
     def _get_prompt_template(self, prompt_template: types.AnyPath):
-        return utils.read_or_return(self.base_dir / prompt_template)
+        return utils.read_or_return(prompt_template, relative_to=self.base_dir)
 
     def _make_prompts(
         self, df_to_annotate: pd.DataFrame, prompt_template: Optional[str] = None
@@ -787,11 +795,9 @@ class SingleAnnotator:
 
     def _add_metadata_to_completions_(self, completions: dict[str, Any]):
         """Add metadata to the completions."""
-        completions[f"{self.annotation_column}_date"] = datetime.now().isoformat()
+        completions["date"] = datetime.now().isoformat()
         if self.packages_for_which_to_show_version is not None:
-            completions[f"{self.annotation_column}_version"] = " ".join(
-                [f"{p}=={utils.get_package_version(p)}" for p in self.packages_for_which_to_show_version]
-            )
+            completions["version"] = utils.get_multi_package_version(self.packages_for_which_to_show_version)
 
     def _preprocess(self, df_to_annotate: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the examples before annotating. In particular, takes care of all the randomization."""
