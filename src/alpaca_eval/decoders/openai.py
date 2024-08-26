@@ -303,7 +303,11 @@ def _get_price_per_token(model, price_per_token=None):
     """Returns the price per token for a given model"""
     if price_per_token is not None:
         return float(price_per_token)
-    if "gpt-4-turbo" in model:
+    if "gpt-4o-mini-2024-07-18" in model:
+        return (
+            0.15 / 1_000_000
+        )  # that's not completely true because decoding is 0.03 but close enough given that most is context
+    elif "gpt-4-turbo" in model:
         return 0.01 / 1000
     elif "gpt-4-1106" in model:
         return (
