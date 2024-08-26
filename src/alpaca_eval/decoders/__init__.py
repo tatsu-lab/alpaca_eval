@@ -102,5 +102,15 @@ def get_fn_completions(name: Union[str, Callable]) -> Callable:
             logging.exception(f"You need {packages} to use bedrock_anthropic. Error:")
             raise e
 
+    elif name == "cache_completions":
+        from .cache import cache_completions
+
+        return cache_completions
+
+    elif name == "test_completions":
+        from .test import test_completions
+
+        return test_completions
+
     else:
         raise ValueError(f"Unknown decoder: {name}")

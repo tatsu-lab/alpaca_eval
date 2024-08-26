@@ -322,7 +322,7 @@ def evaluate_from_model(
         if len(curr_outputs) > 0:
             prompts, _ = utils.make_prompts(
                 curr_outputs,
-                template=utils.read_or_return(base_dir / configs["prompt_template"]),
+                template=utils.read_or_return(configs["prompt_template"], relative_to=base_dir),
             )
             fn_completions = decoders.get_fn_completions(configs["fn_completions"])
             completions = fn_completions(prompts=prompts, **configs["completions_kwargs"])["completions"]
