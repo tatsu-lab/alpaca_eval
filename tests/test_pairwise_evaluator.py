@@ -74,6 +74,8 @@ def test_single_annotator(single_annotator, df_to_annotate):
         "output_2",
         "preference",
         "completions",
+        "preference_date",
+        "preference_version",
     }
     # check that you also save the completions.
     assert df_annotated["completions"].tolist() == parsable_completions
