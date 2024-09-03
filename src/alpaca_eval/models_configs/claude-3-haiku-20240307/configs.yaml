@@ -1,0 +1,7 @@
+claude-3-haiku-20240307:
+  prompt_template: "claude-3-5-sonnet-20240620/prompt_chatml.txt"
+  fn_completions: "anthropic_completions"
+  completions_kwargs:
+    model_name: "claude-3-haiku-20240307"
+    max_tokens_to_sample: 4096
+  pretty_name: "Claude 3 Haiku (24/03/07)"

@@ -19,7 +19,7 @@ def anthropic_completions(
     prompts: Sequence[str],
     max_tokens_to_sample: Union[int, Sequence[int]] = 2048,
     model_name="claude-v1",
-    num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
+    num_procs: int = 1,  # constants.ANTHROPIC_MAX_CONCURRENCY,
     price_per_token: Optional[float] = None,
     client_function_name: Optional[str] = "messages",  # newer anthropic models
     requires_chatml: bool = True,
@@ -122,12 +122,27 @@ def _anthropic_completion_helper(
     kwargs.update(dict(max_tokens=max_tokens, temperature=temperature))
     curr_kwargs = copy.deepcopy(kwargs)
 
+    try:
+        if prompt[0]["role"] == "system":
+            # anthropic doesn't use system prompts as message but instead gives them as kwargs
+            curr_kwargs["system"] = prompt[0]["content"]
+            prompt = prompt[1:]
+    except:
+        pass
+
     response = None
     for _ in range(n_retries):
         try:
             response = getattr(client, client_function_name).create(messages=prompt, **curr_kwargs)
+
+            # TODO: should rewrite to allow multiple tools and use pydantic objects
             response = response.model_dump()
-            response["text"] = response["content"][0]["text"]
+
+            content = response["content"][0]
+            if "text" in content:
+                response["text"]
+            elif content.get("type") == "tool_use":
+                response["text"] = content["input"]
 
             break
 
