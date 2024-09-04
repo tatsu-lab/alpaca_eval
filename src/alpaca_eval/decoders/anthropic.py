@@ -146,6 +146,10 @@ def _anthropic_completion_helper(
 
             break
 
+        except anthropic.BadRequestError as e:
+            logging.exception(f"API BadRequestError: {e}.")
+            raise e
+
         except anthropic.RateLimitError as e:
             logging.warning(f"API RateLimitError: {e}.")
             if len(anthropic_api_keys) > 1:
