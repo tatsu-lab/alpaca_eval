@@ -18,7 +18,7 @@ import copy
 import json
 import logging
 import re
-from typing import Any, Literal, Optional, Sequence, Union
+from typing import Any, Literal, Mapping, Optional, Sequence, Union
 
 import numpy as np
 from scipy.special import logsumexp
@@ -33,6 +33,7 @@ __all__ = [
     "eval_parser",
     "logprob_parser",
     "pipeline_meta_parser",
+    "indexing_parser",
 ]
 
 
@@ -362,3 +363,8 @@ def pipeline_meta_parser(
         out = out[0]
 
     return out
+
+
+def indexing_parser(completion: Union[Mapping, Sequence], index: Any) -> list[str]:
+    """Parser that returns the element at the given index."""
+    return [completion[index]]

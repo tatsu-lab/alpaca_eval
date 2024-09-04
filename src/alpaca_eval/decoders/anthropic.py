@@ -19,7 +19,7 @@ def anthropic_completions(
     prompts: Sequence[str],
     max_tokens_to_sample: Union[int, Sequence[int]] = 2048,
     model_name="claude-v1",
-    num_procs: int = 1,  # constants.ANTHROPIC_MAX_CONCURRENCY,
+    num_procs: int = constants.ANTHROPIC_MAX_CONCURRENCY,
     price_per_token: Optional[float] = None,
     client_function_name: Optional[str] = "messages",  # newer anthropic models
     requires_chatml: bool = True,
