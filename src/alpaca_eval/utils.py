@@ -2,6 +2,7 @@ import contextlib
 import copy
 import glob
 import itertools
+import json
 import logging
 import os
 import pathlib
@@ -669,3 +670,61 @@ def get_package_version(package_name: str) -> str:
 def get_multi_package_version(package_names: Sequence[str]) -> str:
     """Get the version of multiple packages."""
     return " ".join([f"{p}=={get_package_version(p)}" for p in package_names])
+
+
+# AVAILBLE_FORMATTING_FUNCTIONS
+def tool_formatting_llama31(**decoding_kwargs):
+    """Format the tool prompt for llama 3.1 using the same tools as OpenAI."""
+    tools = decoding_kwargs.get("tools", [])
+    assert len(decoding_kwargs.get("tools", [])) == 1, "One and only one tool is supported for llama31 tools."
+
+    tool = tools[0]["function"]
+
+    tool_choice = decoding_kwargs.get("tool_choice")
+    if tool_choice is not None:
+        assert tool_choice["function"]["name"] == tool["name"]
+        prefix = "You must use the following function:"
+        suffix = f"""Call the the function by replying with the following format with no prefix or suffix:
+
+<function={tool["name"]}>{{\"example_name\": \"example_value\"}}</function>          
+"""
+    else:
+        prefix = "You have access to the following function:"
+        suffix = f"""If you choose to call a function ONLY reply in the following format with no prefix or suffix:
+
+<function=example_function_name>{{\"example_name\": \"example_value\"}}</function>        
+"""
+
+    tool_prompt = f"""
+{prefix}
+
+Use the function '{tool["name"]}' to '{tool["description"]}':
+{json.dumps(tool)}
+
+{suffix}
+
+Reminder:
+- Function calls MUST follow the specified format, start with <function= and end with </function>
+- Required parameters MUST be specified
+- Only call one function at a time
+- Put the entire function call reply on one line
+- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls
+"""
+    return tool_prompt
+
+
+AVAILBLE_FORMATTING_FUNCTIONS = {
+    "tool_formatting_llama31": tool_formatting_llama31,
+}
+
+
+def replace_functions_in_prompt(
+    prompt: str, kwargs={}, formatting_functions: dict[str, Callable] = AVAILBLE_FORMATTING_FUNCTIONS
+) -> str:
+    """Replace the functions in the prompt using the formatting functions."""
+    for name, function in formatting_functions.items():
+        to_replace = f"<|function={name}|>"
+        if to_replace in prompt:
+            prompt = prompt.replace(f"<|function={name}|>", function(**kwargs))
+
+    return prompt

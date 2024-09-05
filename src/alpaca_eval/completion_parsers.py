@@ -368,3 +368,30 @@ def pipeline_meta_parser(
 def indexing_parser(completion: Union[Mapping, Sequence], index: Any) -> list[str]:
     """Parser that returns the element at the given index."""
     return [completion[index]]
+
+
+def llama3_tool_parser(completion: str, annotation_key: Optional[str] = None) -> list[Any]:
+    r"""Parse a completion from the Llama3 tool.
+
+    Parameters
+    ----------
+    completion : str
+        Completion to parse.
+
+    Examples
+    --------
+    >>> completion = 'some text ...<function=get_weather>{"location": "San Francisco"}</function>'
+    >>> llama3_tool_parser(completion)
+    [{'location': 'San Francisco'}]
+    """
+    # match everything between <function=...> and </function>
+    pattern = r"<function=(.*?)>(.*?)</function>"
+    completion = re.search(pattern, completion, re.DOTALL).group(2)
+
+    # assert that you matched one and only one completion
+    assert completion is not None
+
+    json_loaded = json.loads(completion)
+    if isinstance(json_loaded, dict):
+        return [json_loaded[annotation_key] if annotation_key is not None else json_loaded]
+    return [d[annotation_key] if annotation_key is not None else d for d in json.loads(completion)]

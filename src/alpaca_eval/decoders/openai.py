@@ -39,7 +39,9 @@ def openai_completions(
     Parameters
     ----------
     prompts : list of str
-        Prompts to get completions for.
+        Prompts to get completions for. Note that the prompts can have <|function:...|> which will be replaced by the output
+        of <...>(**decoding_kwargs) where <...> is a function in AVAILBLE_FORMATTING_FUNCTIONS. This is useful
+        for formatting things like tools for non-openai models such as Llama 3.
 
     model_name : str
         Name of the model to use for decoding.
@@ -112,6 +114,9 @@ def openai_completions(
 
     if is_strip:
         prompts = [p.strip() for p in prompts]
+
+    # replace <|function:...|> with the output of <...>(**decoding_kwargs) before chatml
+    prompts = [utils.replace_functions_in_prompt(prompt, decoding_kwargs) for prompt in prompts]
 
     requires_chatml = decoding_kwargs.pop("requires_chatml", _requires_chatml(model_name))
     decoding_kwargs["is_chat"] = decoding_kwargs.get("is_chat", requires_chatml)
@@ -273,10 +278,11 @@ def _openai_completion_helper(
                 return choices
 
             else:
-                if "rate limit" in str(e).lower():
+                if "rate " in str(e).lower():
                     logging.warning(f"Hit request rate limit; retrying...")
                 else:
-                    logging.warning(f"Unknown error. \n It's likely a rate limit so we are retrying...")
+                    logging.exception("Unknown error:")
+                    raise e
                 if len(all_clients) > 1:
                     curr_client_idx = random.choice([idx for idx in client_idcs if idx != curr_client_idx])
                     client = all_clients[curr_client_idx]
