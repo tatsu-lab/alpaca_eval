@@ -1,4 +1,5 @@
 import functools
+import json
 import logging
 import multiprocessing
 import random
@@ -18,7 +19,7 @@ def google_completions(
     prompts: Sequence[str],
     max_output_tokens: Union[int, Sequence[int]] = 2048,
     model_name="gemini-pro",
-    num_procs: int = constants.API_MAX_CONCURRENCY,
+    num_procs: int = 1,  # constants.API_MAX_CONCURRENCY,
     **decoding_kwargs,  # ,
 ) -> dict[str, list]:
     """Decode with Anthropic API.
@@ -99,24 +100,49 @@ def _google_completion_helper(
     model = genai.GenerativeModel(model_name)
     n_tries = 0
 
+    main_kwargs = dict()
+    if "tools" in kwargs:
+        tools = kwargs.pop("tools")
+        # tools = [genai.types.Tool(t) for t in tools]
+        main_kwargs["tools"] = tools
+
+    if "tool_config" in kwargs:
+        tool_config = kwargs.pop("tool_config")
+        # tool_config = genai.types.ToolConfig(**tool_config)
+        main_kwargs["tool_config"] = tool_config
+
+    if "system_instruction" in kwargs:
+        system_instruction = kwargs.pop("system_instruction")
+        # system_instruction = genai.types.SystemInstruction(**system_instruction)
+        main_kwargs["system_instruction"] = system_instruction
+
+    if "safety_settings" in kwargs:
+        safety_settings = kwargs.pop("safety_settings")
+        # safety_settings = {k: genai.types.SafetySetting(v) for k, v in safety_settings.items()}
+        main_kwargs["safety_settings"] = safety_settings
+    else:
+        # by default don't block anything for evaluation
+        main_kwargs["safety_settings"] = {
+            "HARM_CATEGORY_HARASSMENT": "block_none",
+            "HARM_CATEGORY_DANGEROUS_CONTENT": "block_none",
+            "HARM_CATEGORY_HATE_SPEECH": "block_none",
+            "HARM_CATEGORY_SEXUALLY_EXPLICIT": "block_none",
+        }
+
+    generation_config = genai.types.GenerationConfig(
+        temperature=temperature, max_output_tokens=max_output_tokens, **kwargs
+    )
+
     while True:
         try:
-            response = model.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=temperature,
-                    max_output_tokens=max_output_tokens,
-                    **kwargs,
-                ),
-                # don't block anything for evaluation
-                safety_settings={
-                    "HARM_CATEGORY_HARASSMENT": "block_none",
-                    "HARM_CATEGORY_DANGEROUS_CONTENT": "block_none",
-                    "HARM_CATEGORY_HATE_SPEECH": "block_none",
-                    "HARM_CATEGORY_SEXUALLY_EXPLICIT": "block_none",
-                },
-            )
-            text = response.candidates[0].content.parts[0].text
+            response = model.generate_content(prompt, generation_config=generation_config, **main_kwargs)
+            response = response.candidates[0].content.parts[0]
+            try:
+                fc = response.function_call
+                text = json.dumps(type(fc).to_dict(fc)["args"], indent=2)
+            except AttributeError:
+                text = response.text
+
             # num_tokens = model.count_tokens(text)
 
             return text
