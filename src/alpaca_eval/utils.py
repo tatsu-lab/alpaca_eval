@@ -1,3 +1,4 @@
+import ast
 import contextlib
 import copy
 import glob
@@ -102,6 +103,8 @@ def make_prompts(
     df: pd.DataFrame,
     template: str,
     batch_size: int = 1,
+    is_std_formatting: bool = True,
+    keys_to_format: Optional[list[str]] = None,
 ) -> tuple[list[str], pd.DataFrame]:
     r"""Helper function to make batch prompts for a single template.
 
@@ -115,6 +118,13 @@ def make_prompts(
 
     batch_size : int
         Number of examples to batch in a single prompt.
+
+    is_std_formatting : bool
+        Whether to match {key} for formatting, rather than <|{key}|> for more robust formatting. Using the latter is much
+        more robust (e.g. for latex) but isn't standard.
+
+    keys_to_format : list[str]
+        List of keys that can be formatted. If None, all keys can be formatted.
 
     Returns
     -------
@@ -136,7 +146,20 @@ def make_prompts(
     if df.empty:
         return [], df
 
-    text_to_format = re.findall(r"{([^ \s]+?)}", template)
+    if keys_to_format is None:
+        re_possible_keys = r"([^ \s]+?)"
+    else:
+        re_possible_keys = "(" + "|".join(keys_to_format) + ")"
+
+    if is_std_formatting:
+        prfx = "{"
+        sffx = "}"
+        pattern = prfx + re_possible_keys + sffx
+    else:
+        prfx = "<|{"
+        sffx = "}|>"
+        pattern = prfx + re_possible_keys + sffx
+    text_to_format = re.findall(pattern, template)
     n_occurrences = Counter(text_to_format)
 
     if not all([n == batch_size for n in n_occurrences.values()]):
@@ -156,7 +179,7 @@ def make_prompts(
         for j in range(batch_size):
             for to_format in n_occurrences.keys():
                 # replace only first occurrence (that's why we don't use .format)
-                current_prompt = current_prompt.replace("{" + to_format + "}", str(df_out.iloc[i + j][to_format]), 1)
+                current_prompt = current_prompt.replace(prfx + to_format + sffx, str(df_out.iloc[i + j][to_format]), 1)
         prompts.append(current_prompt)
 
     return prompts, df_out
@@ -728,3 +751,15 @@ def replace_functions_in_prompt(
             prompt = prompt.replace(f"<|function={name}|>", function(**kwargs))
 
     return prompt
+
+
+def convert_str_to_sequence(x):
+    """Convert a string to a sequence if it's a list, dict, or tuple."""
+    if isinstance(x, str):
+        try:
+            result = ast.literal_eval(x)
+            if isinstance(result, (list, dict, tuple)):
+                return result
+        except (ValueError, SyntaxError):
+            pass
+    return x
