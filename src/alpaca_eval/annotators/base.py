@@ -151,7 +151,14 @@ class BaseAnnotator(abc.ABC):
     @property
     def available_fields_to_format(self):
         """Fields that can be formatted in the prompt template."""
+        # TODO: this doesn't seem to be applied. You can change `dflt_annotator_kwargs` to have
+        #  `dict(available_fields_to_format=self.available_fields_to_format)`
         return self.all_keys
+
+    @property
+    def dflt_annotator_kwargs(self):
+        """Default kwargs for the annotators."""
+        return {}
 
     @property
     def annotation_key(self) -> str:
@@ -251,14 +258,19 @@ class BaseAnnotator(abc.ABC):
         except:
             base_dir = self.base_dir
 
+        def _get_annotator_config(cfg):
+            final_kwargs = self.dflt_annotator_kwargs.copy()
+            final_kwargs.update(kwargs)
+            final_kwargs.update(cfg)
+            return final_kwargs
+
         return {
             name: self.SingleAnnotator(
                 seed=self.seed,
                 base_dir=base_dir,
                 annotation_column=self.annotation_key,
                 completion_column=self.completion_key,
-                **annotator_config,
-                **kwargs,
+                **_get_annotator_config(annotator_config),
             )
             for name, annotator_config in annotators_config.items()
         }
@@ -361,6 +373,10 @@ class BaseAnnotator(abc.ABC):
             )
 
         df_annotated = df_annotated[~df_annotated[self.annotation_key].isna()].copy()
+
+        # if self.annotation_type == object:
+        #     # make sure that you are an object
+        #     df_annotated[self.annotation_key] = df_annotated[self.annotation_key].apply(utils.convert_str_to_sequence)
 
         # try converting to int now that no nan. Note this will only do so if possible
         df_annotated[self.annotation_key] = df_annotated[self.annotation_key].astype(self.annotation_type)
@@ -619,6 +635,12 @@ class SingleAnnotator:
 
     packages_for_which_to_show_version : Sequence[str], optional
         List of packages for which to show the version in the metadata of the completions.
+
+    available_fields_to_format : Sequence[str], optional
+        Keys to format in the prompt template. If None, will try to format all keys.
+
+    is_log_first_prompt : bool, optional
+        Whether to log the first prompt. Useful for debugging.
     """
 
     def __init__(
@@ -639,6 +661,8 @@ class SingleAnnotator:
         completion_key: str = "completions",
         packages_for_which_to_show_version: Optional[Sequence[str]] = ("alpaca_eval",),
         prfx_to_completion_cols: Optional[str] = "{annotation_column}_",
+        available_fields_to_format: Optional[Sequence[str]] = None,
+        is_log_first_prompt: bool = False,
         # The following two keys are only for the documentation
         pretty_name: Optional[str] = None,
         link: Optional[str] = None,
@@ -664,6 +688,8 @@ class SingleAnnotator:
         if prfx_to_completion_cols is None:
             prfx_to_completion_cols = ""
         self.prfx_to_completion_cols = prfx_to_completion_cols.format(annotation_column=annotation_column)
+        self.available_fields_to_format = available_fields_to_format
+        self.is_log_first_prompt = is_log_first_prompt
 
         self.is_add_default_processors = is_add_default_processors
         self.processors = []
@@ -715,6 +741,8 @@ class SingleAnnotator:
         if not df_to_annotate.empty:
             # prompts and completions here will not be the same length as the dataframe due to batching
             prompts, df_to_annotate = self._make_prompts(df_to_annotate)
+            if self.is_log_first_prompt:
+                logging.info(f"First prompt:\n{prompts[0]}")
             completions = self.fn_completions(prompts=prompts, **self.completions_kwargs, **decoding_kwargs)
             self._add_metadata_to_completions_(completions)
             completions = {
@@ -791,7 +819,12 @@ class SingleAnnotator:
         """
         if prompt_template is None:
             prompt_template = self.prompt_template
-        return utils.make_prompts(df=df_to_annotate, template=prompt_template, batch_size=self.batch_size)
+        return utils.make_prompts(
+            df=df_to_annotate,
+            template=prompt_template,
+            batch_size=self.batch_size,
+            keys_to_format=self.available_fields_to_format,
+        )
 
     def _add_metadata_to_completions_(self, completions: dict[str, Any]):
         """Add metadata to the completions."""
