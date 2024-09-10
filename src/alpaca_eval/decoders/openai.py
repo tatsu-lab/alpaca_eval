@@ -28,7 +28,7 @@ def openai_completions(
     tokens_to_avoid: Optional[Sequence[str]] = None,
     is_skip_multi_tokens_to_avoid: bool = True,
     is_strip: bool = True,
-    num_procs: Optional[int] = constants.OPENAI_MAX_CONCURRENCY,
+    num_procs: Optional[int] = 1,  # constants.OPENAI_MAX_CONCURRENCY,
     batch_size: Optional[int] = None,
     price_per_token: Optional[float] = None,
     **decoding_kwargs,
@@ -230,6 +230,7 @@ def _openai_completion_helper(
         try:
             if is_chat:
                 completion_batch = client.chat.completions.create(messages=prompt_batch[0], **curr_kwargs)
+                breakpoint()
 
                 choices = completion_batch.choices
                 for i, choice in enumerate(choices):
@@ -247,7 +248,7 @@ def _openai_completion_helper(
                         # currently we only use function calls to get a JSON object => return raw text of json
                         choices[i]["text"] = choice.message.function_call.arguments
 
-                    if choice.message.tool_calls is not None:
+                    if choice.message.tool_calls:
                         # currently we only use function calls to get a JSON object => return raw text of json
                         choices[i]["text"] = choice.message.tool_calls[0].function.arguments
 
