@@ -2,7 +2,7 @@ Llama-3-8B-Instruct-SkillMix:
   prompt_template: "alpaca-7b/prompt.txt"
   fn_completions: "vllm_local_completions"
   completions_kwargs:
-    model_name: "/scratch/gpfs/PLI/alpaca_synth/checkpoints_ft_torchtune/llama3_8b_base_k2_4000_examples_diverse_dataset_long_instructions_rebuttals/opt_adamw/lr_0.00002/bs_128/epoch_7"
+    model_name: "PrincetonPLI/Llama-3-8B-Instruct-SkillMix"
     batch_size: 900
     model_kwargs:
       torch_dtype: 'bfloat16'
