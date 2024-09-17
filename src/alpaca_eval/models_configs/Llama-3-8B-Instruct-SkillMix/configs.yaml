@@ -14,6 +14,6 @@ Llama-3-8B-Instruct-SkillMix:
     - 128001
     - 128009
   pretty_name: "Llama-3-8B-Instruct-SkillMix"
-  link: "https://huggingface.co/meta-llama/Meta-Llama-3-8B"
+  link: "https://huggingface.co/PrincetonPLI/Llama-3-8B-Instruct-SkillMix"
 
   
