@@ -1,0 +1,9 @@
+SelfMoA_gemma-2-9b-it-WPO-HB:
+  prompt_template: "gemma-2-9b-it-DPO/prompt.txt"
+  fn_completions: null
+  completions_kwargs:
+    max_new_tokens: 2048
+    model_name: "SelfMoA_gemma-2-9b-it-WPO-HB"
+    temperature: 0.7
+  pretty_name: "SelfMoA + gemma-2-9b-it-WPO-HB"
+  link: "https://github.com/wenzhe-li/Self-MoA/"
