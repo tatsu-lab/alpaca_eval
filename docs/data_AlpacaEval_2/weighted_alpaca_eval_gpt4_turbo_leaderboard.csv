@@ -1,7 +1,9 @@
 name,length_controlled_winrate,win_rate,avg_length,link,samples,filter
+SelfMoA + gemma-2-9b-it-WPO-HB,78.53928111481099,77.58955217385297,3261,https://github.com/wenzhe-li/Self-MoA/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/SelfMoA_gemma-2-9b-it-WPO-HB/model_outputs.json,community
 Shopee SlimMoA v1,77.4515432873834,75.6142865980535,1994,https://github.com/LLM-Alignment-sh/Shopee-SlimMoA,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Shopee-SlimMoA-v1/model_outputs.json,community
 Blendax.AI-gm-l6-vo31,76.91981221023656,69.11033492869565,1809,https://www.blendax.ai/post/blendaxai-gm-l6-vo31,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/blendaxai-gm-l6-vo31/model_outputs.json,community
 gemma-2-9b-it-WPO-HB,76.72506842726064,77.82503168985093,2285,https://huggingface.co/wzhouad/gemma-2-9b-it-WPO-HB,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-2-9b-it-WPO-HB/model_outputs.json,community
+SelfMoA + gemma-2-9b-it-SimPO,75.04950944068965,71.9958856144492,1930,https://github.com/wenzhe-li/Self-MoA/,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/SelfMoA_gemma-2-9b-it-SimPO/model_outputs.json,community
 Blendax.AI-gm-l3-v35,73.37270365010379,73.41035740244067,2186,https://www.blendax.ai/post/blendaxai-gm-l3-v35,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/blendaxai-gm-l3-v35/model_outputs.json,community
 gemma-2-9b-it-SimPO,72.3508446939842,65.86422561532919,1833,https://huggingface.co/princeton-nlp/gemma-2-9b-it-SimPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/gemma-2-9b-it-SimPO/model_outputs.json,community
 OpenPipe MoA GPT-4 Turbo,68.37866250336802,63.15493451236265,1856,https://openpipe.ai/blog/mixture-of-agents,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/openpipe-moa-gpt-4-turbo-v1/model_outputs.json,community
@@ -27,7 +29,7 @@ ExPO + Llama-3-Instruct-8B-SimPO,45.78021783946177,40.63285400856655,1765,https:
 Llama-3-Instruct-8B-SimPO,44.65131348921881,40.52977498461182,1825,https://huggingface.co/princeton-nlp/Llama-3-Instruct-8B-SimPO,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Llama-3-Instruct-8B-SimPO/model_outputs.json,community
 Nanbeige Plus Chat v0.1,44.45966240337981,56.70300973017392,2587,https://huggingface.co/spaces/Nanbeige/Nanbeige-Plus-Chat-v0.1,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige-Plus-Chat-v0.1/model_outputs.json,community
 Qwen1.5 110B Chat,43.90555221078692,33.77709527565118,1631,https://huggingface.co/Qwen/Qwen1.5-110B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Qwen1.5-110B-Chat/model_outputs.json,community
-Llama-3-8B-Instruct-SkillMix,42.76194893575222,44.62754272981248,3141,https://huggingface.co/meta-llama/Meta-Llama-3-8B,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Llama-3-8B-Instruct-SkillMix/model_outputs.json,community
+Llama-3-8B-Instruct-SkillMix,42.76194893575222,44.62754272981248,3141,https://huggingface.co/PrincetonPLI/Llama-3-8B-Instruct-SkillMix,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Llama-3-8B-Instruct-SkillMix/model_outputs.json,community
 Aligner 2B+Claude 3 Opus,41.823071715247664,34.46337362321739,1669,https://github.com/AlignInc/aligner-replication,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/aligner-2b_claude-3-opus-20240229/model_outputs.json,community
 Nanbeige2 16B Chat,40.591286349562864,37.03608605005168,1867,https://huggingface.co/Nanbeige/Nanbeige2-16B-Chat,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/Nanbeige2-16B-Chat/model_outputs.json,community
 Claude 3 Opus (02/29),40.5095080124761,29.10526953334248,1388,,https://github.com/tatsu-lab/alpaca_eval/blob/main/results/claude-3-opus-20240229/model_outputs.json,minimal
