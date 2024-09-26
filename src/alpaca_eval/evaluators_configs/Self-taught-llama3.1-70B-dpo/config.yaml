@@ -1,0 +1,18 @@
+Self-taught-llama3.1-70B-dpo:
+  prompt_template: "Self-taught-llama3.1-70B-dpo/self_taught.txt"
+  fn_completions: "vllm_local_completions"
+  completions_kwargs:
+    model_name: "Self-taught-llama3.1-70B-dpo"
+    max_new_tokens: 512
+    temperature: 0
+    model_kwargs:
+      dtype: "half"
+      tensor_parallel_size: 8
+      enable_chunked_prefill: False
+      max_model_len: 5120
+      distributed_executor_backend: "ray"
+  fn_completion_parser: "regex_parser"
+  completion_parser_kwargs:
+      outputs_to_match:
+          1: "[[A]]"
+          2: "[[B]]"
