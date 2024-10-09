@@ -1,0 +1,13 @@
+llama_2_70b_chat_2:
+  prompt_template: "llama_2_70b_chat_2/prompt.txt"
+  fn_completions: "replicate_completions"
+  completions_kwargs:
+    model_name: "replicate/llama70b-v2-chat:35042c9a33ac8fd5e29e27fb3197f33aa483f72c2ce3b0b9d201155c7fd2a287"
+    max_length: 50
+    temperature: 0.7
+    top_p: 1.0
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: '(?:^|\n) ?Output \(a\)'
+      2: '(?:^|\n) ?Output \(b\)'
+  batch_size: 1

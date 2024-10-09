@@ -7,6 +7,6 @@ Meta-Llama-3.1-70B-Instruct-Turbo:
     requires_chatml: True
     client_kwargs:
       base_url: 'https://api.together.xyz'
-  pretty_name: "Llama 3.1 70B Instruct"
+  pretty_name: "Llama 3.1 70B Instruct (Turbo)"
   link: "https://huggingface.co/meta-llama/Meta-Llama-3.1-70B-Instruct"
 

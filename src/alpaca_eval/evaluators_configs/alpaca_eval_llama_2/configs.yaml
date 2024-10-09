@@ -1,0 +1,10 @@
+alpaca_eval_llama_2:
+  prompt_template: "alpaca_eval_llama_2/alpaca_eval.txt"
+  fn_completions: "replicate_completions"
+  completions_kwargs:
+    model_name: "meta/llama-2-70b-chat:35042c9a33ac8fd5e29e27fb3197f33aa483f72c2ce3b0b9d201155c7fd2a287"
+    max_length: 50
+    temperature: 0.7
+    top_p: 1.0
+  fn_completion_parser: "ranking_parser"
+  batch_size: 1

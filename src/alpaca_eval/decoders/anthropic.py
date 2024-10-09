@@ -140,7 +140,7 @@ def _anthropic_completion_helper(
 
             content = response["content"][0]
             if "text" in content:
-                response["text"]
+                response["text"] = content["text"]
             elif content.get("type") == "tool_use":
                 response["text"] = content["input"]
 

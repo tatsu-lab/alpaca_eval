@@ -1,0 +1,10 @@
+o1_preview_2024_09_12:
+  prompt_template: "o1_preview_2024_09_12/chatml_prompt.txt"
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "o1-preview-2024-09-12"
+    max_completion_tokens: 8192
+    max_tokens: null
+    top_p: null
+    temperature: null
+  pretty_name: "O1 Preview (12/09)"

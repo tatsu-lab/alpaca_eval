@@ -1,0 +1,2 @@
+,np.tanh(std_delta_len),instruction_difficulty,not_gamed_baseline.astype(float)
+example,-1.8366974044802464,0.7446564086794187,-7.2597105854399295

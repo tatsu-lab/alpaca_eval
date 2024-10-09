@@ -28,7 +28,7 @@ def openai_completions(
     tokens_to_avoid: Optional[Sequence[str]] = None,
     is_skip_multi_tokens_to_avoid: bool = True,
     is_strip: bool = True,
-    num_procs: Optional[int] = 1,  # constants.OPENAI_MAX_CONCURRENCY,
+    num_procs: Optional[int] = constants.OPENAI_MAX_CONCURRENCY,
     batch_size: Optional[int] = None,
     price_per_token: Optional[float] = None,
     **decoding_kwargs,
@@ -137,10 +137,10 @@ def openai_completions(
 
     prompt_batches = [prompts[batch_id * batch_size : (batch_id + 1) * batch_size] for batch_id in range(n_batches)]
 
-    if isinstance(max_tokens, int):
-        max_tokens = [max_tokens] * n_examples
-
-    inputs = zip(prompt_batches, max_tokens)
+    try:
+        inputs = zip(prompt_batches, max_tokens)
+    except TypeError:
+        inputs = zip(prompt_batches, [max_tokens] * n_batches)
 
     kwargs = dict(model=model_name, **decoding_kwargs)
     kwargs_to_log = {k: v for k, v in kwargs.items() if "api_key" not in k}
@@ -221,7 +221,11 @@ def _openai_completion_helper(
     client = all_clients[curr_client_idx]
 
     # copy shared_kwargs to avoid modifying it
-    kwargs.update(dict(max_tokens=max_tokens, top_p=top_p, temperature=temperature))
+    to_update = dict()
+    for k in ["max_tokens", "top_p", "temperature"]:
+        if locals()[k] is not None:
+            to_update[k] = locals()[k]
+    kwargs.update(to_update)
     curr_kwargs = copy.deepcopy(kwargs)
 
     # ensure no infinite loop
@@ -230,7 +234,6 @@ def _openai_completion_helper(
         try:
             if is_chat:
                 completion_batch = client.chat.completions.create(messages=prompt_batch[0], **curr_kwargs)
-                breakpoint()
 
                 choices = completion_batch.choices
                 for i, choice in enumerate(choices):

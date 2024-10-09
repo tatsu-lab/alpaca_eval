@@ -1,0 +1,8 @@
+gemini-1.5-flash:
+  prompt_template: "gemini-pro/prompt.txt"
+  fn_completions: "google_completions"
+  completions_kwargs:
+    model_name: "gemini-1.5-flash"
+    max_output_tokens: 8192
+    candidate_count: 1
+  pretty_name: "Gemini Flash 1.5"

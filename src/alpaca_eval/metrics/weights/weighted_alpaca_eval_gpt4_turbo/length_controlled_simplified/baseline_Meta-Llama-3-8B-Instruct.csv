@@ -1,0 +1,2 @@
+,np.tanh(std_delta_len),not_gamed_baseline.astype(float)
+example,-11.4145242307888743,6.1436458307817778
