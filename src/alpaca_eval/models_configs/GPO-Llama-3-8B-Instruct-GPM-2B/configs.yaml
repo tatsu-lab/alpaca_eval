@@ -1,0 +1,16 @@
+GPO-Llama-3-8B-Instruct-GPM-2B:
+  completions_kwargs:
+    batch_size: 900
+    max_new_tokens: 4096
+    model_kwargs:
+      dtype: bfloat16
+    model_name: "general-preference/GPO-Llama-3-8B-Instruct-GPM-2B"
+    stop_token_ids:
+    - 128001
+    - 128009
+    temperature: 0.9
+    top_p: 1.0
+    use_beam_search: false
+  fn_completions: vllm_local_completions
+  pretty_name: GPO-Llama-3-8B-Instruct-GPM-2B
+  prompt_template: GPO-Llama-3-8B-Instruct-GPM-2B/prompt.txt
