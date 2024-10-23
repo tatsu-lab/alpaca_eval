@@ -5,5 +5,5 @@ NullModel:
     max_new_tokens: 2048
     model_name: "NullModel"
     temperature: 0.0
-  pretty_name: "NullModel"
+  pretty_name: "NullModel (adversarial)"
   link: "https://github.com/sail-sg/Cheating-LLM-Benchmarks/"
