@@ -1,0 +1,17 @@
+Llama-3-Instruct-8B-RainbowPO:
+  completions_kwargs:
+    batch_size: 900
+    use_beam_search: true
+    max_new_tokens: 4096
+    model_kwargs:
+      dtype: bfloat16
+    model_name: BraceZHY/Llama-3-8B-Instruct-RainbowPO
+    stop_token_ids:
+    - 128001
+    - 128009
+    temperature: 0.9
+    top_p: 1.0
+  fn_completions: vllm_local_completions
+  pretty_name: Llama-3-Instruct-8B-RainbowPO 
+  prompt_template: Llama-3-Instruct-8B-RainbowPO/prompt.txt
+  link: https://huggingface.co/BraceZHY/Llama-3-8B-Instruct-RainbowPO
