@@ -1,0 +1,17 @@
+FuseChat-Gemma-2-9B-Instruct:
+  completions_kwargs:
+    model_name: FuseAI/FuseChat-Gemma-2-9B-Instruct
+    model_kwargs:
+      dtype: bfloat16
+    max_new_tokens: 4096
+    temperature: 0.5
+    top_p: 1.0
+    batch_size: 1000
+    use_beam_search: true
+    stop_token_ids:
+      - 1
+      - 107
+  fn_completions: vllm_local_completions
+  pretty_name: FuseChat-Gemma-2-9B-Instruct
+  prompt_template: FuseChat-Gemma-2-9B-Instruct/prompt.txt
+  link: https://huggingface.co/FuseAI/FuseChat-Gemma-2-9B-Instruct
