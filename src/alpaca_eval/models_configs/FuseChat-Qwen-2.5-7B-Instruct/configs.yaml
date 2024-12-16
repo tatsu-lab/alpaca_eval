@@ -1,0 +1,18 @@
+FuseChat-Qwen-2.5-7B-Instruct:
+  completions_kwargs:
+    model_name: FuseAI/FuseChat-Qwen-2.5-7B-Instruct
+    model_kwargs:
+      dtype: bfloat16
+    max_new_tokens: 4096
+    temperature: 0.7
+    top_p: 0.8
+    repetition_penalty: 1.05
+    top_k: 20
+    batch_size: 1000
+    stop_token_ids:
+      - 151645
+      - 151643
+  fn_completions: vllm_local_completions
+  pretty_name: FuseChat-Qwen-2.5-7B-Instruct
+  prompt_template: FuseChat-Qwen-2.5-7B-Instruct/prompt.txt
+  link: https://huggingface.co/FuseAI/FuseChat-Qwen-2.5-7B-Instruct
