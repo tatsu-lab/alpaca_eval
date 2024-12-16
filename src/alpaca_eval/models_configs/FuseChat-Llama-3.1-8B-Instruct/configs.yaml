@@ -1,0 +1,21 @@
+FuseChat-Llama-3.1-8B-Instruct:
+  completions_kwargs:
+    model_name: FuseAI/FuseChat-Llama-3.1-8B-Instruct
+    model_kwargs:
+      dtype: bfloat16
+    max_new_tokens: 4096
+    temperature: 0.6
+    top_k: 50
+    top_p: 0.9
+    presence_penalty: 0.1
+    frequency_penalty: 0.1
+    batch_size: 1000
+    use_beam_search: true
+    stop_token_ids:
+      - 128001
+      - 128009
+  fn_completions: vllm_local_completions
+  pretty_name: FuseChat-Llama-3.1-8B-Instruct
+  prompt_template: FuseChat-Llama-3.1-8B-Instruct/prompt.txt
+  link: https://huggingface.co/FuseAI/FuseChat-Llama-3.1-8B-Instruct
+  
