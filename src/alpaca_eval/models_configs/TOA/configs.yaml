@@ -1,0 +1,9 @@
+TOA:
+  prompt_template: "" # We use different models, so there are different templates
+  fn_completions: null
+  completions_kwargs:
+    model_name: "TOA"
+    max_tokens: 2048
+    temperature: 0.7
+  pretty_name: "TOA"
+  link: "https://github.com/oceanypt/TOA"
