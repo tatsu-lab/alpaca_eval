@@ -8,6 +8,7 @@ results
 ./*.json
 client_configs/*.yaml
 old_results
+results_evaluators
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
