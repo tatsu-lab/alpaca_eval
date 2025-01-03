@@ -1,0 +1,12 @@
+test-7B-o1-Qwen:
+  prompt_template: "test-7B-o1-Qwen/prompt.txt"
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "qwen2.5-7b"
+    max_tokens: 8096
+    requires_chatml: True
+    num_procs: 50
+    client_kwargs:
+      base_url: 'http://localhost:6002/v1'
+  pretty_name: "test 7B o1 Qwen"
+  link: "https://huggingface.co/Minami-su/test-v3-7B-o1"
