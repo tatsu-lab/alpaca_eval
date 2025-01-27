@@ -1,0 +1,12 @@
+Amara-o2-7B-Qwen:
+  prompt_template: "Amara-o2-7B-Qwen/prompt.txt"
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "qwen2.5-7b"
+    max_tokens: 8096
+    requires_chatml: True
+    num_procs: 20
+    client_kwargs:
+      base_url: 'http://localhost:6003/v1'
+  pretty_name: "Amara-o2-7B-Qwen"
+  link: "https://huggingface.co/Minami-su/Amara-o2-7B-Qwen"
