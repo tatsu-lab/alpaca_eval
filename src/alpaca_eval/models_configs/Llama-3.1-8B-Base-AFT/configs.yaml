@@ -1,0 +1,11 @@
+Llama-3.1-8B-Base-AFT:
+  prompt_template: "Mixtral-8x7B-Instruct-v0.1/togetherai_prompt.txt"
+  fn_completions: null
+  completions_kwargs:
+    model_name: "Linzwcs/Llama-AFT-On-Policy"
+    stop_token_ids:
+    - 128001
+    - 128009
+    temperature: 0.9
+    max_tokens: 4096
+  link: "https://huggingface.co/linzw/Llama-AFT-On-Policy"
