@@ -16,7 +16,6 @@ from .. import completion_parsers, constants, processors, types, utils
 from ..decoders import get_fn_completions
 
 CURRENT_DIR = Path(__file__).parent
-logging.getLogger().setLevel(logging.INFO)
 
 __all__ = ["BaseAnnotator", "BaseAnnotatorJSON", "SingleAnnotator"]
 
