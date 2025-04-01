@@ -462,7 +462,7 @@ def make_leaderboard(
         return df_leaderboard, all_annotations
     else:
         utils.print_leaderboard(
-            df_leaderboard, leaderboard_mode=None, cols_to_print=["win_rate", "standard_error", "n_total"]
+            df_leaderboard, leaderboard_mode_or_models=None, cols_to_print=["win_rate", "standard_error", "n_total"]
         )
 
 
