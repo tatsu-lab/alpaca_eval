@@ -14,9 +14,18 @@ weighted_alpaca_eval_gpt4.1_azure:
     is_binarize: false
   completion_key: "completions_all"
   batch_size: 1
-  client_class: "openai.AzureOpenAI"
-  client_kwargs:
-    azure_deployment: "gpt-4.1-standard"
-    api_key: $AZURE_API_KEY
-    azure_endpoint: "https://ai-olmohub1163464654570.openai.azure.com/ "
-    api_version: "2024-03-01-preview"
+  completions_kwargs:
+    # tell alpaca_eval to use the Azure client
+    client_class: "openai.AzureOpenAI"
+    # kwargs that will be passed to openai.AzureOpenAI(**client_kwargs)
+    client_kwargs:
+      azure_deployment: "gpt-4.1-standard"
+      azure_endpoint: "https://ai-olmohub1163464654570.openai.azure.com/"
+      api_version: "2024-03-01-preview"
+      api_key: "${AZURE_API_KEY}"          # env-var expansion works
+  # client_class: "openai.AzureOpenAI"
+  # client_kwargs:
+  #   azure_deployment: "gpt-4.1-standard"
+  #   api_key: $AZURE_API_KEY
+  #   azure_endpoint: "https://ai-olmohub1163464654570.openai.azure.com/ "
+  #   api_version: "2024-03-01-preview"
