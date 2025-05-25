@@ -6,7 +6,7 @@ example/
 src/**/*.json
 results
 ./*.json
-client_configs/*.yaml
+# client_configs/*.yaml
 old_results
 results_evaluators
 
