@@ -60,7 +60,7 @@ Updates:
 
 
 Evaluation of instruction-following models (e.g., ChatGPT) typically requires human interactions. This is
-time-consuming, expensive, and hard to replicate. AlpacaEval in an LLM-based automatic evaluation that is fast, cheap,
+time-consuming, expensive, and hard to replicate. AlpacaEval is an LLM-based automatic evaluation that is fast, cheap,
 replicable, and validated against 20K human annotations.
 It is particularly useful for model development.
 Although we improved over prior automatic evaluation pipelines, there are still fundamental [limitations](#limitations) like the preference for longer outputs.
