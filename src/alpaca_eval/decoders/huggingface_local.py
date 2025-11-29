@@ -111,7 +111,7 @@ def huggingface_local_completions(
     if batch_size > 1:
         # sort the prompts by length so that we don't necessarily pad them by too much
         # save also index to reorder the completions
-        original_order, prompts = zip(*sorted(enumerate(prompts), key=lambda x: len(x[1])))
+        original_order, prompts = zip(*sorted(enumerate(prompts), key=lambda x: len(x[1]), reverse=True))
         prompts = list(prompts)
 
     if not tokenizer.pad_token_id:
