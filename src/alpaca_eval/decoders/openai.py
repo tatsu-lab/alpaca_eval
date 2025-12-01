@@ -222,6 +222,9 @@ def _openai_completion_helper(
             to_update[k] = locals()[k]
     kwargs.update(to_update)
     curr_kwargs = copy.deepcopy(kwargs)
+    if curr_kwargs["model"].startswith("gpt-5"):
+        curr_kwargs["max_completion_tokens"] = curr_kwargs.pop("max_tokens")
+        curr_kwargs.pop("temperature")
 
     # ensure no infinite loop
     choices = None
@@ -308,6 +311,9 @@ def _get_price_per_token(model, price_per_token=None):
     """Returns the price per token for a given model"""
     if price_per_token is not None:
         return float(price_per_token)
+    if "gpt-5-nano" in model:
+        return 0.05 / 1_000_000
+    # that's not completely true because decoding is 0.4 but close enough given that most is context
     if "gpt-4o-mini-2024-07-18" in model:
         return (
             0.15 / 1_000_000

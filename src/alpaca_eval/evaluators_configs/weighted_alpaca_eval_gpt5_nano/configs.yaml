@@ -1,0 +1,15 @@
+weighted_alpaca_eval_gpt5_nano:
+  prompt_template: "alpaca_eval_clf_gpt4_turbo/alpaca_eval_clf.txt"
+  fn_completions: "openai_completions"
+  completions_kwargs:
+    model_name: "gpt-5-nano"
+    max_tokens: 1000
+    logprobs: false
+    reasoning_effort: low
+  fn_completion_parser: "regex_parser"
+  completion_parser_kwargs:
+    outputs_to_match:
+      1: "m"
+      2: "M"
+  completion_key: "completions"
+  batch_size: 1

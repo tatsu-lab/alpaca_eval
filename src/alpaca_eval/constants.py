@@ -196,14 +196,14 @@ EVALUATORS_LEADERBOARD_COLS_TO_PRIORITIZE = [
 ]
 
 MINIMAL_MODELS_FOR_NEW_LEADERBOARD = [
-    "gpt4_turbo",
+    "gpt4_1106_preview",
     "gpt4",
     "tulu-2-dpo-70b",
     "Yi-34B-Chat",
     "llama-2-70b-chat-hf",
     "claude-2.1",
     "cohere",
-    "chatgpt",
+    "gpt-3.5-turbo-0301",
     "gemini-pro",
     "Mixtral-8x7B-Instruct-v0.1",
     "Mistral-7B-Instruct-v0.2",
@@ -221,7 +221,7 @@ if CURRENT_USER in ["yanndubs"]:
 
 def ALPACAFARM_ALL_OUTPUTS():
     if IS_ALPACA_EVAL_2:
-        return [f"results/{m}/model_outputs.json" for m in MINIMAL_MODELS_FOR_NEW_LEADERBOARD]
+        return [BASE_DIR / f"results/{m}/model_outputs.json" for m in MINIMAL_MODELS_FOR_NEW_LEADERBOARD]
     else:
         return datasets.load_dataset(
             "tatsu-lab/alpaca_eval",
