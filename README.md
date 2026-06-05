@@ -1441,3 +1441,8 @@ You can check the `raw_annotations["concise_explanation]` column in `annotations
   or [`alpaca_eval_gpt4_fn`](https://github.com/tatsu-lab/alpaca_eval/tree/main/src/alpaca_eval/evaluators_configs/alpaca_eval_gpt4_fn).
 
 </details>
+
+
+## Benchmarks
+
+- [REFUTE](https://huggingface.co/datasets/BGPT-OFFICIAL/refute) — Scientific critique & epistemic calibration (Apache-2.0). [Leaderboard](https://huggingface.co/spaces/BGPT-OFFICIAL/refute-leaderboard) · [Report](https://huggingface.co/datasets/BGPT-OFFICIAL/refute/blob/main/TECHNICAL_REPORT.md) · [Integrations](https://huggingface.co/datasets/BGPT-OFFICIAL/refute/tree/main/integrations)
