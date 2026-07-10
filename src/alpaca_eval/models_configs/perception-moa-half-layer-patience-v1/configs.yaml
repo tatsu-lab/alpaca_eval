@@ -1,0 +1,5 @@
+perception-moa-half-layer-patience-v1:
+  prompt_template: null
+  fn_completions: null
+  completions_kwargs: {}
+  pretty_name: "Perception MoA (Half-Layer) - Patience v1"
